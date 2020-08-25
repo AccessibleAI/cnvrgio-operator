@@ -327,6 +327,7 @@ istio:
   pilotImage: "{{.Values.istio.pilotImage}}"
   gwName: "{{ .Values.istio.gwName }}"
   externalIp: "{{ .Values.istio.externalIp }}"
+  ingressSvcAnnotations: "{{.Values.istio.ingressSvcAnnotations}}"
 
 kibana:
   enabled: "{{ .Values.kibana.enabled }}"
