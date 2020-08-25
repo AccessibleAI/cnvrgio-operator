@@ -3,13 +3,19 @@ kind: Service
 metadata:
   labels:
     alertmanager: main
-  name: alertmanager-main
+  name: "{{ alertmanager.svc_name }}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
+{% if ingress_type == "nodeport" %}
+  type: NodePort
+{% endif %}
   ports:
   - name: web
-    port: 9093
+    port: {{alertmanager.port}}
     targetPort: web
+{% if ingress_type == "nodeport" %}
+    nodePort: {{ alertmanager.node_port }}
+{% endif %}
   selector:
     alertmanager: main
     app: alertmanager

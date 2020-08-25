@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: cnvrg-custom
+  name: cnvrg-monitor
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  endpoints:
+  - port: http
+    scheme: http
+    path: '/metrics'
+    interval: 15s
+  selector:
+    matchLabels:
+      app: {{cnvrg_app.svc_name}}
+  jobLabel: cnvrg-custom

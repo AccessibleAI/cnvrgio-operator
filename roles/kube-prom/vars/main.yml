@@ -20,6 +20,59 @@ prometheus:
     schema: https
     port: https-metrics
 
+alertmanager:
+  enabled: "true"
+  alert_manager_image: "quay.io/prometheus/alertmanager:v0.21.0"
+  svc_name: "alertmanager-main"
+  port: 9093
+  node_port: 39093
+  storage_size: 20Gi
+  storage_class: "use-default"
+  config: |+
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: 'slack-notifications'
+      group_by: ['job']
+      group_wait: 1m #1m
+      group_interval: 2m #5m
+      repeat_interval: 2m #12h
+      routes:
+      - receiver: 'slack-watchdog'
+        match:
+          alertname: Watchdog
+        group_wait: 1m
+        group_interval: 1m
+        repeat_interval: 1m
+    receivers:
+    - name: 'slack-watchdog'
+      slack_configs:
+      - api_url: "{{ 'aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDA2M1hSRTJIL0IwMThNQjhQR1NLL0RoeVREMEt6ZnFsYlB3NTg2eXdCcmF2NA==' | b64decode }}"
+        channel: '#slack-watchdog'
+        send_resolved: true
+        icon_url: https://avatars3.githubusercontent.com/u/3380462
+        text: "not working"
+    - name: 'slack-notifications'
+      slack_configs:
+      - api_url: "{{ 'aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDA2M1hSRTJIL0IwMTkyM1A0NUVFL09iczVWRGlkU1lsVEJ0RzJHak9vWGoyWQ==' | b64decode }}"
+        channel: '#alertmanager-alerts'
+        send_resolved: true
+        icon_url: https://avatars3.githubusercontent.com/u/3380462
+        text: >+
+          {{ '{{' }} range .Alerts {{ '}}' }}
+          {{ '{{' }} if .Annotations.summary {{ '}}' }} *Summary:* `{{ '{{' }} .Annotations.summary {{ '}}' }}`{{ '{{' }} end {{ '}}' }}\n
+          *Description:* {{ '{{' }} .Annotations.description {{ '}}' }}
+
+          *Details:*
+            {{ '{{' }} range .Labels.SortedPairs {{ '}}' }} • *{{ '{{' }} .Name {{ '}}' }}:* `{{ '{{' }} .Value {{ '}}' }}`
+            {{ '{{' }} end {{ '}}' }}
+
+          {{ '{{' }} end {{ '}}' }}
+#title: "{{ '{{' }} range .Alerts {{ '}}' }}{{ '{{' }} .Annotations.summary {{ '}}' }}{{ '{{' }} end {{ '}}' }}"
+#*Alert:* {{ '{{' }} .Annotations.title {{ '}}' }}{{ '{{' }} if .Labels.severity {{ '}}' }} - `{{ '{{' }} .Labels.severity {{ '}}' }}`{{ '{{' }} end {{ '}}' }}
+#          {{ '{{' }} if .Annotations.summary {{ '}}' }} - Summary:`{{ '{{' }} .Annotations.summary {{ '}}' }}`{{ '{{' }} end {{ '}}' }}
+#title: {{ '{{' }} .Alerts.alertname {{ '}}' }} doesnt work unmashal map into string
+
 grafana:
   svc_name: "grafana"
   port: 3000

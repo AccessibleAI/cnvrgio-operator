@@ -1,0 +1,42 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: prometheus-k8s-custom-rules
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  groups:
+  - name: Cnvrg Custom Rules
+    rules:
+    - alert: Redis Is Down
+      expr: absent(redis_is_up == 1)
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+          description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
+    - alert: Minio Is Down
+      expr: absent(minio_is_up == 1)
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
+    rules:
+    - alert: Elasticsearch Is Down
+      expr: absent(elasticsearch_is_up == 1)
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
+    rules:
+    - alert: Sidekiq Jobs Pending
+      expr: avg(sidekiq_jobs_pending) > 5
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
