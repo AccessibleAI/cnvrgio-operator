@@ -8,6 +8,7 @@
         - ../roles/conf/vars/main.yml
         - ../roles/redis/vars/main.yml
         - ../roles/pg/vars/main.yml
+        - ../roles/pg_backup/vars/main.yml
         - ../roles/es/vars/main.yml
         - ../roles/minio/vars/main.yml
         - ../roles/kube-prom/vars/main.yml
@@ -58,6 +59,13 @@
       vars:
         role_state: "{{'present' if pg.enabled == 'true' else 'absent'}}"
       tags: pg
+
+    # Postgres deployment
+    - import_role:
+        name: pg_backup
+      vars:
+        role_state: "{{'present' if pg.enabled == 'true' else 'absent'}}"
+      tags: pg_backup
 
     # CnvrgApp deployment
     - import_role:

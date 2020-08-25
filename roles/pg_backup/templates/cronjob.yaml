@@ -1,0 +1,45 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ pg_backup.name }}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+  labels:
+    app: "{{ pg_backup.name }}"
+spec:
+  schedule: "{{ pg_backup.cron_time }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+{% if security_mode == "default" %}
+          securityContext:
+            runAsUser: {{ pg.run_as_user }}
+            runAsGroup: {{ pg.run_as_group }}
+            fsGroup: {{ pg.fs_group }}
+{% endif %}
+{% if hostpath.enabled == "true" %}
+          nodeSelector:
+            kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+          containers:
+            - name: "{{ pg_backup.name }}"
+              image: "{{ pg.image }}"
+              workingDir: "{{ pg_backup.path }}"
+              command: ["/bin/bash", "-c", "{{ pg_backup.script_path }}/backup.sh"]
+              volumeMounts:
+              - name: "{{ pg_backup.name }}"
+                mountPath: "{{ pg_backup.path }}"
+              - name: pg-backup-cm
+                mountPath: "{{ pg_backup.script_path }}"
+              envFrom:
+                - secretRef:
+                    name: env-secrets
+          restartPolicy: OnFailure
+          volumes:
+            - name: pg-backup-cm
+              configMap:
+                name: "{{ pg_backup.name }}"
+                defaultMode: 0755
+            - name: "{{ pg_backup.name }}"
+              persistentVolumeClaim:
+                claimName: "{{ pg_backup.name }}"

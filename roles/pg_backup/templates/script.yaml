@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ pg_backup.name }}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+data:
+  backup.sh: |
+    set -x
+    echo "script started"
+    storage_size="{{ pg_backup.storage_size.split('Gi')[0] }}"
+    backuppath={{ pg_backup.path }}
+    filename=$(date +%F)_cnvrg_pg_dump.sql
+
+    #finds total space in directory in GB
+    total_space=$(du -sh --block-size=1G $backuppath | awk '{ print $1 }')
+
+    #find out pg_size
+    export PGPASSWORD=$POSTGRES_PASSWORD
+    pg_size_bytes=$(psql -h $POSTGRES_HOST -p $POSTGRES_PORT_5432_TCP_PORT -U $POSTGRES_USER -w $POSTGRES_DB -c "SELECT pg_database_size('$POSTGRES_DB') ;" | grep -Ev 'row|pg_database_size|---')
+    pg_size_gb=$(( $pg_size_bytes / 1024 / 1024 / 1024 ))
+
+    #if the result is in mb/kb then pg_size_gb = 0
+    if [ "$pg_size_gb" -eq "0" ]; then
+      pg_size_gb=1
+    fi
+
+    newest_file=$(find $backuppath -type f -name "*.sql" -print0 | xargs -0 ls -ltrm1 | grep -Ev 'total|lost' | tail -n 1)
+    newest_file_size=$(du -sh --block-size=1G $newest_file | awk '{ print $1 }')
+    pg_size_total_space=$(( $pg_size_gb + $total_space + $newest_file_size ))
+
+    until (( pg_size_total_space  < $storage_size )); do
+    #finds the oldest file
+        oldest_file=$(find $backuppath -type f -name "*.sql" -print0 | xargs -0 ls -ltrm1 | grep -Ev 'total|lost' | head -n 1)
+        newest_file=$(find $backuppath -type f -name "*.sql" -print0 | xargs -0 ls -ltrm1 | grep -Ev 'total|lost' | tail -n 1)
+        if [ "$oldest_file" == "$newest_file" ]; then
+            echo "oldest backup == newest backup"
+            break
+        fi
+        newest_file_size=$(du -sh --block-size=1G $newest_file | awk '{ print $1 }')
+        rm $oldest_file
+        total_space=$(du -sh --block-size=1G $backuppath | awk '{ print $1 }')
+        pg_size_total_space=$(( $pg_size_gb + $total_space + $newest_file_size ))
+    done
+
+    pg_dump -h $POSTGRES_HOST -p $POSTGRES_PORT_5432_TCP_PORT -U $POSTGRES_USER -w $POSTGRES_DB -Fc  > $backuppath/$filename
+    retVal=$?
+    if [ $retVal -ne 0 ]; then
+        echo "Error in backing up db"
+        rm $backuppath/$filename
+        exit $retVal
+    fi
+    ls
+    echo "script finished"
+    # To reload an archive file into the same database it was dumped from, discarding the current contents of that database:
+    # export PGPASSWORD=$POSTGRES_PASSWORD
+    # pg_restore -h $POSTGRES_HOST -p $POSTGRES_PORT_5432_TCP_PORT -U $POSTGRES_USER -d $POSTGRES_DB --clean --create $backuppath/$filename
