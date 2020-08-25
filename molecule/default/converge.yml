@@ -7,7 +7,9 @@
     - community.kubernetes
 
   tasks:
-
+    - name: Import Vars
+      import_role:
+        name: get_vars
     - name: Test cnvrg
       import_role:
         name: test_cnvrg
