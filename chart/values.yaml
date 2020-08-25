@@ -128,7 +128,7 @@ pg:
   memoryRequest: 2Gi
 pgBackup:
   storageSize: 30Gi
-  enabled: true
+  enabled: "false"
   name: pg-backup
   path: /opt/cnvrg-backups
   scriptPath: /opt/script
