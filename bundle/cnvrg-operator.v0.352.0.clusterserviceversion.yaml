@@ -19,9 +19,6 @@ metadata:
               "port": "3000",
               "customAgentTag": "coreoc"
             },
-            "seeder":{
-              "image": "registry.connect.redhat.com/cnvrg-core/cnvrgio-seeder:v0.23"
-            },
             "redis": {
               "enabled": "true",
               "image": "registry.redhat.io/rhscl/redis-32-rhel7:latest"
@@ -396,14 +393,6 @@ spec:
                         valueFrom:
                           fieldRef:
                             fieldPath: metadata.name
-                      - name: RELATED_IMAGE_CNVRG_APP
-                        value: registry.connect.redhat.com/cnvrg-core/cnvrg-app:3.4.1
-                      - name: RELATED_IMAGE_CNVRGIO_SEEDER
-                        value: registry.connect.redhat.com/cnvrg-core/cnvrgio-seeder:v0.23
-                      - name: RELATED_IMAGE_CNVRG_ES
-                        value: registry.connect.redhat.com/cnvrg-core/cnvrg-es:6.2.4-10
-                      - name: RELATED_IMAGE_CNVRG_MINIOS
-                        value: registry.connect.redhat.com/cnvrg-core/cnvrg-minios:RELEASE.2019-04-09T01-22-30Z.3
       permissions:
         - rules:
             - apiGroups:

@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.353.0
+operatorImageTag: v0.352.0
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -31,6 +31,7 @@ computeProfiles:
 storageProfiles:
   micro:
     pg: 10Gi
+    pgBackup: 10Gi
     es: 10Gi
     prometheus: 10Gi
     minio: 10Gi
@@ -125,6 +126,14 @@ pg:
   storageClass: use-default
   cpuRequest: 1
   memoryRequest: 2Gi
+pgBackup:
+  storageSize: 30Gi
+  enabled: true
+  name: pg-backup
+  path: /opt/cnvrg-backups
+  scriptPath: /opt/script
+  storageClass: use-default
+  cronTime: "1 1 * * *"
 es:
   enabled: "true"
   image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4

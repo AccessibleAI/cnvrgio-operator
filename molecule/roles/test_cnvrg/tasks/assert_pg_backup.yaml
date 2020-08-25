@@ -1,0 +1,28 @@
+---
+- name: "Get {{ pg_backup.name }} config map"
+  k8s_info:
+    kind: ConfigMap
+    namespace: "{{ namespace }}"
+    name: "{{ pg_backup.name }}"
+  register: pg_backup_cm
+
+- name: Verify ConfigMap is configured correctly
+  assert:
+    that:
+      - pg_backup_cm.resources | length > 0
+    fail_msg: "Configmap {{ pg_backup.name }} is not configured"
+    success_msg: "Configmap {{ pg_backup.name }} is configured"
+
+- name: Get {{ pg_backup.name }} pvc
+  k8s_info:
+    kind: PersistentVolumeClaim
+    name: "{{ pg_backup.name }}"
+    namespace: "{{ namespace }}"
+  register: pvc
+
+- name: Verify everything is running correctly
+  assert:
+    that:
+      - pvc.resources | length > 0
+    fail_msg: "CronJob {{ pg_backup.name }} is configured + pvc created"
+    success_msg: "CronJob {{ pg_backup.name }} is configured + pvc created"
