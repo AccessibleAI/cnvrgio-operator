@@ -281,6 +281,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`istio.pilotImage`|pilot|
 |`istio.gwName`|cnvrg-gateway|
 |`istio.externalIp`|-|
+|`istio.ingressSvcAnnotations`|-|
 |`kibana.enabled`|true|
 |`kibana.svcName`|kibana|
 |`kibana.port`|5601|
