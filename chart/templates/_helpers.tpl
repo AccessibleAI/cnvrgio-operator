@@ -23,6 +23,14 @@ pg:
   cpuRequest: "{{.Values.computeProfiles.micro.pg.cpu}}"
   memoryRequest: "{{.Values.computeProfiles.micro.pg.memory}}"
   svcName: "{{ .Values.pg.svcName }}"
+pgBackup:
+  storageSize: "{{ .Values.storageProfiles.micro.pgBackup }}"
+  enabled: "{{ .Values.pgBackup.enabled }}"
+  name: "{{ .Values.pg.image }}"
+  path: "{{ .Values.pgBackup.path }}"
+  scriptPath: "{{ .Values.pgBackup.scriptPath }}"
+  storageClass: "{{ .Values.pgBackup.storageClass }}"
+  cronTime: "{{ .Values.pgBackup.cronTime }}"
 minio:
   enabled: "{{ .Values.minio.enabled }}"
   image: "{{ .Values.minio.image }}"
@@ -227,7 +235,19 @@ pg:
   memoryRequest: "{{.Values.computeProfiles.micro.pg.memory}}"
   {{- end }}
   svcName: "{{ .Values.pg.svcName }}"
-
+pgBackup:
+  {{- if eq .Values.storageProfile "default"}}
+  storageSize: "{{ .Values.pgBackup.storageSize }}"
+  {{- end }}
+  {{- if eq .Values.storageProfile "micro"}}
+  storageSize: "{{ .Values.storageProfiles.micro.pgBackup }}"
+  {{- end }}
+  enabled: "{{ .Values.pgBackup.enabled }}"
+  name: "{{ .Values.pg.image }}"
+  path: "{{ .Values.pgBackup.path }}"
+  scriptPath: "{{ .Values.pgBackup.scriptPath }}"
+  storageClass: "{{ .Values.pgBackup.storageClass }}"
+  cronTime: "{{ .Values.pgBackup.cronTime }}"
 es:
   enabled: "{{ .Values.es.enabled }}"
   image: "{{ .Values.es.image }}"

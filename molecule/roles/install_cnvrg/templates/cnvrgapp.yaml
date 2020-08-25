@@ -3,7 +3,7 @@ apiVersion: "{{ apiVersion }}"
 kind: "{{ kind }}"
 metadata:
   name: "{{ metadata.name }}"
-  namespace:  cnvrg
+  namespace:  "{{ namespace }}"
 spec:
   clusterDomain: "{{ spec.clusterDomain }}"
   cnvrgApp:
