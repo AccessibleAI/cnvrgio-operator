@@ -5,16 +5,16 @@
   block:
 
     # is state present, create crds in first step
-    # - name: Install Kube-Prometheus CRDs
-    #   include_role:
-    #     name: common
-    #     tasks_from: install
-    #   vars:
-    #     template_path: "{{ item }}"
-    #     state: "{{ role_state }}"
-    #   with_fileglob:
-    #     - templates/kube-prom/setup/*
-    #   when: role_state == "present"
+    - name: Install Kube-Prometheus CRDs
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        template_path: "{{ item }}"
+        state: "{{ role_state }}"
+      with_fileglob:
+        - templates/kube-prom/setup/*
+      when: role_state == "present"
 
     - name: Install Kube-Prometheus resources
       include_role:

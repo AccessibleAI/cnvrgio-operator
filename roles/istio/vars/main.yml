@@ -8,9 +8,5 @@ istio:
   mixer_image: "mixer"
   pilot_image: "pilot"
   gw_name: "cnvrg-gateway"
-<<<<<<< HEAD
-  external_ip: "" # if external_ip is set the Istio service type will be: ClusterIP with provided external IPs
-=======
   external_ip: "" # if external_ip is set the Istio service type will be: ClusterIP with provided external IPs
   ingress_svc_annotations: "" # https://gist.github.com/mgoodness/1a2926f3b02d8e8149c224d25cc57dc1, https://kubernetes.io/docs/concepts/cluster-administration/cloud-providers/
->>>>>>> master
