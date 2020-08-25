@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: elastalert-vs
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  gateways:
+  - "{{istio.gw_name}}"
+  hosts:
+  - "{{('elasticalerts.' + cluster_domain).split(':')[0] }}"
+  http:
+  - retries:
+      attempts: 4
+      perTryTimeout: 40s
+    timeout: 80s
+    route:
+    - destination:
+        host: elastalert.cnvrg.svc.cluster.local

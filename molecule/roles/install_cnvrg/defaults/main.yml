@@ -1,0 +1,257 @@
+---
+# defaults file for install_cnvrg
+
+apiVersion: mlops.cnvrg.io/v1
+kind: CnvrgApp
+metadata:
+  name: cnvrg-app
+spec:
+  debug: "false"
+  dumpDir: ""
+  dryRun: "false"
+  privilegedSa: "cnvrg-privileged"
+  clusterDomain: "molecule.cnvrg.io"
+  useHttps: "false"
+  orchestrator: "k8s"
+  securityMode: "default"
+  ingressType: "istio"
+  https:
+    enabled: "false"
+    useWildcardCertificate: "true"
+    cert: ""
+    key: ""
+  conf:
+    enabled: "true"
+    gcpStorageSecret: "gcp-storage-secret"
+    gcpKeyfileMountPath: "/tmp/gcp_keyfile"
+    gcpKeyfileName: "key.json"
+  registry:
+    name: "cnvrg-registry"
+    url: "docker.io"
+    user: ""
+    password: ""
+  rbac:
+    role: "cnvrg-role"
+    serviceAccountName: "cnvrg"
+    roleBindingName: "cnvrg-role-binding"
+  appConfigs:
+    cnvrgStorageUseIamRole: "false"
+    featureFlags: ""
+    smtp:
+      server: ""
+      port: ""
+      username: ""
+      password: ""
+      domain: ""
+  appSecrets:
+    sentryUrl: ""
+    secretKeyBase: "0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5"
+    stsIv: "DeJ/CGz/Hkb/IbRe4t1xLg=="
+    stsKey: "05646d3cbf8baa5be7150b4283eda07d"
+    passengerAppEnv: "app"
+    railsEnv: "app"
+    runJobsOnSelfCluster: "true"
+    defaultComputeConfig: "/opt/kube"
+    defaultComputeName: "default"
+    useStdout: "true"
+    extractTagsFromCmd: "false"
+    checkJobExpiration: "true"
+    cnvrgStorageType: "minio"
+    cnvrgStorageBucket: "cnvrg-storage"
+    cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
+    cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"
+    cnvrgStorageAzureAccessKey: ""
+    cnvrgStorageAzureAccountName: ""
+    cnvrgStorageAzureContainer: ""
+    cnvrgStorageRegion: "eastus"
+    cnvrgStorageProject: ""
+  redis:
+    enabled: "true"
+    image: "redis:3.0.5"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    svcName: "redis"
+    port: "6379"
+
+  pg:
+    enabled: "true"
+    image: "centos/postgresql-12-centos7"
+    port: "5432"
+    storageSize: "80Gi"
+    dbname: "cnvrg_production"
+    pass: "pg_pass"
+    user: "cnvrg"
+    runAsUser: "26"
+    runAsGroup: "26"
+    fsGroup: "26"
+    storageClass: "use-default"
+    cpuRequest: "1"
+    memoryRequest: "2Gi"
+    svcName: "postgres"
+
+  es:
+    enabled: "true"
+    image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"
+    maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
+    port: "9200"
+    storageSize: "30Gi"
+    svcName: "elasticsearch"
+    runAsUser: "1000"
+    runAsGroup: "1000"
+    fsGroup: "1000"
+    patchEsNodes: "true"
+    nodePort: "32200"
+    storageClass: "use-default"
+    cpuRequest: "1"
+    memoryRequest: "1Gi"
+    cpuLimit: "2"
+    memoryLimit: "4Gi"
+    javaOpts: ""
+
+  minio:
+    enabled: "true"
+    image: "docker.io/cnvrg/cnvrg-minio:RELEASE.2019-04-09T01-22-30Z.3"
+    port: "9000"
+    storageSize: "100Gi"
+    svcName: "minio"
+    nodePort: "30090"
+    storageClass: "use-default"
+    memoryRequest: "4Gi"
+    sharedStorage:
+      enabled: "false"
+      storageClassName: "minio-shared-backend"
+      nfsServer: ""
+      path: ""
+    replicas: "1"
+
+  prometheus:
+    enabled: "true"
+    image: "quay.io/prometheus/prometheus:v2.17.2"
+    operatorImage: "quay.io/coreos/prometheus-operator:v0.38.1"
+    configReloaderImage: "jimmidyson/configmap-reload:v0.3.0"
+    prometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:v0.38.1"
+    kubeRbacProxyImage: "quay.io/coreos/kube-rbac-proxy:v0.4.1"
+    kubeStateMetricsImage: "quay.io/coreos/kube-state-metrics:v1.9.5"
+    alertManagerImage: "quay.io/prometheus/alertmanager:v0.20.0"
+    adapterImage: "directxman12/k8s-prometheus-adapter:v0.7.0"
+    nvidiaExporterImage: "nvidia/dcgm-exporter:1.7.2"
+    nodeExporterImage: "quay.io/prometheus/node-exporter:v0.18.1"
+    svcName: "prometheus"
+    port: "9090"
+    nodePort: "30909"
+    storageSize: "40Gi"
+    storageClass: "use-default"
+    kubeletMetrics:
+      schema: "https"
+      port: "https-metrics"
+
+  grafana:
+    svcName: "grafana"
+    port: "3000"
+    image: "grafana/grafana:6.7.4"
+    nodePort: "30012"
+
+  istio:
+    enabled: "true"
+    operatorImage: "docker.io/istio/operator:1.6.0"
+    hub: "docker.io/istio"
+    tag: "1.6.0"
+    proxyImage: "proxyv2"
+    mixerImage: "mixer"
+    pilotImage: "pilot"
+    gwName: "cnvrg-gateway"
+    externalIp: ""
+
+  kibana:
+    enabled: "true"
+    svcName: "kibana"
+    image: "docker.elastic.co/kibana/kibana-oss:6.2.4"
+    nodePort: "30601"
+    cpuRequest: "500m"
+    memoryRequest: "500Mi"
+    cpuLimit: "1"
+    memoryLimit: "2000Mi"
+    port: "5601"
+
+  fluentd:
+    enabled: "true"
+    image: "fluent/fluentd-kubernetes-daemonset:v1.11.0-debian-elasticsearch6-1.0"
+    journalPath: "/var/log/journal"
+    containersPath: "/var/lib/docker/containers"
+    journald: "false"
+    cpuRequest: "100m"
+    memoryRequest: "200Mi"
+    memoryLimit: "200Mi"
+
+  nvidiadp:
+    enabled: "true"
+    image: "nvidia/k8s-device-plugin:v0.7.0-rc.1-ubi8"
+    nodeSelector:
+      enabled: "true"
+      key: "accelerator"
+      value: "nvidia"
+
+  mpi:
+    enabled: "false"
+
+  cnvrgApp:
+    replicas: 1
+    sidekiqReplicas: 1
+    edition: "enterprise"
+    enabled: "true"
+    image: "cnvrg/core:3.1.2"
+    port: "3000"
+    cpu: "1"
+    memory: "4Gi"
+    sidekiqCpu: "1"
+    sidekiqMemory: "2Gi"
+    svcName: "app"
+    customAgentTag: "false"
+    intercom: "false"
+    nodePort: "30080"
+
+  seeder:
+    image: "docker.io/cnvrg/cnvrg-boot:v0.23"
+    seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
+
+  nfs:
+    enabled: "false"
+    image: "quay.io/external_storage/nfs-client-provisioner:latest"
+    provisioner: "cnvrg.io/ifs"
+    storageClassName: "cnvrg-nfs-storage"
+    server: ""
+    path: ""
+    cpuRequest: "100m"
+    memoryRequest: "100Mi"
+    cpuLimit: "200m"
+    memoryLimit: "200Mi"
+
+  hostpath:
+    enabled: "false"
+    image: "quay.io/kubevirt/hostpath-provisioner"
+    hostPath: "/cnvrg-storage"
+    storageClassName: "cnvrg-hostpath-provisioner"
+    nodeName: ""
+    cpuRequest: "100m"
+    memoryRequest: "100Mi"
+    cpuLimit: "200m"
+    memoryLimit: "200Mi"
+
+  autoscaler:
+    enabled: "false"
+
+  ingress:
+    enabled: "true"
+
+  cnvrgRouter:
+    enabled: "false"
+    image: "nginx"
+    svcName: "routing-service"
+    nodePort: "30081"
+    port: "80"
+

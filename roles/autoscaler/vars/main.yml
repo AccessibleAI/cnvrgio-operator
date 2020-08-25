@@ -1,0 +1,3 @@
+---
+autoscaler:
+  enabled: "false"

@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "{{es.svc_name}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  hosts:
+    - "{{(es.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  gateways:
+  - "{{istio.gw_name}}"
+  http:
+  - timeout: 50s
+    retries:
+      attempts: 4
+      perTryTimeout: 30s
+    route:
+    - destination:
+        port:
+          number: {{es.port}}
+        host: "{{es.svc_name + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"

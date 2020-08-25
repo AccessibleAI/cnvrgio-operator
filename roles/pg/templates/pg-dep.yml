@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{pg.svc_name}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{pg.svc_name}}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{pg.svc_name}}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "{{pg.svc_name}}"
+    spec:
+{% if security_mode == "default" %}
+      securityContext:
+        runAsUser: {{ pg.run_as_user }}
+        runAsGroup: {{ pg.run_as_group }}
+        fsGroup: {{ pg.fs_group }}
+{% endif %}
+{% if hostpath.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+      containers:
+        - name: postgresql
+          env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: POSTGRES_USER
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRESQL_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: POSTGRES_DB
+          - name: POSTGRESQL_MAX_CONNECTIONS
+            value: "500"
+          image: "{{pg.image}}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{pg.port}}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+                - --live
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+            - mountPath: /var/lib/pgsql/data
+              name: postgres-data
+            - mountPath: /dev/shm
+              name: dshm
+          resources:
+            requests:
+              cpu: "{{ pg.cpu_request }}"
+              memory: "{{ pg.memory_request }}"
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: "{{pg.svc_name}}"
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi

@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - community.kubernetes
+
+  tasks:
+
+    - name: Test cnvrg
+      import_role:
+        name: test_cnvrg

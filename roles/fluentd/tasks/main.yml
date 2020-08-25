@@ -1,0 +1,13 @@
+- name: Install Fluentd
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/fluentd/cluster_role.yml
+    - templates/fluentd/cluster_role_binding.yml
+    - templates/fluentd/fluentd.yml
+    - templates/fluentd/fluentd_conf.yml
+    - templates/fluentd/service_account.yml

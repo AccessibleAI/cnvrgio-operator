@@ -1,0 +1,14 @@
+---
+# redis
+redis:
+  enabled: "true"
+  image: "redis:3.0.5" # registry.redhat.io/rhscl/redis-32-rhel7:latest
+  svc_name: "redis"
+  port: 6379
+  limits:
+    cpu: 1
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+

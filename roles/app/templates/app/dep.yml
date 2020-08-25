@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cnvrg_app.svc_name}}
+  namespace: {{ ansible_operator_meta.namespace }}
+  labels:
+    app: {{cnvrg_app.svc_name}}
+spec:
+  replicas: {{ cnvrg_app.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: {{cnvrg_app.svc_name}}
+  template:
+    metadata:
+      labels:
+        app: {{cnvrg_app.svc_name}}
+    spec:
+{% if cnvrg_app.edition == "enterprise" %}
+      imagePullSecrets:
+        - name: {{ registry.name }}
+{% endif %}
+      serviceAccountName: "{{rbac.service_account_name}}"
+      containers:
+        - image: "{{cnvrg_app.image}}"
+          command:
+          - "/bin/bash"
+          - "-lc"
+          args:
+          - "touch /etc/service/sidekiq/down && /sbin/my_init"
+          env:
+          - name: "CNVRG_RUN_MODE"
+            value: "webapp"
+          envFrom:
+            - configMapRef:
+                name: env-config
+            - secretRef:
+                name: env-secrets
+          name: cnvrg-app
+          ports:
+            - containerPort: {{cnvrg_app.port}}
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: "/users/sign_in"
+              port: {{cnvrg_app.port}}
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+          resources:
+            requests:
+              cpu: "{{cnvrg_app.cpu}}"
+              memory: "{{cnvrg_app.memory}}"
+{% if app_secrets.cnvrg_storage_type == "gcp" %}
+          volumeMounts:
+          - name: "{{ conf.gcp_storage_secret }}"
+            mountPath: "{{ conf.gcp_keyfile_mount_path }}"
+            readOnly: true
+{%  endif %}
+{% if app_secrets.cnvrg_storage_type == "gcp" %}
+      volumes:
+      - name: "{{ conf.gcp_storage_secret }}"
+        secret:
+          secretName: "{{ conf.gcp_storage_secret }}"
+{% endif %}
+      initContainers:
+      - name: services-check
+        image: "{{seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py services-check"]
+        imagePullPolicy: Always
+        env:
+        - name: "CNVRG_SERVICE_LIST"
+{% if app_secrets.cnvrg_storage_type == "minio" %}
+          value: "{{pg.svc_name}}:{{pg.port}};{{app_secrets.cnvrg_storage_endpoint}}/minio/health/ready"
+{% else %}
+          value: "{{pg.svc_name}}:{{pg.port}}"
+{% endif %}
+      - name: fixpg
+        image: "{{seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py fixpg"]
+        env:
+        - name: POSTGRESQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: POSTGRES_USER
+        - name: POSTGRESQL_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: POSTGRES_PASSWORD
+        - name: CNVRG_PG_HOST
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: POSTGRES_HOST
+        imagePullPolicy: Always
+      - name: seeder
+        image: "{{seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode master"]
+        imagePullPolicy: Always
+        env:
+        - name: "CNVRG_SEEDER_IMAGE"
+          value: "{{cnvrg_app.image}}"
+        - name: "CNVRG_SEED_CMD"
+          value: "{{ seeder.seed_cmd }}"
+{% if cnvrg_app.edition == "enterprise" %}
+        - name: "CNVRG_IMAGE_PULL_SECRET"
+          value: {{ registry.name }}
+{% endif %}
+{% if app_secrets.cnvrg_storage_type == "gcp" %}
+        - name: "CNVRG_GCP_KEYFILE_SECRET"
+          value: "{{ conf.gcp_storage_secret }}"
+        - name: "CNVRG_GCP_KEYFILE_MOUNT_PATH"
+          value: "{{ conf.gcp_keyfile_mount_path }}"
+{% endif %}
+

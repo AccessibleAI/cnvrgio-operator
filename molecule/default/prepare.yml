@@ -1,0 +1,22 @@
+---
+- name: Prepare
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+
+
+  tasks:
+    - name: Create Namespace
+      k8s:
+        api_version: v1
+        kind: Namespace
+        name: '{{ namespace }}'
+
+    - import_tasks: kustomize.yml
+      vars:
+        state: present
+
+    - name: Install cnvrg
+      import_role:
+        name: install_cnvrg

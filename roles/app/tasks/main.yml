@@ -1,0 +1,13 @@
+- include_vars: ../../conf/vars/main.yml
+
+- name: Deploy CnvrgApp
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/app/dep.yml
+    - templates/app/svc.yml
+    - templates/app/sidekiq.yml

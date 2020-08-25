@@ -1,0 +1,37 @@
+- name: Debug - {{ template_path }}
+  debug:
+    msg: "State for {{ template_path }} : {{ state }}"
+  tags: always
+
+- name: Debug - {{ template_path }}
+  debug:
+    msg: "{{ lookup('template', '{{ template_path }}') }}"
+  when: debug == "true"
+  tags: always
+
+- name: Template a file to /tmp
+  template:
+    src: "{{ template_path }}"
+    dest: "{{ dump_dir }}/{{ template_path.replace('/','-') }}"
+  when: dump_dir != ""
+
+
+# Set default value of "no" for K8S wait moduel,when wait_to_complete is not defined
+- name: Set wait flag
+  set_fact:
+    wait_to_complete: no
+  when: wait_to_complete is not defined
+  tags: always
+
+
+- name:  wait_to_complete for {{ template_path }}
+  debug:
+    msg: "wait_to_complete: {{ wait_to_complete }}"
+
+- name: Create - {{ template_path }}
+  k8s:
+    state: "{{state}}"
+    definition: "{{ lookup('template', '{{ template_path }}') }}"
+    wait: "{{wait_to_complete|bool}}"
+  when: dry_run == "false"
+  tags: always

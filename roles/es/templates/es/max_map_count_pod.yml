@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{pod_name}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{pod_name}}"
+spec:
+  serviceAccountName: "{{privileged_sa}}"
+  containers:
+    - name: maxmap
+      image: {{ es.max_map_image }}
+      command: [ "/bin/bash","-c","sysctl -w vm.max_map_count=262144 && sleep infinity"]
+      securityContext:
+        privileged: true
+  nodeSelector:
+    kubernetes.io/hostname: "{{ node_name }}"

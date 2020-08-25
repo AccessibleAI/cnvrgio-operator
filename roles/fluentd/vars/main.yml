@@ -1,0 +1,12 @@
+---
+fluentd:
+  enabled: "true"
+  image: "fluent/fluentd-kubernetes-daemonset:v1.11.0-debian-elasticsearch6-1.0"
+  es_svc_name: "{{ es.svc_name }}"
+  journal_path: "/var/log/journal"
+  containers_path: "/var/lib/docker/containers"
+  journald: "false"
+  cpu_request: 100m
+  memory_request: 200Mi
+  memory_limit: 200Mi
+

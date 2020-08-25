@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{minio.svc_name}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{minio.svc_name}}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{minio.svc_name}}"
+  replicas: {{ minio.replicas |int }}
+  template:
+    metadata:
+      labels:
+        app: "{{minio.svc_name}}"
+    spec:
+{% if security_mode == "default" %}
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+{% endif %}
+{% if hostpath.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+      containers:
+        - name: minio
+          image: "{{minio.image}}"
+          args:
+            - gateway
+            - nas
+            - /data
+          env:
+            - name: MINIO_SSE_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: env-secrets
+                  key: MINIO_SSE_MASTER_KEY
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: env-secrets
+                  key: CNVRG_STORAGE_ACCESS_KEY
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: env-secrets
+                  key: CNVRG_STORAGE_SECRET_KEY
+          ports:
+            - containerPort: {{minio.port}}
+          volumeMounts:
+            - name: minio-storage
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: {{minio.port}}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: {{minio.port}}
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "{{ minio.memory_request }}"
+      volumes:
+        - name: minio-storage
+          persistentVolumeClaim:
+            claimName: "{{minio.svc_name}}"

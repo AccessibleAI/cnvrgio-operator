@@ -1,0 +1,38 @@
+- name: MPI deployment
+  vars:
+    crds:
+      - templates/mpi/crds.yaml
+    resources:
+      - templates/mpi/mpi.yaml
+  block:
+    # is state present, create crds in first step
+    - name: Install MPI CRDs
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        template_path: "{{ item }}"
+        state: "{{ role_state }}"
+      loop: "{{crds}}"
+      when: state == "present"
+
+    - name: Install MPI resrouces
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        template_path: "{{ item }}"
+        state: "{{ role_state }}"
+      loop: "{{resources}}"
+
+      # is state absent, remove crds in last step
+    - name: Remove MPI CRDs
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        template_path: "{{ item }}"
+        state: "{{ role_state }}"
+      loop: "{{crds}}"
+      when: state == "absent"
+

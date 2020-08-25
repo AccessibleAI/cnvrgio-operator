@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sidekiq
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: sidekiq
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  replicas: {{ cnvrg_app.sidekiq_replicas }}
+  selector:
+    matchLabels:
+      app: sidekiq
+  template:
+    metadata:
+      labels:
+        app: sidekiq
+    spec:
+{% if cnvrg_app.edition == "enterprise" %}
+      imagePullSecrets:
+        - name: {{ registry.name }}
+{% endif %}
+      serviceAccountName: "{{rbac.service_account_name}}"
+      containers:
+      - name: sidekiq
+        image: "{{cnvrg_app.image}}"
+        command:
+        - "/bin/bash"
+        - "-lc"
+        args:
+        - "touch /etc/service/nginx/down && /sbin/my_init"
+        env:
+        - name: "CNVRG_RUN_MODE"
+          value: "sidekiq"
+        imagePullPolicy: Always
+{% if app_secrets.cnvrg_storage_type == "gcp" %}
+        volumeMounts:
+        - name: "{{ conf.gcp_storage_secret }}"
+          mountPath: "{{ conf.gcp_keyfile_mount_path }}"
+          readOnly: true
+{%  endif %}
+        envFrom:
+        - configMapRef:
+            name: env-config
+        - secretRef:
+            name: env-secrets
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh","-lc","sv -w 60 stop sidekiq"]
+        resources:
+          requests:
+            cpu: "{{ cnvrg_app.sidekiq_cpu }}"
+            memory: "{{ cnvrg_app.sidekiq_memory }}"
+{% if app_secrets.cnvrg_storage_type == "gcp" %}
+      volumes:
+      - name: "{{ conf.gcp_storage_secret }}"
+        secret:
+          secretName: "{{ conf.gcp_storage_secret }}"
+{% endif %}
+      initContainers:
+      - name: seeder
+        image: "{{seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode worker"]

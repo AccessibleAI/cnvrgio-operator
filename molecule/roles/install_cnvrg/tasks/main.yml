@@ -1,0 +1,13 @@
+---
+- name: Create the mlops.cnvrg.io/v1.CnvrgApp
+  k8s:
+    state: present
+    namespace: cnvrg
+    definition: "{{ lookup('template', 'templates/cnvrgapp.yaml')  }}"
+    # wait: yes
+    # wait_sleep: 5
+    # wait_timeout: 500
+    # wait_condition:
+    #   type: Running
+    #   reason: Successful
+    #   status: "True"

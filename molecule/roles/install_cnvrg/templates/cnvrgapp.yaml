@@ -1,0 +1,11 @@
+# defaults file for install_cnvrg
+apiVersion: "{{ apiVersion }}"
+kind: "{{ kind }}"
+metadata:
+  name: "{{ metadata.name }}"
+  namespace:  cnvrg
+spec:
+  clusterDomain: "{{ spec.clusterDomain }}"
+  cnvrgApp:
+    intercom: "{{ spec.cnvrgApp.intercom }}"
+    image: "{{ spec.cnvrgApp.image }}"

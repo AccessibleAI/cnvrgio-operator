@@ -1,0 +1,5 @@
+channels:
+  - currentCSV: cnvrg-operator.v0.352.0
+    name: alpha
+defaultChannel: alpha
+packageName: cnvrg-operator-marketplace

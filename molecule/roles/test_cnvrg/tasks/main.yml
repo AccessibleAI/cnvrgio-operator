@@ -1,0 +1,4 @@
+---
+- import_tasks: assert_pods.yaml
+- import_tasks: assert_pvc.yaml
+

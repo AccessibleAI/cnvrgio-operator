@@ -1,0 +1,7 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ nfs.storage_class_name }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+provisioner: "{{ nfs.provisioner }}"
+reclaimPolicy: Retain

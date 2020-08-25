@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{es.svc_name}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  serviceName: "{{es.svc_name}}"
+  selector:
+    matchLabels:
+      app: "{{es.svc_name}}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{es.svc_name}}"
+    spec:
+{% if security_mode == "default" %}
+      securityContext:
+        runAsUser: {{ es.run_as_user }}
+        runAsGroup: {{ es.run_as_group }}
+        fsGroup: {{ es.fs_group }}
+{% endif %}
+{% if hostpath.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+      containers:
+      - name: elastic
+        image: "{{es.image}}"
+        env:
+        - name: "ES_CLUSTER_NAME"
+          value: "cnvrg-es"
+        - name: "ES_NODE_NAME"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "ES_NETWORK_HOST"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "ES_PATH_DATA"
+          value: "/usr/share/elasticsearch/data/data"
+        - name: "ES_PATH_LOGS"
+          value: "/usr/share/elasticsearch/data/logs"
+        - name: "ES_JAVA_OPTS"
+          value: "{{ es.java_opts }}"
+        ports:
+        - containerPort: {{es.port}}
+        resources:
+          limits:
+            cpu: "{{ es.cpu_limit }}"
+            memory: "{{ es.memory_limit }}"
+          requests:
+            cpu: "{{ es.cpu_request }}"
+            memory: "{{ es.memory_request }}"
+        volumeMounts:
+        - name: es-storage
+          mountPath: "/usr/share/elasticsearch/data"
+  volumeClaimTemplates:
+  - metadata:
+      name: es-storage
+    spec:
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: "{{es.storage_size}}"
+{% if hostpath.enabled == "true" %}
+      storageClassName: {{ hostpath.storage_class_name }}
+{% elif nfs.enabled == "true" %}
+      storageClassName: "{{ nfs.storage_class_name }}"
+{% elif pg.storage_class != "use-default" %}
+      storageClassName: "{{ es.storage_class }}"
+{% endif %}

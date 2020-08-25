@@ -1,0 +1,10 @@
+---
+- name: Install Nvidia device plugin
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/dep.yml

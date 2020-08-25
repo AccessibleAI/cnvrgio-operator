@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-shared-backend
+spec:
+  capacity:
+    storage: "{{minio.storage_size}}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "{{ minio.shared_storage.storage_class_name }}"
+  nfs:
+    path: "{{ minio.shared_storage.path }}"
+    server: "{{ minio.shared_storage.nfs_server }}"
