@@ -19,9 +19,6 @@ data:
 {% if nfs.enabled == "true" %}
   CNVRG_JOBS_STORAGECLASS: "{{ nfs.storage_class_name }}"
 {% endif %}
-{% if hostpath.enabled == "true" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ hostpath.storage_class_name }}"
-{% endif %}
   SMTP_SERVER: "{{ app_configs.smtp.server }}"
   SMTP_PORT: "{{ app_configs.smtp.port }}"
   SMTP_USERNAME: "{{ app_configs.smtp.username }}"

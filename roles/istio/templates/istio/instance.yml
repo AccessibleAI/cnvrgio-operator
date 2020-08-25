@@ -46,10 +46,7 @@ spec:
 {% if istio.external_ip != "" %}
             type: ClusterIP
             externalIPs:
-{% set external_ips = istio.external_ip.split(';') %}
-{% for external_ip in external_ips %}
-              - "{{ external_ip }}"
-{% endfor %}
+              - "{{ istio.external_ip }}"
 {% endif %}
             ports:
               - port: 15021
@@ -237,13 +234,6 @@ spec:
         type: ClusterIP
         zvpn: {}
       istio-ingressgateway:
-{% if istio.ingress_svc_annotations != "" %}
-        serviceAnnotations:
-{% set annotations = istio.ingress_svc_annotations.split(";") %}
-{% for annotation in annotations %}
-          {{annotation}}
-{% endfor %}
-{% endif %}
         applicationPorts: ""
         autoscaleEnabled: true
         debug: info

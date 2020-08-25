@@ -737,7 +737,7 @@ spec:
     rules:
     - alert: KubeStateMetricsListErrors
       annotations:
-        message: kube-state-metrics is experiencing errors at an elevated rate in
+        description: kube-state-metrics is experiencing errors at an elevated rate in
           list operations. This is likely causing it to not be able to expose metrics
           about Kubernetes objects correctly or at all.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricslisterrors
@@ -751,7 +751,7 @@ spec:
         severity: critical
     - alert: KubeStateMetricsWatchErrors
       annotations:
-        message: kube-state-metrics is experiencing errors at an elevated rate in
+        description: kube-state-metrics is experiencing errors at an elevated rate in
           watch operations. This is likely causing it to not be able to expose metrics
           about Kubernetes objects correctly or at all.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricswatcherrors
@@ -939,7 +939,7 @@ spec:
         severity: warning
     - alert: NodeClockSkewDetected
       annotations:
-        message: Clock on {{ '{{' }} $labels.instance {{ '}}' }} is out of sync by more than 300s.
+        description: Clock on {{ '{{' }} $labels.instance {{ '}}' }} is out of sync by more than 300s.
           Ensure NTP is configured correctly on this host.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodeclockskewdetected
         summary: Clock skew detected.
@@ -960,7 +960,7 @@ spec:
         severity: warning
     - alert: NodeClockNotSynchronising
       annotations:
-        message: Clock on {{ '{{' }} $labels.instance {{ '}}' }} is not synchronising. Ensure NTP
+        description: Clock on {{ '{{' }} $labels.instance {{ '}}' }} is not synchronising. Ensure NTP
           is configured on this host.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodeclocknotsynchronising
         summary: Clock not synchronising.
@@ -973,7 +973,7 @@ spec:
     rules:
     - alert: KubePodCrashLooping
       annotations:
-        message: Pod {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }} ({{ '{{' }} $labels.container
+        description: Pod {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }} ({{ '{{' }} $labels.container
           {{ '}}' }}) is restarting {{ '{{' }} printf "%.2f" $value {{ '}}' }} times / 5 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodcrashlooping
       expr: |
@@ -983,7 +983,7 @@ spec:
         severity: warning
     - alert: KubePodNotReady
       annotations:
-        message: Pod {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }} has been in a non-ready
+        description: Pod {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }} has been in a non-ready
           state for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodnotready
       expr: |
@@ -999,7 +999,7 @@ spec:
         severity: warning
     - alert: KubeDeploymentGenerationMismatch
       annotations:
-        message: Deployment generation for {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.deployment
+        description: Deployment generation for {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.deployment
           {{ '}}' }} does not match, this indicates that the Deployment has failed but has
           not been rolled back.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentgenerationmismatch
@@ -1012,7 +1012,7 @@ spec:
         severity: warning
     - alert: KubeDeploymentReplicasMismatch
       annotations:
-        message: Deployment {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.deployment {{ '}}' }} has not
+        description: Deployment {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.deployment {{ '}}' }} has not
           matched the expected number of replicas for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentreplicasmismatch
       expr: |
@@ -1030,7 +1030,7 @@ spec:
         severity: warning
     - alert: KubeStatefulSetReplicasMismatch
       annotations:
-        message: StatefulSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.statefulset {{ '}}' }} has
+        description: StatefulSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.statefulset {{ '}}' }} has
           not matched the expected number of replicas for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetreplicasmismatch
       expr: |
@@ -1048,7 +1048,7 @@ spec:
         severity: warning
     - alert: KubeStatefulSetGenerationMismatch
       annotations:
-        message: StatefulSet generation for {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.statefulset
+        description: StatefulSet generation for {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.statefulset
           {{ '}}' }} does not match, this indicates that the StatefulSet has failed but has
           not been rolled back.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetgenerationmismatch
@@ -1061,7 +1061,7 @@ spec:
         severity: warning
     - alert: KubeStatefulSetUpdateNotRolledOut
       annotations:
-        message: StatefulSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.statefulset {{ '}}' }} update
+        description: StatefulSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.statefulset {{ '}}' }} update
           has not been rolled out.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatefulsetupdatenotrolledout
       expr: |
@@ -1087,7 +1087,7 @@ spec:
         severity: warning
     - alert: KubeDaemonSetRolloutStuck
       annotations:
-        message: Only {{ '{{' }} $value | humanizePercentage {{ '}}' }} of the desired Pods of DaemonSet
+        description: Only {{ '{{' }} $value | humanizePercentage {{ '}}' }} of the desired Pods of DaemonSet
           {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.daemonset {{ '}}' }} are scheduled and ready.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetrolloutstuck
       expr: |
@@ -1099,7 +1099,7 @@ spec:
         severity: warning
     - alert: KubeContainerWaiting
       annotations:
-        message: Pod {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }} container {{ '{{' }} $labels.container{{ '}}' }}
+        description: Pod {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }} container {{ '{{' }} $labels.container{{ '}}' }}
           has been in waiting state for longer than 1 hour.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecontainerwaiting
       expr: |
@@ -1109,7 +1109,7 @@ spec:
         severity: warning
     - alert: KubeDaemonSetNotScheduled
       annotations:
-        message: '{{ '{{' }} $value {{ '}}' }} Pods of DaemonSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.daemonset
+        description: '{{ '{{' }} $value {{ '}}' }} Pods of DaemonSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.daemonset
           {{ '}}' }} are not scheduled.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetnotscheduled
       expr: |
@@ -1121,7 +1121,7 @@ spec:
         severity: warning
     - alert: KubeDaemonSetMisScheduled
       annotations:
-        message: '{{ '{{' }} $value {{ '}}' }} Pods of DaemonSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.daemonset
+        description: '{{ '{{' }} $value {{ '}}' }} Pods of DaemonSet {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.daemonset
           {{ '}}' }} are running where they are not supposed to run.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedaemonsetmisscheduled
       expr: |
@@ -1131,7 +1131,7 @@ spec:
         severity: warning
     - alert: KubeCronJobRunning
       annotations:
-        message: CronJob {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.cronjob {{ '}}' }} is taking more
+        description: CronJob {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.cronjob {{ '}}' }} is taking more
           than 1h to complete.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecronjobrunning
       expr: |
@@ -1141,7 +1141,7 @@ spec:
         severity: warning
     - alert: KubeJobCompletion
       annotations:
-        message: Job {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.job_name {{ '}}' }} is taking more
+        description: Job {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.job_name {{ '}}' }} is taking more
           than one hour to complete.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobcompletion
       expr: |
@@ -1151,7 +1151,7 @@ spec:
         severity: warning
     - alert: KubeJobFailed
       annotations:
-        message: Job {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.job_name {{ '}}' }} failed to complete.
+        description: Job {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.job_name {{ '}}' }} failed to complete.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubejobfailed
       expr: |
         kube_job_failed{job="kube-state-metrics"}  > 0
@@ -1160,7 +1160,7 @@ spec:
         severity: warning
     - alert: KubeHpaReplicasMismatch
       annotations:
-        message: HPA {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.hpa {{ '}}' }} has not matched the
+        description: HPA {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.hpa {{ '}}' }} has not matched the
           desired number of replicas for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubehpareplicasmismatch
       expr: |
@@ -1174,7 +1174,7 @@ spec:
         severity: warning
     - alert: KubeHpaMaxedOut
       annotations:
-        message: HPA {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.hpa {{ '}}' }} has been running at
+        description: HPA {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.hpa {{ '}}' }} has been running at
           max replicas for longer than 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubehpamaxedout
       expr: |
@@ -1188,7 +1188,7 @@ spec:
     rules:
     - alert: KubeCPUOvercommit
       annotations:
-        message: Cluster has overcommitted CPU resource requests for Pods and cannot
+        description: Cluster has overcommitted CPU resource requests for Pods and cannot
           tolerate node failure.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuovercommit
       expr: |
@@ -1202,7 +1202,7 @@ spec:
         severity: warning
     - alert: KubeMemoryOvercommit
       annotations:
-        message: Cluster has overcommitted memory resource requests for Pods and cannot
+        description: Cluster has overcommitted memory resource requests for Pods and cannot
           tolerate node failure.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememoryovercommit
       expr: |
@@ -1218,7 +1218,7 @@ spec:
         severity: warning
     - alert: KubeCPUQuotaOvercommit
       annotations:
-        message: Cluster has overcommitted CPU resource requests for Namespaces.
+        description: Cluster has overcommitted CPU resource requests for Namespaces.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecpuquotaovercommit
       expr: |
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="cpu"})
@@ -1230,7 +1230,7 @@ spec:
         severity: warning
     - alert: KubeMemoryQuotaOvercommit
       annotations:
-        message: Cluster has overcommitted memory resource requests for Namespaces.
+        description: Cluster has overcommitted memory resource requests for Namespaces.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubememoryquotaovercommit
       expr: |
         sum(kube_resourcequota{job="kube-state-metrics", type="hard", resource="memory"})
@@ -1242,7 +1242,7 @@ spec:
         severity: warning
     - alert: KubeQuotaExceeded
       annotations:
-        message: Namespace {{ '{{' }} $labels.namespace {{ '}}' }} is using {{ '{{' }} $value | humanizePercentage
+        description: Namespace {{ '{{' }} $labels.namespace {{ '}}' }} is using {{ '{{' }} $value | humanizePercentage
           {{ '}}' }} of its {{ '{{' }} $labels.resource {{ '}}' }} quota.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubequotaexceeded
       expr: |
@@ -1255,7 +1255,7 @@ spec:
         severity: warning
     - alert: CPUThrottlingHigh
       annotations:
-        message: '{{ '{{' }} $value | humanizePercentage {{ '}}' }} throttling of CPU in namespace
+        description: '{{ '{{' }} $value | humanizePercentage {{ '}}' }} throttling of CPU in namespace
           {{ '{{' }} $labels.namespace {{ '}}' }} for container {{ '{{' }} $labels.container {{ '}}' }} in pod {{ '{{' }}
           $labels.pod {{ '}}' }}.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-cputhrottlinghigh
@@ -1271,7 +1271,7 @@ spec:
     rules:
     - alert: KubePersistentVolumeFillingUp
       annotations:
-        message: The PersistentVolume claimed by {{ '{{' }} $labels.persistentvolumeclaim
+        description: The PersistentVolume claimed by {{ '{{' }} $labels.persistentvolumeclaim
           {{ '}}' }} in Namespace {{ '{{' }} $labels.namespace {{ '}}' }} is only {{ '{{' }} $value | humanizePercentage
           {{ '}}' }} free.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefillingup
@@ -1285,7 +1285,7 @@ spec:
         severity: critical
     - alert: KubePersistentVolumeFillingUp
       annotations:
-        message: Based on recent sampling, the PersistentVolume claimed by {{ '{{' }} $labels.persistentvolumeclaim
+        description: Based on recent sampling, the PersistentVolume claimed by {{ '{{' }} $labels.persistentvolumeclaim
           {{ '}}' }} in Namespace {{ '{{' }} $labels.namespace {{ '}}' }} is expected to fill up within four
           days. Currently {{ '{{' }} $value | humanizePercentage {{ '}}' }} is available.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefillingup
@@ -1302,7 +1302,7 @@ spec:
         severity: warning
     - alert: KubePersistentVolumeErrors
       annotations:
-        message: The persistent volume {{ '{{' }} $labels.persistentvolume {{ '}}' }} has status {{ '{{' }}
+        description: The persistent volume {{ '{{' }} $labels.persistentvolume {{ '}}' }} has status {{ '{{' }}
           $labels.phase {{ '}}' }}.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumeerrors
       expr: |
@@ -1314,7 +1314,7 @@ spec:
     rules:
     - alert: KubeVersionMismatch
       annotations:
-        message: There are {{ '{{' }} $value {{ '}}' }} different semantic versions of Kubernetes
+        description: There are {{ '{{' }} $value {{ '}}' }} different semantic versions of Kubernetes
           components running.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeversionmismatch
       expr: |
@@ -1324,7 +1324,7 @@ spec:
         severity: warning
     - alert: KubeClientErrors
       annotations:
-        message: Kubernetes API server client '{{ '{{' }} $labels.job {{ '}}' }}/{{ '{{' }} $labels.instance
+        description: Kubernetes API server client '{{ '{{' }} $labels.job {{ '}}' }}/{{ '{{' }} $labels.instance
           {{ '}}' }}' is experiencing {{ '{{' }} $value | humanizePercentage {{ '}}' }} errors.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclienterrors
       expr: |
@@ -1339,7 +1339,7 @@ spec:
     rules:
     - alert: KubeAPIErrorBudgetBurn
       annotations:
-        message: The API server is burning too much error budget
+        description: The API server is burning too much error budget
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
       expr: |
         sum(apiserver_request:burnrate1h) > (14.40 * 0.01000)
@@ -1352,7 +1352,7 @@ spec:
         short: 5m
     - alert: KubeAPIErrorBudgetBurn
       annotations:
-        message: The API server is burning too much error budget
+        description: The API server is burning too much error budget
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
       expr: |
         sum(apiserver_request:burnrate6h) > (6.00 * 0.01000)
@@ -1365,7 +1365,7 @@ spec:
         short: 30m
     - alert: KubeAPIErrorBudgetBurn
       annotations:
-        message: The API server is burning too much error budget
+        description: The API server is burning too much error budget
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
       expr: |
         sum(apiserver_request:burnrate1d) > (3.00 * 0.01000)
@@ -1378,7 +1378,7 @@ spec:
         short: 2h
     - alert: KubeAPIErrorBudgetBurn
       annotations:
-        message: The API server is burning too much error budget
+        description: The API server is burning too much error budget
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorbudgetburn
       expr: |
         sum(apiserver_request:burnrate3d) > (1.00 * 0.01000)
@@ -1393,7 +1393,7 @@ spec:
     rules:
     - alert: KubeAPILatencyHigh
       annotations:
-        message: The API server has an abnormal latency of {{ '{{' }} $value {{ '}}' }} seconds for
+        description: The API server has an abnormal latency of {{ '{{' }} $value {{ '}}' }} seconds for
           {{ '{{' }} $labels.verb {{ '}}' }} {{ '{{' }} $labels.resource {{ '}}' }}.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapilatencyhigh
       expr: |
@@ -1417,7 +1417,7 @@ spec:
         severity: warning
     - alert: KubeAPIErrorsHigh
       annotations:
-        message: API server is returning errors for {{ '{{' }} $value | humanizePercentage
+        description: API server is returning errors for {{ '{{' }} $value | humanizePercentage
           {{ '}}' }} of requests for {{ '{{' }} $labels.verb {{ '}}' }} {{ '{{' }} $labels.resource {{ '}}' }} {{ '{{' }} $labels.subresource
           {{ '}}' }}.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
@@ -1430,7 +1430,7 @@ spec:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
-        message: A client certificate used to authenticate to the apiserver is expiring
+        description: A client certificate used to authenticate to the apiserver is expiring
           in less than 7.0 days.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
       expr: |
@@ -1439,7 +1439,7 @@ spec:
         severity: warning
     - alert: KubeClientCertificateExpiration
       annotations:
-        message: A client certificate used to authenticate to the apiserver is expiring
+        description: A client certificate used to authenticate to the apiserver is expiring
           in less than 24.0 hours.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
       expr: |
@@ -1448,7 +1448,7 @@ spec:
         severity: critical
     - alert: AggregatedAPIErrors
       annotations:
-        message: An aggregated API {{ '{{' }} $labels.name {{ '}}' }}/{{ '{{' }} $labels.namespace {{ '}}' }} has
+        description: An aggregated API {{ '{{' }} $labels.name {{ '}}' }}/{{ '{{' }} $labels.namespace {{ '}}' }} has
           reported errors. The number of errors have increased for it in the past
           five minutes. High values indicate that the availability of the service
           changes too often.
@@ -1459,7 +1459,7 @@ spec:
         severity: warning
     - alert: AggregatedAPIDown
       annotations:
-        message: An aggregated API {{ '{{' }} $labels.name {{ '}}' }}/{{ '{{' }} $labels.namespace {{ '}}' }} is down.
+        description: An aggregated API {{ '{{' }} $labels.name {{ '}}' }}/{{ '{{' }} $labels.namespace {{ '}}' }} is down.
           It has not been available at least for the past five minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-aggregatedapidown
       expr: |
@@ -1469,7 +1469,7 @@ spec:
         severity: warning
     - alert: KubeAPIDown
       annotations:
-        message: KubeAPI has disappeared from Prometheus target discovery.
+        description: KubeAPI has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapidown
       expr: |
         absent(up{job="apiserver"} == 1)
@@ -1480,7 +1480,7 @@ spec:
     rules:
     - alert: KubeNodeNotReady
       annotations:
-        message: '{{ '{{' }} $labels.node {{ '}}' }} has been unready for more than 15 minutes.'
+        description: '{{ '{{' }} $labels.node {{ '}}' }} has been unready for more than 15 minutes.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubenodenotready
       expr: |
         kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
@@ -1489,7 +1489,7 @@ spec:
         severity: warning
     - alert: KubeNodeUnreachable
       annotations:
-        message: '{{ '{{' }} $labels.node {{ '}}' }} is unreachable and some workloads may be rescheduled.'
+        description: '{{ '{{' }} $labels.node {{ '}}' }} is unreachable and some workloads may be rescheduled.'
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubenodeunreachable
       expr: |
         (kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} unless ignoring(key,value) kube_node_spec_taint{job="kube-state-metrics",key="ToBeDeletedByClusterAutoscaler"}) == 1
@@ -1497,7 +1497,7 @@ spec:
         severity: warning
     - alert: KubeletTooManyPods
       annotations:
-        message: Kubelet '{{ '{{' }} $labels.node {{ '}}' }}' is running at {{ '{{' }} $value | humanizePercentage
+        description: Kubelet '{{ '{{' }} $labels.node {{ '}}' }}' is running at {{ '{{' }} $value | humanizePercentage
           {{ '}}' }} of its Pod capacity.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubelettoomanypods
       expr: |
@@ -1507,7 +1507,7 @@ spec:
         severity: warning
     - alert: KubeNodeReadinessFlapping
       annotations:
-        message: The readiness status of node {{ '{{' }} $labels.node {{ '}}' }} has changed {{ '{{' }} $value
+        description: The readiness status of node {{ '{{' }} $labels.node {{ '}}' }} has changed {{ '{{' }} $value
           {{ '}}' }} times in the last 15 minutes.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubenodereadinessflapping
       expr: |
@@ -1517,7 +1517,7 @@ spec:
         severity: warning
     - alert: KubeletPlegDurationHigh
       annotations:
-        message: The Kubelet Pod Lifecycle Event Generator has a 99th percentile duration
+        description: The Kubelet Pod Lifecycle Event Generator has a 99th percentile duration
           of {{ '{{' }} $value {{ '}}' }} seconds on node {{ '{{' }} $labels.node {{ '}}' }}.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletplegdurationhigh
       expr: |
@@ -1527,7 +1527,7 @@ spec:
         severity: warning
     - alert: KubeletPodStartUpLatencyHigh
       annotations:
-        message: Kubelet Pod startup 99th percentile latency is {{ '{{' }} $value {{ '}}' }} seconds
+        description: Kubelet Pod startup 99th percentile latency is {{ '{{' }} $value {{ '}}' }} seconds
           on node {{ '{{' }} $labels.node {{ '}}' }}.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletpodstartuplatencyhigh
       expr: |
@@ -1537,7 +1537,7 @@ spec:
         severity: warning
     - alert: KubeletDown
       annotations:
-        message: Kubelet has disappeared from Prometheus target discovery.
+        description: Kubelet has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletdown
       expr: |
         absent(up{job="kubelet", metrics_path="/metrics"} == 1)
@@ -1548,7 +1548,7 @@ spec:
     rules:
     - alert: KubeSchedulerDown
       annotations:
-        message: KubeScheduler has disappeared from Prometheus target discovery.
+        description: KubeScheduler has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeschedulerdown
       expr: |
         absent(up{job="kube-scheduler"} == 1)
@@ -1559,7 +1559,7 @@ spec:
     rules:
     - alert: KubeControllerManagerDown
       annotations:
-        message: KubeControllerManager has disappeared from Prometheus target discovery.
+        description: KubeControllerManager has disappeared from Prometheus target discovery.
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecontrollermanagerdown
       expr: |
         absent(up{job="kube-controller-manager"} == 1)
@@ -1573,10 +1573,10 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} has failed to
           reload its configuration.
         summary: Failed Prometheus configuration reload.
-      expr: |
+      expr: |+
         # Without max_over_time, failed scrapes could create false negatives, see
         # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
-        max_over_time(prometheus_config_last_reload_successful{job="prometheus-k8s",namespace="monitoring"}[5m]) == 0
+        max_over_time(prometheus_config_last_reload_successful{job="prometheus-k8s",namespace="cnvrg"}[5m]) == 0
       for: 10m
       labels:
         severity: critical
@@ -1586,13 +1586,13 @@ spec:
           is running full.
         summary: Prometheus alert notification queue predicted to run full in less
           than 30m.
-      expr: |
+      expr: |+
         # Without min_over_time, failed scrapes could create false negatives, see
         # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
         (
-          predict_linear(prometheus_notifications_queue_length{job="prometheus-k8s",namespace="monitoring"}[5m], 60 * 30)
+          predict_linear(prometheus_notifications_queue_length{job="prometheus-k8s",namespace="cnvrg"}[5m], 60 * 30)
         >
-          min_over_time(prometheus_notifications_queue_capacity{job="prometheus-k8s",namespace="monitoring"}[5m])
+          min_over_time(prometheus_notifications_queue_capacity{job="prometheus-k8s",namespace="cnvrg"}[5m])
         )
       for: 15m
       labels:
@@ -1603,11 +1603,11 @@ spec:
           Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} to Alertmanager {{ '{{' }}$labels.alertmanager{{ '}}' }}.'
         summary: Prometheus has encountered more than 1% errors sending alerts to
           a specific Alertmanager.
-      expr: |
+      expr: |+
         (
-          rate(prometheus_notifications_errors_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+          rate(prometheus_notifications_errors_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
         /
-          rate(prometheus_notifications_sent_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+          rate(prometheus_notifications_sent_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
         )
         * 100
         > 1
@@ -1619,11 +1619,11 @@ spec:
         description: '{{ '{{' }} printf "%.1f" $value {{ '}}' }}% minimum errors while sending alerts
           from Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} to any Alertmanager.'
         summary: Prometheus encounters more than 3% errors sending alerts to any Alertmanager.
-      expr: |
+      expr: |+
         min without(alertmanager) (
-          rate(prometheus_notifications_errors_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+          rate(prometheus_notifications_errors_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
         /
-          rate(prometheus_notifications_sent_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+          rate(prometheus_notifications_sent_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
         )
         * 100
         > 3
@@ -1635,10 +1635,10 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} is not connected
           to any Alertmanagers.
         summary: Prometheus is not connected to any Alertmanagers.
-      expr: |
+      expr: |+
         # Without max_over_time, failed scrapes could create false negatives, see
         # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
-        max_over_time(prometheus_notifications_alertmanagers_discovered{job="prometheus-k8s",namespace="monitoring"}[5m]) < 1
+        max_over_time(prometheus_notifications_alertmanagers_discovered{job="prometheus-k8s",namespace="cnvrg"}[5m]) < 1
       for: 10m
       labels:
         severity: warning
@@ -1647,8 +1647,8 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} has detected
           {{ '{{' }}$value | humanize{{ '}}' }} reload failures over the last 3h.
         summary: Prometheus has issues reloading blocks from disk.
-      expr: |
-        increase(prometheus_tsdb_reloads_failures_total{job="prometheus-k8s",namespace="monitoring"}[3h]) > 0
+      expr: |+
+        increase(prometheus_tsdb_reloads_failures_total{job="prometheus-k8s",namespace="cnvrg"}[3h]) > 0
       for: 4h
       labels:
         severity: warning
@@ -1657,8 +1657,8 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} has detected
           {{ '{{' }}$value | humanize{{ '}}' }} compaction failures over the last 3h.
         summary: Prometheus has issues compacting blocks.
-      expr: |
-        increase(prometheus_tsdb_compactions_failed_total{job="prometheus-k8s",namespace="monitoring"}[3h]) > 0
+      expr: |+
+        increase(prometheus_tsdb_compactions_failed_total{job="prometheus-k8s",namespace="cnvrg"}[3h]) > 0
       for: 4h
       labels:
         severity: warning
@@ -1667,8 +1667,8 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} is not ingesting
           samples.
         summary: Prometheus is not ingesting samples.
-      expr: |
-        rate(prometheus_tsdb_head_samples_appended_total{job="prometheus-k8s",namespace="monitoring"}[5m]) <= 0
+      expr: |+
+        rate(prometheus_tsdb_head_samples_appended_total{job="prometheus-k8s",namespace="cnvrg"}[5m]) <= 0
       for: 10m
       labels:
         severity: warning
@@ -1678,8 +1678,8 @@ spec:
           {{ '{{' }} printf "%.4g" $value  {{ '}}' }} samples/s with different values but duplicated
           timestamp.
         summary: Prometheus is dropping samples with duplicate timestamps.
-      expr: |
-        rate(prometheus_target_scrapes_sample_duplicate_timestamp_total{job="prometheus-k8s",namespace="monitoring"}[5m]) > 0
+      expr: |+
+        rate(prometheus_target_scrapes_sample_duplicate_timestamp_total{job="prometheus-k8s",namespace="cnvrg"}[5m]) > 0
       for: 10m
       labels:
         severity: warning
@@ -1688,8 +1688,8 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} is dropping
           {{ '{{' }} printf "%.4g" $value  {{ '}}' }} samples/s with timestamps arriving out of order.
         summary: Prometheus drops samples with out-of-order timestamps.
-      expr: |
-        rate(prometheus_target_scrapes_sample_out_of_order_total{job="prometheus-k8s",namespace="monitoring"}[5m]) > 0
+      expr: |+
+        rate(prometheus_target_scrapes_sample_out_of_order_total{job="prometheus-k8s",namespace="cnvrg"}[5m]) > 0
       for: 10m
       labels:
         severity: warning
@@ -1699,14 +1699,14 @@ spec:
           {{ '{{' }} printf "%.1f" $value {{ '}}' }}% of the samples to {{ '{{' }} $labels.remote_name{{ '}}' }}:{{ '{{' }}
           $labels.url {{ '}}' }}
         summary: Prometheus fails to send samples to remote storage.
-      expr: |
+      expr: |+
         (
-          rate(prometheus_remote_storage_failed_samples_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+          rate(prometheus_remote_storage_failed_samples_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
         /
           (
-            rate(prometheus_remote_storage_failed_samples_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+            rate(prometheus_remote_storage_failed_samples_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
           +
-            rate(prometheus_remote_storage_succeeded_samples_total{job="prometheus-k8s",namespace="monitoring"}[5m])
+            rate(prometheus_remote_storage_succeeded_samples_total{job="prometheus-k8s",namespace="cnvrg"}[5m])
           )
         )
         * 100
@@ -1720,13 +1720,13 @@ spec:
           is {{ '{{' }} printf "%.1f" $value {{ '}}' }}s behind for {{ '{{' }} $labels.remote_name{{ '}}' }}:{{ '{{' }} $labels.url
           {{ '}}' }}.
         summary: Prometheus remote write is behind.
-      expr: |
+      expr: |+
         # Without max_over_time, failed scrapes could create false negatives, see
         # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
         (
-          max_over_time(prometheus_remote_storage_highest_timestamp_in_seconds{job="prometheus-k8s",namespace="monitoring"}[5m])
+          max_over_time(prometheus_remote_storage_highest_timestamp_in_seconds{job="prometheus-k8s",namespace="cnvrg"}[5m])
         - on(job, instance) group_right
-          max_over_time(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{job="prometheus-k8s",namespace="monitoring"}[5m])
+          max_over_time(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{job="prometheus-k8s",namespace="cnvrg"}[5m])
         )
         > 120
       for: 15m
@@ -1737,17 +1737,17 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} remote write
           desired shards calculation wants to run {{ '{{' }} $value {{ '}}' }} shards for queue {{ '{{' }}
           $labels.remote_name{{ '}}' }}:{{ '{{' }} $labels.url {{ '}}' }}, which is more than the max of {{ '{{' }}
-          printf `prometheus_remote_storage_shards_max{instance="%s",job="prometheus-k8s",namespace="monitoring"}`
+          printf `prometheus_remote_storage_shards_max{instance="%s",job="prometheus-k8s",namespace="cnvrg"}`
           $labels.instance | query | first | value {{ '}}' }}.
         summary: Prometheus remote write desired shards calculation wants to run more
           than configured max shards.
-      expr: |
+      expr: |+
         # Without max_over_time, failed scrapes could create false negatives, see
         # https://www.robustperception.io/alerting-on-gauges-in-prometheus-2-0 for details.
         (
-          max_over_time(prometheus_remote_storage_shards_desired{job="prometheus-k8s",namespace="monitoring"}[5m])
+          max_over_time(prometheus_remote_storage_shards_desired{job="prometheus-k8s",namespace="cnvrg"}[5m])
         >
-          max_over_time(prometheus_remote_storage_shards_max{job="prometheus-k8s",namespace="monitoring"}[5m])
+          max_over_time(prometheus_remote_storage_shards_max{job="prometheus-k8s",namespace="cnvrg"}[5m])
         )
       for: 15m
       labels:
@@ -1757,8 +1757,8 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} has failed to
           evaluate {{ '{{' }} printf "%.0f" $value {{ '}}' }} rules in the last 5m.
         summary: Prometheus is failing rule evaluations.
-      expr: |
-        increase(prometheus_rule_evaluation_failures_total{job="prometheus-k8s",namespace="monitoring"}[5m]) > 0
+      expr: |+
+        increase(prometheus_rule_evaluation_failures_total{job="prometheus-k8s",namespace="cnvrg"}[5m]) > 0
       for: 15m
       labels:
         severity: critical
@@ -1767,8 +1767,8 @@ spec:
         description: Prometheus {{ '{{' }}$labels.namespace{{ '}}' }}/{{ '{{' }}$labels.pod{{ '}}' }} has missed {{ '{{' }}
           printf "%.0f" $value {{ '}}' }} rule group evaluations in the last 5m.
         summary: Prometheus is missing rule evaluations due to slow rule group evaluation.
-      expr: |
-        increase(prometheus_rule_group_iterations_missed_total{job="prometheus-k8s",namespace="monitoring"}[5m]) > 0
+      expr: |+
+        increase(prometheus_rule_group_iterations_missed_total{job="prometheus-k8s",namespace="cnvrg"}[5m]) > 0
       for: 15m
       labels:
         severity: warning
@@ -1776,32 +1776,32 @@ spec:
     rules:
     - alert: AlertmanagerConfigInconsistent
       annotations:
-        message: |
+        description: |
           The configuration of the instances of the Alertmanager cluster `{{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.service {{ '}}' }}` are out of sync.
           {{ '{{' }} range printf "alertmanager_config_hash{namespace=\"%s\",service=\"%s\"}" $labels.namespace $labels.service | query {{ '}}' }}
           Configuration hash for pod {{ '{{' }} .Labels.pod {{ '}}' }} is "{{ '{{' }} printf "%.f" .Value {{ '}}' }}"
           {{ '{{' }} end {{ '}}' }}
-      expr: |
-        count by(namespace,service) (count_values by(namespace,service) ("config_hash", alertmanager_config_hash{job="alertmanager-main",namespace="monitoring"})) != 1
+      expr: |+
+        count by(namespace,service) (count_values by(namespace,service) ("config_hash", alertmanager_config_hash{job="alertmanager-main",namespace="cnvrg"})) != 1
       for: 5m
       labels:
         severity: critical
     - alert: AlertmanagerFailedReload
       annotations:
-        message: Reloading Alertmanager's configuration has failed for {{ '{{' }} $labels.namespace
+        description: Reloading Alertmanager's configuration has failed for {{ '{{' }} $labels.namespace
           {{ '}}' }}/{{ '{{' }} $labels.pod{{ '}}' }}.
-      expr: |
-        alertmanager_config_last_reload_successful{job="alertmanager-main",namespace="monitoring"} == 0
+      expr: |+
+        alertmanager_config_last_reload_successful{job="alertmanager-main",namespace="cnvrg"} == 0
       for: 10m
       labels:
         severity: warning
     - alert: AlertmanagerMembersInconsistent
       annotations:
-        message: Alertmanager has not found all other members of the cluster.
-      expr: |
-        alertmanager_cluster_members{job="alertmanager-main",namespace="monitoring"}
+        description: Alertmanager has not found all other members of the cluster.
+      expr: |+
+        alertmanager_cluster_members{job="alertmanager-main",namespace="cnvrg"}
           != on (service) GROUP_LEFT()
-        count by (service) (alertmanager_cluster_members{job="alertmanager-main",namespace="monitoring"})
+        count by (service) (alertmanager_cluster_members{job="alertmanager-main",namespace="cnvrg"})
       for: 5m
       labels:
         severity: critical
@@ -1809,7 +1809,7 @@ spec:
     rules:
     - alert: TargetDown
       annotations:
-        message: '{{ '{{' }} printf "%.4g" $value {{ '}}' }}% of the {{ '{{' }} $labels.job {{ '}}' }}/{{ '{{' }} $labels.service
+        description: '{{ '{{' }} printf "%.4g" $value {{ '}}' }}% of the {{ '{{' }} $labels.job {{ '}}' }}/{{ '{{' }} $labels.service
           {{ '}}' }} targets in {{ '{{' }} $labels.namespace {{ '}}' }} namespace are down.'
       expr: 100 * (count(up == 0) BY (job, namespace, service) / count(up) BY (job,
         namespace, service)) > 10
@@ -1818,7 +1818,7 @@ spec:
         severity: warning
     - alert: Watchdog
       annotations:
-        message: |
+        description: |
           This is an alert meant to ensure that the entire alerting pipeline is functional.
           This alert is always firing, therefore it should always be firing in Alertmanager
           and always fire against a receiver. There are integrations with various notification
@@ -1831,7 +1831,7 @@ spec:
     rules:
     - alert: NodeNetworkInterfaceFlapping
       annotations:
-        message: Network interface "{{ '{{' }} $labels.device {{ '}}' }}" changing it's up status
+        description: Network interface "{{ '{{' }} $labels.device {{ '}}' }}" changing it's up status
           often on node-exporter {{ '{{' }} $labels.namespace {{ '}}' }}/{{ '{{' }} $labels.pod {{ '}}' }}"
       expr: |
         changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
@@ -1842,18 +1842,18 @@ spec:
     rules:
     - alert: PrometheusOperatorReconcileErrors
       annotations:
-        message: Errors while reconciling {{ '{{' }} $labels.controller {{ '}}' }} in {{ '{{' }} $labels.namespace
+        description: Errors while reconciling {{ '{{' }} $labels.controller {{ '}}' }} in {{ '{{' }} $labels.namespace
           {{ '}}' }} Namespace.
-      expr: |
-        rate(prometheus_operator_reconcile_errors_total{job="prometheus-operator",namespace="monitoring"}[5m]) > 0.1
+      expr: |+
+        rate(prometheus_operator_reconcile_errors_total{job="prometheus-operator",namespace="cnvrg"}[5m]) > 0.1
       for: 10m
       labels:
         severity: warning
     - alert: PrometheusOperatorNodeLookupErrors
       annotations:
-        message: Errors while reconciling Prometheus in {{ '{{' }} $labels.namespace {{ '}}' }} Namespace.
-      expr: |
-        rate(prometheus_operator_node_address_lookup_errors_total{job="prometheus-operator",namespace="monitoring"}[5m]) > 0.1
+        description: Errors while reconciling Prometheus in {{ '{{' }} $labels.namespace {{ '}}' }} Namespace.
+      expr: |+
+        rate(prometheus_operator_node_address_lookup_errors_total{job="prometheus-operator",namespace="cnvrg"}[5m]) > 0.1
       for: 10m
       labels:
         severity: warning

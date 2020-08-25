@@ -1,84 +1,20 @@
 - name: Kube-Prom deployment
   vars:
-    crds:
-      - templates/kube-prom/setup/prometheus-operator-0alertmanagerCustomResourceDefinition.yaml
-      - templates/kube-prom/setup/prometheus-operator-0podmonitorCustomResourceDefinition.yaml
-      - templates/kube-prom/setup/prometheus-operator-0prometheusCustomResourceDefinition.yaml
-      - templates/kube-prom/setup/prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
-      - templates/kube-prom/setup/prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
-      - templates/kube-prom/setup/prometheus-operator-0thanosrulerCustomResourceDefinition.yaml
-      - templates/kube-prom/setup/prometheus-operator-clusterRole.yaml
-      - templates/kube-prom/setup/prometheus-operator-clusterRoleBinding.yaml
-      - templates/kube-prom/setup/prometheus-operator-deployment.yml
-      - templates/kube-prom/setup/prometheus-operator-service.yaml
-      - templates/kube-prom/setup/prometheus-operator-serviceAccount.yaml
-    resources:
-#      - templates/kube-prom/alertmanager-alertmanager.yaml
-#      - templates/kube-prom/alertmanager-secret.yaml
-#      - templates/kube-prom/alertmanager-service.yaml
-#      - templates/kube-prom/alertmanager-serviceAccount.yaml
-#      - templates/kube-prom/alertmanager-serviceMonitor.yaml
-      - templates/kube-prom/grafana-dashboardDatasources.yaml
-      - templates/kube-prom/grafana-dashboardDefinitions.yaml
-      - templates/kube-prom/grafana-dashboardSources.yaml
-      - templates/kube-prom/grafana-deployment.yaml
-      - templates/kube-prom/grafana-service.yaml
-      - templates/kube-prom/grafana-serviceAccount.yaml
-      - templates/kube-prom/grafana-serviceMonitor.yaml
-      - templates/kube-prom/kube-state-metrics-clusterRole.yaml
-      - templates/kube-prom/kube-state-metrics-clusterRoleBinding.yaml
-      - templates/kube-prom/kube-state-metrics-deployment.yaml
-      - templates/kube-prom/kube-state-metrics-service.yaml
-      - templates/kube-prom/kube-state-metrics-serviceAccount.yaml
-      - templates/kube-prom/kube-state-metrics-serviceMonitor.yaml
-      - templates/kube-prom/node-exporter-clusterRole.yaml
-      - templates/kube-prom/node-exporter-clusterRoleBinding.yaml
-      - templates/kube-prom/node-exporter-daemonset.yml
-      - templates/kube-prom/node-exporter-nvidia-daemonset.yml
-      - templates/kube-prom/node-exporter-service.yaml
-      - templates/kube-prom/node-exporter-serviceAccount.yaml
-      - templates/kube-prom/node-exporter-serviceMonitor.yaml
-      #- templates/kube-prom/prometheus-adapter-apiService.yaml
-      #- templates/kube-prom/prometheus-adapter-clusterRole.yaml
-      #- templates/kube-prom/prometheus-adapter-clusterRoleAggregatedMetricsReader.yaml
-      #- templates/kube-prom/prometheus-adapter-clusterRoleBinding.yaml
-      #- templates/kube-prom/prometheus-adapter-clusterRoleBindingDelegator.yaml
-      #- templates/kube-prom/prometheus-adapter-clusterRoleServerResources.yaml
-      #- templates/kube-prom/prometheus-adapter-configMap.yaml
-      #- templates/kube-prom/prometheus-adapter-deployment.yaml
-      #- templates/kube-prom/prometheus-adapter-roleBindingAuthReader.yaml
-      #- templates/kube-prom/prometheus-adapter-service.yaml
-      #- templates/kube-prom/prometheus-adapter-serviceAccount.yaml
-      - templates/kube-prom/prometheus-clusterRole.yaml
-      - templates/kube-prom/prometheus-clusterRoleBinding.yaml
-      - templates/kube-prom/prometheus-operator-serviceMonitor.yaml
-      - templates/kube-prom/prometheus-prometheus.yml
-      - templates/kube-prom/prometheus-roleBindingConfig.yaml
-      - templates/kube-prom/prometheus-roleBindingSpecificNamespaces.yaml
-      - templates/kube-prom/prometheus-roleConfig.yaml
-      - templates/kube-prom/prometheus-roleSpecificNamespaces.yaml
-      - templates/kube-prom/prometheus-rules.yaml
-      - templates/kube-prom/prometheus-service.yaml
-      - templates/kube-prom/prometheus-serviceAccount.yaml
-      - templates/kube-prom/prometheus-serviceMonitor.yaml
-      - templates/kube-prom/prometheus-serviceMonitorApiserver.yaml
-      - templates/kube-prom/prometheus-serviceMonitorCoreDNS.yaml
-      - templates/kube-prom/prometheus-serviceMonitorKubeControllerManager.yaml
-      - templates/kube-prom/prometheus-serviceMonitorKubeScheduler.yaml
-      - templates/kube-prom/prometheus-serviceMonitorKubelet.yaml
-      - templates/kube-prom/autoscaler-servicemonitor.yaml
+    resources: "{{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') | list }}"
+
   block:
 
     # is state present, create crds in first step
-    - name: Install Kube-Prometheus CRDs
-      include_role:
-        name: common
-        tasks_from: install
-      vars:
-        template_path: "{{ item }}"
-        state: "{{ role_state }}"
-      loop: "{{crds}}"
-      when: role_state == "present"
+    # - name: Install Kube-Prometheus CRDs
+    #   include_role:
+    #     name: common
+    #     tasks_from: install
+    #   vars:
+    #     template_path: "{{ item }}"
+    #     state: "{{ role_state }}"
+    #   with_fileglob:
+    #     - templates/kube-prom/setup/*
+    #   when: role_state == "present"
 
     - name: Install Kube-Prometheus resources
       include_role:
@@ -89,6 +25,7 @@
         state: "{{ role_state }}"
       loop: "{{resources}}"
       when: role_state == "present"
+
 
     - name: Get Prometheus
       k8s_info:

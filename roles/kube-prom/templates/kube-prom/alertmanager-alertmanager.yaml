@@ -6,13 +6,30 @@ metadata:
   name: main
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
-  image: "{{ prometheus.alert_manager_image }}"
+  storage:
+    disableMountSubPath: true
+    volumeClaimTemplate:
+      spec:
+{% if hostpath.enabled == "true" %}
+        storageClassName: {{ hostpath.storage_class_name }}
+{% elif nfs.enabled == "true" %}
+        storageClassName: "{{ nfs.storage_class_name }}"
+{% elif pg.storage_class != "use-default" %}
+        storageClassName: "{{ alertmanager.storage_class }}"
+{% endif %}
+        resources:
+          requests:
+            storage: "{{ alertmanager.storage_size }}"
+  image: "{{ alertmanager.alert_manager_image }}"
   nodeSelector:
     kubernetes.io/os: linux
-  replicas: 3
+{% if hostpath.enabled == "true" %}
+    kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+  replicas: 1
   securityContext:
     fsGroup: 2000
     runAsNonRoot: true
     runAsUser: 1000
   serviceAccountName: alertmanager-main
-  version: v0.20.0
+  version: v0.21.0
