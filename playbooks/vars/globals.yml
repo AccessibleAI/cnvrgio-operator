@@ -15,4 +15,3 @@ https:
   cert: ""
   key: ""
   cert_secret: "" #istio
-
