@@ -5,6 +5,12 @@ metadata:
   namespace: cnvrg
 rules:
   - apiGroups:
+      - batch
+    resources:
+      - cronjobs
+    verbs:
+      - '*'
+  - apiGroups:
       - networking.k8s.io
     resources:
       - ingresses

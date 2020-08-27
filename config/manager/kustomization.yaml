@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: docker.io/cnvrg/cnvrg-operator
-  newTag: v0.358.0
+  newTag: v0.359.6
