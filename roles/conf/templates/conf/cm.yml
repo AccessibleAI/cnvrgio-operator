@@ -6,7 +6,7 @@ metadata:
   namespace: "{{ ansible_operator_meta.namespace }}"
 data:
 {% if cnvrg_app.custom_agent_tag != "false" %}
-  AGENT_CUSTOM_TAG: "{{ cnvrg_app.custom_agent_tag }}"
+  AGENT_CUSTOM_TAG: "{{ cnvrg_app.custom_agent_tag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
 {%  endif %}
   ELASTICSEARCH_URL: "http://{{es.svc_name}}"
   KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
