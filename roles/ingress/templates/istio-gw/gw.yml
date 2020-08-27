@@ -13,3 +13,16 @@ spec:
         protocol: HTTP
       hosts:
         - "{{('*.' + cluster_domain).split(':')[0] }}"
+{% if https.enabled == "true" %}
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - "{{('*.' + cluster_domain).split(':')[0] }}"
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: "{{ https.cert_secret }}"
+{% endif %}
