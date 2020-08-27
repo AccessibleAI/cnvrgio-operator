@@ -1,7 +1,7 @@
 ---
 pg_backup:
   storage_size: "30Gi"
-  enabled: "true"
+  enabled: "false"
   name: "pg-backup"
   path: "/opt/cnvrg-backups"
   script_path: "/opt/script"
