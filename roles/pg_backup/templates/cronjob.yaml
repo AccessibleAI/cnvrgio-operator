@@ -21,6 +21,7 @@ spec:
           nodeSelector:
             kubernetes.io/hostname: "{{ hostpath.node_name }}"
 {% endif %}
+          serviceAccountName: "{{rbac.service_account_name}}"
           containers:
             - name: "{{ pg_backup.name }}"
               image: "{{ pg.image }}"
