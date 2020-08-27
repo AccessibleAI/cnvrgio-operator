@@ -20,13 +20,6 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - batch
-      - ""
-    resources:
-      - "cronjobs"
-    verbs:
-      - "*"
-  - apiGroups:
       - ""
     resources:
       - "nodes"
