@@ -141,6 +141,7 @@ https:
   useWildcardCertificate: "{{ .Values.https.useWildcardCertificate }}"
   cert: "{{ .Values.https.cert }}"
   key: "{{ .Values.https.key }}"
+  certSecretName: "{{ .Values.https.certSecretName }}"
 conf:
   enabled: "{{ .Values.conf.enabled }}"
   gcpStorageSecret: "{{ .Values.conf.gcpStorageSecret }}"

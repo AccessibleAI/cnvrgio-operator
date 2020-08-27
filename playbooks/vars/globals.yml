@@ -14,4 +14,5 @@ https:
   use_wildcard_certificate: "true"
   cert: ""
   key: ""
+  cert_secret_name: "" #istio
 

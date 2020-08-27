@@ -54,6 +54,7 @@ https:
   useWildcardCertificate: "true"
   cert: ""
   key: ""
+  certSecretName: ""
 conf:
   enabled: "true"
   gcpStorageSecret: gcp-storage-secret
