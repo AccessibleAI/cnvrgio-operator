@@ -66,3 +66,6 @@ spec:
       - name: seeder
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode worker"]
+        env:
+        - name: "CNVRG_NS"
+          value: "{{ ansible_operator_meta.namespace }}"

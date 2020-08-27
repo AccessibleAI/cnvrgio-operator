@@ -109,6 +109,10 @@ spec:
           value: "{{cnvrg_app.image}}"
         - name: "CNVRG_SEED_CMD"
           value: "{{ seeder.seed_cmd }}"
+        - name: "CNVRG_NS"
+          value: "{{ ansible_operator_meta.namespace }}"
+        - name: "CNVRG_SA_NAME"
+          value: "{{rbac.service_account_name}}"
 {% if cnvrg_app.edition == "enterprise" %}
         - name: "CNVRG_IMAGE_PULL_SECRET"
           value: {{ registry.name }}
