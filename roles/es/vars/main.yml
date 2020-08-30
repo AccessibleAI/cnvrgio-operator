@@ -1,14 +1,14 @@
 ---
 es:
   enabled: "true"
-  image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"
+  image: "cnvrg/cnvrg-es:elastic_ubi_7.8.1"
   max_map_image: "docker.io/cnvrg/cnvrg-tools:v0.3"
   port: "9200"
   storage_size: "30Gi"
   svc_name: "elasticsearch"
-  run_as_user: 1000
-  run_as_group: 1000
-  fs_group: 1000
+  run_as_user: 1002
+  run_as_group: 0
+  fs_group: 0
   patch_es_nodes: "true"
   node_port: 32200
   storage_class: "use-default"

@@ -28,6 +28,8 @@ spec:
       - name: elastic
         image: "{{es.image}}"
         env:
+        - name: "ES_DISCOVERY_TYPE"
+          value: "single-node"
         - name: "ES_CLUSTER_NAME"
           value: "cnvrg-es"
         - name: "ES_NODE_NAME"
