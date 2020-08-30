@@ -137,7 +137,9 @@ pgBackup:
   cronTime: "1 1 * * *"
 es:
   enabled: "true"
-  image: cnvrg/cnvrg-es:elastic_ubi_7.8.1
+  ubi: "false"
+  image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"
+  ubiImage: "cnvrg/cnvrg-es:elastic_ubi_7.8.1"
   maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
   port: "9200"
   storageSize: 30Gi

@@ -251,6 +251,8 @@ pgBackup:
   cronTime: "{{ .Values.pgBackup.cronTime }}"
 es:
   enabled: "{{ .Values.es.enabled }}"
+  ubi: "{{ .Values.es.ubi }}"
+  ubiImage: "{{ .Values.es.ubiImage }}"
   image: "{{ .Values.es.image }}"
   maxMapImage: "{{.Values.es.maxMapImage}}"
   port: "{{ .Values.es.port }}"
@@ -267,6 +269,10 @@ es:
   patchEsNodes: "{{ .Values.es.patchEsNodes }}"
   nodePort: "{{ .Values.es.nodePort }}"
   storageClass: "{{ .Values.es.storageClass }}"
+  ubi: "false"
+  image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"
+  ubiImage: "cnvrg/cnvrg-es:elastic_ubi_7.8.1"
+
 
   {{- if eq .Values.computeProfile "default"}}
   cpuRequest: "{{ .Values.es.cpuRequest }}"

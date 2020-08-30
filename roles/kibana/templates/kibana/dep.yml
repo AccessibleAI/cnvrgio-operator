@@ -17,6 +17,11 @@ spec:
     spec:
       containers:
         - name: "{{kibana.svc_name}}"
+{% if es.ubi == "true" %}
+          image: "{{kibana.image}}"
+{% else %}
+          image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
+{% endif %}
           image: "{{kibana.image}}"
           env:
           - name: ELASTICSEARCH_URL
