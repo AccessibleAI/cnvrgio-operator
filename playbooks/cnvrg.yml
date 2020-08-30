@@ -64,7 +64,7 @@
     - import_role:
         name: pg_backup
       vars:
-        role_state: "{{'present' if pg.enabled == 'true' else 'absent'}}"
+         role_state: "{{'present' if pg_backup.enabled == 'true' else 'absent'}}"
       tags: pg_backup
 
     # CnvrgApp deployment

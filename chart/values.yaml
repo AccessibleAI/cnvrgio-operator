@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.353.0
+operatorImageTag: v0.360.4
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -54,6 +54,7 @@ https:
   useWildcardCertificate: "true"
   cert: ""
   key: ""
+  certSecret: ""
 conf:
   enabled: "true"
   gcpStorageSecret: gcp-storage-secret
@@ -128,7 +129,7 @@ pg:
   memoryRequest: 2Gi
 pgBackup:
   storageSize: 30Gi
-  enabled: true
+  enabled: "false"
   name: pg-backup
   path: /opt/cnvrg-backups
   scriptPath: /opt/script
@@ -202,6 +203,7 @@ istio:
   pilotImage: "pilot"
   gwName: cnvrg-gateway
   externalIp: ""
+  ingressSvcAnnotations: ""
 kibana:
   enabled: "true"
   svcName: kibana

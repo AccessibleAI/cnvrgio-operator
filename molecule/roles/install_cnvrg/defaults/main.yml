@@ -94,6 +94,15 @@ spec:
     memoryRequest: "2Gi"
     svcName: "postgres"
 
+  pgBackup:
+    storageSize: 30Gi
+    enabled: "true"
+    name: pg-backup
+    path: /opt/cnvrg-backups
+    scriptPath: /opt/script
+    storageClass: use-default
+    cronTime: "1 1 * * *"
+
   es:
     enabled: "true"
     image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"

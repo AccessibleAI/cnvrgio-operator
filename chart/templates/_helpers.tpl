@@ -24,9 +24,9 @@ pg:
   memoryRequest: "{{.Values.computeProfiles.micro.pg.memory}}"
   svcName: "{{ .Values.pg.svcName }}"
 pgBackup:
-  storageSize: "{{ .Values.storageProfiles.micro.pgBackup }}"
+  storageSize: "{{ .Values.pgBackup.storageSize }}"
   enabled: "{{ .Values.pgBackup.enabled }}"
-  name: "{{ .Values.pg.image }}"
+  name: "{{ .Values.pgBackup.name }}"
   path: "{{ .Values.pgBackup.path }}"
   scriptPath: "{{ .Values.pgBackup.scriptPath }}"
   storageClass: "{{ .Values.pgBackup.storageClass }}"
@@ -141,6 +141,7 @@ https:
   useWildcardCertificate: "{{ .Values.https.useWildcardCertificate }}"
   cert: "{{ .Values.https.cert }}"
   key: "{{ .Values.https.key }}"
+  certSecret: "{{ .Values.https.certSecret }}"
 conf:
   enabled: "{{ .Values.conf.enabled }}"
   gcpStorageSecret: "{{ .Values.conf.gcpStorageSecret }}"
@@ -243,7 +244,7 @@ pgBackup:
   storageSize: "{{ .Values.storageProfiles.micro.pgBackup }}"
   {{- end }}
   enabled: "{{ .Values.pgBackup.enabled }}"
-  name: "{{ .Values.pg.image }}"
+  name: "{{ .Values.pgBackup.name }}"
   path: "{{ .Values.pgBackup.path }}"
   scriptPath: "{{ .Values.pgBackup.scriptPath }}"
   storageClass: "{{ .Values.pgBackup.storageClass }}"
@@ -347,6 +348,7 @@ istio:
   pilotImage: "{{.Values.istio.pilotImage}}"
   gwName: "{{ .Values.istio.gwName }}"
   externalIp: "{{ .Values.istio.externalIp }}"
+  ingressSvcAnnotations: "{{.Values.istio.ingressSvcAnnotations}}"
 
 kibana:
   enabled: "{{ .Values.kibana.enabled }}"
