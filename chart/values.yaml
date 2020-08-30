@@ -210,7 +210,7 @@ kibana:
   enabled: "true"
   svcName: kibana
   port: 5601
-  image: docker.elastic.co/kibana/kibana-oss:7.8.1
+  image: docker.elastic.co/kibana/kibana-oss:6.2.4
   nodePort: 30601
   cpuRequest: 500m
   memoryRequest: 500Mi
