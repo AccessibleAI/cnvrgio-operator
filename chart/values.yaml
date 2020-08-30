@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.362.1
+operatorImageTag: v0.360.4
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -142,9 +142,9 @@ es:
   port: "9200"
   storageSize: 30Gi
   svcName: elasticsearch
-  runAsUser: 1002
-  runAsGroup: 0
-  fsGroup: 0
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
   patchEsNodes: "true"
   nodePort: 32200
   storageClass: use-default
