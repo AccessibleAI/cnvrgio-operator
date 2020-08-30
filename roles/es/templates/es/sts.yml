@@ -31,7 +31,11 @@ spec:
 {% endif %}
       containers:
       - name: elastic
+{% if es.ubi == "true" %}
+        image: "{{es.ubi_image}}"
+{% else %}
         image: "{{es.image}}"
+{% endif %}
         env:
 {% if es.ubi == "true" %}
         - name: "ES_DISCOVERY_TYPE"
