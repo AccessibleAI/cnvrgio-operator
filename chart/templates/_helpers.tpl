@@ -252,13 +252,15 @@ pgBackup:
 es:
   enabled: "{{ .Values.es.enabled }}"
   ubi: "{{ .Values.es.ubi }}"
-  ubiImage: "{{ .Values.es.ubiImage }}"
+  {{- if eq .Values.es.ubi "true"}}
+  image: "cnvrg/cnvrg-es:elastic_ubi_7.8.1"
+  {{ else }}
   image: "{{ .Values.es.image }}"
+  {{- end }}
   maxMapImage: "{{.Values.es.maxMapImage}}"
   port: "{{ .Values.es.port }}"
   {{- if eq .Values.storageProfile "default"}}
   storageSize: "{{ .Values.es.storageSize }}"
-  {{- end }}
   {{- if eq .Values.storageProfile "micro"}}
   storageSize: "{{ .Values.storageProfiles.micro.pg }}"
   {{- end }}
@@ -355,7 +357,11 @@ istio:
 kibana:
   enabled: "{{ .Values.kibana.enabled }}"
   svcName: "{{ .Values.kibana.svcName }}"
+  {{- if eq .Values.es.ubi "true"}}
+  image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
+  {{ else }}
   image: "{{ .Values.kibana.image }}"
+  {{- end }}
   nodePort: "{{ .Values.kibana.nodePort }}"
   {{- if eq .Values.computeProfile "default"}}
   cpuRequest: "{{ .Values.kibana.cpuRequest }}"

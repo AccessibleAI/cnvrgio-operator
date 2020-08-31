@@ -14,12 +14,7 @@ spec:
       labels:
         app: "{{es.svc_name}}"
     spec:
-{% if security_mode == "default" and es.ubi == "true" %}
-      securityContext:
-        runAsUser: 1002
-        runAsGroup: 0
-        fsGroup: 0
-{% elif security_mode == "default" %}
+{% if security_mode == "default" %}
       securityContext:
         runAsUser: {{ es.run_as_user }}
         runAsGroup: {{ es.run_as_group }}
@@ -31,16 +26,10 @@ spec:
 {% endif %}
       containers:
       - name: elastic
-{% if es.ubi == "true" %}
-        image: "{{es.ubi_image}}"
-{% else %}
         image: "{{es.image}}"
-{% endif %}
         env:
-{% if es.ubi == "true" %}
         - name: "ES_DISCOVERY_TYPE"
           value: "single-node"
-{% endif %}
         - name: "ES_CLUSTER_NAME"
           value: "cnvrg-es"
         - name: "ES_NODE_NAME"
