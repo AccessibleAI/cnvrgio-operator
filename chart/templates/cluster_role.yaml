@@ -99,10 +99,9 @@ rules:
       - "monitoring.coreos.com"
     resources:
       - "servicemonitors"
+      - alertmanagers
     verbs:
-      - "get"
-      - "create"
-      -  "patch"
+      - "*"
   - apiGroups:
       - "networking.istio.io"
     resources:
