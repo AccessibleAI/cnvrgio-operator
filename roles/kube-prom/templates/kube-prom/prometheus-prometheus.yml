@@ -7,8 +7,8 @@ metadata:
   name: cnvrg
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
-  alerting:
 {% if alertmanager.enabled == "true" %}
+  alerting:
     alertmanagers:
     - name: alertmanager-main
       namespace: "{{ansible_operator_meta.namespace}}"
