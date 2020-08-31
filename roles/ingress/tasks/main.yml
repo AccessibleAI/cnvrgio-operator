@@ -24,16 +24,8 @@
   vars:
     template_path: "{{ item }}"
     state: "present"
-  with_items:
-    - templates/istio-gw/gw.yml
-    - templates/istio-vs/app.yml
-    - templates/istio-vs/ea.yml
-    - templates/istio-vs/es.yml
-    - templates/istio-vs/grafana.yml
-    - templates/istio-vs/kibana.yml
-    - templates/istio-vs/minio.yml
-    - templates/istio-vs/prom.yml
-    - templates/istio-vs/cnvrg_router.yml
+  with_fileglob:
+    - templates/istio-vs/*
   when: ingress_type == "istio"
 
 - name: Deploy K8S Ingress rules
@@ -43,13 +35,6 @@
   vars:
     template_path: "{{ item }}"
     state: "present"
-  with_items:
-    - templates/k8s-ingress/app.yml
-    - templates/k8s-ingress/ea.yml
-    - templates/k8s-ingress/es.yml
-    - templates/k8s-ingress/grafana.yml
-    - templates/k8s-ingress/kibana.yml
-    - templates/k8s-ingress/minio.yml
-    - templates/k8s-ingress/prom.yml
-    - templates/k8s-ingress/cnvrg_router.yml
+  with_fileglob:
+    - templates/k8s-ingress/*
   when: ingress_type == "k8singress"
