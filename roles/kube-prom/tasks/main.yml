@@ -1,7 +1,11 @@
 - name: Kube-Prom deployment
   vars:
-    resources: "{{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') | list }}"
-
+    resources: |+
+      {% if alertmanager.enabled == 'true' %}
+      {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') |  list }}
+      {% else %}
+      {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') | reject('search','alertmanager') |  list }}
+      {% endif %}
   block:
 
     # is state present, create crds in first step
