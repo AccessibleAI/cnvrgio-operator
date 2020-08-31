@@ -8,10 +8,12 @@ metadata:
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   alerting:
+{% if alertmanager.enabled == "true" %}
     alertmanagers:
     - name: alertmanager-main
       namespace: "{{ansible_operator_meta.namespace}}"
       port: web
+{% endif %}
   storage:
     disableMountSubPath: true
     volumeClaimTemplate:
