@@ -14,6 +14,7 @@ spec:
       expr: absent(redis_is_up == 1)
       for: 1m
       labels:
+        cnvrg: custom
         severity: critical
       annotations:
           description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
@@ -21,6 +22,7 @@ spec:
       expr: absent(minio_is_up == 1)
       for: 1m
       labels:
+        cnvrg: custom
         severity: critical
       annotations:
         description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
@@ -29,6 +31,7 @@ spec:
       expr: absent(elasticsearch_is_up == 1)
       for: 1m
       labels:
+        cnvrg: custom
         severity: critical
       annotations:
         description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
@@ -37,6 +40,7 @@ spec:
       expr: avg(sidekiq_jobs_pending) > 5
       for: 5m
       labels:
+        cnvrg: custom
         severity: critical
       annotations:
         description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
