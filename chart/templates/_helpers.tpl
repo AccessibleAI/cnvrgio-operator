@@ -261,6 +261,7 @@ es:
   port: "{{ .Values.es.port }}"
   {{- if eq .Values.storageProfile "default"}}
   storageSize: "{{ .Values.es.storageSize }}"
+  {{- end }}
   {{- if eq .Values.storageProfile "micro"}}
   storageSize: "{{ .Values.storageProfiles.micro.pg }}"
   {{- end }}
