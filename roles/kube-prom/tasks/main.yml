@@ -2,7 +2,7 @@
   vars:
     resources: |+
       {% if alertmanager.enabled == 'true' %}
-      {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') |  list }}
+      {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') |  reject('search','alertmanager-secret')  |  list }}
       {% else %}
       {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') | reject('search','alertmanager') |  list }}
       {% endif %}
@@ -30,6 +30,25 @@
       loop: "{{resources}}"
       when: role_state == "present"
 
+    - name: Alertmanager Secret
+      k8s_info:
+        api_version: v1
+        kind: Secret
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        name: "{{ alertmanager.svc_name }}"
+      register: alertmanager_secret
+      when: role_state == "present"
+
+    - name: Install Alertmanager Secret if doesnt exist
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        template_path: "templates/kube-prom/alertmanager-secret.yaml"
+        state: "{{ role_state }}"
+      when:
+      - role_state == "present"
+      - alertmanager_secret.resources | length == 0
 
     - name: Get Prometheus
       k8s_info:

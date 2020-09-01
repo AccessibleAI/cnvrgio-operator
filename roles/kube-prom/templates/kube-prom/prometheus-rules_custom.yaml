@@ -17,7 +17,7 @@ spec:
         cnvrg: custom
         severity: critical
       annotations:
-          description: "Service {{ '{{' }} $labels.pod {{ '}}' }} is down."
+          description: "Service {{ '{{' }} $labels.container {{ '}}' }} is down."
     - alert: Sidekiq Is Down
       expr: absent(kube_pod_container_status_ready{container="sidekiq"}) == 1
       for: 20m
@@ -25,4 +25,4 @@ spec:
         cnvrg: custom
         severity: critical
       annotations:
-        description: "Service {{ '{{' }} $labels.pod {{ '}}' }} is down."
+        description: "Service {{ '{{' }} $labels.container {{ '}}' }} is down."

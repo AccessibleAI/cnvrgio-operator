@@ -176,7 +176,6 @@ prometheus:
   prometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:v0.38.1"
   kubeRbacProxyImage: "quay.io/coreos/kube-rbac-proxy:v0.4.1"
   kubeStateMetricsImage: "quay.io/coreos/kube-state-metrics:v1.9.5"
-  alertManagerImage: "quay.io/prometheus/alertmanager:v0.20.0"
   adapterImage: "directxman12/k8s-prometheus-adapter:v0.7.0"
   nvidiaExporterImage: "nvidia/dcgm-exporter:1.7.2"
   nodeExporterImage: "quay.io/prometheus/node-exporter:v0.18.1"
@@ -188,6 +187,16 @@ prometheus:
   kubeletMetrics:
     schema: https
     port: https-metrics
+alertmanager:
+  enabled: "true"
+  alertManagerImage: "quay.io/prometheus/alertmanager:v0.21.0"
+  svcName: "alertmanager-main"
+  port: 9093
+  nodePort: 39093
+  storageSize: 20Gi
+  storageClass: "use-default"
+  channel: "#alertmanager-alerts"
+  apiUrl: ""
 grafana:
   svcName: grafana
   port: 3000

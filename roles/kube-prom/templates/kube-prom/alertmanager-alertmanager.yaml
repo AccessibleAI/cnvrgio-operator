@@ -31,5 +31,5 @@ spec:
     fsGroup: 2000
     runAsNonRoot: true
     runAsUser: 1000
-  serviceAccountName: alertmanager-main
+  serviceAccountName: "{{ alertmanager.svc_name }}"
   version: v0.21.0

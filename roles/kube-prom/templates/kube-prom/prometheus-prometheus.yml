@@ -10,7 +10,7 @@ spec:
 {% if alertmanager.enabled == "true" %}
   alerting:
     alertmanagers:
-    - name: alertmanager-main
+    - name: "{{ alertmanager.svc_name }}"
       namespace: "{{ansible_operator_meta.namespace}}"
       port: web
 {% endif %}

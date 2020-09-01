@@ -28,7 +28,8 @@ alertmanager:
   node_port: 39093
   storage_size: 20Gi
   storage_class: "use-default"
-  channel: "#alertmanager-alerts"
+  slack_channel: "#alertmanager-alerts"
+  slack_url: ""
 
 grafana:
   svc_name: "grafana"

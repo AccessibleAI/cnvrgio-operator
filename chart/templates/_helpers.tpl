@@ -332,6 +332,17 @@ prometheus:
     schema: "{{ .Values.prometheus.kubeletMetrics.schema }}"
     port: "{{ .Values.prometheus.kubeletMetrics.port }}"
 
+alertmanager:
+  enabled: "{{ .Values.alertmanager.enabled }}"
+  alertManagerImage: "{{ .Values.alertmanager.alertManagerImage }}"
+  svcName: "{{ .Values.alertmanager.svcName }}"
+  port: "{{ .Values.alertmanager.port }}"
+  nodePort: "{{ .Values.alertmanager.nodePort }}"
+  storageSize: "{{ .Values.alertmanager.storageSize }}"
+  storageClass: "{{ .Values.alertmanager.storageClass }}"
+  channel: "{{ .Values.alertmanager.channel }}"
+  apiUrl: "{{ .Values.alertmanager.apiUrl }}"
+
 grafana:
   svcName: "{{ .Values.grafana.svcName }}"
   port: "{{ .Values.grafana.port }}"
