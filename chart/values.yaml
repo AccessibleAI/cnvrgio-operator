@@ -189,7 +189,7 @@ prometheus:
     schema: https
     port: https-metrics
 alertmanager:
-  enabled: "true"
+  enabled: "false"
   alertManagerImage: "quay.io/prometheus/alertmanager:v0.21.0"
   svcName: "alertmanager-main"
   port: 9093

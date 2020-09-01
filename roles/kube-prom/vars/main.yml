@@ -21,7 +21,7 @@ prometheus:
     port: https-metrics
 
 alertmanager:
-  enabled: "true"
+  enabled: "false"
   alert_manager_image: "quay.io/prometheus/alertmanager:v0.21.0"
   svc_name: "alertmanager-main"
   port: 9093
