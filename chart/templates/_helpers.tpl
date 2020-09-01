@@ -338,10 +338,15 @@ alertmanager:
   svcName: "{{ .Values.alertmanager.svcName }}"
   port: "{{ .Values.alertmanager.port }}"
   nodePort: "{{ .Values.alertmanager.nodePort }}"
+  {{- if eq .Values.storageProfile "default"}}
   storageSize: "{{ .Values.alertmanager.storageSize }}"
+  {{- end }}
+  {{- if eq .Values.storageProfile "micro"}}
+  storageSize: "{{ .Values.storageProfiles.micro.alertmanager }}"
+  {{- end }}
   storageClass: "{{ .Values.alertmanager.storageClass }}"
-  channel: "{{ .Values.alertmanager.channel }}"
-  apiUrl: "{{ .Values.alertmanager.apiUrl }}"
+  slackChannel: "{{ .Values.alertmanager.slackChannel }}"
+  slackUrl: "{{ .Values.alertmanager.slackUrl }}"
 
 grafana:
   svcName: "{{ .Values.grafana.svcName }}"

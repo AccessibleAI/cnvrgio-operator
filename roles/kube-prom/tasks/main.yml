@@ -37,7 +37,9 @@
         namespace: "{{ ansible_operator_meta.namespace }}"
         name: "{{ alertmanager.svc_name }}"
       register: alertmanager_secret
-      when: role_state == "present"
+      when:
+      - role_state == "present"
+      - dry_run == "false"
 
     - name: Install Alertmanager Secret if doesnt exist
       include_role:

@@ -35,6 +35,7 @@ storageProfiles:
     es: 10Gi
     prometheus: 10Gi
     minio: 10Gi
+    alertmanager: 10Gi
 
 specProfiles:
   microk8s:
@@ -195,8 +196,8 @@ alertmanager:
   nodePort: 39093
   storageSize: 20Gi
   storageClass: "use-default"
-  channel: "#alertmanager-alerts"
-  apiUrl: ""
+  slack_channel: "#alertmanager-alerts"
+  slack_url: ""
 grafana:
   svcName: grafana
   port: 3000
