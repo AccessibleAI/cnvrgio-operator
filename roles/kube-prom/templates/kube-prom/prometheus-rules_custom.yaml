@@ -10,37 +10,19 @@ spec:
   groups:
   - name: Cnvrg Custom Rules
     rules:
-    - alert: Redis Is Down
-      expr: absent(redis_is_up == 1)
-      for: 1m
+    - alert: CnvrgApp Is Down
+      expr: absent(kube_pod_container_status_ready{container="cnvrg-app"}) == 1
+      for: 20m
       labels:
         cnvrg: custom
         severity: critical
       annotations:
-          description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
-    - alert: Minio Is Down
-      expr: absent(minio_is_up == 1)
-      for: 1m
+          description: "Service {{ '{{' }} $labels.pod {{ '}}' }} is down."
+    - alert: Sidekiq Is Down
+      expr: absent(kube_pod_container_status_ready{container="sidekiq"}) == 1
+      for: 20m
       labels:
         cnvrg: custom
         severity: critical
       annotations:
-        description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
-    rules:
-    - alert: Elasticsearch Is Down
-      expr: absent(elasticsearch_is_up == 1)
-      for: 1m
-      labels:
-        cnvrg: custom
-        severity: critical
-      annotations:
-        description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
-    rules:
-    - alert: Sidekiq Jobs Pending
-      expr: avg(sidekiq_jobs_pending) > 5
-      for: 5m
-      labels:
-        cnvrg: custom
-        severity: critical
-      annotations:
-        description: "Service {{ '{{' }} $labels.instance {{ '}}' }} is down."
+        description: "Service {{ '{{' }} $labels.pod {{ '}}' }} is down."

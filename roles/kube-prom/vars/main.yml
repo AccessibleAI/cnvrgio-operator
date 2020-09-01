@@ -32,12 +32,17 @@ alertmanager:
     global:
       resolve_timeout: 5m
     route:
-      receiver: 'slack-notifications'
-      group_by: ['job']
-      group_wait: 1m #1m
-      group_interval: 2m #5m
-      repeat_interval: 2m #12h
+      receiver: 'blackhole'
+      group_by: ['alertname','job']
+      repeat_interval: 24h
+      group_interval: 5m
       routes:
+      - receiver: 'slack-notifications'
+        match:
+          cnvrg: custom
+        group_wait: 1m #1m
+        group_interval: 2m #5m
+        repeat_interval: 2m #12h
       - receiver: 'slack-watchdog'
         match:
           alertname: Watchdog
@@ -45,6 +50,7 @@ alertmanager:
         group_interval: 1m
         repeat_interval: 1m
     receivers:
+    - name: 'blackhole'
     - name: 'slack-watchdog'
       slack_configs:
       - api_url: "{{ 'aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDA2M1hSRTJIL0IwMThNQjhQR1NLL0RoeVREMEt6ZnFsYlB3NTg2eXdCcmF2NA==' | b64decode }}"
