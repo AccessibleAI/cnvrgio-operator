@@ -38,6 +38,7 @@
         name: "{{ alertmanager.svc_name }}"
       register: alertmanager_secret
       when:
+      - alertmanager.enabled == 'true'
       - role_state == "present"
       - dry_run == "false"
 
@@ -49,6 +50,7 @@
         template_path: "templates/kube-prom/alertmanager-secret.yaml"
         state: "{{ role_state }}"
       when:
+      - alertmanager.enabled == 'true'
       - role_state == "present"
       - alertmanager_secret.resources | length == 0
 
