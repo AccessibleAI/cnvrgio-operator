@@ -345,8 +345,6 @@ alertmanager:
   storageSize: "{{ .Values.storageProfiles.micro.alertmanager }}"
   {{- end }}
   storageClass: "{{ .Values.alertmanager.storageClass }}"
-  slackChannel: "{{ .Values.alertmanager.slackChannel }}"
-  slackUrl: "{{ .Values.alertmanager.slackUrl }}"
 
 grafana:
   svcName: "{{ .Values.grafana.svcName }}"
