@@ -1,6 +1,6 @@
 ---
 cnvrg_app:
-  replicas: 1
+  replicas: 2
   edition: "core"
   enabled: "true"
   image: ""
