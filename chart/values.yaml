@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.360.6
+operatorImageTag: v0.360.7
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -234,7 +234,7 @@ mpi:
   enabled: "false"
 cnvrgApp:
   replicas: 1
-  sidekiqReplicas: 1
+  sidekiqReplicas: 3
   edition: core
   enabled: "true"
   image: "cnvrg/core:3.1.2"
