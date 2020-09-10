@@ -393,6 +393,7 @@ mpi:
 cnvrgApp:
   replicas: {{ .Values.cnvrgApp.replicas }}
   sidekiqReplicas: {{ .Values.cnvrgApp.sidekiqReplicas }}
+  sidekiqSearchkickReplicas: {{ .Values.cnvrgApp.sidekiqSearchkickReplicas }}
   edition: "{{ .Values.cnvrgApp.edition }}"
   enabled: "{{ .Values.cnvrgApp.enabled }}"
   image: "{{ .Values.cnvrgApp.image }}"
@@ -402,12 +403,16 @@ cnvrgApp:
   memory: "{{ .Values.cnvrgApp.memory }}"
   sidekiqCpu: "{{ .Values.cnvrgApp.sidekiqCpu }}"
   sidekiqMemory: "{{ .Values.cnvrgApp.sidekiqMemory }}"
+  sidekiqSearchkickCpu: "{{ .Values.cnvrgApp.sidekiqSearchkickCpu }}"
+  sidekiqSearchkickMemory: "{{ .Values.cnvrgApp.sidekiqSearchkickMemory }}"
   {{- end }}
   {{- if eq .Values.computeProfile "micro"}}
   cpu: "{{ .Values.computeProfiles.micro.app.cpu }}"
   memory: "{{ .Values.computeProfiles.micro.app.memory }}"
   sidekiqCpu: "{{ .Values.computeProfiles.micro.sidekiq.cpu }}"
   sidekiqMemory: "{{ .Values.computeProfiles.micro.sidekiq.memory }}"
+  sidekiqSearchkickCpu: "{{ .Values.computeProfiles.micro.sidekiqsearchkick.cpu }}"
+  sidekiqSearchkickMemory: "{{ .Values.computeProfiles.micro.sidekiqsearchkick.memory }}"
   {{- end }}
   svcName: "{{ .Values.cnvrgApp.svcName }}"
   customAgentTag: "{{ .Values.cnvrgApp.customAgentTag }}"
