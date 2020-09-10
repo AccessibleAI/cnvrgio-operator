@@ -392,7 +392,6 @@ mpi:
 
 cnvrgApp:
   replicas: {{ .Values.cnvrgApp.replicas }}
-  sidekiqReplicas: {{ .Values.cnvrgApp.sidekiqReplicas }}
   edition: "{{ .Values.cnvrgApp.edition }}"
   enabled: "{{ .Values.cnvrgApp.enabled }}"
   image: "{{ .Values.cnvrgApp.image }}"
@@ -402,12 +401,14 @@ cnvrgApp:
   memory: "{{ .Values.cnvrgApp.memory }}"
   sidekiqCpu: "{{ .Values.cnvrgApp.sidekiqCpu }}"
   sidekiqMemory: "{{ .Values.cnvrgApp.sidekiqMemory }}"
+  sidekiqReplicas: {{ .Values.cnvrgApp.sidekiqReplicas }}
   {{- end }}
   {{- if eq .Values.computeProfile "micro"}}
   cpu: "{{ .Values.computeProfiles.micro.app.cpu }}"
   memory: "{{ .Values.computeProfiles.micro.app.memory }}"
   sidekiqCpu: "{{ .Values.computeProfiles.micro.sidekiq.cpu }}"
   sidekiqMemory: "{{ .Values.computeProfiles.micro.sidekiq.memory }}"
+  sidekiqReplicas: {{ .Values.computeProfiles.micro.sidekiq.replicas }}
   {{- end }}
   svcName: "{{ .Values.cnvrgApp.svcName }}"
   customAgentTag: "{{ .Values.cnvrgApp.customAgentTag }}"

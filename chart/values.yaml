@@ -24,6 +24,7 @@ computeProfiles:
     sidekiq:
       cpu: 100m
       memory: 500Mi
+      replicas: 1
     redis:
       cpu: 100m
       memory: 500Mi
@@ -234,7 +235,7 @@ mpi:
   enabled: "false"
 cnvrgApp:
   replicas: 1
-  sidekiqReplicas: 3
+  sidekiqReplicas: 2
   edition: core
   enabled: "true"
   image: "cnvrg/core:3.1.2"
