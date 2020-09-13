@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.364.3
+operatorImageTag: v0.364.4
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -213,7 +213,7 @@ kibana:
   enabled: "true"
   svcName: kibana
   port: 5601
-  image: docker.elastic.co/kibana/kibana-oss:6.2.4
+  image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
   nodePort: 30601
   cpuRequest: 500m
   memoryRequest: 500Mi
