@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.363.0
+operatorImageTag: v0.364.0
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -142,7 +142,7 @@ pgBackup:
   cronTime: "1 1 * * *"
 es:
   enabled: "true"
-  image: docker.io/cnvrg/cnvrg-es:v7.8.1
+  image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
   maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
   port: "9200"
   storageSize: 30Gi
