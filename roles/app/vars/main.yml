@@ -16,8 +16,7 @@ cnvrg_app:
   sidekiq_replicas: 3
   sidekiq_searchkick_cpu: 1
   sidekiq_searchkick_memory: 2Gi
-  sidekiq_searchkick_replicas: 1
-  sidekiq_replicas: 3
+  sidekiq_searchkick_replicas: 3
 
 
 seeder:
