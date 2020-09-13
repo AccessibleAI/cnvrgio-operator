@@ -123,6 +123,9 @@ spec:
             - mountPath: /grafana-dashboard-definitions/0/dcgm-dashboard
               name: dcgm-exporter-dashboard
               readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/node-exporter-full
+              name: node-exporter-full
+              readOnly: false
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
@@ -210,3 +213,6 @@ spec:
         - configMap:
             name: dcgm-exporter-dashboard
           name: dcgm-exporter-dashboard
+        - configMap:
+            name: node-exporter-full
+          name: node-exporter-full
