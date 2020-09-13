@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.364.0
+operatorImageTag: v0.364.1
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -24,7 +24,7 @@ computeProfiles:
     sidekiq:
       cpu: 100m
       memory: 500Mi
-      replicas: 1
+      replicas: 2
     sidekiqsearchkick:
       cpu: 100m
       memory: 500Mi
