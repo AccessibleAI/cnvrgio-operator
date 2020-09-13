@@ -7,7 +7,5 @@
   vars:
     template_path: "{{ item }}"
     state: "{{ role_state }}"
-  with_items:
-    - templates/app/dep.yml
-    - templates/app/svc.yml
-    - templates/app/sidekiq.yml
+  with_fileglob:
+    - templates/app/*

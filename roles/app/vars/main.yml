@@ -13,7 +13,10 @@ cnvrg_app:
   node_port: 30080
   sidekiq_cpu: 1
   sidekiq_memory: 2Gi
-  sidekiq_replicas: 2
+  sidekiq_replicas: 3
+  sidekiq_searchkick_cpu: 1
+  sidekiq_searchkick_memory: 2Gi
+  sidekiq_searchkick_replicas: 3
 
 
 seeder:

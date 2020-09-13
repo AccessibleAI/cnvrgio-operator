@@ -25,6 +25,10 @@ computeProfiles:
       cpu: 100m
       memory: 500Mi
       replicas: 1
+    sidekiqsearchkick:
+      cpu: 100m
+      memory: 500Mi
+      replicas: 1
     redis:
       cpu: 100m
       memory: 500Mi
@@ -235,7 +239,7 @@ mpi:
   enabled: "false"
 cnvrgApp:
   replicas: 1
-  sidekiqReplicas: 2
+  sidekiqReplicas: 3
   edition: core
   enabled: "true"
   image: "cnvrg/core:3.1.2"
@@ -248,6 +252,9 @@ cnvrgApp:
   nodePort: 30080
   sidekiqCpu: 1
   sidekiqMemory: 2Gi
+  sidekiqSearchkickCpu: 1
+  sidekiqSearchkickMemory: 2Gi
+  sidekiqSearchkickReplicas: 3
 seeder:
   image: docker.io/cnvrg/cnvrg-boot:v0.23
   seedCmd: rails db:migrate && rails db:seed && rails libraries:update

@@ -401,6 +401,9 @@ cnvrgApp:
   memory: "{{ .Values.cnvrgApp.memory }}"
   sidekiqCpu: "{{ .Values.cnvrgApp.sidekiqCpu }}"
   sidekiqMemory: "{{ .Values.cnvrgApp.sidekiqMemory }}"
+  sidekiqSearchkickCpu: "{{ .Values.cnvrgApp.sidekiqSearchkickCpu }}"
+  sidekiqSearchkickMemory: "{{ .Values.cnvrgApp.sidekiqSearchkickMemory }}"
+  sidekiqSearchkickReplicas: {{ .Values.cnvrgApp.sidekiqSearchkickReplicas }}
   sidekiqReplicas: {{ .Values.cnvrgApp.sidekiqReplicas }}
   {{- end }}
   {{- if eq .Values.computeProfile "micro"}}
@@ -408,6 +411,9 @@ cnvrgApp:
   memory: "{{ .Values.computeProfiles.micro.app.memory }}"
   sidekiqCpu: "{{ .Values.computeProfiles.micro.sidekiq.cpu }}"
   sidekiqMemory: "{{ .Values.computeProfiles.micro.sidekiq.memory }}"
+  sidekiqSearchkickCpu: "{{ .Values.computeProfiles.micro.sidekiqsearchkick.cpu }}"
+  sidekiqSearchkickMemory: "{{ .Values.computeProfiles.micro.sidekiqsearchkick.memory }}"
+  sidekiqSearchkickReplicas: {{ .Values.computeProfiles.micro.sidekiqsearchkick.replicas }}
   sidekiqReplicas: {{ .Values.computeProfiles.micro.sidekiq.replicas }}
   {{- end }}
   svcName: "{{ .Values.cnvrgApp.svcName }}"
