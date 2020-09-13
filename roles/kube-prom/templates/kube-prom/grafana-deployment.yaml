@@ -126,6 +126,9 @@ spec:
             - mountPath: /grafana-dashboard-definitions/0/node-exporter-full
               name: node-exporter-full
               readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/sidekiq-exporter
+              name: sidekiq-exporter
+              readOnly: false
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
@@ -216,3 +219,6 @@ spec:
         - configMap:
             name: node-exporter-full
           name: node-exporter-full
+        - configMap:
+            name: sidekiq-exporter
+          name: sidekiq-exporter
