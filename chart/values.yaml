@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.364.4
+operatorImageTag: v0.365.0
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
