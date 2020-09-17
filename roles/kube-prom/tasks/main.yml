@@ -3,7 +3,10 @@
     resources: |+
       {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') | reject('search','alertmanager') |  list }}
   block:
-
+    - set_fact:
+        resources: "{{ resources |  reject('search','sidekiq') | list  }}"
+      when: cnvrg_app.enabled == "false"
+      
     # is state present, create crds in first step
     - name: Install Kube-Prometheus CRDs
       include_role:
