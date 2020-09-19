@@ -213,7 +213,7 @@ spec:
     nodePort: "30080"
 
   seeder:
-    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+    image: "docker.io/cnvrg/cnvrg-boot:v0.23"
     seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
 
   nfs:

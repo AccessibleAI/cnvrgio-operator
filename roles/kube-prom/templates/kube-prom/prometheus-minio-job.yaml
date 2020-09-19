@@ -10,7 +10,6 @@ spec:
       terminationGracePeriodSeconds: 1
       containers:
         - name: minio-exporter-token
-        #   image: "{{seeder.image}}"
           image: "docker.io/cnvrg/cnvrg-boot:v0.24"
           env:
           - name: CNVRG_STORAGE_BUCKET
