@@ -319,7 +319,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`cnvrgApp.sidekiqCpu`|1|
 |`cnvrgApp.sidekiqMemory`|2Gi|
 |`cnvrgApp.sidekiqReplicas`|1|
-|`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.23|
+|`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.24|
 |`seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update|
 |`nfs.enabled`|false|
 |`nfs.image`|quay.io/external_storage/nfs-client-provisioner:latest|
