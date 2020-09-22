@@ -12,6 +12,7 @@
   when:
   - app_secrets.cnvrg_storage_type == "minio"
   - minio.shared_storage.enabled == "true"
+  - cnvrg_app.enabled == "true"
 
 - name: Install Minio
   include_role:
@@ -24,5 +25,7 @@
     - templates/minio/svc.yml
     - templates/minio/pvc.yml
     - templates/minio/dep.yml
-  when: app_secrets.cnvrg_storage_type == "minio"
+  when:
+  - app_secrets.cnvrg_storage_type == "minio"
+  - cnvrg_app.enabled == "true"
 
