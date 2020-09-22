@@ -9,4 +9,3 @@
   with_items:
     - templates/redis-svc.yml
     - templates/redis-dep.yml
-  when: cnvrg_app.enabled == "true"
