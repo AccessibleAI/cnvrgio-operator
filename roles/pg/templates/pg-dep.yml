@@ -79,11 +79,17 @@ spec:
               name: postgres-data
             - mountPath: /dev/shm
               name: dshm
+            - name: pg-init
+              mountPath: /usr/share/container-scripts/postgresql/init/
           resources:
             requests:
               cpu: "{{ pg.cpu_request }}"
               memory: "{{ pg.memory_request }}"
       volumes:
+        - name: pg-init
+          configMap:
+            name: pg-init
+            defaultMode: 0755
         - name: postgres-data
           persistentVolumeClaim:
             claimName: "{{pg.svc_name}}"

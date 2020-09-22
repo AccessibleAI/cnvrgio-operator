@@ -10,3 +10,4 @@
     - templates/pg-pvc.yml
     - templates/pg-svc.yml
     - templates/pg-dep.yml
+    - templates/pg-configmap.yml

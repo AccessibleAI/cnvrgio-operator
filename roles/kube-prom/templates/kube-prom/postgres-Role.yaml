@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: prometheus-postgres-exporter
+  namespace: "{{ansible_operator_meta.namespace}}"
+  labels:
+    app: prometheus-postgres-exporter
+    chart: prometheus-postgres-exporter-1.3.3
+
+rules:
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [prometheus-postgres-exporter]

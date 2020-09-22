@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: prometheus-postgres-exporter
+  labels:
+    app: prometheus-postgres-exporter
+    chart: prometheus-postgres-exporter-1.3.3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-postgres-exporter
+subjects:
+- kind: ServiceAccount
+  name: prometheus-postgres-exporter
+  namespace: "{{ansible_operator_meta.namespace}}"

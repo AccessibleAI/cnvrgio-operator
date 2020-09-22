@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    exporter: postgres
+  name: prometheus-postgres-exporter
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  endpoints:
+  - targetPort: http
+    interval: 30s
+    path: /metrics
+    scrapeTimeout: 10s
+  jobLabel: prometheus-postgres-exporter
+  namespaceSelector:
+    matchNames:
+    - "{{ansible_operator_meta.namespace}}"
+  selector:
+    matchLabels:
+      app: prometheus-postgres-exporter
