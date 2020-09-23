@@ -57,14 +57,14 @@
     - import_role:
         name: pg
       vars:
-        role_state: "{{'present' if pg.enabled == 'true' else 'absent'}}"
+        role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: pg
 
     # Postgres deployment
     - import_role:
         name: pg_backup
       vars:
-         role_state: "{{'present' if pg_backup.enabled == 'true' else 'absent'}}"
+         role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: pg_backup
 
     # CnvrgApp deployment
@@ -78,7 +78,7 @@
     - import_role:
         name: redis
       vars:
-        role_state: "{{'present' if redis.enabled == 'true' else 'absent'}}"
+        role_state: "{{'present' if redis.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: redis
 
     # ElasticSearch deployment
@@ -92,7 +92,7 @@
     - import_role:
         name: minio
       vars:
-        role_state: "{{'present' if minio.enabled == 'true' else 'absent'}}"
+        role_state: "{{'present' if minio.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: minio
 
     # Fluentd deployment
