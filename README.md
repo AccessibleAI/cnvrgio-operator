@@ -158,6 +158,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`https.useWildcardCertificate`|true|
 |`https.cert`|-|
 |`https.key`|-|
+|`https.certSecret`|-|
 |`conf.enabled`|true|
 |`conf.gcpStorageSecret`|gcp-storage-secret|
 |`conf.gcpKeyfileMountPath`|/tmp/gcp_keyfile|
@@ -220,8 +221,17 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`pg.storageClass`|use-default|
 |`pg.cpuRequest`|1|
 |`pg.memoryRequest`|2Gi|
+|`pg.hugePages.enabled`|false|
+|`pg.hugePages.size`|-|
+|`pgBackup.storageSize`|30Gi|
+|`pgBackup.enabled`|false|
+|`pgBackup.name`|pg-backup|
+|`pgBackup.path`|/opt/cnvrg-backups|
+|`pgBackup.scriptPath`|/opt/script|
+|`pgBackup.storageClass`|use-default|
+|`pgBackup.cronTime`|1 1 * * *|
 |`es.enabled`|true|
-|`es.image`|docker.elastic.co/elasticsearch/elasticsearch:6.2.4|
+|`es.image`|docker.io/cnvrg/cnvrg-es:v7.8.1|
 |`es.maxMapImage`|docker.io/cnvrg/cnvrg-tools:v0.3|
 |`es.port`|9200|
 |`es.storageSize`|30Gi|
@@ -285,7 +295,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`kibana.enabled`|true|
 |`kibana.svcName`|kibana|
 |`kibana.port`|5601|
-|`kibana.image`|docker.elastic.co/kibana/kibana-oss:6.2.4|
+|`kibana.image`|docker.elastic.co/kibana/kibana-oss:7.8.1|
 |`kibana.nodePort`|30601|
 |`kibana.cpuRequest`|500m|
 |`kibana.memoryRequest`|500Mi|
@@ -318,7 +328,10 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`cnvrgApp.nodePort`|30080|
 |`cnvrgApp.sidekiqCpu`|1|
 |`cnvrgApp.sidekiqMemory`|2Gi|
-|`cnvrgApp.sidekiqReplicas`|1|
+|`cnvrgApp.sidekiqReplicas`|2|
+|`cnvrgApp.sidekiqSearchkickCpu`|1|
+|`cnvrgApp.sidekiqSearchkickMemory`|2Gi|
+|`cnvrgApp.sidekiqSearchkickReplicas`|1|
 |`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.23|
 |`seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update|
 |`nfs.enabled`|false|

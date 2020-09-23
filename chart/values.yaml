@@ -132,6 +132,9 @@ pg:
   storageClass: use-default
   cpuRequest: 1
   memoryRequest: 2Gi
+  hugePages:
+    enabled: false
+    size: ""
 pgBackup:
   storageSize: 30Gi
   enabled: "false"

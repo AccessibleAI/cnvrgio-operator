@@ -236,6 +236,9 @@ pg:
   memoryRequest: "{{.Values.computeProfiles.micro.pg.memory}}"
   {{- end }}
   svcName: "{{ .Values.pg.svcName }}"
+  hugePages:
+    enabled: "{{ .Values.pg.hugePages.enabled }}"
+    size: "{{ .Values.pg.hugePages.size }}"
 pgBackup:
   {{- if eq .Values.storageProfile "default"}}
   storageSize: "{{ .Values.pgBackup.storageSize }}"

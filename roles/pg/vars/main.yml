@@ -13,3 +13,6 @@ pg:
   storage_class: "use-default"
   cpu_request: 1
   memory_request: 2Gi
+  huge_pages:
+    enabled: "false"
+    size: "" # 2Mi,1Gi,etc... https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/
