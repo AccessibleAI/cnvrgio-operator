@@ -102,14 +102,6 @@
         role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
       tags: fluentd
 
-    # Prometheus deployment
-    - import_role:
-        name: kube-prom
-      vars:
-        role_state: "{{'present' if prometheus.enabled == 'true' else 'absent'}}"
-      when: prometheus.enabled == "true"
-      tags: prom
-
     # K8S Cluster Autoscaler deployment
     - import_role:
         name: autoscaler
@@ -153,3 +145,11 @@
         name: ingress
       when: ingress.enabled == 'true'
       tags: ingress
+
+    # Prometheus deployment
+    - import_role:
+        name: kube-prom
+      vars:
+        role_state: "{{'present' if prometheus.enabled == 'true' else 'absent'}}"
+      when: prometheus.enabled == "true"
+      tags: prom
