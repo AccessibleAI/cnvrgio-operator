@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: readiness-script
+  namespace: "{{ansible_operator_meta.namespace}}"
+data:
+  readiness-script.sh: |+
+    #!/bin/bash
+    set -x
+    status_code=$(curl --silent --fail "${ES_NETWORK_HOST}:9200/_index_template/fluentd" -o /dev/null -w "%{http_code}")
+    if [[ $status_code == 200 ]]; then
+      exit 0
+    fi
+    exit 1

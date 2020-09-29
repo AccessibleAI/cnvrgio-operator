@@ -35,10 +35,6 @@ spec:
               value: "http"
             - name: FLUENT_UID
               value: "0"
-            - name:  FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX
-              value: "cnvrg"
-            - name: FLUENT_ELASTICSEARCH_LOGSTASH_INDEX_NAME
-              value: "cnvrg"
           resources:
             limits:
               memory: "{{ fluentd.memory_limit }}"

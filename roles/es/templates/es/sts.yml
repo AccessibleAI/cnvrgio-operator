@@ -55,9 +55,31 @@ spec:
           requests:
             cpu: "{{ es.cpu_request }}"
             memory: "{{ es.memory_request }}"
+        readinessProbe:
+          exec:
+            command:
+            path: /_cluster/health
+            port: {{es.port}}
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: {{es.port}}
+          initialDelaySeconds: 5
+          periodSeconds: 20
+          failureThreshold: 5
         volumeMounts:
         - name: es-storage
           mountPath: "/usr/share/elasticsearch/data"
+        - name: elasticsearch-template
+          mountPath: /tmp/ilm_mapping.sh
+          subPath: ilm_mapping.sh
+      volumes:
+      - name: elasticsearch-template
+        configMap:
+          name: elasticsearch-template
   volumeClaimTemplates:
   - metadata:
       name: es-storage
