@@ -129,6 +129,12 @@ spec:
             - mountPath: /grafana-dashboard-definitions/0/sidekiq-exporter
               name: sidekiq-exporter
               readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/minio-exporter
+              name: minio-exporter
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/minio-exporter2
+              name: minio-exporter2
+              readOnly: false
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
@@ -222,3 +228,9 @@ spec:
         - configMap:
             name: sidekiq-exporter
           name: sidekiq-exporter
+        - configMap:
+            name: minio-exporter
+          name: minio-exporter
+        - configMap:
+            name: minio-exporter2
+          name: minio-exporter2

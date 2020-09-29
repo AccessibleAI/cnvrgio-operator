@@ -2,7 +2,7 @@
 minio:
   enabled: "true"
   replicas: 1
-  image: "docker.io/cnvrg/cnvrg-minio:RELEASE.2019-04-09T01-22-30Z.3"
+  image: "docker.io/minio/minio:RELEASE.2020-09-17T04-49-20Z"
   port: 9000
   storage_size: "100Gi"
   svc_name: "minio"
