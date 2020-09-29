@@ -55,6 +55,20 @@ spec:
           requests:
             cpu: "{{ es.cpu_request }}"
             memory: "{{ es.memory_request }}"
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: {{es.port}}
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: {{es.port}}
+          initialDelaySeconds: 5
+          periodSeconds: 20
+          failureThreshold: 5
         volumeMounts:
         - name: es-storage
           mountPath: "/usr/share/elasticsearch/data"
