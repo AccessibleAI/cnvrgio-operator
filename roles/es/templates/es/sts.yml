@@ -72,13 +72,6 @@ spec:
         volumeMounts:
         - name: es-storage
           mountPath: "/usr/share/elasticsearch/data"
-        - name: elasticsearch-template
-          mountPath: /tmp/ilm_mapping.sh
-          subPath: ilm_mapping.sh
-      volumes:
-      - name: elasticsearch-template
-        configMap:
-          name: elasticsearch-template
   volumeClaimTemplates:
   - metadata:
       name: es-storage
