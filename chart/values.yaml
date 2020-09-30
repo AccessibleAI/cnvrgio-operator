@@ -1,5 +1,5 @@
 createNs: true
-operatorImageTag: v0.366.1
+operatorImageTag: v0.366.2
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -230,7 +230,7 @@ fluentd:
   memoryLimit: 200Mi
 nvidiadp:
   enabled: "true"
-  image: nvidia/k8s-device-plugin:v0.7.0-rc.1-ubi8
+  image: nvidia/k8s-device-plugin:v0.7.0
   nodeSelector:
     enabled: "true"
     key: accelerator
