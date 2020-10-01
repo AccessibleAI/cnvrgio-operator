@@ -142,11 +142,15 @@ spec:
         app: mpi-operator
     spec:
       serviceAccountName: mpi-operator
+{% if mpi.registry.user|length > 0 %}
+      imagePullSecrets:
+        - name: {{ mpi.registry.name }}
+{% endif %}
       containers:
         - name: mpi-operator
-          image: cnvrg/custom:mpi-operator
+          image: "{{mpi.image}}"
           env:
             - name: KUBEFLOW_NAMESPACE
               value: "{{ansible_operator_meta.namespace}}"
-          args: ["-alsologtostderr", "--kubectl-delivery-image","mpioperator/kubectl-delivery:latest"]
+          args: ["-alsologtostderr", "--kubectl-delivery-image","{{ mpi.kubectl_delivery_image }}"]
           imagePullPolicy: Always

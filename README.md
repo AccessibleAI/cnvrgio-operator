@@ -155,9 +155,9 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`securityMode`|default|
 |`ingressType`|istio|
 |`https.enabled`|false|
-|`https.useWildcardCertificate`|true|
 |`https.cert`|-|
 |`https.key`|-|
+|`https.certSecret`|-|
 |`conf.enabled`|true|
 |`conf.gcpStorageSecret`|gcp-storage-secret|
 |`conf.gcpKeyfileMountPath`|/tmp/gcp_keyfile|
@@ -220,8 +220,15 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`pg.storageClass`|use-default|
 |`pg.cpuRequest`|1|
 |`pg.memoryRequest`|2Gi|
+|`pgBackup.storageSize`|30Gi|
+|`pgBackup.enabled`|false|
+|`pgBackup.name`|pg-backup|
+|`pgBackup.path`|/opt/cnvrg-backups|
+|`pgBackup.scriptPath`|/opt/script|
+|`pgBackup.storageClass`|use-default|
+|`pgBackup.cronTime`|1 1 * * *|
 |`es.enabled`|true|
-|`es.image`|docker.elastic.co/elasticsearch/elasticsearch:6.2.4|
+|`es.image`|docker.io/cnvrg/cnvrg-es:v7.8.1|
 |`es.maxMapImage`|docker.io/cnvrg/cnvrg-tools:v0.3|
 |`es.port`|9200|
 |`es.storageSize`|30Gi|
@@ -239,7 +246,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`es.javaOpts`|-|
 |`minio.enabled`|true|
 |`minio.replicas`|1|
-|`minio.image`|docker.io/cnvrg/cnvrg-minio:RELEASE.2019-04-09T01-22-30Z.3|
+|`minio.image`|docker.io/minio/minio:RELEASE.2020-09-17T04-49-20Z|
 |`minio.port`|9000|
 |`minio.storageSize`|100Gi|
 |`minio.svcName`|minio|
@@ -285,7 +292,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`kibana.enabled`|true|
 |`kibana.svcName`|kibana|
 |`kibana.port`|5601|
-|`kibana.image`|docker.elastic.co/kibana/kibana-oss:6.2.4|
+|`kibana.image`|docker.elastic.co/kibana/kibana-oss:7.8.1|
 |`kibana.nodePort`|30601|
 |`kibana.cpuRequest`|500m|
 |`kibana.memoryRequest`|500Mi|
@@ -300,11 +307,17 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`fluentd.memoryRequest`|200Mi|
 |`fluentd.memoryLimit`|200Mi|
 |`nvidiadp.enabled`|true|
-|`nvidiadp.image`|nvidia/k8s-device-plugin:v0.7.0-rc.1-ubi8|
+|`nvidiadp.image`|nvidia/k8s-device-plugin:v0.7.0|
 |`nvidiadp.nodeSelector.enabled`|true|
 |`nvidiadp.nodeSelector.key`|accelerator|
 |`nvidiadp.nodeSelector.value`|nvidia|
-|`mpi.enabled`|false|
+|`mpi.enabled`|true|
+|`mpi.image`|cnvrg/custom:mpi-operator|
+|`mpi.kubectlDeliveryImage`|mpioperator/kubectl-delivery:latest|
+|`mpi.registry.name`|mpi-private-registry|
+|`mpi.registry.url`|docker.io|
+|`mpi.registry.user`|-|
+|`mpi.registry.password`|-|
 |`cnvrgApp.replicas`|1|
 |`cnvrgApp.edition`|core|
 |`cnvrgApp.enabled`|true|
@@ -318,7 +331,10 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`cnvrgApp.nodePort`|30080|
 |`cnvrgApp.sidekiqCpu`|1|
 |`cnvrgApp.sidekiqMemory`|2Gi|
-|`cnvrgApp.sidekiqReplicas`|1|
+|`cnvrgApp.sidekiqReplicas`|2|
+|`cnvrgApp.sidekiqSearchkickCpu`|1|
+|`cnvrgApp.sidekiqSearchkickMemory`|2Gi|
+|`cnvrgApp.sidekiqSearchkickReplicas`|1|
 |`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.23|
 |`seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update|
 |`nfs.enabled`|false|

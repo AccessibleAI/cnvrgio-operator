@@ -11,7 +11,6 @@ ingress_type: "istio" # openshift | istio | k8singress | nodeport
 
 https:
   enabled: "false"
-  use_wildcard_certificate: "true"
   cert: ""
   key: ""
   cert_secret: "" #istio 

@@ -3,7 +3,8 @@
     crds:
       - templates/mpi/crds.yaml
     resources:
-      - templates/mpi/mpi.yaml
+      - templates/mpi/regcred.yml
+      - templates/mpi/mpi.yml
   block:
     # is state present, create crds in first step
     - name: Install MPI CRDs
