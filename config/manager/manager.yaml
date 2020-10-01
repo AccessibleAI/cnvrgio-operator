@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cnvrg-operator
+  labels:
+    control-plane: cnvrg-operator
+  namespace: cnvrg
+spec:
+  selector:
+    matchLabels:
+      control-plane: cnvrg-operator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        control-plane: cnvrg-operator
+    spec:
+      serviceAccountName: cnvrg-operator
+      containers:
+        - name: manager
+          image: controller:latest
+          args:
+            - "--enable-leader-election"
+            - "--leader-election-id=cnvrg-operator"
+            - "--leader-election-namespace=cnvrg"
+          env:
+            - name: ANSIBLE_JINJA2_NATIVE
+              value: "true"
+            - name: ANSIBLE_HASH_BEHAVIOUR
+              value: "merge"
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+      terminationGracePeriodSeconds: 10

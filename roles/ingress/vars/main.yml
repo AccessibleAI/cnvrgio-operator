@@ -1,0 +1,16 @@
+---
+ingress:
+  enabled: "true" #
+  descriptions:
+    ingress:
+      enabled: |
+        either create ingress rules or not based on `ingressType`,
+        if set to false,
+        none of the ingress rules will be created
+
+
+
+
+
+
+

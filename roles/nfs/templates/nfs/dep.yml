@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-client-provisioner
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: "{{ nfs.image }}"
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: "{{ nfs.provisioner }}"
+            - name: NFS_SERVER
+              value: "{{ nfs.server }}"
+            - name: NFS_PATH
+              value: "{{ nfs.path }}"
+          resources:
+            limits:
+              cpu: "{{ nfs.cpu_limit }}"
+              memory: "{{ nfs.memory_limit }}"
+            requests:
+              cpu: "{{ nfs.cpu_request }}"
+              memory: "{{ nfs.memory_request }}"
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: "{{ nfs.server }}"
+            path: "{{ nfs.path }}"

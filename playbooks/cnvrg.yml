@@ -1,0 +1,155 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: "Include vars"
+      include_vars: "{{ item }}"
+      with_items:
+        - vars/globals.yml
+        - ../roles/conf/vars/main.yml
+        - ../roles/redis/vars/main.yml
+        - ../roles/pg/vars/main.yml
+        - ../roles/pg_backup/vars/main.yml
+        - ../roles/es/vars/main.yml
+        - ../roles/minio/vars/main.yml
+        - ../roles/kube-prom/vars/main.yml
+        - ../roles/istio/vars/main.yml
+        - ../roles/kibana/vars/main.yml
+        - ../roles/fluentd/vars/main.yml
+        - ../roles/nvidiadp/vars/main.yml
+        - ../roles/mpi/vars/main.yml
+        - ../roles/app/vars/main.yml
+        - ../roles/nfs/vars/main.yml
+        - ../roles/hostpath/vars/main.yml
+        - ../roles/autoscaler/vars/main.yml
+        - ../roles/ingress/vars/main.yml
+        - ../roles/cnvrg_router/vars/main.yml
+      tags: always
+
+    # Cnvrg Nginx Router
+    - import_role:
+        name: cnvrg_router
+      vars:
+        role_state: "{{'present' if cnvrg_router.enabled == 'true' else 'absent'}}"
+      tags: cnvrg_router
+
+    # NFS provisioner deployment
+    - import_role:
+        name: nfs
+      vars:
+        role_state: "{{'present' if nfs.enabled == 'true' else 'absent'}}"
+      tags: nfs
+
+    # Hostpath provisioner deployment
+    - import_role:
+        name: hostpath
+      vars:
+        role_state: "{{'present' if hostpath.enabled == 'true' else 'absent'}}"
+      tags: hostpath
+
+    # Configuration deployment
+    - import_role:
+        name: conf
+      vars:
+        role_state: "{{'present' if conf.enabled == 'true' else 'absent'}}"
+      tags: conf
+
+    # Postgres deployment
+    - import_role:
+        name: pg
+      vars:
+        role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: pg
+
+    # Postgres deployment
+    - import_role:
+        name: pg_backup
+      vars:
+         role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: pg_backup
+
+    # CnvrgApp deployment
+    - import_role:
+        name: app
+      vars:
+        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: app
+
+    # Redis deployment
+    - import_role:
+        name: redis
+      vars:
+        role_state: "{{'present' if redis.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: redis
+
+    # ElasticSearch deployment
+    - import_role:
+        name: es
+      vars:
+        role_state: "{{'present' if es.enabled == 'true' else 'absent'}}"
+      tags: es
+
+    # Minio deployment
+    - import_role:
+        name: minio
+      vars:
+        role_state: "{{'present' if minio.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: minio
+
+    # Fluentd deployment
+    - import_role:
+        name: fluentd
+      vars:
+        role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
+      tags: fluentd
+
+    # K8S Cluster Autoscaler deployment
+    - import_role:
+        name: autoscaler
+      vars:
+        role_state: "{{'present' if autoscaler.enabled == 'true' else 'absent'}}"
+      tags: autoscaler
+
+    # Istio deployment
+    - import_role:
+        name: istio
+      vars:
+        role_state: "{{'present' if istio.enabled == 'true' else 'absent'}}"
+      when: istio.enabled == "true"
+      tags: istio
+
+    # Kibana deployment
+    - import_role:
+        name: kibana
+      vars:
+        role_state: "{{'present' if kibana.enabled == 'true' else 'absent'}}"
+      tags: kibana
+
+    # Nvidia device plugin
+    - import_role:
+        name: nvidiadp
+      vars:
+        role_state: "{{'present' if nvidiadp.enabled == 'true' else 'absent'}}"
+      when: nvidiadp.enabled == "true"
+      tags: nvidiadp
+
+    # MPI deployment
+    - import_role:
+        name: mpi
+      vars:
+        role_state: "{{'present' if mpi.enabled == 'true' else 'absent'}}"
+      when: mpi.enabled == "true"
+      tags: mpi
+
+    # Ingress rules deployment
+    - import_role:
+        name: ingress
+      when: ingress.enabled == 'true'
+      tags: ingress
+
+    # Prometheus deployment
+    - import_role:
+        name: kube-prom
+      vars:
+        role_state: "{{'present' if prometheus.enabled == 'true' else 'absent'}}"
+      when: prometheus.enabled == "true"
+      tags: prom

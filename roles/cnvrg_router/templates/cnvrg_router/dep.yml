@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cnvrg_router.svc_name}}
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{cnvrg_router.svc_name}}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{cnvrg_router.svc_name}}
+    spec:
+      containers:
+        - name: nginx
+          image: {{ cnvrg_router.image }}
+          ports:
+            - containerPort: {{cnvrg_router.port}}
+          volumeMounts:
+            - mountPath: /etc/nginx
+              readOnly: true
+              name: routing-config
+            - mountPath: /var/log/nginx
+              name: log
+      volumes:
+        - name: routing-config
+          configMap:
+            name: routing-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: log
+          emptyDir: {}

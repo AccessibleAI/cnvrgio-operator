@@ -1,0 +1,6 @@
+---
+- name: Create the mlops.cnvrg.io/v1.CnvrgApp
+  k8s:
+    state: present
+    namespace: "{{ namespace }}"
+    definition: "{{ lookup('template', 'templates/cnvrgapp.yaml')  }}"

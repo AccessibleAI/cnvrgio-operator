@@ -1,0 +1,8 @@
+domain: cnvrg.io
+layout: ansible.sdk.operatorframework.io/v1
+projectName: cnvrg-operator
+resources:
+- group: mlops
+  kind: CnvrgApp
+  version: v1
+version: 3-alpha

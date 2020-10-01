@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/dockerconfigjson
+metadata:
+  name: "cnvrg-registry"
+  namespace: {{ ansible_operator_meta.namespace }}
+data:
+  .dockerconfigjson: {{ _creds | b64encode }}

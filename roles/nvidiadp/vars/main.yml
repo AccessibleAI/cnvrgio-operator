@@ -1,0 +1,10 @@
+---
+# redis
+nvidiadp:
+  enabled: "true"
+  image: "nvidia/k8s-device-plugin:v0.7.0"
+  node_selector:
+    enabled: "true"
+    key: "accelerator"
+    value: "nvidia"
+

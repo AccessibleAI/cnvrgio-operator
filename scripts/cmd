@@ -1,0 +1,10 @@
+For OCP following permission required
+```bash
+oc adm policy add-scc-to-user privileged system:serviceaccount:cnvrg:cnvrg-privileged
+oc adm policy add-scc-to-user privileged system:serviceaccount:cnvrg:fluentd
+oc adm policy add-scc-to-user privileged system:serviceaccount:cnvrg:node-exporter
+oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:grafana
+oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:kube-state-metrics
+oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:prometheus-operator
+oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:prometheus-k8s
+```

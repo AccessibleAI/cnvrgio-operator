@@ -1,0 +1,33 @@
+- include_vars: ../../minio/vars/main.yml
+- include_vars: ../../pg/vars/main.yml
+- include_vars: ../../es/vars/main.yml
+- include_vars: ../../redis/vars/main.yml
+- include_vars: ../../app/vars/main.yml
+
+- name: Deploy app configs
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/conf/rbac.yml
+    - templates/conf/regcred.yml
+    - templates/conf/cm.yml
+    - templates/conf/secret.yml
+
+- name: Create priveleged user
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/conf/privileged_sa.yml
+  when: es.patch_es_nodes == "true"
+    
+
+
+

@@ -1,0 +1,9 @@
+---
+pg_backup:
+  storage_size: "30Gi"
+  enabled: "false"
+  name: "pg-backup"
+  path: "/opt/cnvrg-backups"
+  script_path: "/opt/script"
+  storage_class: "use-default"
+  cron_time: "1 1 * * *"

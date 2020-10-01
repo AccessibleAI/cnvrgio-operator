@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "{{kibana.svc_name}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  rules:
+    - host: "{{(kibana.svc_name + '.' + cluster_domain).split(':')[0] }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{kibana.svc_name}}"
+              servicePort: {{kibana.port}}

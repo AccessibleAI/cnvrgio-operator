@@ -1,0 +1,12 @@
+---
+mpi:
+  enabled: "true"
+  image: "cnvrg/custom:mpi-operator"
+  kubectl_delivery_image: "mpioperator/kubectl-delivery:latest"
+  registry:
+    name: "mpi-private-registry"
+    url: "docker.io"
+    user: ""
+    password: ""
+_mpi_registry_creds: |
+  '{"auths": {"{{mpi.registry.url}}": {"username":"{{mpi.registry.user}}","password":"{{ mpi.registry.password }}","auth":"{{(mpi.registry.user +':'+ mpi.registry.password) | b64encode}}"}}}'

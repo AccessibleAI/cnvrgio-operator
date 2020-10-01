@@ -1,0 +1,80 @@
+# Install  PG
+- name: Install ElasticSearch
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/es/svc.yml
+    - templates/es/sts.yml
+    - templates/es/job.yml
+    - templates/es/ilm_configmap.yml
+
+- name: Patch nodes with sysctl -w vm.max_map_count=262144 for ES
+  vars:
+    es_nodelist: []
+    nodes_hostnames: []
+    nodes: []
+
+  block:
+
+    - name: Get ElasticSearch pod
+      k8s_info:
+        kind: Pod
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        label_selectors:
+          - app = {{es.svc_name}}
+      register: elastic_pods
+
+    - name: Print elastic_pod
+      debug:
+        msg: "{{ elastic_pods | to_nice_yaml()  }}"
+
+    - name: Construct list of nodes where ES pods are running
+      set_fact:
+        es_nodelist: "{{ es_nodelist + [item.spec.nodeName] }}"
+      when: item.spec.nodeName is defined
+      loop: "{{ elastic_pods.resources }}"
+
+    - name: Get all k8s nodes
+      k8s_info:
+        kind: Node
+        namespace: "{{ ansible_operator_meta.namespace }}"
+      register: k8s_hodes
+
+    - name: Construct list of nodes names
+      set_fact:
+        nodes: "{{ nodes  + [item.metadata.name] }}"
+      loop: "{{ k8s_hodes.resources }}"
+
+    - name: Debug - nodes
+      debug:
+        msg: "Nodes kubernetes.io/hostname labels: {{nodes}}"
+
+    - name: Construct list of nodes label 'kubernetes.io/hostname' where es pods running
+      set_fact:
+        nodes_hostnames: "{{ nodes_hostnames + [item.metadata.labels['kubernetes.io/hostname']] }}"
+      when:
+        - es_nodelist is defined
+        - item.metadata.name in es_nodelist
+      loop: "{{ k8s_hodes.resources }}"
+
+    - name: Debug - nodes
+      debug:
+        msg: "Nodes kubernetes.io/hostname labels: {{nodes_hostnames}}"
+      when: nodes_hostnames is defined
+
+    - name: Create es_max_map_count_pod
+      k8s:
+        state: "present"
+        definition: "{{ lookup('template', 'templates/es/max_map_count_pod.yml', template_vars=dict(node_name='{{item}}',pod_name='max-map-count-pod-{{index}}')) }} "
+      loop: "{{ nodes_hostnames }}"
+      loop_control:
+        index_var: index
+      when: nodes_hostnames is defined
+
+  when:
+    - es.patch_es_nodes == "true"
+    - dry_run == "false"

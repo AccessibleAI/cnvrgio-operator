@@ -1,0 +1,28 @@
+- include_vars: ../../conf/vars/main.yml
+
+- name: Create Minio NAS GW Shared Storage
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/minio/pv-nas-gw.yml
+  when:
+  - app_secrets.cnvrg_storage_type == "minio"
+  - minio.shared_storage.enabled == "true"
+
+- name: Install Minio
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/minio/svc.yml
+    - templates/minio/pvc.yml
+    - templates/minio/dep.yml
+  when: app_secrets.cnvrg_storage_type == "minio"
+

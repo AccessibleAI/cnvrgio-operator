@@ -1,0 +1,7 @@
+.idea
+.travis.yml
+.DS_Store
+deploy/cert-mngr
+bin/
+config/samples/private-samples
+update_version.sh

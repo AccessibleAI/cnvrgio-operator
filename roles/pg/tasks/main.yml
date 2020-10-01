@@ -1,0 +1,12 @@
+# Install  PG
+- name: Install Postgres
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+    - templates/pg-pvc.yml
+    - templates/pg-svc.yml
+    - templates/pg-dep.yml

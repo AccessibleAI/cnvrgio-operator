@@ -1,0 +1,10 @@
+---
+# Use the 'create api' subcommand to add watches to this file.
+- version: v1
+  group: mlops.cnvrg.io
+  kind: CnvrgApp
+  playbook: playbooks/cnvrg.yml
+  finalizer:
+    name: finalizer.cnvrgapp.cnvrg.io
+    role: finalaizer
+# +kubebuilder:scaffold:watch

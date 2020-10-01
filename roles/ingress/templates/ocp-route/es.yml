@@ -1,0 +1,24 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{es.svc_name}}
+  namespace: {{ ansible_operator_meta.namespace }}
+  labels:
+    app: {{es.svc_name}}
+spec:
+  host: "{{(es.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  port:
+    targetPort: {{es.port}}
+  to:
+    kind: Service
+    name: {{es.svc_name}}
+    weight: 100
+{% if https.enabled == "true" %}
+  tls:
+    termination: edge
+    certificate: |
+      {{https.cert | b64decode | indent(6) }}
+    key: |
+      {{https.key | b64decode| indent(6) }}
+    insecureEdgeTerminationPolicy: Redirect
+{% endif %}

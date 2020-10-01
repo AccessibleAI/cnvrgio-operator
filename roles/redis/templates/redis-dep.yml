@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{redis.svc_name}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{redis.svc_name}}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{redis.svc_name}}"
+  template:
+    metadata:
+      labels:
+        app: "{{redis.svc_name}}"
+    spec:
+      containers:
+        - image: "{{redis.image}}"
+          name: redis
+          ports:
+            - containerPort: {{redis.port}}
+          resources:
+            limits:
+              cpu: "{{redis.limits.cpu}}"
+              memory: "{{redis.limits.memory}}"
+            requests:
+              cpu: "{{redis.requests.cpu}}"
+              memory: "{{redis.requests.memory}}"

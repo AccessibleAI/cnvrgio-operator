@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana
+  name: "{{grafana.svc_name}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+{% if ingress_type == "nodeport" %}
+  type: NodePort
+{% endif %}
+  ports:
+  - name: http
+    port: {{grafana.port}}
+    targetPort: http
+{% if ingress_type == "nodeport" %}
+    nodePort: {{ grafana.node_port }}
+{% endif %}
+  selector:
+    app: grafana

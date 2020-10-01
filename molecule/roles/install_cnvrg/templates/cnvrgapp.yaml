@@ -1,0 +1,13 @@
+# defaults file for install_cnvrg
+apiVersion: "{{ apiVersion }}"
+kind: "{{ kind }}"
+metadata:
+  name: "{{ metadata.name }}"
+  namespace:  "{{ namespace }}"
+spec:
+  clusterDomain: "{{ spec.clusterDomain }}"
+  cnvrgApp:
+    intercom: "{{ spec.cnvrgApp.intercom }}"
+    image: "{{ spec.cnvrgApp.image }}"
+  pgBackup:
+    enabled: "{{ spec.pgBackup.enabled }}"

@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: "{{istio.gw_name}}"
+  namespace: {{ ansible_operator_meta.namespace }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "{{('*.' + cluster_domain).split(':')[0] }}"
+{% if https.enabled == "true" and https.cert_secret != "" %}
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - "{{('*.' + cluster_domain).split(':')[0] }}"
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: "{{ https.cert_secret }}"
+{% endif %}
