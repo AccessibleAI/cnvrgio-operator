@@ -236,7 +236,14 @@ nvidiadp:
     key: accelerator
     value: nvidia
 mpi:
-  enabled: "false"
+  enabled: "true"
+  image: "cnvrg/custom:mpi-operator"
+  kubectlDeliveryImage: "mpioperator/kubectl-delivery:latest"
+  registry:
+    name: "mpi-private-registry"
+    url: "docker.io"
+    user: ""
+    password: ""
 cnvrgApp:
   replicas: 1
   sidekiqReplicas: 2
