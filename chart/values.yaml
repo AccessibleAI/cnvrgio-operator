@@ -142,7 +142,7 @@ pgBackup:
   cronTime: "1 1 * * *"
 es:
   enabled: "true"
-  image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"
+  image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
   maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
   port: "9200"
   storageSize: 30Gi
@@ -213,7 +213,7 @@ kibana:
   enabled: "true"
   svcName: kibana
   port: 5601
-  image: "docker.elastic.co/kibana/kibana-oss:6.2.4"
+  image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
   nodePort: 30601
   cpuRequest: 500m
   memoryRequest: 500Mi

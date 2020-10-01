@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ilm-config
+  namespace: "{{ansible_operator_meta.namespace}}"
+data:
+  ilm_mapping.sh: |+
+    #!/bin/bash
+    set -x
+    while true
+    do
+      status_code=$(curl --silent --fail "{{es.svc_name}}:{{es.port}}/_cluster/health?wait_for_status=yellow&timeout=1s&pretty" -o /dev/null -w "%{http_code}")
+      if [[ $status_code == 200 ]]; then
+        break
+      fi
+      sleep 10
+    done
+    set -e
+    #_index_template
+    curl -XPUT "{{es.svc_name}}:{{es.port}}/_index_template/fluentd" -H 'Content-Type: application/json' -d '{  "index_patterns": ["fluentd*"],  "template": {    "settings": {      "number_of_shards" : 1,      "number_of_replicas" : 0,      "index.lifecycle.name": "fluentd"              }  }}'
+    #_cluster/settings
+    curl -XPUT "{{es.svc_name}}:{{es.port}}/_cluster/settings" -H 'Content-Type: application/json' -d '{  "transient": {    "logger.org.elasticsearch.xpack.core.indexlifecycle": "TRACE",    "logger.org.elasticsearch.xpack.indexlifecycle": "TRACE",    "logger.org.elasticsearch.xpack.core.ilm": "TRACE",    "logger.org.elasticsearch.xpack.ilm": "TRACE",    "indices.lifecycle.poll_interval": "10m"  }}'
+    #_ilm/policy/fluentd
+    curl -XPUT "{{es.svc_name}}:{{es.port}}/_ilm/policy/fluentd" -H 'Content-Type: application/json' -d '{  "policy": {    "phases": {      "hot": {        "actions": {          "set_priority": {            "priority": 100          }        }      },      "delete": {        "min_age": "14d",        "actions": {          "delete": {}        }      }    }  }}'
