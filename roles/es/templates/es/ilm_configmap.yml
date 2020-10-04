@@ -17,8 +17,8 @@ data:
     done
     set -e
     #_index_template
-    curl -XPUT "{{es.svc_name}}:{{es.port}}/_index_template/fluentd" -H 'Content-Type: application/json' -d '{  "index_patterns": ["fluentd*"],  "template": {    "settings": {      "number_of_shards" : 1,      "number_of_replicas" : 0,      "index.lifecycle.name": "fluentd"              }  }}'
+    curl -XPUT "{{es.svc_name}}:{{es.port}}/_index_template/cnvrg" -H 'Content-Type: application/json' -d '{  "index_patterns": ["cnvrg*"],  "template": {    "settings": {      "number_of_shards" : 1,      "number_of_replicas" : 0,      "index.lifecycle.name": "cnvrg"              }  }}'
     #_cluster/settings
     curl -XPUT "{{es.svc_name}}:{{es.port}}/_cluster/settings" -H 'Content-Type: application/json' -d '{  "transient": {    "logger.org.elasticsearch.xpack.core.indexlifecycle": "TRACE",    "logger.org.elasticsearch.xpack.indexlifecycle": "TRACE",    "logger.org.elasticsearch.xpack.core.ilm": "TRACE",    "logger.org.elasticsearch.xpack.ilm": "TRACE",    "indices.lifecycle.poll_interval": "10m"  }}'
-    #_ilm/policy/fluentd
-    curl -XPUT "{{es.svc_name}}:{{es.port}}/_ilm/policy/fluentd" -H 'Content-Type: application/json' -d '{  "policy": {    "phases": {      "hot": {        "actions": {          "set_priority": {            "priority": 100          }        }      },      "delete": {        "min_age": "14d",        "actions": {          "delete": {}        }      }    }  }}'
+    #_ilm/policy/cnvrg
+    curl -XPUT "{{es.svc_name}}:{{es.port}}/_ilm/policy/cnvrg" -H 'Content-Type: application/json' -d '{  "policy": {    "phases": {      "hot": {        "actions": {          "set_priority": {            "priority": 100          }        }      },      "delete": {        "min_age": "14d",        "actions": {          "delete": {}        }      }    }  }}'
