@@ -9,8 +9,8 @@
   with_items:
     - templates/es/svc.yml
     - templates/es/sts.yml
-    - templates/es/job.yml
-    - templates/es/ilm_configmap.yml
+    # - templates/es/job.yml
+    # - templates/es/ilm_configmap.yml
 
 - name: Patch nodes with sysctl -w vm.max_map_count=262144 for ES
   vars:
