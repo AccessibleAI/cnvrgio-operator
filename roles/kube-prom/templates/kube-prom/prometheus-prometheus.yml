@@ -37,8 +37,10 @@ spec:
 {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
   nodeSelector:
     kubernetes.io/hostname: "{{ hostpath.node_name }}"
-{% endif %}
-{% if hostpath.enabled == "true" and tenancy.enabled == "true" %}
+{% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+  nodeSelector:
+    {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
   nodeSelector:
     kubernetes.io/hostname: "{{ hostpath.node_name }}"
     {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
