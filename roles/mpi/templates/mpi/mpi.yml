@@ -142,9 +142,16 @@ spec:
         app: mpi-operator
     spec:
       serviceAccountName: mpi-operator
-{% if mpi.registry.user|length > 0 %}
-      imagePullSecrets:
-        - name: {{ mpi.registry.name }}
+{%  if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{%  endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
 {% endif %}
       containers:
         - name: mpi-operator

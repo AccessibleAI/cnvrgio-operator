@@ -26,6 +26,19 @@ spec:
   components:
     base:
       enabled: true
+{%  if tenancy.enabled == "true" %}
+      nodeSelectorTerms:
+      - key: "{{ tenancy.cnvrg.key }}"
+        value: "{{ tenancy.cnvrg.value }}"
+        operator: "Equal"
+{% endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
     citadel:
       enabled: false
       k8s:

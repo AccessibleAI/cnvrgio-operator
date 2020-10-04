@@ -15,15 +15,27 @@ spec:
       labels:
         app: "{{minio.svc_name}}"
     spec:
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
 {% if security_mode == "default" %}
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
 {% endif %}
-{% if hostpath.enabled == "true" %}
+{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
         kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+{% if hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {% endif %}
       containers:
         - name: minio

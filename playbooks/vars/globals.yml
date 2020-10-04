@@ -9,6 +9,16 @@ orchestrator: "k8s" # k8s | ocp
 security_mode: "default" # default | ocp
 ingress_type: "istio" # openshift | istio | k8singress | nodeport
 
+tenancy:
+  enabled: "false"
+  dedicated_nodes: "false"
+  cnvrg:
+    key: "cnvrg-taint"
+    value: "true"
+  minio:
+    key: "minio-taint"
+    value: "true"
+
 https:
   enabled: "false"
   cert: ""

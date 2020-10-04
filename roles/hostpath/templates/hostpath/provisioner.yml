@@ -14,6 +14,22 @@ spec:
       labels:
         k8s-app: hostpath-provisioner
     spec:
+{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+{% if hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{% endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
       serviceAccountName: hostpath-provisioner-admin
       containers:
         - name: hostpath-provisioner

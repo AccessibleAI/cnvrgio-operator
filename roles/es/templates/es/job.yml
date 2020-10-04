@@ -6,6 +6,22 @@ metadata:
 spec:
   template:
     spec:
+{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+{% endif %}
+{% if hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{% endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
       serviceAccountName: "{{rbac.service_account_name}}"
       containers:
       - name: ilm-mapping
@@ -14,7 +30,6 @@ spec:
         volumeMounts:
           - name: ilm-config
             mountPath: /tmp
-            # subPath: ilm_mapping.sh
       volumes:
       - name: ilm-config
         configMap:

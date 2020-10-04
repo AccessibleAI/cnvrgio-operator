@@ -20,6 +20,17 @@ spec:
         app.kubernetes.io/name: prometheus-operator
         app.kubernetes.io/version: v0.38.1
     spec:
+{%  if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{%  endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
       containers:
       - args:
         - --kubelet-service=kube-system/kubelet
