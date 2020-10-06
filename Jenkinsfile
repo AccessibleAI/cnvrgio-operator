@@ -3,7 +3,7 @@ pipeline {
     options { timestamps() }
     environment {
         IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
-        IMAGE_TAG           = "${env.BRANCH_NA}-$BUILD_NUMBER"
+        IMAGE_TAG           = "${env.BRANCH_NAME}-$BUILD_NUMBER"
     }
     stages {
         stage('Cleanup Workspace') {
