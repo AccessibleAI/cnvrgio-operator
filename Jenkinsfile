@@ -24,11 +24,15 @@ pipeline {
         stage('build image') {
             steps {
                 script {
-                    echo "========================================="
-                    echo "${IMAGE_NAME}:${IMAGE_TAG}"
-                    echo "========================================="
                     sh "ls -all"
-                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build && make docker-push"
+                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
+                }
+            }
+        }
+        stage('push image') {
+            steps {
+                script {
+                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-push"
                 }
             }
         }
