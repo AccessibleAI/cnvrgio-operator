@@ -5,3 +5,4 @@ deploy/cert-mngr
 bin/
 config/samples/private-samples
 update_version.sh
+*/__pycache__*

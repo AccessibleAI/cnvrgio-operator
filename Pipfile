@@ -16,9 +16,8 @@ pandas = "*"
 inflection = "*"
 html-testrunner = "*"
 ansible = "*"
-
-[requires]
-python_version = "3.8"
+kubernetes = "*"
+coloredlogs = "*"
 
 [scripts]
 op = "ansible-operator run"

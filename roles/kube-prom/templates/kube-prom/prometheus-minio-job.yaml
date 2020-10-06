@@ -3,6 +3,8 @@ kind: Job
 metadata:
   name: minio-exporter-token
   namespace: "{{ansible_operator_meta.namespace}}"
+  labels:
+    app: minio-exporter-token
 spec:
   template:
     spec:

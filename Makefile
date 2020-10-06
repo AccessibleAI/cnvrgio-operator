@@ -32,9 +32,11 @@ uninstall: kustomize
 deploy: kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	kubectl wait --for=condition=ready pod -l control-plane=cnvrg-operator -ncnvrg --timeout=120s
 
 # Undeploy controller in the configured Kubernetes cluster in ~/.kube/config
 undeploy: kustomize
+	kubectl delete cnvrgapps.mlops.cnvrg.io --all -ncnvrg --ignore-not-found
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
 # Build the docker image
