@@ -10,18 +10,6 @@ pipeline {
             steps {
                 cleanWs()
                 sh "echo 'Cleaned Up Workspace For Project'"
-                sh "echo 'Cleaned Up Workspace For Project'"
-                sh "echo 'Cleaned Up Workspace For Project'"
-                sh "echo 'Cleaned Up Workspace For Project'"
-            }
-        }
-        stage('Code Checkout') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: scm.branches,
-                    userRemoteConfigs: [[url: 'https://github.com/AccessibleAI/cnvrgio-operator.git']]
-                ])
             }
         }
         stage('build image') {
