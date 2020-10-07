@@ -68,7 +68,7 @@ pipeline {
                     -v ${workspace}:/root \
                     -v ${workspace}/kubeconfig:/root/.kube/config \
                     cnvrg/cnvrg-operator-test-runtime:latest \
-                    python tests/run_tests.py --test_discovery_pattern ${testDiscoveryPattern}
+                    python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
                     """
                 }
             }
