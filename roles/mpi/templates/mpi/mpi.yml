@@ -140,7 +140,7 @@ spec:
           "-alsologtostderr",
           "--kubectl-delivery-image",
           "{{ mpi.kubectl_delivery_image }}",
-          "--lock-namespace"
+          "--lock-namespace",
           "{{ansible_operator_meta.namespace}}"
         ]
         imagePullPolicy: Always
