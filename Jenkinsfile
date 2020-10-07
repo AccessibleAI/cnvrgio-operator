@@ -60,7 +60,7 @@ pipeline {
                     def testDiscoveryPattern = "test_*"
                     if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
                         testDiscoveryPattern = env.BRANCH_NAME
-                        testDiscoveryPattern = "${testDiscoveryPattern}".replaceAll("-","_").replaceAll()
+                        testDiscoveryPattern = "${testDiscoveryPattern}".replaceAll("-","_")
                     }
                     echo "${testDiscoveryPattern}"
 //                     sh """
