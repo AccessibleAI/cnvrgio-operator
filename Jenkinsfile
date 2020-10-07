@@ -78,6 +78,14 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
                         echo "${ACCOUNT_KEY}"
+                        sh """
+                        az storage blob upload \
+                         --account-name operatortestreports \
+                         --container-name reports \
+                         --name pipfile.html \
+                         --file Pipfile \
+                         --account-key ${ACCOUNT_KEY}
+                        """
                     }
                 }
             }
