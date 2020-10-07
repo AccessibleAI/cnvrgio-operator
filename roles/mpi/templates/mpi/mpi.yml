@@ -1,108 +1,94 @@
----
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: mpi-operator
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - configmaps
-      - serviceaccounts
-    verbs:
-      - create
-      - list
-      - watch
-  # This is needed for the launcher Role.
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - get
-      - list
-      - watch
-  # This is needed for the launcher Role.
-  - apiGroups:
-      - ""
-    resources:
-      - pods/exec
-    verbs:
-      - create
-  - apiGroups:
-      - ""
-    resources:
-      - endpoints
-    verbs:
-      - create
-      - get
-      - update
-  - apiGroups:
-      - ""
-    resources:
-      - events
-    verbs:
-      - create
-      - patch
-  - apiGroups:
-      - rbac.authorization.k8s.io
-    resources:
-      - roles
-      - rolebindings
-    verbs:
-      - create
-      - list
-      - watch
-  - apiGroups:
-      - policy
-    resources:
-      - poddisruptionbudgets
-    verbs:
-      - create
-      - list
-      - update
-      - watch
-  - apiGroups:
-      - apps
-    resources:
-      - statefulsets
-    verbs:
-      - create
-      - list
-      - update
-      - watch
-  - apiGroups:
-      - batch
-    resources:
-      - jobs
-    verbs:
-      - create
-      - list
-      - update
-      - watch
-  - apiGroups:
-      - apiextensions.k8s.io
-    resources:
-      - customresourcedefinitions
-    verbs:
-      - create
-      - get
-  - apiGroups:
-      - kubeflow.org
-    resources:
-      - mpijobs
-      - mpijobs/finalizers
-      - mpijobs/status
-    verbs:
-      - "*"
-  - apiGroups:
-      - scheduling.incubator.k8s.io
-      - scheduling.sigs.dev
-    resources:
-      - queues
-      - podgroups
-    verbs:
-      - "*"
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - serviceaccounts
+  verbs:
+  - create
+  - list
+  - watch
+# This is needed for the launcher Role.
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - delete
+  - update
+  - patch
+# This is needed for the launcher Role.
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - create
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  verbs:
+  - create
+  - list
+  - watch
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - create
+  - list
+  - update
+  - watch
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - get
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - mpijobs
+  - mpijobs/finalizers
+  - mpijobs/status
+  verbs:
+  - "*"
+- apiGroups:
+  - scheduling.incubator.k8s.io
+  - scheduling.sigs.dev
+  - scheduling.volcano.sh
+  resources:
+  - queues
+  - podgroups
+  verbs:
+  - "*"
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -120,9 +106,9 @@ roleRef:
   kind: ClusterRole
   name: mpi-operator
 subjects:
-  - kind: ServiceAccount
-    name: mpi-operator
-    namespace: "{{ansible_operator_meta.namespace}}"
+- kind: ServiceAccount
+  name: mpi-operator
+  namespace: "{{ansible_operator_meta.namespace}}"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -141,16 +127,20 @@ spec:
       labels:
         app: mpi-operator
     spec:
-      serviceAccountName: mpi-operator
 {% if mpi.registry.user|length > 0 %}
       imagePullSecrets:
         - name: {{ mpi.registry.name }}
 {% endif %}
+      serviceAccountName: mpi-operator
       containers:
-        - name: mpi-operator
-          image: "{{mpi.image}}"
-          env:
-            - name: KUBEFLOW_NAMESPACE
-              value: "{{ansible_operator_meta.namespace}}"
-          args: ["-alsologtostderr", "--kubectl-delivery-image","{{ mpi.kubectl_delivery_image }}"]
-          imagePullPolicy: Always
+      - name: mpi-operator
+        image: "{{mpi.image}}"
+        command: ["/opt/mpi-operator.v1"]
+        args: [
+          "-alsologtostderr",
+          "--kubectl-delivery-image",
+          "{{ mpi.kubectl_delivery_image }}",
+          "--lock-namespace"
+          "{{ansible_operator_meta.namespace}}"
+        ]
+        imagePullPolicy: Always
