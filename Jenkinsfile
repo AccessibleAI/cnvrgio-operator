@@ -62,6 +62,7 @@ pipeline {
                         testDiscoveryPattern = env.BRANCH_NAME
                         testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
                     }
+
                     sh """
                     docker run \
                     -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
