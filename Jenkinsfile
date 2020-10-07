@@ -54,8 +54,8 @@ pipeline {
                 }
             }
         }
-        try{
-            stage('run tests') {
+        stage('run tests') {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                 steps {
                     script {
                         def testDiscoveryPattern = "test_*"
@@ -74,9 +74,6 @@ pipeline {
                     }
                 }
             }
-        }
-        catch(e) {
-            echo e.toString()
         }
         stage('store tests report ') {
             steps {
