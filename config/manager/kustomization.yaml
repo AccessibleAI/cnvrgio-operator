@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: docker.io/cnvrg/cnvrg-operator
-  newTag: customize-mpi-operator
+  newTag: taint-DOP-392.1
