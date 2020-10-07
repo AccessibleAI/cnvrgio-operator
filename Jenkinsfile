@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                     def testDiscoveryPattern = "test_*"
-                    if (env.BRANCH_NAME != "develop" || env.BRANCH_NAME != "master"){
+                    if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
                         testDiscoveryPattern = env.BRANCH_NAME
                     }
                     echo "${testDiscoveryPattern}"
