@@ -62,14 +62,14 @@ pipeline {
                         testDiscoveryPattern = env.BRANCH_NAME
                         testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
                     }
-                    echo "${testDiscoveryPattern}"
-//                     sh """
-//                     docker run \
-//                     -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
-//                     -v ${workspace}:/root \
-//                     -v ${workspace}/kubeconfig:/root/.kube/config \
-//                     cnvrg/cnvrg-operator-test-runtime:latest
-//                     """
+                    sh """
+                    docker run \
+                    -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -v ${workspace}:/root \
+                    -v ${workspace}/kubeconfig:/root/.kube/config \
+                    cnvrg/cnvrg-operator-test-runtime:latest \
+                    python tests/run_tests.py --test_discovery_pattern ${testDiscoveryPattern}
+                    """
                 }
             }
         }
