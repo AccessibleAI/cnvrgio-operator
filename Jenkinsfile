@@ -58,11 +58,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker run \
-                        -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
-                        -v $(pwd):/root \
-                        -v $(pwd)/kubeconfig:/root/.kube/config \
-                        cnvrg/cnvrg-operator-test-runtime:latest
+                        docker run -eIMG=${IMAGE_NAME}:${IMAGE_TAG} -v $(pwd):/root -v $(pwd)/kubeconfig:/root/.kube/config cnvrg/cnvrg-operator-test-runtime:latest
                     """
                 }
             }
