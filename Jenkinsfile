@@ -60,15 +60,16 @@ pipeline {
                     def testDiscoveryPattern = "test_*"
                     if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
                         testDiscoveryPattern = env.BRANCH_NAME
+                        testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
                     }
-                    echo "${testDiscoveryPattern}"
-//                     sh """
-//                     docker run \
-//                     -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
-//                     -v ${workspace}:/root \
-//                     -v ${workspace}/kubeconfig:/root/.kube/config \
-//                     cnvrg/cnvrg-operator-test-runtime:latest
-//                     """
+                    sh """
+                    docker run \
+                    -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -v ${workspace}:/root \
+                    -v ${workspace}/kubeconfig:/root/.kube/config \
+                    cnvrg/cnvrg-operator-test-runtime:latest \
+                    python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
+                    """
                 }
             }
         }
