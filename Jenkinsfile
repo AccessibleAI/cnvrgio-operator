@@ -71,6 +71,9 @@ pipeline {
                     python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
                     """
                 }
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+                    sh "exit 1"
+                }
             }
         }
         stage('store tests report ') {
