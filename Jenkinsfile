@@ -56,7 +56,7 @@ pipeline {
         stage('run tests') {
             steps {
                 script {
-
+                    echo "running tests"
                 }
             }
         }
