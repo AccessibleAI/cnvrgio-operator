@@ -55,8 +55,8 @@ pipeline {
             }
         }
         stage('run tests') {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                steps {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script {
                         def testDiscoveryPattern = "test_*"
                         if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
