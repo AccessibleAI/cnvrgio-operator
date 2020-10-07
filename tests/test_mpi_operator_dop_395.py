@@ -55,7 +55,6 @@ class CnvrgTaintsTest(unittest.TestCase, CommonBase):
             cls.delete_cnvrg_spec()
             cls.undeploy()
 
-
     def test_mpi_operator(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=mpi-operator")
