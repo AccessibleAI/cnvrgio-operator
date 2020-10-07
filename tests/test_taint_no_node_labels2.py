@@ -1,8 +1,11 @@
 import unittest
-import HtmlTestRunner
+from common import CommonBase
+from kubernetes import client, config
+
+config.load_kube_config()
 
 
-class MyTestCase2(unittest.TestCase):
+class CnvrgTaintsTest2(unittest.TestCase, CommonBase):
+
     def test_something(self):
         self.assertEqual(True, True)
-
