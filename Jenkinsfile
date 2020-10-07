@@ -54,27 +54,29 @@ pipeline {
                 }
             }
         }
-        stage('run tests') {
-            steps {
-                script {
-                    def testDiscoveryPattern = "test_*"
-                    if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
-                        testDiscoveryPattern = env.BRANCH_NAME
-                        testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
+        try{
+            stage('run tests') {
+                steps {
+                    script {
+                        def testDiscoveryPattern = "test_*"
+                        if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
+                            testDiscoveryPattern = env.BRANCH_NAME
+                            testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
+                        }
+                        sh """
+                        docker run \
+                        -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+                        -v ${workspace}:/root \
+                        -v ${workspace}/kubeconfig:/root/.kube/config \
+                        cnvrg/cnvrg-operator-test-runtime:latest \
+                        python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
+                        """
                     }
-                    sh """
-                    docker run \
-                    -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
-                    -v ${workspace}:/root \
-                    -v ${workspace}/kubeconfig:/root/.kube/config \
-                    cnvrg/cnvrg-operator-test-runtime:latest \
-                    python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
-                    """
-                }
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
-                    sh "exit 1"
                 }
             }
+        }
+        catch(e) {
+            echo e.toString()
         }
         stage('store tests report ') {
             steps {
