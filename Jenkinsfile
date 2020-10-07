@@ -56,7 +56,7 @@ pipeline {
         stage('run tests') {
             steps {
                 script {
-                    sh "docker run -it "
+
                 }
             }
         }
