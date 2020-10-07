@@ -48,7 +48,8 @@ pipeline {
 //                         sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
 //                         sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
 //                         sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
-                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
+//                         sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
+                        sh "az aks get-credentials --resource-group operator-cicd-develop-15 --name operator-cicd-develop-15 --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
                     }
                 }
             }
