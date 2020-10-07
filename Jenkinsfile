@@ -25,21 +25,21 @@ pipeline {
                 ])
             }
         }
-//         stage('build image') {
-//             steps {
-//                 script {
-//                     sh "ls -all"
-//                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
-//                 }
-//             }
-//         }
-//         stage('push image') {
-//             steps {
-//                 script {
-//                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-push"
-//                 }
-//             }
-//         }
+        stage('build image') {
+            steps {
+                script {
+                    sh "ls -all"
+                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
+                }
+            }
+        }
+        stage('push image') {
+            steps {
+                script {
+                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-push"
+                }
+            }
+        }
         stage('setup test cluster') {
             steps {
                 script{
@@ -54,39 +54,38 @@ pipeline {
                 }
             }
         }
-//         stage('run tests') {
-//             steps {
-//                 script {
-//                     def testDiscoveryPattern = "test_*"
-//                     if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
-//                         testDiscoveryPattern = env.BRANCH_NAME
-//                         testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
-//                     }
-//                     sh """
-//                     docker run \
-//                     -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
-//                     -v ${workspace}:/root \
-//                     -v ${workspace}/kubeconfig:/root/.kube/config \
-//                     cnvrg/cnvrg-operator-test-runtime:latest \
-//                     python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
-//                     """
-//                 }
-//             }
-//         }
+        stage('run tests') {
+            steps {
+                script {
+                    def testDiscoveryPattern = "test_*"
+                    if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
+                        testDiscoveryPattern = env.BRANCH_NAME
+                        testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
+                    }
+                    sh """
+                    docker run \
+                    -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -v ${workspace}:/root \
+                    -v ${workspace}/kubeconfig:/root/.kube/config \
+                    cnvrg/cnvrg-operator-test-runtime:latest \
+                    python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
+                    """
+                }
+            }
+        }
         stage('store tests report ') {
             steps {
                 script {
                     withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
-                        echo "${ACCOUNT_KEY}"
                         sh """
                         az storage blob upload \
                          --account-name operatortestreports \
                          --container-name reports \
-                         --name pipfile.html \
-                         --file Pipfile \
+                         --name ${IMAGE_TAG}.html \
+                         --file \$(ls) \
                          --account-key ${ACCOUNT_KEY}
                         """
-                        echo "https://operatortestreports.blob.core.windows.net/reports/pipfile.html"
+                        echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
                     }
                 }
             }
