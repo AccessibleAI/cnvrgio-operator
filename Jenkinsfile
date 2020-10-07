@@ -57,7 +57,13 @@ pipeline {
         stage('run tests') {
             steps {
                 script {
-                    echo "running tests"
+                    sh """
+                        docker run \
+                        -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+                        -v $(pwd):/root \
+                        -v $(pwd)/kubeconfig:/root/.kube/config \
+                        cnvrg/cnvrg-operator-test-runtime:latest
+                    """
                 }
             }
         }
