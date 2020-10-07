@@ -86,6 +86,7 @@ pipeline {
                          --file Pipfile \
                          --account-key ${ACCOUNT_KEY}
                         """
+                        echo "https://https://operatortestreports.blob.core.windows.net/reports/${Pipfile}"
                     }
                 }
             }
