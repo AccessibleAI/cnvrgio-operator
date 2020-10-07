@@ -16,6 +16,8 @@ NAMESPACE = "cnvrg"
 
 
 class CommonBase(object):
+    BRANCH_NAME = "*"
+
     @staticmethod
     def deploy():
         logging.info("deploying env...")

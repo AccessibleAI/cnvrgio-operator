@@ -57,13 +57,18 @@ pipeline {
         stage('run tests') {
             steps {
                 script {
-                    sh """
-                    docker run \
-                    -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
-                    -v ${workspace}:/root \
-                    -v ${workspace}/kubeconfig:/root/.kube/config \
-                    cnvrg/cnvrg-operator-test-runtime:latest
-                    """
+                    def testDiscoveryPattern = "test_*"
+                    if (env.BRANCH_NAME != "develop" || env.BRANCH_NAME != "master"){
+                        testDiscoveryPattern = env.BRANCH_NAME
+                    }
+                    echo "${testDiscoveryPattern}"
+//                     sh """
+//                     docker run \
+//                     -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+//                     -v ${workspace}:/root \
+//                     -v ${workspace}/kubeconfig:/root/.kube/config \
+//                     cnvrg/cnvrg-operator-test-runtime:latest
+//                     """
                 }
             }
         }
