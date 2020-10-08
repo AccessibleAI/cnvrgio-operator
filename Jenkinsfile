@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
         IMAGE_TAG           = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         CLUSTER_LOCATION    = "northeurope"
-        CLUSTER_NAME        = "operator-cicd-${env.BRANCH_NAME}-$BUILD_NUMBER"
+        CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
         NODE_VM_SIZE        = "Standard_D8s_v3"
     }
