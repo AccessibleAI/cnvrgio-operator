@@ -135,6 +135,29 @@ spec:
             - mountPath: /grafana-dashboard-definitions/0/minio-exporter2
               name: minio-exporter2
               readOnly: false
+{% if pg_ha.enabled == "true" %}
+            - mountPath: /grafana-dashboard-definitions/0/pgbackrest
+              name: pgbackrest
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/crud-details
+              name: crud-details
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/pod-details
+              name: pod-details
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/postgresql-details
+              name: postgresql-details
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/postgresql-overview
+              name: postgresql-overview
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/postgresql-service-health-overview
+              name: postgresql-service-health-overview
+              readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/postgresql-queries-overview
+              name: postgresql-queries-overview
+              readOnly: false
+{% endif %}
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
@@ -234,3 +257,26 @@ spec:
         - configMap:
             name: minio-exporter2
           name: minio-exporter2
+{% if pg_ha.enabled == "true" %}
+        - configMap:
+            name: pgbackrest
+          name: pgbackrest
+        - configMap:
+            name: crud-details
+          name: crud-details
+        - configMap:
+            name: pod-details
+          name: pod-details
+        - configMap:
+            name: postgresql-details
+          name: postgresql-details
+        - configMap:
+            name: postgresql-overview
+          name: postgresql-overview
+        - configMap:
+            name: postgresql-service-health-overview
+          name: postgresql-service-health-overview
+        - configMap:
+            name: postgresql-queries-overview
+          name: postgresql-queries-overview
+{% endif %}

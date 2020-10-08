@@ -63,7 +63,7 @@
     - import_role:
         name: pg_ha
       vars:
-        role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+        role_state: "{{'present' if pg_ha.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: pg_ha
 
     # Postgres deployment

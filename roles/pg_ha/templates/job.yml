@@ -1,8 +1,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pgo-deploy
-  namespace: "{{ansible_operator_meta.namespace}}"
+  name: "{{'pgo-deploy' if pg_ha.enabled == 'true' and cnvrg_app.enabled == 'true' else 'pgo-remove'}}"
+  namespace: cnvrg
 spec:
   backoffLimit: 0
   template:
@@ -10,14 +10,14 @@ spec:
       name: pgo-deploy
     spec:
       serviceAccountName: pgo-deployer-sa
-      restartPolicy: Never
+      restartPolicy: OnFailure
       containers:
         - name: pgo-deploy
-          image: registry.developers.crunchydata.com/crunchydata/pgo-deployer:centos7-4.4.1
+          image: registry.developers.crunchydata.com/crunchydata/pgo-deployer:centos7-4.5.0
           imagePullPolicy: IfNotPresent
           env:
             - name: DEPLOY_ACTION
-              value: install
+              value: "{{'install' if pg_ha.enabled == 'true' and cnvrg_app.enabled == 'true' else 'uninstall'}}"
           volumeMounts:
             - name: deployer-conf
               mountPath: "/conf"

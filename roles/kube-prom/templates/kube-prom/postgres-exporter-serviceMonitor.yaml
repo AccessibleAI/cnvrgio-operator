@@ -1,0 +1,19 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgres
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  jobLabel: postgres
+  selector:
+    matchLabels:
+      name: "{{ pg_ha.clustername }}"
+  namespaceSelector:
+    matchNames:
+      - "{{ansible_operator_meta.namespace}}"
+  endpoints:
+  - port: "postgres-exporter"
+    path: /metrics
+    interval: 1m
+    scrapeTimeout: 10s

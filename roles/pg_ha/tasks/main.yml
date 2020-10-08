@@ -6,5 +6,39 @@
   vars:
     template_path: "{{ item }}"
     state: "{{ role_state }}"
-  with_fileglob:
-    - templates/*
+  with_items:
+  - templates/cm.yml
+  - templates/cm_custom_config.yml
+  - templates/rbac.yml
+  - templates/job.yml
+  - templates/pgo_client.yml
+
+
+- name: Make sure {{ pg_ha.clustername }} is installed
+  block:
+  - name: "Get {{ pg_ha.clustername }} config map"
+    k8s_info:
+      kind: Job
+      namespace: "{{ansible_operator_meta.namespace}}"
+      name: "pgo-deploy"
+    register: pgo_deploy
+
+  - debug: var=pgo_deploy.resources[0].status.conditions[0].type
+
+  - name: delete - deploy job postgres
+    k8s:
+      state: "absent"
+      definition: "{{ lookup('template', 'templates/job.yml') }}"
+      wait: "yes"
+    when: pgo_deploy.resources[0].status.conditions[0].type == "Failed"
+
+  - name: Create - deploy job postgres
+    k8s:
+      state: "present"
+      definition: "{{ lookup('template', 'templates/job.yml') }}"
+      wait: "yes"
+    when: pgo_deploy.resources[0].status.conditions[0].type == "Failed"
+  ignore_errors: yes
+  when:
+  - role_state == "present"
+  - dry_run == "false"

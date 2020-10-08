@@ -1,15 +1,16 @@
 pg_ha:
   enabled: "true"
-  image: "centos/postgresql-12-centos7" # registry.redhat.io/rhscl/postgresql-10-rhel7:latest https://github.com/sclorg/postgresql-container
-  port: 5432
-  storage_size: "80Gi"
-  svc_name: "postgres"
-  dbname: "cnvrg_production"
-  pass: "pg_pass"
-  user: "cnvrg"
-  run_as_user: 26
-  run_as_group: 26
-  fs_group: 26
+  storage_size: "25Gi"
   storage_class: "use-default"
   cpu_request: 1
   memory_request: 2Gi
+
+  pgo_client_cert_secret: "pgo.tls"
+  pgo_admin_username: "admin"
+  pgo_apiserver_url: "https://postgres-operator"
+  pgo_apiserver_port: "8443"
+  pgo_image_prefix: "registry.developers.crunchydata.com/crunchydata"
+  pgo_image_tag: "centos7-4.5.0"
+  clustername: postgres
+  replica_count: 2
+  pg_bouncer: "true"

@@ -9,6 +9,9 @@
     - set_fact:
         resources: "{{ resources |  reject('search','minio') | list  }}"
       when: app_secrets.cnvrg_storage_type != "minio"
+    - set_fact:
+        resources: "{{ resources |  reject('search','postgres') | list  }}"
+      when: pg_ha.enabled == "false"
 
     # is state present, create crds in first step
     - name: Install Kube-Prometheus CRDs
