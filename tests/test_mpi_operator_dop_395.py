@@ -12,6 +12,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
+  ingressType: "none"
   mpi:
     enabled: "true"
   conf:
