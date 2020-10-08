@@ -67,14 +67,23 @@ class CommonBase(object):
 
     @staticmethod
     def wait_for_cnvrg_spec_ready(name="cnvrg-app"):
-        for i in range(0, 1800):
-            spec = CommonBase.get_cnvrg_spec(name)
-            for condition in spec['status']['conditions']:
-                if 'ansibleResult' in condition:
-                    if condition['message'] == "Awaiting next reconciliation":
-                        logging.info("cnvrg spec successfully deployed!")
-                        return True
-            logging.info(f"cnvrg spec not ready yet, ttl: {1800 - i} sec")
-            time.sleep(1)
-        logging.error("Cnvrg spec not ready, and timeout reached (30m)")
+        try:
+            for i in range(0, 1800):
+                spec = CommonBase.get_cnvrg_spec(name)
+                if 'status' not in spec:
+                    logging.info(f"cnvrg sepc don't have status object yet, ttl: {1800 - i} sec")
+                    continue
+                if 'conditions' not in spec['status']:
+                    logging.info(f"cnvrg sepc don't have conditions object yet, ttl: {1800 - i} sec")
+                    continue
+                for condition in spec['status']['conditions']:
+                    if 'ansibleResult' in condition:
+                        if condition['message'] == "Awaiting next reconciliation":
+                            logging.info("cnvrg spec successfully deployed!")
+                            return True
+                logging.info(f"cnvrg spec not ready yet, ttl: {1800 - i} sec")
+                time.sleep(1)
+            logging.error("Cnvrg spec not ready, and timeout reached (30m)")
+        except Exception as ex:
+            logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
         return False
