@@ -59,4 +59,4 @@ class CnvrgTaintsTest(unittest.TestCase, CommonBase):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=mpi-operator")
         self.assertEqual(1, len(pod.items))
-        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
