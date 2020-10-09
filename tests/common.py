@@ -96,6 +96,3 @@ class CommonBase(object):
         streamdata = child.communicate()[0]
         logging.info(str(streamdata, 'utf-8'))
         return child.returncode
-        # stream = os.popen(cmd)
-        # x = stream.returncode
-        # logging.info(stream.read())

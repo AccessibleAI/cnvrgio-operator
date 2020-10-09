@@ -64,7 +64,7 @@ pipeline {
                         }
                         sh """
                         docker run \
-                        -eIMG=${IMAGE_NAME}:${IMAGE_TAG} \
+                        -eTAG=${IMAGE_TAG} \
                         -v ${workspace}:/root \
                         -v ${workspace}/kubeconfig:/root/.kube/config \
                         cnvrg/cnvrg-operator-test-runtime:latest \
@@ -75,6 +75,23 @@ pipeline {
             }
         }
         stage('store tests report ') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
+                        sh """
+                        az storage blob upload \
+                         --account-name operatortestreports \
+                         --container-name reports \
+                         --name ${IMAGE_TAG}.html \
+                         --file "tests/reports/\$(ls tests/reports)" \
+                         --account-key ${ACCOUNT_KEY}
+                        """
+                        echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
+                    }
+                }
+            }
+        }
+        stage('generate helm chart') {
             steps {
                 script {
                     withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
