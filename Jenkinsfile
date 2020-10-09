@@ -83,7 +83,7 @@ pipeline {
                          --account-name operatortestreports \
                          --container-name reports \
                          --name ${IMAGE_TAG}.html \
-                         --file tests/reports/\$(ls tests/reports) \
+                         --file "tests/reports/\$(ls tests/reports)" \
                          --account-key ${ACCOUNT_KEY}
                         """
                         echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
