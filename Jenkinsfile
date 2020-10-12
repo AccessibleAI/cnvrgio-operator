@@ -13,17 +13,6 @@ pipeline {
         stage('Cleanup Workspace') {
             steps {
                 cleanWs()
-                script{
-                    echo "Cleaned up workspace for project"
-                    echo "===================="
-                    if (!env.BRANCH_NAME.startsWith("PR-")){
-                        echo "this is no PR!!!"
-                    }
-                    if (env.BRANCH_NAME.startsWith("PR-")){
-                                        echo "this is PR!!!"
-                    }
-                    echo "===================="
-                }
             }
         }
         stage('checkout') {
@@ -74,10 +63,7 @@ pipeline {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script {
                         def testDiscoveryPattern = "test_*"
-                        echo "===================="
-                        echo env.BRANCH_NAME.startWith("PR-")
-                        echo "===================="
-                        if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startWith("PR-")){
+                        if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startsWith("PR-")){
                             testDiscoveryPattern = env.BRANCH_NAME
                             testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
                         }
