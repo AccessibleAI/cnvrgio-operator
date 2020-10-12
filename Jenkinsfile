@@ -20,7 +20,6 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: scm.branches,
                     userRemoteConfigs: [[url: 'https://github.com/AccessibleAI/cnvrgio-operator.git']]
                 ])
             }
