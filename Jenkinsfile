@@ -36,7 +36,7 @@ pipeline {
         stage('push image') {
             when {
                 not {
-                    changelog '.*^\\[skip tests\\] .+$'
+                    changelog '.*skip tests.*'
                 }
             }
             steps {
