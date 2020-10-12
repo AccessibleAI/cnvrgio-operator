@@ -41,6 +41,11 @@ pipeline {
             }
         }
         stage('setup test cluster') {
+            when {
+                not {
+                changelog '.*^\\[skip tests\\] .+$'
+                }
+            }
             steps {
                 script{
                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
@@ -54,6 +59,11 @@ pipeline {
             }
         }
         stage('run tests') {
+            when {
+                not {
+                changelog '.*^\\[skip tests\\] .+$'
+                }
+            }
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script {
