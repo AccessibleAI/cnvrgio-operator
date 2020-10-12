@@ -109,7 +109,7 @@ pipeline {
         stage('generate helm chart') {
             steps {
                 script {
-                    def version = ${IMAGE_TAG}
+                    def version = "${IMAGE_TAG}"
                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh """
                             echo ${USERNAME}
