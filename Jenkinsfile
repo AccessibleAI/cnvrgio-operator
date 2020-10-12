@@ -15,7 +15,12 @@ pipeline {
                 cleanWs()
                 echo "Cleaned up workspace for project"
                 echo "===================="
-                echo env.BRANCH_NAME.startsWith("PR-")
+                if (!env.BRANCH_NAME.startsWith("PR-")){
+                    echo "this is no PR!!!"
+                }
+                if (env.BRANCH_NAME.startsWith("PR-")){
+                                    echo "this is PR!!!"
+                }
                 echo "===================="
             }
         }
