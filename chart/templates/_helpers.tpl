@@ -218,7 +218,11 @@ redis:
   port: "{{ .Values.redis.port }}"
 
 pg:
+  {{- if .Values.pgHa.enabled }}
+  enabled: "false"
+  {{- else }}
   enabled: "{{ .Values.pg.enabled }}"
+  {{- end }}
   image: "{{ .Values.pg.image }}"
   port: "{{ .Values.pg.port }}"
   {{- if eq .Values.storageProfile "default"}}
@@ -243,6 +247,17 @@ pg:
   memoryRequest: "{{.Values.computeProfiles.micro.pg.memory}}"
   {{- end }}
   svcName: "{{ .Values.pg.svcName }}"
+pgHa:
+  enabled: "{{ .Values.pgHa.enabled }}"
+  storageSize: "{{ .Values.pgHa.storageSize }}"
+  storageClass: "{{ .Values.pgHa.storageClass }}"
+  cpuRequest: "{{ .Values.pgHa.cpuRequest }}"
+  memoryRequest: "{{ .Values.pgHa.memoryRequest }}"
+  replicaCount: "{{ .Values.pgHa.replicaCount }}"
+  bouncer: "{{ .Values.pgHa.bouncer }}"
+  bouncerReplica: "{{ .Values.pgHa.bouncerReplica }}"
+  repoRetention: "{{ .Values.pgHa.repoRetention }}"
+  schedule: "{{ .Values.pgHa.schedule }}"
 pgBackup:
   {{- if eq .Values.storageProfile "default"}}
   storageSize: "{{ .Values.pgBackup.storageSize }}"

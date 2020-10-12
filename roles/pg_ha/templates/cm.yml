@@ -31,7 +31,7 @@ data:
     db_password_age_days: "0"
     db_password_length: "24"
     db_port: "5432"
-    db_replicas: "{{ pg_ha.replica_count}}"
+    db_replicas: "{{ pg_ha.replica_count }}"
     db_user: {{ pg.user }}
     default_instance_memory: "128Mi"
     default_pgbackrest_memory: "48Mi"
@@ -51,20 +51,20 @@ data:
     pgo_admin_password: {{ pg.pass }}
     pgo_admin_perms: "*"
     pgo_admin_role_name: "pgoadmin"
-    pgo_admin_username: {{ pg_ha.pgo_admin_username }}
-    pgo_apiserver_port: {{ pg_ha.pgo_apiserver_port }}
-    pgo_apiserver_url: {{ pg_ha.pgo_apiserver_url }}
-    pgo_client_cert_secret: {{ pg_ha.pgo_client_cert_secret }}
+    pgo_admin_username: "admin"
+    pgo_apiserver_port: "8443"
+    pgo_apiserver_url: "https://postgres-operator"
+    pgo_client_cert_secret: "pgo.tls"
     pgo_client_container_install: "false"
     pgo_client_install: "true"
     pgo_client_version: "4.5.0"
     pgo_cluster_admin: "false"
     pgo_disable_eventing: "false"
     pgo_disable_tls: "false"
-    pgo_image_prefix: {{ pg_ha.pgo_image_prefix }}
+    pgo_image_prefix: "registry.developers.crunchydata.com/crunchydata"
     pgo_image_pull_secret: ""
     pgo_image_pull_secret_manifest: ""
-    pgo_image_tag: {{ pg_ha.pgo_image_tag }}
+    pgo_image_tag: "centos7-4.5.0"
     pgo_installation_name: "cnvrg"
     pgo_noauth_routes: ""
     pgo_operator_namespace: {{ansible_operator_meta.namespace}}

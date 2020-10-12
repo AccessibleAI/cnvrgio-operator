@@ -20,8 +20,7 @@ spec:
     spec:
       containers:
       - name: pgo
-        # command: ["/bin/bash", "-lc", "until [[ $(pgo test {{ pg_ha.cluster_name }} | grep UP | wc -l) > 0 ]]; do /bin/bash -lc \"$CREATE_CLUSTER\"; sleep 15 ; done; tail -f /dev/null"]
-        image: "{{ pg_ha.pgo_image_prefix }}/pgo-client:{{ pg_ha.pgo_image_tag }}"
+        image: "registry.developers.crunchydata.com/crunchydata/pgo-client:centos7-4.5.0"
         imagePullPolicy: IfNotPresent
         envFrom:
           - configMapRef:
@@ -32,16 +31,16 @@ spec:
         - name: PGO_NAMESPACE
           value: "{{ansible_operator_meta.namespace}}"
         - name: PGO_APISERVER_URL
-          value: "{{ pg_ha.pgo_apiserver_url }}:{{ pg_ha.pgo_apiserver_port }}"
+          value: "https://postgres-operator:8443"
         - name: PGOUSERNAME
           valueFrom:
             secretKeyRef:
-              name: pgouser-{{ pg_ha.pgo_admin_username }}
+              name: pgouser-admin
               key: username
         - name: PGOUSERPASS
           valueFrom:
             secretKeyRef:
-              name: pgouser-{{ pg_ha.pgo_admin_username }}
+              name: pgouser-admin
               key: password
         - name: PGO_CA_CERT
           value: pgo-tls/client.crt
@@ -49,17 +48,13 @@ spec:
           value: pgo-tls/client.crt
         - name: PGO_CLIENT_KEY
           value: pgo-tls/client.key
-        - name: CREATE_CLUSTER
-          value: "pgo create cluster {{ pg_ha.cluster_name }} --password-superuser=$POSTGRES_PASSWORD --username=$POSTGRES_USER --password=$POSTGRES_PASSWORD \
-          --custom-config=postgres-custom-config --cpu={{ pg.cpu_request }} --memory={{ pg.memory_request }} \
-          --replica-count={{ pg_ha.replica_count}} {% if pg_ha.bouncer == "true" %} --pgbouncer --pgbouncer-replicas=2 {% endif %}"
         volumeMounts:
         - name: pgo-tls-volume
           mountPath: pgo-tls
       volumes:
       - name: pgo-tls-volume
         secret:
-          secretName: "{{ pg_ha.pgo_client_cert_secret }}"
+          secretName: "pgo.tls"
           items:
           - key: tls.crt
             path: client.crt

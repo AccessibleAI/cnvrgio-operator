@@ -11,20 +11,23 @@
 - name: Create ssh keys for pgbackrest
   block:
   - name: check if key-pair exists
-    command: "ls {{ pg_ha.cluster_name }}-key"
+    command: "ls /tmp/{{ pg_ha.cluster_name }}"
     ignore_errors: True
     register: file
 
-  - name: "create ssh key-pair"
-    command: ssh-keygen -t ed25519 -N '' -f "{{ pg_ha.cluster_name }}-key"
+  - name: generate SSH key
+    openssh_keypair:
+      path: "/tmp/{{ pg_ha.cluster_name }}"
+      type: ed25519
+      state: present
     when: file.rc != 0
 
   - name: "Get pub key"
-    shell: cat {{ pg_ha.cluster_name }}-key.pub | base64
+    shell: cat /tmp/{{ pg_ha.cluster_name }}.pub | base64
     register: pgbackrest_public_key
 
   - name: "Get private key"
-    shell: cat {{ pg_ha.cluster_name }}-key | base64
+    shell: cat /tmp/{{ pg_ha.cluster_name }} | base64
     register: pgbackrest_private_key
 
   when:

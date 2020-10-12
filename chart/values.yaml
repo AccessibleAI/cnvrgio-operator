@@ -132,6 +132,17 @@ pg:
   storageClass: use-default
   cpuRequest: 1
   memoryRequest: 2Gi
+pgHa:
+  enabled: "false"
+  storageSize: "25Gi"
+  storageClass: "use-default"
+  cpuRequest: 1
+  memoryRequest: 2Gi
+  replicaCount: 2
+  bouncer: "true"
+  bouncerReplica: 2
+  repoRetention: 7
+  schedule: "0 1 * * *"
 pgBackup:
   storageSize: 30Gi
   enabled: "false"

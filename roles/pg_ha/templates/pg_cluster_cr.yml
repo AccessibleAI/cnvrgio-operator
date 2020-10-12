@@ -23,7 +23,15 @@ spec:
     matchLabels: ""
     name: "{{ pg_ha.cluster_name }}-backup"
     size: {{ pg_ha.storage_size }}
+{% if hostpath.enabled == "true" %}
+    storageclass: {{ hostpath.storage_class_name }}
+{% elif nfs.enabled == "true" %}
+    storageclass: "{{ nfs.storage_class_name }}"
+{% elif pg_ha.storage_class != "use-default" %}
+    storageclass: "{{ pg_ha.storage_class }}"
+{% else %}
     storageclass: ""
+{% endif %}
     storagetype: create
     supplementalgroups: ""
   PrimaryStorage:
@@ -31,15 +39,31 @@ spec:
     matchLabels: ""
     name: {{ pg_ha.cluster_name }}
     size: {{ pg_ha.storage_size }}
+{% if hostpath.enabled == "true" %}
+    storageclass: {{ hostpath.storage_class_name }}
+{% elif nfs.enabled == "true" %}
+    storageclass: "{{ nfs.storage_class_name }}"
+{% elif pg_ha.storage_class != "use-default" %}
+    storageclass: "{{ pg_ha.storage_class }}"
+{% else %}
     storageclass: ""
+{% endif %}
     storagetype: create
     supplementalgroups: ""
   ReplicaStorage:
     accessmode: ReadWriteOnce
     matchLabels: ""
-    name: #"{{ pg_ha.cluster_name }}-replica"
+    name: "{{ pg_ha.cluster_name }}-replica"
     size: {{ pg_ha.storage_size }}
+{% if hostpath.enabled == "true" %}
+    storageclass: {{ hostpath.storage_class_name }}
+{% elif nfs.enabled == "true" %}
+    storageclass: "{{ nfs.storage_class_name }}"
+{% elif pg_ha.storage_class != "use-default" %}
+    storageclass: "{{ pg_ha.storage_class }}"
+{% else %}
     storageclass: ""
+{% endif %}
     storagetype: create
     supplementalgroups: ""
   annotations:
