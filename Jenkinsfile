@@ -116,9 +116,8 @@ pipeline {
                             helm repo update
                             VERSION=${version} envsubst  < chart/Chart.yaml  | tee  chart/Chart.yaml
                             VERSION=${version} envsubst  < chart/values.yaml | tee  chart/values.yaml
-                            helm push chart cnvrg -u=${USERNANE} -p=${PASSWORD}
+                            helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
                         """
-
                     }
                 }
             }
