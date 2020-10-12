@@ -114,7 +114,7 @@ pipeline {
                         sh """
                         helm repo add cnvrg https://charts.cnvrg.io
                         helm repo update
-                        VERSION=${version} envsubst  < chart/Chart.yaml  | tee  chart/Chart.yaml
+                        VERSION=${version} envsubst < chart/Chart.yaml | tee tmp-file && mv tmp-file chart/Chart.yaml
                         helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
                         helm repo update
                         helm search repo cnvrg -l --debug
