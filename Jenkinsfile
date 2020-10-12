@@ -112,6 +112,7 @@ pipeline {
                     def version = "${IMAGE_TAG}"
                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh """
+                            helm plugin install https://github.com/chartmuseum/helm-push.git
                             helm repo add cnvrg https://charts.cnvrg.io
                             helm repo update
                             VERSION=${version} envsubst  < chart/Chart.yaml  | tee  chart/Chart.yaml
