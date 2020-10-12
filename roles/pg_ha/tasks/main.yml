@@ -1,3 +1,37 @@
+- name: "Get postgres-backrest-repo-config secret"
+  k8s_info:
+    kind: Secret
+    namespace: "{{ansible_operator_meta.namespace}}"
+    name: "postgres-backrest-repo-configs"
+  register: postgres_backrest
+
+- debug: var=postgres_backrest.resources
+  when: postgres_backrest.resources | length > 0
+
+- name: Create ssh keys for pgbackrest
+  block:
+  - name: check if key-pair exists
+    command: "ls {{ pg_ha.cluster_name }}-key"
+    ignore_errors: True
+    register: file
+
+  - name: "create ssh key-pair"
+    command: ssh-keygen -t ed25519 -N '' -f "{{ pg_ha.cluster_name }}-key"
+    when: file.rc != 0
+
+  - name: "Get pub key"
+    shell: cat {{ pg_ha.cluster_name }}-key.pub | base64
+    register: pgbackrest_public_key
+
+  - name: "Get private key"
+    shell: cat {{ pg_ha.cluster_name }}-key | base64
+    register: pgbackrest_private_key
+
+  when:
+  - role_state == "present"
+  - dry_run == "false"
+  - postgres_backrest.resources | length == 0
+
 # Install  PG
 - name: Install Postgres
   include_role:
@@ -8,37 +42,24 @@
     state: "{{ role_state }}"
   with_items:
   - templates/cm.yml
-  - templates/cm_custom_config.yml
   - templates/rbac.yml
   - templates/job.yml
+  - templates/prereq_secrets.yml
+  - templates/cm_custom_config.yml
   - templates/pgo_client.yml
 
+- name: Pause for CRD
+  pause:
+    seconds: 5
 
-- name: Make sure {{ pg_ha.clustername }} is installed
-  block:
-  - name: "Get {{ pg_ha.clustername }} config map"
-    k8s_info:
-      kind: Job
-      namespace: "{{ansible_operator_meta.namespace}}"
-      name: "pgo-deploy"
-    register: pgo_deploy
-
-  - debug: var=pgo_deploy.resources[0].status.conditions[0].type
-
-  - name: delete - deploy job postgres
-    k8s:
-      state: "absent"
-      definition: "{{ lookup('template', 'templates/job.yml') }}"
-      wait: "yes"
-    when: pgo_deploy.resources[0].status.conditions[0].type == "Failed"
-
-  - name: Create - deploy job postgres
-    k8s:
-      state: "present"
-      definition: "{{ lookup('template', 'templates/job.yml') }}"
-      wait: "yes"
-    when: pgo_deploy.resources[0].status.conditions[0].type == "Failed"
-  ignore_errors: yes
-  when:
-  - role_state == "present"
-  - dry_run == "false"
+- name: Install Postgres CR
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+  - templates/pg_cluster_cr.yml
+  - templates/pg_replica_cr.yml
+  - templates/cm_backup.yml

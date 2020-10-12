@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    crunchy-scheduler: "true"
+    pg-cluster: {{ pg_ha.cluster_name }}
+  name: {{ pg_ha.cluster_name }}-pgbackrest-full
+  namespace: "{{ansible_operator_meta.namespace}}"
+data:
+  postgres-pgbackrest-full: '{"version":"v1","name":"{{ pg_ha.cluster_name }}-pgbackrest-full","cluster":"{{ pg_ha.cluster_name }}","schedule":"{{ pg_ha.schedule }}","namespace":"cnvrg","type":"pgbackrest","pgbackrest":{"label":"pg-cluster={{ pg_ha.cluster_name }},name={{ pg_ha.cluster_name }},deployment-name={{ pg_ha.cluster_name }}","container":"database","type":"full","options":"--repo1-retention-full={{ pg_ha.repo_retention}}"},"policy":{}}'

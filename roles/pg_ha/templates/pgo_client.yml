@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: pgo
-        command: ["/bin/bash", "-lc", "until [[ $(pgo test {{ pg_ha.clustername }} | grep UP | wc -l) > 0 ]]; do /bin/bash -lc \"$CREATE_CLUSTER\"; sleep 15 ; done; tail -f /dev/null"]
+        # command: ["/bin/bash", "-lc", "until [[ $(pgo test {{ pg_ha.cluster_name }} | grep UP | wc -l) > 0 ]]; do /bin/bash -lc \"$CREATE_CLUSTER\"; sleep 15 ; done; tail -f /dev/null"]
         image: "{{ pg_ha.pgo_image_prefix }}/pgo-client:{{ pg_ha.pgo_image_tag }}"
         imagePullPolicy: IfNotPresent
         envFrom:
@@ -50,9 +50,9 @@ spec:
         - name: PGO_CLIENT_KEY
           value: pgo-tls/client.key
         - name: CREATE_CLUSTER
-          value: "pgo create cluster {{ pg_ha.clustername }} --password-superuser=$POSTGRES_PASSWORD --username=$POSTGRES_USER --password=$POSTGRES_PASSWORD \
+          value: "pgo create cluster {{ pg_ha.cluster_name }} --password-superuser=$POSTGRES_PASSWORD --username=$POSTGRES_USER --password=$POSTGRES_PASSWORD \
           --custom-config=postgres-custom-config --cpu={{ pg.cpu_request }} --memory={{ pg.memory_request }} \
-          --replica-count={{ pg_ha.replica_count}} {% if pg_ha.pg_bouncer == "true" %} --pgbouncer --pgbouncer-replicas=2 {% endif %}"
+          --replica-count={{ pg_ha.replica_count}} {% if pg_ha.bouncer == "true" %} --pgbouncer --pgbouncer-replicas=2 {% endif %}"
         volumeMounts:
         - name: pgo-tls-volume
           mountPath: pgo-tls

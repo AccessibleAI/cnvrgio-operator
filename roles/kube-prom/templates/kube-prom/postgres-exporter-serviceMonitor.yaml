@@ -8,7 +8,7 @@ spec:
   jobLabel: postgres
   selector:
     matchLabels:
-      name: "{{ pg_ha.clustername }}"
+      name: "{{ pg_ha.cluster_name }}"
   namespaceSelector:
     matchNames:
       - "{{ansible_operator_meta.namespace}}"

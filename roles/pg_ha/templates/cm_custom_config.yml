@@ -13,12 +13,9 @@ data:
             shared_buffers: 2GB
             temp_buffers: 10MB
             work_mem: 5MB
-    postgresql:
-      pg_hba:
-        - local all postgres peer
-        - local all {{ pg.user }} peer
-        - local all crunchyadm peer
-        - host replication primaryuser 0.0.0.0/0 md5
-        - host all primaryuser 0.0.0.0/0 reject
-        - host all postgres 0.0.0.0/0 md5
-        - host all {{ pg.user }} 0.0.0.0/0 md5
+# postgresql:
+#   pg_hba:
+#     - local all cnvrg md5
+#     - host all cnvrg 0.0.0.0/0 md5
+#     - local all postgres md5
+#     - host all postgres 0.0.0.0/0 md5

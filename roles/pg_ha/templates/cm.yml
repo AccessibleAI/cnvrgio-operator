@@ -48,7 +48,7 @@ data:
     namespace_mode: "dynamic"
     pgbadgerport: "10000"
     pgo_add_os_ca_store: "false"
-    pgo_admin_password: {{ pg.dbname }}
+    pgo_admin_password: {{ pg.pass }}
     pgo_admin_perms: "*"
     pgo_admin_role_name: "pgoadmin"
     pgo_admin_username: {{ pg_ha.pgo_admin_username }}

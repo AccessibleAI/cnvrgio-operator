@@ -1,0 +1,106 @@
+apiVersion: crunchydata.com/v1
+kind: Pgcluster
+metadata:
+  annotations:
+    current-primary: {{ pg_ha.cluster_name }}
+  labels:
+    autofail: "true"
+    crunchy-pgbadger: "false"
+    crunchy-pgha-scope: {{ pg_ha.cluster_name }}
+    crunchy-postgres-exporter: "true"
+    deployment-name: {{ pg_ha.cluster_name }}
+    name: {{ pg_ha.cluster_name }}
+    pg-cluster: {{ pg_ha.cluster_name }}
+    pg-pod-anti-affinity: ""
+    pgo-backrest: "true"
+    pgo-version: 4.5.0
+    pgouser: admin
+  name: {{ pg_ha.cluster_name }}
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  BackrestStorage:
+    accessmode: ReadWriteOnce
+    matchLabels: ""
+    name: "{{ pg_ha.cluster_name }}-backup"
+    size: {{ pg_ha.storage_size }}
+    storageclass: ""
+    storagetype: create
+    supplementalgroups: ""
+  PrimaryStorage:
+    accessmode: ReadWriteOnce
+    matchLabels: ""
+    name: {{ pg_ha.cluster_name }}
+    size: {{ pg_ha.storage_size }}
+    storageclass: ""
+    storagetype: create
+    supplementalgroups: ""
+  ReplicaStorage:
+    accessmode: ReadWriteOnce
+    matchLabels: ""
+    name: #"{{ pg_ha.cluster_name }}-replica"
+    size: {{ pg_ha.storage_size }}
+    storageclass: ""
+    storagetype: create
+    supplementalgroups: ""
+  annotations:
+    backrest: {}
+    global: {}
+    pgBouncer: {}
+    postgres: {}
+  backrestRepoPath: ""
+  backrestLimits: {}
+  backrestResources:
+    memory: 48Mi
+  backrestS3Bucket: ""
+  backrestS3Endpoint: ""
+  backrestS3Region: ""
+  backrestS3URIStyle: ""
+  backrestS3VerifyTLS: ""
+  ccpimage: crunchy-postgres-ha
+  ccpimageprefix: registry.developers.crunchydata.com/crunchydata
+  ccpimagetag: centos7-12.4-4.5.0
+  clustername: {{ pg_ha.cluster_name }}
+  collectSecretName: postgres-exporter-secret
+  customconfig: postgres-custom-config
+  database: {{ pg.dbname }}
+  exporterLimits: {}
+  exporterResources:
+    memory: 24Mi
+  exporterport: "9187"
+  limits: {}
+  name: {{ pg_ha.cluster_name }}
+  namespace: "{{ansible_operator_meta.namespace}}"
+  pgBouncer:
+    limits: {}
+    replicas: {{ pg_ha.bouncer_replica }}
+    resources:
+      memory: 24Mi
+  pgDataSource:
+    restoreFrom: ""
+    restoreOpts: ""
+  pgbadgerport: "10000"
+  pgoimageprefix: registry.developers.crunchydata.com/crunchydata
+  podAntiAffinity:
+    default: preferred
+    pgBackRest: preferred
+    pgBouncer: preferred
+  policies: ""
+  port: "5432"
+  primarysecretname: "{{ pg_ha.cluster_name }}-primaryuser-secret"
+  replicas: "{{ pg_ha.replica_count }}"
+  rootsecretname: "{{ pg_ha.cluster_name }}-postgres-secret"
+  shutdown: false
+  standby: false
+  tablespaceMounts: {}
+  tls:
+    caSecret: ""
+    replicationTLSSecret: ""
+    tlsSecret: ""
+  tlsOnly: false
+  user: {{ pg.user }}
+  userlabels:
+    crunchy-postgres-exporter: "true"
+    custom-config: "postgres-custom-config"
+    pg-pod-anti-affinity: ""
+    pgo-version: 4.5.0
+  usersecretname: "{{ pg_ha.cluster_name }}-{{ pg.user }}-secret"

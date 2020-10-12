@@ -1,0 +1,32 @@
+apiVersion: crunchydata.com/v1
+kind: Pgreplica
+metadata:
+  labels:
+    name: {{ pg_ha.cluster_name }}-replica
+    pg-cluster: {{ pg_ha.cluster_name }}
+  name: {{ pg_ha.cluster_name }}-replica
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  clustername: {{ pg_ha.cluster_name }}
+  name: {{ pg_ha.cluster_name }}-replica
+  namespace: "{{ansible_operator_meta.namespace}}"
+  replicastorage:
+    accessmode: ReadWriteOnce
+    matchLabels: ""
+    name: {{ pg_ha.cluster_name }}-replica
+    size: {{ pg_ha.storage_size }}
+    storageclass: ""
+    storagetype: create
+    supplementalgroups: ""
+  userlabels:
+    NodeLabelKey: ""
+    NodeLabelValue: ""
+    crunchy-pgha-scope: {{ pg_ha.cluster_name }}
+    crunchy-postgres-exporter: "true"
+    deployment-name: {{ pg_ha.cluster_name }}
+    customconfig: postgres-custom-config
+    name: {{ pg_ha.cluster_name }}
+    pg-cluster: {{ pg_ha.cluster_name }}
+    pgouser: admin
+    pg-pod-anti-affinity: ""
+    pgo-version: 4.5.0
