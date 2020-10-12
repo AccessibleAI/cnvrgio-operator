@@ -112,7 +112,7 @@ pipeline {
                     def version = ${IMAGE_TAG}
                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh """
-                            echo ${$USER}
+                            echo ${USER}
                         """
 //                             helm repo add cnvrg https://charts.cnvrg.io
 //                                                  helm repo update
