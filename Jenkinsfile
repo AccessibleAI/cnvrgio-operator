@@ -18,11 +18,12 @@ pipeline {
         }
         stage('checkout') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: scm.branches,
-                    userRemoteConfigs: [[url: 'https://github.com/AccessibleAI/cnvrgio-operator.git']]
-                ])
+                checkout scm
+//                 checkout([
+//                     $class: 'GitSCM',
+//                     branches: scm.branches,
+//                     userRemoteConfigs: [[url: 'https://github.com/AccessibleAI/cnvrgio-operator.git']]
+//                 ])
             }
         }
         stage('build image') {
