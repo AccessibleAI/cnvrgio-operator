@@ -94,16 +94,15 @@ pipeline {
         stage('generate helm chart') {
             steps {
                 script {
-                    withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
+                    def version = ${IMAGE_TAG}
+                    withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh """
-                        az storage blob upload \
-                         --account-name operatortestreports \
-                         --container-name reports \
-                         --name ${IMAGE_TAG}.html \
-                         --file "tests/reports/\$(ls tests/reports)" \
-                         --account-key ${ACCOUNT_KEY}
+                         helm repo add cnvrg https://charts.cnvrg.io
+                         helm repo update
+                         VERSION=${version} envsubst  < chart/Chart.yaml  | tee  chart/Chart.yaml
+                         VERSION=${version} envsubst  < chart/values.yaml | tee  chart/values.yaml
+                         helm push chart cnvrg -u=${USER} -p=${PASS}
                         """
-                        echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
                     }
                 }
             }
