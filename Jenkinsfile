@@ -116,8 +116,9 @@ pipeline {
                          helm repo update
                          VERSION=${version} envsubst  < chart/Chart.yaml  | tee  chart/Chart.yaml
                          VERSION=${version} envsubst  < chart/values.yaml | tee  chart/values.yaml
-                         helm push chart cnvrg -u=${USER} -p=${PASS}
+
                         """
+                         //helm push chart cnvrg -u=${USER} -p=${PASS}
                     }
                 }
             }
@@ -139,7 +140,15 @@ pipeline {
                 withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
                     sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                    sh "az group delete --name ${CLUSTER_NAME} --no-wait -y"
+                    sh """
+                    if [ $(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
+                    then
+                        echo "deleting aks cluster..."
+                        az group delete --name ${CLUSTER_NAME} --no-wait -y
+                    else
+                        echo "cluster not found, skipping cluster delete"
+                    fi
+                    """
                 }
             }
         }
