@@ -141,7 +141,7 @@ pipeline {
                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
                     sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
                     sh """
-                    if [ $(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
+                    if [ \$(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
                     then
                         echo "deleting aks cluster..."
                         az group delete --name ${CLUSTER_NAME} --no-wait -y
