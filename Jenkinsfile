@@ -37,7 +37,7 @@ pipeline {
             when {
                 not {
                     changelog '.*^\\[skip tests\\] .+$'
-                    branch ${env.BRANCH_NAME}
+                    branch "${env.BRANCH_NAME}"
                 }
             }
             steps {
