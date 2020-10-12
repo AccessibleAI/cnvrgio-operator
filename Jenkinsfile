@@ -19,11 +19,6 @@ pipeline {
         stage('checkout') {
             steps {
                 checkout scm
-//                 checkout([
-//                     $class: 'GitSCM',
-//                     branches: scm.branches,
-//                     userRemoteConfigs: [[url: 'https://github.com/AccessibleAI/cnvrgio-operator.git']]
-//                 ])
             }
         }
         stage('build image') {
@@ -69,7 +64,10 @@ pipeline {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script {
                         def testDiscoveryPattern = "test_*"
-                        if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master"){
+                        echo "===================="
+                        echo env.BRANCH_NAME.startWith("PR-")
+                        echo "===================="
+                        if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startWith("PR-"){
                             testDiscoveryPattern = env.BRANCH_NAME
                             testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
                         }
