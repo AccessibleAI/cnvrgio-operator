@@ -118,6 +118,8 @@ pipeline {
                             VERSION=${version} envsubst  < chart/Chart.yaml  | tee  chart/Chart.yaml
                             VERSION=${version} envsubst  < chart/values.yaml | tee  chart/values.yaml
                             helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
+                            helm repo update
+                            helm search repo cnvrg -l --debug
                         """
                     }
                 }
