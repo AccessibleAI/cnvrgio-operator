@@ -14,6 +14,9 @@ pipeline {
             steps {
                 cleanWs()
                 echo "Cleaned up workspace for project"
+                echo "===================="
+                echo env.BRANCH_NAME.startWith("PR-")
+                echo "===================="
             }
         }
         stage('checkout') {
