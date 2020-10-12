@@ -124,25 +124,25 @@ pipeline {
 //             }
 //         }
     }
-    post {
-        success {
-            script {
-                echo "Success!"
-            }
-        }
-        failure {
-            script {
-                echo 'Failed!'
-            }
-        }
-        always {
-            script {
-                withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                    sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                    sh "az group delete --name ${CLUSTER_NAME} --no-wait -y"
-                }
-            }
-        }
-    }
+//     post {
+//         success {
+//             script {
+//                 echo "Success!"
+//             }
+//         }
+//         failure {
+//             script {
+//                 echo 'Failed!'
+//             }
+//         }
+//         always {
+//             script {
+//                 withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
+//                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+//                     sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+//                     sh "az group delete --name ${CLUSTER_NAME} --no-wait -y"
+//                 }
+//             }
+//         }
+//     }
 }
