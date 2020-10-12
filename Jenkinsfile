@@ -13,15 +13,17 @@ pipeline {
         stage('Cleanup Workspace') {
             steps {
                 cleanWs()
-                echo "Cleaned up workspace for project"
-                echo "===================="
-                if (!env.BRANCH_NAME.startsWith("PR-")){
-                    echo "this is no PR!!!"
+                script{
+                    echo "Cleaned up workspace for project"
+                    echo "===================="
+                    if (!env.BRANCH_NAME.startsWith("PR-")){
+                        echo "this is no PR!!!"
+                    }
+                    if (env.BRANCH_NAME.startsWith("PR-")){
+                                        echo "this is PR!!!"
+                    }
+                    echo "===================="
                 }
-                if (env.BRANCH_NAME.startsWith("PR-")){
-                                    echo "this is PR!!!"
-                }
-                echo "===================="
             }
         }
         stage('checkout') {
