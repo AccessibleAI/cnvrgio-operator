@@ -19,6 +19,7 @@
         - ../roles/mpi/vars/main.yml
         - ../roles/app/vars/main.yml
         - ../roles/nfs/vars/main.yml
+        - ../roles/nfs_client/vars/main.yml
         - ../roles/hostpath/vars/main.yml
         - ../roles/autoscaler/vars/main.yml
         - ../roles/ingress/vars/main.yml
@@ -145,6 +146,12 @@
         name: ingress
       when: ingress.enabled == 'true'
       tags: ingress
+
+    # NFS client deployment
+    - import_role:
+        name: nfs_client
+      when: nfs_client.enabled == 'true'
+      tags: nfs_client
 
     # Prometheus deployment
     - import_role:

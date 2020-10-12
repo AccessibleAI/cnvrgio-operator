@@ -1,0 +1,31 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: nfs-startup-script
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: nfs-startup-script
+spec:
+  selector:
+    matchLabels:
+      app: nfs-startup-script
+  template:
+    metadata:
+      labels:
+        app: nfs-startup-script
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          key: nvidia.com/gpu
+          value: present
+      hostPID: true
+      containers:
+      - name: nfs-startup-script
+        image: bringg/k8s-startup-script
+        securityContext:
+          privileged: true
+        env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #! /bin/bash
+            apt-get install -y nfs-common && systemctl enable rpcbind && systemctl start rpcbind

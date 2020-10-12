@@ -444,6 +444,9 @@ nfs:
   cpuLimit: "{{ .Values.nfs.cpuLimit }}"
   memoryLimit: "{{ .Values.nfs.memoryLimit }}"
 
+nfsClient:
+  enabled: "{{ .Values.nfsClient.enabled }}"
+
 hostpath:
   enabled: "{{ .Values.hostpath.enabled }}"
   image: "{{.Values.hostpath.image}}"
