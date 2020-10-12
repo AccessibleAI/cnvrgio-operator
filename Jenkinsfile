@@ -15,7 +15,7 @@ pipeline {
                 cleanWs()
                 echo "Cleaned up workspace for project"
                 echo "===================="
-                echo env.BRANCH_NAME.startWith("PR-")
+                echo env.BRANCH_NAME.startsWith("PR-")
                 echo "===================="
             }
         }
