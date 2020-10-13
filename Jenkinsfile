@@ -117,6 +117,7 @@ pipeline {
                     echo "CURRENT VERSION: ${currentVersion}"
                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true)
                     echo "NEXT VERSION: ${nextVersion}"
+                    echo "CURRENT TARGET: ${env.CHANGE_TARGET}"
                     if (env.CHANGE_TARGET == "develop"){
                         nextVersion = "${nextVersion}-rc1"
                     }
