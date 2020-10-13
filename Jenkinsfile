@@ -23,14 +23,18 @@ pipeline {
                 checkout scm
             }
         }
-//         stage('build image') {
-//             steps {
-//                 script {
-//                     sh "ls -all"
-//                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
-//                 }
-//             }
-//         }
+        stage('build image') {
+            steps {
+                script {
+                    sh "ls -all"
+                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
+                    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+                    echo env.TESTS_PASSED
+                    echo env.CHANGE_TARGET
+                    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+                }
+            }
+        }
 //         stage('push image') {
 //             steps {
 //                 script {
