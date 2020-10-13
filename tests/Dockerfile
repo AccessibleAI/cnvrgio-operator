@@ -1,7 +1,9 @@
 FROM python:3.8.6
 WORKDIR /root
 RUN apt update -y && \
-     apt-get install gettext-base
+     apt-get install -y \
+     gettext-base \
+     jq
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 RUN curl -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.8/bin/linux/amd64/kubectl && \

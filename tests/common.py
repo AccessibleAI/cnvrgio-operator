@@ -101,5 +101,6 @@ class CommonBase(object):
     def exec_cmd(self, cmd):
         child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         streamdata = child.communicate()[0]
-        logging.info(str(streamdata, 'utf-8'))
-        return child.returncode
+        stdout = str(streamdata, 'utf-8')
+        logging.info(stdout)
+        return (child.returncode, stdout)
