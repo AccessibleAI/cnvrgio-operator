@@ -128,7 +128,7 @@ pipeline {
                     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                     echo "${nextVersion}"
                     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                    NEXT_VERSION = "BLA-BLA-BLA"
+                    echo "NEXT_VERSION = ${nextVersion}"
                     echo "FINAL NEXT VERSION: ${env.NEXT_VERSION}"
                 }
             }
