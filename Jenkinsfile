@@ -26,9 +26,6 @@ pipeline {
                 script {
                     sh "ls -all"
                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
-                    echo "==========================="
-                    echo "${env.CHANGE_TARGET}"
-                    echo "==========================="
                 }
             }
         }
@@ -106,7 +103,23 @@ pipeline {
                 }
             }
         }
+        stage('bump version'){
+            when {
+                expression {
+                    // du version bump only on PRs to master or develop and tests are passed
+                    env.TESTS_PASSED && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master")
+                }
+            }
+            steps {
+
+            }
+        }
         stage('generate helm chart') {
+            when {
+                expression {
+                    !env.BRANCH_NAME.startsWith("PR-")
+                }
+            }
             steps {
                 script {
                     def version = "${IMAGE_TAG}"
