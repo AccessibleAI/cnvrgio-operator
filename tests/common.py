@@ -91,6 +91,10 @@ class CommonBase(object):
             logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
         return False
 
+    @staticmethod
+    def get_spec_from_chart():
+        pass
+
     def exec_cmd(self, cmd):
         child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         streamdata = child.communicate()[0]
