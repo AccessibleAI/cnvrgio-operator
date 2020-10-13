@@ -43,7 +43,7 @@ spec:
 """
 
 
-class CnvrgTaintsTest(unittest.TestCase, CommonBase):
+class CnvrgMpiOperatorDop395Test(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
