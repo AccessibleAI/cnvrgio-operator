@@ -29,13 +29,14 @@ pipeline {
                 script {
                     CURRENT_VERSION = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
-                    if (env.CHANGE_TARGET == "develop"){
+                    if (env.BRANCH_NAME == "master") {
+                        NEXT_VERSION = "${nextVersion}"
+                    } else if (env.BRANCH_NAME == "develop") {
                         NEXT_VERSION = "${nextVersion}-rc1"
-                    }
-                    else {
+                    } else {
                         NEXT_VERSION = "${CURRENT_VERSION}-${env.BRANCH_NAME}-$BUILD_NUMBER"
                     }
-                    echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
+                    echo "NEXT VERSION: ${NEXT_VERSION}"
                 }
             }
         }
@@ -159,7 +160,7 @@ pipeline {
         stage('bump version'){
             when {
                 allOf {
-                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "master" }
                     expression { env.TESTS_PASSED.equals("false") }
                 }
             }
@@ -170,7 +171,6 @@ pipeline {
                         sh """
                         git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                         git push https://${USERNAME}:${PASSWORD}@${url} --tags
-
                         """
                     }
                 }
