@@ -109,7 +109,7 @@ pipeline {
             when {
                 allOf {
                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { env.TESTS_PASSED == false }
+                    expression { TESTS_PASSED == false }
                 }
             }
             steps {
@@ -145,7 +145,7 @@ pipeline {
             when {
                 allOf {
                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { env.TESTS_PASSED == false }
+                    expression { TESTS_PASSED == false }
                 }
             }
             steps {
