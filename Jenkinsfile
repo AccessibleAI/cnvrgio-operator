@@ -14,10 +14,19 @@ pipeline {
 
     }
     stages {
-        stage('cleanup workspace & set globals') {
+        stage('cleanup workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('set globals') {
             steps {
                 script {
-                    cleanWs()
                     CURRENT_VERSION = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
                     if (env.CHANGE_TARGET == "develop"){
@@ -28,11 +37,6 @@ pipeline {
                     }
                     echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
                 }
-            }
-        }
-        stage('checkout') {
-            steps {
-                checkout scm
             }
         }
         stage('build image') {
