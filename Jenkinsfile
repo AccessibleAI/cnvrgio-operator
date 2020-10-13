@@ -6,7 +6,6 @@ pipeline {
     options { timestamps() }
     environment {
         IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
-        IMAGE_TAG           = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         CLUSTER_LOCATION    = "northeurope"
         CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
@@ -43,14 +42,14 @@ pipeline {
             steps {
                 script {
                     sh "ls -all"
-                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
+                    sh "IMG=${IMAGE_NAME}:${NEXT_VERSION} make docker-build"
                 }
             }
         }
         stage('push image') {
             steps {
                 script {
-                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-push"
+                    sh "IMG=${IMAGE_NAME}:${NEXT_VERSION} make docker-push"
                 }
             }
         }
@@ -79,7 +78,7 @@ pipeline {
                         }
                         sh """
                         docker run \
-                        -eTAG=${IMAGE_TAG} \
+                        -eTAG=${NEXT_VERSION} \
                         -v ${workspace}:/root \
                         -v ${workspace}/kubeconfig:/root/.kube/config \
                         cnvrg/cnvrg-operator-test-runtime:latest \
@@ -98,11 +97,11 @@ pipeline {
                         az storage blob upload \
                          --account-name operatortestreports \
                          --container-name reports \
-                         --name ${IMAGE_TAG}.html \
+                         --name ${NEXT_VERSION}.html \
                          --file "tests/reports/\$(ls tests/reports)" \
                          --account-key ${ACCOUNT_KEY}
                         """
-                        echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
+                        echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
                     }
                 }
             }
