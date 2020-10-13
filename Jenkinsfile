@@ -42,14 +42,14 @@ pipeline {
             steps {
                 script {
                     sh "ls -all"
-                    sh "IMG=${IMAGE_NAME}:${NEXT_VERSION} make docker-build"
+                    sh "TAG=${NEXT_VERSION} make docker-build"
                 }
             }
         }
         stage('push image') {
             steps {
                 script {
-                    sh "IMG=${IMAGE_NAME}:${NEXT_VERSION} make docker-push"
+                    sh "TAG=${NEXT_VERSION} make docker-push"
                 }
             }
         }
