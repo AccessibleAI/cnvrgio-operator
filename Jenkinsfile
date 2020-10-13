@@ -119,6 +119,7 @@ pipeline {
                     echo "Current version: ${currentVersion}"
                     echo "Next version: ${nextVersion}"
                     if (env.CHANGE_TARGET == "develop"){
+                        echo "${nextVersion}-rc1"
                         nextVersion = "${nextVersion}-rc1"
                     }
                     env.NEXT_VERSION = nextVersion
