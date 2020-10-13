@@ -1,10 +1,11 @@
+def NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
 pipeline {
     agent { label 'cpu1' }
     options { timestamps() }
     environment {
         IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
         IMAGE_TAG           = "${env.BRANCH_NAME}-$BUILD_NUMBER"
-        NEXT_VERSION        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
+//         NEXT_VERSION        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         CLUSTER_LOCATION    = "northeurope"
         CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
