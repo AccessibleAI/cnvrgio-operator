@@ -1,7 +1,7 @@
 ---
 mpi:
   enabled: "true"
-  image: "cnvrg/custom:mpi-operator"
+  image: "mpioperator/mpi-operator:latest"
   kubectl_delivery_image: "mpioperator/kubectl-delivery:latest"
   registry:
     name: "mpi-private-registry"
