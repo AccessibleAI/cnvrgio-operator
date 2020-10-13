@@ -111,14 +111,16 @@ pipeline {
                 }
             }
             steps {
-                echo "*************************************"
-                NEXT_VERSION = sh (script: 'scripts/semver.sh bump minor $(git tag -l --sort -version:refname | head -n 1)', returnStdout: true)
-                echo "${NEXT_VERSION}"
-                if (env.CHANGE_TARGET == "develop"){
-                    NEXT_VERSION = NEXT_VERSION + "-rc1"
+                script {
+                    echo "*************************************"
+                    def nextVersion = sh (script: 'scripts/semver.sh bump minor $(git tag -l --sort -version:refname | head -n 1)', returnStdout: true)
+                    echo "${nextVersion}"
+                    if (env.CHANGE_TARGET == "develop"){
+                        nextVersion = nextVersion + "-rc1"
+                    }
+                    echo "${nextVersion}"
+                    echo "*************************************"
                 }
-                echo "${NEXT_VERSION}"
-                echo "*************************************"
             }
         }
 //         stage('generate helm chart') {
@@ -156,21 +158,21 @@ pipeline {
             }
         }
         always {
-//             script {
-//                 withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-//                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-//                     sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-//                     sh """
-//                     if [ \$(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
-//                     then
-//                         echo "deleting aks cluster..."
-//                         az group delete --name ${CLUSTER_NAME} --no-wait -y
-//                     else
-//                         echo "cluster not found, skipping cluster delete"
-//                     fi
-//                     """
-//                 }
-//             }
+            script {
+                withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
+                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                    sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                    sh """
+                    if [ \$(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
+                    then
+                        echo "deleting aks cluster..."
+                        az group delete --name ${CLUSTER_NAME} --no-wait -y
+                    else
+                        echo "cluster not found, skipping cluster delete"
+                    fi
+                    """
+                }
+            }
         }
     }
 }
