@@ -36,14 +36,14 @@ pipeline {
                 }
             }
         }
-        stage('setup test cluster') {
-            when {
-                not {
-                    changelog '.*skip tests.*'
-                }
-            }
-            steps {
-                script{
+//         stage('setup test cluster') {
+//             when {
+//                 not {
+//                     changelog '.*skip tests.*'
+//                 }
+//             }
+//             steps {
+//                 script{
 //                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
 //                         sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
 //                         sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
@@ -51,17 +51,17 @@ pipeline {
 //                         sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
 //                         sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
 //                     }
-                }
-            }
-        }
-        stage('run tests') {
-            when {
-                not {
-                    changelog '.*skip tests.*'
-                }
-            }
-            steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                 }
+//             }
+//         }
+//         stage('run tests') {
+//             when {
+//                 not {
+//                     changelog '.*skip tests.*'
+//                 }
+//             }
+//             steps {
+//                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
 //                     script {
 //                         def testDiscoveryPattern = "test_*"
 //                         if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startsWith("PR-")){
@@ -78,17 +78,17 @@ pipeline {
 //                         """
 //                         env.TESTS_PASSED = true
 //                     }
-                }
-            }
-        }
-        stage('store tests report ') {
-            when {
-                not {
-                    changelog '.*skip tests.*'
-                }
-            }
-            steps {
-                script {
+//                 }
+//             }
+//         }
+//         stage('store tests report ') {
+//             when {
+//                 not {
+//                     changelog '.*skip tests.*'
+//                 }
+//             }
+//             steps {
+//                 script {
 //                     withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
 //                         sh """
 //                         az storage blob upload \
@@ -100,9 +100,9 @@ pipeline {
 //                         """
 //                         echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
 //                     }
-                }
-            }
-        }
+//                 }
+//             }
+//         }
         stage('bump version'){
             when {
                 expression {
