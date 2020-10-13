@@ -4,4 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: controller
-  newName: asdasd
+  newName: "docker.io/cnvrg/cnvrg-operator"
+  newTag: ${TAG}

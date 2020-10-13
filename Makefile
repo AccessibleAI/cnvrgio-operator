@@ -30,8 +30,7 @@ uninstall: kustomize
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: kustomize
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	$(KUSTOMIZE) build config/default | TAG=${TAG} envsubst | kubectl apply -f -
 	kubectl wait --for=condition=ready pod -l control-plane=cnvrg-operator -ncnvrg --timeout=120s
 
 # Undeploy controller in the configured Kubernetes cluster in ~/.kube/config

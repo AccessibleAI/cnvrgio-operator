@@ -19,7 +19,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: manager
-          image: "{{.Values.operatorImage}}:{{.Values.operatorImageTag}}"
+          image: "{{.Values.operatorImage}}:{{ .Chart.Version }}"
           args:
             - --enable-leader-election
             - --leader-election-id=cnvrg-operator
