@@ -109,7 +109,7 @@ pipeline {
             when {
                 expression {
                     // do version bump only on PRs to master or develop and tests are passed
-                    ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
+                    return ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
                 }
             }
             steps {
@@ -150,7 +150,7 @@ pipeline {
             when {
                 expression {
                     // do version bump only on PRs to master or develop and tests are passed
-                    ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
+                    return ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
                 }
             }
             steps {
