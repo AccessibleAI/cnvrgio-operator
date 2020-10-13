@@ -111,31 +111,38 @@ pipeline {
                 }
             }
             steps {
-
+                echo "*************************************"
+                def nextVersion = sh (script: "scripts/semver.sh bump minor $(git tag -l --sort -version:refname | head -n 1)", returnStdout: true)
+                echo "${VERSION}"
+                if (env.CHANGE_TARGET == "develop"){
+                    nextVersion = nextVersion + "-rc1"
+                }
+                echo "${VERSION}"
+                echo "*************************************"
             }
         }
-        stage('generate helm chart') {
-            when {
-                expression {
-                    !env.BRANCH_NAME.startsWith("PR-")
-                }
-            }
-            steps {
-                script {
-                    def version = "${IMAGE_TAG}"
-                    withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh """
-                        helm repo add cnvrg https://charts.cnvrg.io
-                        helm repo update
-                        VERSION=${version} envsubst < chart/Chart.yaml | tee tmp-file && mv tmp-file chart/Chart.yaml
-                        helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
-                        helm repo update
-                        helm search repo cnvrg -l --debug
-                        """
-                    }
-                }
-            }
-        }
+//         stage('generate helm chart') {
+//             when {
+//                 expression {
+//                     !env.BRANCH_NAME.startsWith("PR-")
+//                 }
+//             }
+//             steps {
+//                 script {
+//                     def version = "${IMAGE_TAG}"
+//                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+//                         sh """
+//                         helm repo add cnvrg https://charts.cnvrg.io
+//                         helm repo update
+//                         VERSION=${version} envsubst < chart/Chart.yaml | tee tmp-file && mv tmp-file chart/Chart.yaml
+//                         helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
+//                         helm repo update
+//                         helm search repo cnvrg -l --debug
+//                         """
+//                     }
+//                 }
+//             }
+//         }
     }
     post {
         success {
@@ -149,21 +156,21 @@ pipeline {
             }
         }
         always {
-            script {
-                withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-                    sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                    sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                    sh """
-                    if [ \$(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
-                    then
-                        echo "deleting aks cluster..."
-                        az group delete --name ${CLUSTER_NAME} --no-wait -y
-                    else
-                        echo "cluster not found, skipping cluster delete"
-                    fi
-                    """
-                }
-            }
+//             script {
+//                 withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
+//                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+//                     sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+//                     sh """
+//                     if [ \$(az group list -o table  | grep ^${CLUSTER_NAME} | wc -l)  -gt 0 ]
+//                     then
+//                         echo "deleting aks cluster..."
+//                         az group delete --name ${CLUSTER_NAME} --no-wait -y
+//                     else
+//                         echo "cluster not found, skipping cluster delete"
+//                     fi
+//                     """
+//                 }
+//             }
         }
     }
 }
