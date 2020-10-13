@@ -8,6 +8,7 @@ pipeline {
         CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
         NODE_VM_SIZE        = "Standard_D8s_v3"
+        TESTS_PASSED        = false
     }
     stages {
         stage('Cleanup Workspace') {
@@ -25,6 +26,9 @@ pipeline {
                 script {
                     sh "ls -all"
                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
+                    echo "==========================="
+                    echo "${env.CHANGE_TARGET}"
+                    echo "==========================="
                 }
             }
         }
@@ -75,6 +79,7 @@ pipeline {
                         cnvrg/cnvrg-operator-test-runtime:latest \
                         python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
                         """
+                        env.TESTS_PASSED = true
                     }
                 }
             }
