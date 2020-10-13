@@ -119,17 +119,8 @@ pipeline {
                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true).trim()
                     echo "Current version: ${currentVersion}"
                     echo "Next version: ${nextVersion}"
-                    if (env.CHANGE_TARGET == "develop"){
-                        echo "${nextVersion}-rc1"
-                        nextVersion = "${nextVersion}-rc1"
-                        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                        echo "${nextVersion}"
-                        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                    }
-                    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                    echo "${nextVersion}"
+                    if (env.CHANGE_TARGET == "develop"){ nextVersion = "${nextVersion}-rc1" }
                     NEXT_VERSION = nextVersion
-                    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                     echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
                 }
             }
