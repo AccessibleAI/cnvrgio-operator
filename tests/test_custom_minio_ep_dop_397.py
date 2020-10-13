@@ -41,7 +41,7 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
         cls.delete_cnvrg_spec()
         cls.undeploy()
 
-    def test_mpi_operator_pod_deployed(self):
+    def test_custom_cnvrg_storage(self):
         cmd = "kubectl get secret env-secrets -ncnvrg -ojson | jq -r .data.CNVRG_STORAGE_ENDPOINT | base64 -d"
         res = self.exec_cmd(cmd)
         self.assertEqual("http://custom-minio-ep", res[1])
