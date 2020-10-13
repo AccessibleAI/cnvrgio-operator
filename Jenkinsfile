@@ -55,11 +55,6 @@ pipeline {
             }
         }
         stage('setup test cluster') {
-            when {
-                not {
-                    changelog '.*skip tests.*'
-                }
-            }
             steps {
                 script{
                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
@@ -73,11 +68,6 @@ pipeline {
             }
         }
         stage('run tests') {
-            when {
-                not {
-                    changelog '.*skip tests.*'
-                }
-            }
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script {
@@ -101,11 +91,6 @@ pipeline {
             }
         }
         stage('store tests report ') {
-            when {
-                not {
-                    changelog '.*skip tests.*'
-                }
-            }
             steps {
                 script {
                     withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
