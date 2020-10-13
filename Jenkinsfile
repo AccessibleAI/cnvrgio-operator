@@ -112,7 +112,7 @@ pipeline {
             }
             steps {
                 echo "*************************************"
-                def nextVersion = sh (script: "scripts/semver.sh bump minor $(git tag -l --sort -version:refname | head -n 1)", returnStdout: true)
+                def nextVersion = sh (script: 'scripts/semver.sh bump minor $(git tag -l --sort -version:refname | head -n 1)', returnStdout: true)
                 echo "${VERSION}"
                 if (env.CHANGE_TARGET == "develop"){
                     nextVersion = nextVersion + "-rc1"
