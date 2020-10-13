@@ -112,8 +112,8 @@ pipeline {
         stage('get next version'){
             when {
                 allOf {
-                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { TESTS_PASSED == false }
+//                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.TESTS_PASSED == false }
                 }
             }
             steps {
@@ -148,8 +148,8 @@ pipeline {
         stage('bump version'){
             when {
                 allOf {
-                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { TESTS_PASSED == false }
+//                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.TESTS_PASSED == false }
                 }
             }
             steps {
