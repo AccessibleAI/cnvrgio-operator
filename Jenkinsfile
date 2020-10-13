@@ -1,11 +1,11 @@
-def NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
+def CURRENT_VERSION
+def NEXT_VERSION
 pipeline {
     agent { label 'cpu1' }
     options { timestamps() }
     environment {
         IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
         IMAGE_TAG           = "${env.BRANCH_NAME}-$BUILD_NUMBER"
-//         NEXT_VERSION        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         CLUSTER_LOCATION    = "northeurope"
         CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
@@ -14,9 +14,18 @@ pipeline {
 
     }
     stages {
-        stage('Cleanup Workspace') {
+        stage('cleanup workspace & set globals') {
             steps {
                 cleanWs()
+                CURRENT_VERSION = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
+                def nextVersion = sh (script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
+                if (env.CHANGE_TARGET == "develop"){
+                    NEXT_VERSION = "${nextVersion}-rc1"
+                }
+                else {
+                    NEXT_VERSION = "${CURRENT_VERSION}-${env.BRANCH_NAME}-$BUILD_NUMBER"
+                }
+                echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
             }
         }
         stage('checkout') {
@@ -106,25 +115,25 @@ pipeline {
 //                 }
 //             }
 //         }
-        stage('get next version'){
-            when {
-                allOf {
-                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { env.TESTS_PASSED.equals("false") }
-                }
-            }
-            steps {
-                script {
-                    def currentVersion = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
-                    def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true).trim()
-                    echo "Current version: ${currentVersion}"
-                    echo "Next version: ${nextVersion}"
-                    if (env.CHANGE_TARGET == "develop"){ nextVersion = "${nextVersion}-rc1" }
-                    NEXT_VERSION = nextVersion
-                    echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
-                }
-            }
-        }
+//         stage('get next version'){
+//             when {
+//                 allOf {
+//                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+//                     expression { env.TESTS_PASSED.equals("false") }
+//                 }
+//             }
+//             steps {
+//                 script {
+//                     def currentVersion = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
+//                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true).trim()
+//                     echo "Current version: ${currentVersion}"
+//                     echo "Next version: ${nextVersion}"
+//                     if (env.CHANGE_TARGET == "develop"){ nextVersion = "${nextVersion}-rc1" }
+//                     NEXT_VERSION = nextVersion
+//                     echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
+//                 }
+//             }
+//         }
         stage('generate helm chart') {
             steps {
                 script {
@@ -151,8 +160,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    git tag -a ${env.NEXT_VERSION} -m \"${env.BRANCH_NAME}\"
-                    git push origin ${env.NEXT_VERSION}
+                    git tag -a ${NEXT_VERSION} -m \"${BRANCH_NAME}\"
+                    git push origin ${NEXT_VERSION}
                     """
                 }
             }
