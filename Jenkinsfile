@@ -16,16 +16,18 @@ pipeline {
     stages {
         stage('cleanup workspace & set globals') {
             steps {
-                cleanWs()
-                CURRENT_VERSION = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
-                def nextVersion = sh (script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
-                if (env.CHANGE_TARGET == "develop"){
-                    NEXT_VERSION = "${nextVersion}-rc1"
+                script {
+                    cleanWs()
+                    CURRENT_VERSION = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
+                    def nextVersion = sh (script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
+                    if (env.CHANGE_TARGET == "develop"){
+                        NEXT_VERSION = "${nextVersion}-rc1"
+                    }
+                    else {
+                        NEXT_VERSION = "${CURRENT_VERSION}-${env.BRANCH_NAME}-$BUILD_NUMBER"
+                    }
+                    echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
                 }
-                else {
-                    NEXT_VERSION = "${CURRENT_VERSION}-${env.BRANCH_NAME}-$BUILD_NUMBER"
-                }
-                echo "FINAL NEXT VERSION: ${NEXT_VERSION}"
             }
         }
         stage('checkout') {
