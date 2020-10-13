@@ -40,10 +40,6 @@ storageProfiles:
     prometheus: 10Gi
     minio: 10Gi
 
-specProfiles:
-  microk8s:
-    ingress: "nodeport"
-
 debug: "false"
 dumpDir: ""
 dryRun: "false"
@@ -96,6 +92,7 @@ appSecrets:
   extractTagsFromCmd: "false"
   checkJobExpiration: "true"
   cnvrgStorageType: minio
+  cnvrgStorageEndpoint: "default"
   cnvrgStorageBucket: cnvrg-storage
   cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
   cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"

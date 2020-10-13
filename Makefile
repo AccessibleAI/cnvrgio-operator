@@ -40,11 +40,11 @@ undeploy: kustomize
 
 # Build the docker image
 docker-build:
-	docker build . -t ${IMG}
+	docker build . -t docker.io/cnvrg/cnvrg-operator:${TAG}
 
 # Push the docker image
 docker-push:
-	docker push ${IMG}
+	docker push docker.io/cnvrg/cnvrg-operator:${TAG}
 
 PATH  := $(PATH):$(PWD)/bin
 SHELL := env PATH=$(PATH) /bin/sh

@@ -228,7 +228,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`pgBackup.storageClass`|use-default|
 |`pgBackup.cronTime`|1 1 * * *|
 |`es.enabled`|true|
-|`es.image`|docker.io/cnvrg/cnvrg-es:v7.8.1|
+|`es.image`|docker.elastic.co/elasticsearch/elasticsearch:6.2.4|
 |`es.maxMapImage`|docker.io/cnvrg/cnvrg-tools:v0.3|
 |`es.port`|9200|
 |`es.storageSize`|30Gi|
@@ -292,7 +292,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`kibana.enabled`|true|
 |`kibana.svcName`|kibana|
 |`kibana.port`|5601|
-|`kibana.image`|docker.elastic.co/kibana/kibana-oss:7.8.1|
+|`kibana.image`|docker.elastic.co/kibana/kibana-oss:6.2.4|
 |`kibana.nodePort`|30601|
 |`kibana.cpuRequest`|500m|
 |`kibana.memoryRequest`|500Mi|
@@ -312,7 +312,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`nvidiadp.nodeSelector.key`|accelerator|
 |`nvidiadp.nodeSelector.value`|nvidia|
 |`mpi.enabled`|true|
-|`mpi.image`|cnvrg/custom:mpi-operator|
+|`mpi.image`|mpioperator/mpi-operator:latest|
 |`mpi.kubectlDeliveryImage`|mpioperator/kubectl-delivery:latest|
 |`mpi.registry.name`|mpi-private-registry|
 |`mpi.registry.url`|docker.io|
