@@ -107,9 +107,9 @@ pipeline {
 //         }
         stage('get next version'){
             when {
-                expression {
-                    // do version bump only on PRs to master or develop and tests are passed
-                    return ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
+                allOf {
+                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.TESTS_PASSED == false }
                 }
             }
             steps {
@@ -126,11 +126,6 @@ pipeline {
             }
         }
         stage('generate helm chart') {
-            when {
-                expression {
-                    !env.BRANCH_NAME.startsWith("PR-")
-                }
-            }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
@@ -148,9 +143,9 @@ pipeline {
         }
         stage('bump version'){
             when {
-                expression {
-                    // do version bump only on PRs to master or develop and tests are passed
-                    return ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
+                allOf {
+                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.TESTS_PASSED == false }
                 }
             }
             steps {
