@@ -112,20 +112,12 @@ pipeline {
             }
             steps {
                 script {
-                    echo "*************************************"
                     def currentVersion = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
-                    echo "CURRENT VERSION: ${currentVersion}"
                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true).trim()
-                    echo "NEXT VERSION: ${nextVersion}"
-                    echo "CURRENT TARGET: ${env.CHANGE_TARGET}"
                     if (env.CHANGE_TARGET == "develop"){
                         nextVersion = "${nextVersion}-rc1"
-                        echo "-----------------"
-                        echo "${nextVersion}-rc1"
-                        echo "-----------------"
                     }
                     echo "FINAL NEXT VERSION: ${nextVersion}"
-                    echo "*************************************"
                 }
             }
         }
