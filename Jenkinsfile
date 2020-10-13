@@ -21,21 +21,21 @@ pipeline {
                 checkout scm
             }
         }
-        stage('build image') {
-            steps {
-                script {
-                    sh "ls -all"
-                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
-                }
-            }
-        }
-        stage('push image') {
-            steps {
-                script {
-                    sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-push"
-                }
-            }
-        }
+//         stage('build image') {
+//             steps {
+//                 script {
+//                     sh "ls -all"
+//                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
+//                 }
+//             }
+//         }
+//         stage('push image') {
+//             steps {
+//                 script {
+//                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-push"
+//                 }
+//             }
+//         }
 //         stage('setup test cluster') {
 //             when {
 //                 not {
@@ -113,7 +113,9 @@ pipeline {
             steps {
                 script {
                     echo "*************************************"
-                    def nextVersion = sh (script: 'scripts/semver.sh bump minor $(git tag -l --sort -version:refname | head -n 1)', returnStdout: true)
+                    def currentVersion = sh (script: 'git tag -l --sort -version:refname | head -n 1', returnStdout: true)
+                    echo "${currentVersion}"
+                    def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true)
                     echo "${nextVersion}"
                     if (env.CHANGE_TARGET == "develop"){
                         nextVersion = nextVersion + "-rc1"
