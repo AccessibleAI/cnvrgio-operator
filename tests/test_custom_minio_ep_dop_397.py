@@ -12,7 +12,8 @@ class CnvrgMpiOperatorDop395Test(unittest.TestCase, CommonBase):
     @classmethod
     def setUpClass(cls):
         cls.deploy()
-        cls.create_cnvrg_spec(cls.get_spec_from_chart())
+        helm_cmd = "helm template ../chart/ -s templates/cnvrg-app.yaml"
+        cls.create_cnvrg_spec(cls.get_spec_from_chart(helm_cmd))
         cls.wait_for_cnvrg_spec_ready()
 
     @classmethod

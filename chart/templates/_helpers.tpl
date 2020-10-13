@@ -174,9 +174,6 @@ minio:
   {{- if eq .Values.computeProfile "micro"}}
   memoryRequest: "{{ .Values.computeProfiles.micro.minio.memory }}"
   {{- end }}
-  {{- if ne .Values.appSecrets.cnvrgStorageEndpoint "default" }}
-  cnvrgStorageEndpoint: {{.Values.appSecrets.cnvrgStorageEndpoint}}
-  {{-end }}
   sharedStorage:
     enabled: "{{ .Values.minio.sharedStorage.enabled }}"
     storageClassName: "{{ .Values.minio.sharedStorage.storageClassName }}"

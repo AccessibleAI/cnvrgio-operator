@@ -92,8 +92,11 @@ class CommonBase(object):
         return False
 
     @staticmethod
-    def get_spec_from_chart():
-        pass
+    def get_spec_from_chart(cmd):
+        child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        streamdata = child.communicate()[0]
+        spec = str(streamdata, 'utf-8')
+        return spec
 
     def exec_cmd(self, cmd):
         child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
