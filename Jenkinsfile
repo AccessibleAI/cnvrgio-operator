@@ -77,6 +77,7 @@ pipeline {
                             testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
                         }
                         sh """
+                        docker pull cnvrg/cnvrg-operator-test-runtime:latest
                         docker run \
                         -eTAG=${NEXT_VERSION} \
                         -v ${workspace}:/root \
