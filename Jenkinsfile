@@ -9,7 +9,7 @@ pipeline {
         CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
         NODE_VM_SIZE        = "Standard_D8s_v3"
-        TESTS_PASSED        = false
+        TESTS_PASSED        = "false"
 
     }
     stages {
@@ -28,16 +28,6 @@ pipeline {
                 script {
                     sh "ls -all"
                     sh "IMG=${IMAGE_NAME}:${IMAGE_TAG} make docker-build"
-                    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                    echo env.TESTS_PASSED
-                    echo env.CHANGE_TARGET
-                    if (env.TESTS_PASSED.equals("false")){
-                        echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-                        echo "TESTS_PASSED is false!!!!!"
-                        echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-                    }
-
-                    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                 }
             }
         }
@@ -118,8 +108,8 @@ pipeline {
         stage('get next version'){
             when {
                 allOf {
-//                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { env.TESTS_PASSED == false }
+                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.TESTS_PASSED.equals("false") }
                 }
             }
             steps {
@@ -154,8 +144,8 @@ pipeline {
         stage('bump version'){
             when {
                 allOf {
-//                     expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
-                    expression { env.TESTS_PASSED == false }
+                    expression { env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master" }
+                    expression { env.TESTS_PASSED.equals("false") }
                 }
             }
             steps {
