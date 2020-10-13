@@ -121,6 +121,9 @@ pipeline {
                     if (env.CHANGE_TARGET == "develop"){
                         echo "${nextVersion}-rc1"
                         nextVersion = "${nextVersion}-rc1"
+                        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+                        echo "${nextVersion}"
+                        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                     }
                     env.NEXT_VERSION = nextVersion
                     echo "FINAL NEXT VERSION: ${env.NEXT_VERSION}"
