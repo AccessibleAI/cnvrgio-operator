@@ -170,6 +170,7 @@ pipeline {
                         sh """
                         git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                         git push https://${USERNAME}:${PASSWORD}@${url} --tags
+
                         """
                     }
                 }
