@@ -106,8 +106,8 @@ pipeline {
         stage('bump version'){
             when {
                 expression {
-                    // du version bump only on PRs to master or develop and tests are passed
-                    env.TESTS_PASSED && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master")
+                    // do version bump only on PRs to master or develop and tests are passed
+                    (env.TESTS_PASSED && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
                 }
             }
             steps {
