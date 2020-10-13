@@ -31,6 +31,10 @@ pipeline {
                     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                     echo env.TESTS_PASSED
                     echo env.CHANGE_TARGET
+                    if (env.TESTS_PASSED == false){
+                        ehco "TESTS_PASSED is false!!!!!"
+                    }
+
                     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                 }
             }
