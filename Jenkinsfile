@@ -113,7 +113,7 @@ pipeline {
             steps {
                 script {
                     echo "*************************************"
-                    def currentVersion = sh (script: 'git tag -l --sort -version:refname | head -n 1', returnStdout: true)
+                    def currentVersion = sh (script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true)
                     echo "${currentVersion}"
                     def nextVersion = sh (script: "scripts/semver.sh bump minor ${currentVersion}", returnStdout: true)
                     echo "${nextVersion}"
