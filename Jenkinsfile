@@ -44,13 +44,13 @@ pipeline {
             }
             steps {
                 script{
-                    withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                        sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
-                        sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
-                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
-                    }
+//                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
+//                         sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+//                         sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+//                         sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
+//                         sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
+//                         sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
+//                     }
                 }
             }
         }
@@ -62,22 +62,22 @@ pipeline {
             }
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    script {
-                        def testDiscoveryPattern = "test_*"
-                        if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startsWith("PR-")){
-                            testDiscoveryPattern = env.BRANCH_NAME
-                            testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
-                        }
-                        sh """
-                        docker run \
-                        -eTAG=${IMAGE_TAG} \
-                        -v ${workspace}:/root \
-                        -v ${workspace}/kubeconfig:/root/.kube/config \
-                        cnvrg/cnvrg-operator-test-runtime:latest \
-                        python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
-                        """
-                        env.TESTS_PASSED = true
-                    }
+//                     script {
+//                         def testDiscoveryPattern = "test_*"
+//                         if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startsWith("PR-")){
+//                             testDiscoveryPattern = env.BRANCH_NAME
+//                             testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-","_").toLowerCase()
+//                         }
+//                         sh """
+//                         docker run \
+//                         -eTAG=${IMAGE_TAG} \
+//                         -v ${workspace}:/root \
+//                         -v ${workspace}/kubeconfig:/root/.kube/config \
+//                         cnvrg/cnvrg-operator-test-runtime:latest \
+//                         python tests/run_tests.py --test-discovery-pattern ${testDiscoveryPattern}
+//                         """
+//                         env.TESTS_PASSED = true
+//                     }
                 }
             }
         }
@@ -89,17 +89,17 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
-                        sh """
-                        az storage blob upload \
-                         --account-name operatortestreports \
-                         --container-name reports \
-                         --name ${IMAGE_TAG}.html \
-                         --file "tests/reports/\$(ls tests/reports)" \
-                         --account-key ${ACCOUNT_KEY}
-                        """
-                        echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
-                    }
+//                     withCredentials([string(credentialsId:'85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
+//                         sh """
+//                         az storage blob upload \
+//                          --account-name operatortestreports \
+//                          --container-name reports \
+//                          --name ${IMAGE_TAG}.html \
+//                          --file "tests/reports/\$(ls tests/reports)" \
+//                          --account-key ${ACCOUNT_KEY}
+//                         """
+//                         echo "https://operatortestreports.blob.core.windows.net/reports/${IMAGE_TAG}.html"
+//                     }
                 }
             }
         }
