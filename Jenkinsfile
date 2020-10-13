@@ -4,11 +4,13 @@ pipeline {
     environment {
         IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
         IMAGE_TAG           = "${env.BRANCH_NAME}-$BUILD_NUMBER"
+        NEXT_VERSION        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         CLUSTER_LOCATION    = "northeurope"
         CLUSTER_NAME        = "${env.BRANCH_NAME}-$BUILD_NUMBER"
         NODE_COUNT          = 2
         NODE_VM_SIZE        = "Standard_D8s_v3"
         TESTS_PASSED        = false
+
     }
     stages {
         stage('Cleanup Workspace') {
@@ -103,11 +105,11 @@ pipeline {
 //                 }
 //             }
 //         }
-        stage('bump version'){
+        stage('get next version'){
             when {
                 expression {
                     // do version bump only on PRs to master or develop and tests are passed
-                    ((env.TESTS_PASSED == true) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
+                    ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
                 }
             }
             steps {
@@ -118,32 +120,48 @@ pipeline {
                     if (env.CHANGE_TARGET == "develop"){
                         nextVersion = "${nextVersion}-rc1"
                     }
-                    echo "FINAL NEXT VERSION: ${nextVersion}"
+                    env.NEXT_VERSION = nextVersion
+                    echo "FINAL NEXT VERSION: ${env.NEXT_VERSION}"
                 }
             }
         }
-//         stage('generate helm chart') {
-//             when {
-//                 expression {
-//                     !env.BRANCH_NAME.startsWith("PR-")
-//                 }
-//             }
-//             steps {
-//                 script {
-//                     def version = "${IMAGE_TAG}"
-//                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-//                         sh """
-//                         helm repo add cnvrg https://charts.cnvrg.io
-//                         helm repo update
-//                         VERSION=${version} envsubst < chart/Chart.yaml | tee tmp-file && mv tmp-file chart/Chart.yaml
-//                         helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
-//                         helm repo update
-//                         helm search repo cnvrg -l --debug
-//                         """
-//                     }
-//                 }
-//             }
-//         }
+        stage('generate helm chart') {
+            when {
+                expression {
+                    !env.BRANCH_NAME.startsWith("PR-")
+                }
+            }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh """
+                        helm repo add cnvrg https://charts.cnvrg.io
+                        helm repo update
+                        VERSION=${env.NEXT_VERSION} envsubst < chart/Chart.yaml | tee tmp-file && mv tmp-file chart/Chart.yaml
+                        helm push chart cnvrg -u=${USERNAME} -p=${PASSWORD}
+                        helm repo update
+                        helm search repo cnvrg -l --debug
+                        """
+                    }
+                }
+            }
+        }
+        stage('bump version'){
+            when {
+                expression {
+                    // do version bump only on PRs to master or develop and tests are passed
+                    ((env.TESTS_PASSED == false) && (env.CHANGE_TARGET == "develop" || env.CHANGE_TARGET == "master") == true)
+                }
+            }
+            steps {
+                script {
+                    sh """
+                    git tag -a ${env.NEXT_VERSION} -m \"${env.BRANCH_NAME}\"
+                    git push origin ${env.NEXT_VERSION}
+                    """
+                }
+            }
+        }
     }
     post {
         success {
