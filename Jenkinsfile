@@ -165,10 +165,10 @@ pipeline {
             }
             steps {
                 script {
-                    sh """
-                    git tag -a ${NEXT_VERSION} -m \"${BRANCH_NAME}\"
-                    git push origin ${NEXT_VERSION}
-                    """
+                    withCredentials([usernamePassword(credentialsId: '9e673d23-974c-460c-ba67-1188333cf4b4', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
+                        sh(script: "git push https://${USERNAME}:${PASSWORD}@${url} --tags", returnStdout: true)
+                    }
                 }
             }
         }
