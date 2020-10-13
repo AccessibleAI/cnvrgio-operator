@@ -120,6 +120,9 @@ pipeline {
                     echo "CURRENT TARGET: ${env.CHANGE_TARGET}"
                     if (env.CHANGE_TARGET == "develop"){
                         nextVersion = "${nextVersion}-rc1"
+                        echo "-----------------"
+                        echo "${nextVersion}-rc1"
+                        echo "-----------------"
                     }
                     echo "FINAL NEXT VERSION: ${nextVersion}"
                     echo "*************************************"
