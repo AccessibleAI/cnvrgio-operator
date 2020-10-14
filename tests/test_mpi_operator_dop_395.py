@@ -2,6 +2,7 @@ import unittest
 import os
 from common import CommonBase
 from kubernetes import client, config
+import logging
 
 config.load_kube_config()
 
@@ -42,7 +43,7 @@ spec:
 """
 
 
-class CnvrgTaintsTest(unittest.TestCase, CommonBase):
+class CnvrgMpiOperatorDop395Test(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
@@ -56,8 +57,12 @@ class CnvrgTaintsTest(unittest.TestCase, CommonBase):
             cls.delete_cnvrg_spec()
             cls.undeploy()
 
-    def test_mpi_operator(self):
+    def test_mpi_operator_pod_deployed(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=mpi-operator")
         self.assertEqual(1, len(pod.items))
 
+    def test_mpi_operator_pod_ready(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=mpi-operator -ncnvrg --timeout=120s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])

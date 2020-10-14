@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 import yaml
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
@@ -19,10 +20,10 @@ class CommonBase(object):
     @staticmethod
     def deploy():
         logging.info("deploying env...")
-        img = os.getenv('IMG', None)
-        if img is None:
-            raise Exception("IMG env not set, can't continue")
-        cmd = f"IMG={img} make deploy"
+        tag = os.getenv('TAG', None)
+        if tag is None:
+            raise Exception("TAG env not set, can't continue")
+        cmd = f"TAG={tag} make deploy"
         logging.info(f"executing: {cmd}")
         stream = os.popen(cmd)
         logging.info(stream.read())
@@ -87,3 +88,17 @@ class CommonBase(object):
         except Exception as ex:
             logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
         return False
+
+    @staticmethod
+    def get_spec_from_chart(cmd):
+        child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        streamdata = child.communicate()[0]
+        spec = str(streamdata, 'utf-8')
+        return spec
+
+    def exec_cmd(self, cmd):
+        child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        streamdata = child.communicate()[0]
+        stdout = str(streamdata, 'utf-8')
+        logging.info(stdout)
+        return (child.returncode, stdout)
