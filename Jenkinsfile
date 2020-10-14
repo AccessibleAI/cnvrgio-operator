@@ -30,7 +30,8 @@ pipeline {
                         def nextVersion = sh(script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
                         if (env.BRANCH_NAME == "master") {
                             NEXT_VERSION = "${nextVersion}"
-                        } else (env.BRANCH_NAME == "develop") {
+                        }
+                        if (env.BRANCH_NAME == "develop") {
                             NEXT_VERSION = "${nextVersion}-rc1"
                         }
                     } else {
