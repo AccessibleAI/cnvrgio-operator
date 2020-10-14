@@ -28,6 +28,10 @@ spec:
     enabled: "true"
     server: "1.2.3.4"
     path: "/bla"
+  pgBackup:
+    enabled: "true"
+  hostpath:
+    enabled: "true"
 """
 
 
@@ -123,7 +127,7 @@ class CnvrgTaintsTest(unittest.TestCase, CommonBase):
 
     def test_minio_exporter(self):
         v1 = client.CoreV1Api()
-        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=minio-exporter-token")
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="job-name=minio-exporter-token")
         self.assertEqual(1, len(pod.items))
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
