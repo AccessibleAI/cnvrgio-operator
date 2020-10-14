@@ -1,5 +1,4 @@
 createNs: true
-operatorImageTag: v0.367.0
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
@@ -40,10 +39,6 @@ storageProfiles:
     es: 10Gi
     prometheus: 10Gi
     minio: 10Gi
-
-specProfiles:
-  microk8s:
-    ingress: "nodeport"
 
 debug: "false"
 dumpDir: ""
@@ -97,6 +92,7 @@ appSecrets:
   extractTagsFromCmd: "false"
   checkJobExpiration: "true"
   cnvrgStorageType: minio
+  cnvrgStorageEndpoint: "default"
   cnvrgStorageBucket: cnvrg-storage
   cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
   cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"

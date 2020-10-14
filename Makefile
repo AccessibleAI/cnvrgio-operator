@@ -30,8 +30,7 @@ uninstall: kustomize
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: kustomize
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	$(KUSTOMIZE) build config/default | TAG=${TAG} envsubst | kubectl apply -f -
 	kubectl wait --for=condition=ready pod -l control-plane=cnvrg-operator -ncnvrg --timeout=120s
 
 # Undeploy controller in the configured Kubernetes cluster in ~/.kube/config
@@ -41,11 +40,11 @@ undeploy: kustomize
 
 # Build the docker image
 docker-build:
-	docker build . -t ${IMG}
+	docker build . -t docker.io/cnvrg/cnvrg-operator:${TAG}
 
 # Push the docker image
 docker-push:
-	docker push ${IMG}
+	docker push docker.io/cnvrg/cnvrg-operator:${TAG}
 
 PATH  := $(PATH):$(PWD)/bin
 SHELL := env PATH=$(PATH) /bin/sh
