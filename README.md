@@ -7,7 +7,7 @@
 1. Install helm3
 2. Add cnvrg helm repo
    ```bash
-   helm repo add cnvrg https://helm.cnvrg.io
+   helm repo add cnvrg https://charts.cnvrg.io
    helm repo update
    ```
 
