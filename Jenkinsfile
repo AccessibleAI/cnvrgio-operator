@@ -7,7 +7,7 @@ pipeline {
     environment {
         IMAGE_NAME = "docker.io/cnvrg/cnvrg-operator"
         CLUSTER_LOCATION = "northeurope"
-        CLUSTER_NAME = "${env.BRANCH_NAME}.replaceAll(\"_\", \"-\")-$BUILD_NUMBER"
+        CLUSTER_NAME = "${branch.replaceAll("_", "-")}-${build}-$BUILD_NUMBER"
         NODE_COUNT = 2
         NODE_VM_SIZE = "Standard_D8s_v3"
     }
