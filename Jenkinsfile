@@ -72,7 +72,7 @@ pipeline {
         // }
         stage('run tests') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
                         TESTS_PASSED = "false"
                         def testDiscoveryPattern = "test_*"
