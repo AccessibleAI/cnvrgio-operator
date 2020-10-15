@@ -64,5 +64,5 @@ class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
 
     def test_es_pod_ready(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -n cnvrg --timeout=120s"
-        ret_code = self.exec_cmd(cmd)
-        self.assertEqual(0, ret_code)
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
