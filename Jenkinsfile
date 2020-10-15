@@ -7,7 +7,6 @@ pipeline {
     environment {
         IMAGE_NAME = "docker.io/cnvrg/cnvrg-operator"
         CLUSTER_LOCATION = "northeurope"
-        CLUSTER_NAME = "${env.BRANCH_NAME}.replaceAll("_", "-")-$BUILD_NUMBER"
         NODE_COUNT = 2
         NODE_VM_SIZE = "Standard_D8s_v3"
     }
@@ -25,6 +24,7 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
+                    CLUSTER_NAME = "${env.BRANCH_NAME}.replaceAll("_", "-")-$BUILD_NUMBER"
                     if (env.BRANCH_NAME == "master" || env.BRANCH_NAME == "develop") {
                         CURRENT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname | head -n 1', returnStdout: true).trim()
                         def nextVersion = sh(script: "scripts/semver.sh bump minor ${CURRENT_VERSION}", returnStdout: true).trim()
