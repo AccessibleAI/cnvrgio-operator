@@ -24,6 +24,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     logging.info("start testing...")
     os.environ["TEST_DISCOVERY_PATTERN"] = args.test_discovery_pattern
+    sys.argv = sys.argv[:1]
     unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner(output='./tests/reports',
                                                            combine_reports=True,
                                                            report_title="cnvrg-operator test report"))
