@@ -57,12 +57,12 @@ class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
             cls.delete_cnvrg_spec()
             cls.undeploy()
 
-    def test_mpi_operator_pod_deployed(self):
+    def es_pod_deployed(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=elasticsearch")
         self.assertEqual(1, len(pod.items))
 
-    def test_mpi_operator_pod_ready(self):
+    def es_pod_pod_ready(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -n cnvrg --timeout=120s"
         ret_code = self.exec_cmd(cmd)
         self.assertEqual(0, ret_code)
