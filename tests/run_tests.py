@@ -5,7 +5,7 @@ import logging
 import argparse
 import os, sys
 
-logging.basicConfig(level=logging.INFO, format="|%(asctime)s|%(levelname)-5s %(message)s")
+logging.basicConfig(level=logging.DEBUG, format="|%(asctime)s|%(levelname)-5s %(message)s")
 
 
 def load_tests(loader, tests, pattern):
