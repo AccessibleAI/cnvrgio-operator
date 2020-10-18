@@ -5,11 +5,11 @@ pipeline {
     agent { label 'cpu1' }
     options { timestamps() }
     environment {
-        IMAGE_NAME = "docker.io/cnvrg/cnvrg-operator"
-        CLUSTER_LOCATION = "northeurope"
-        CLUSTER_NAME = "${env.BRANCH_NAME.replaceAll("_", "-")}-$BUILD_NUMBER"
-        NODE_COUNT = 2
-        NODE_VM_SIZE = "Standard_D8s_v3"
+        IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
+        CLUSTER_LOCATION    = "northeurope"
+        CLUSTER_NAME        = "${env.BRANCH_NAME.replaceAll("_", "-")}-$BUILD_NUMBER"
+        NODE_COUNT          = 2
+        NODE_VM_SIZE        = "Standard_D8s_v3"
     }
     stages {
         stage('cleanup workspace') {
@@ -61,12 +61,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-                        // sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                        // sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                        // sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
-                        // sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
-                        // sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
-                        sh "az aks get-credentials --resource-group aks-cicd-2029 --name aks-cicd-2029 --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                        sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
+                        sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
+                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
                     }
                 }
             }
@@ -78,7 +77,7 @@ pipeline {
                         TESTS_PASSED = "false"
                         def testDiscoveryPattern = "test_*"
                         if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startsWith("PR-")) {
-                            testDiscoveryPattern = env.BRANCH_NAME
+                            testDiscoveryPattern = env.BRANCH_NAMEls
                             testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-", "_").toLowerCase()
                         }
                         sh """
