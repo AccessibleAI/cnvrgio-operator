@@ -5,11 +5,11 @@ pipeline {
     agent { label 'cpu1' }
     options { timestamps() }
     environment {
-        IMAGE_NAME = "docker.io/cnvrg/cnvrg-operator"
-        CLUSTER_LOCATION = "northeurope"
-        CLUSTER_NAME = "${env.BRANCH_NAME}-$BUILD_NUMBER"
-        NODE_COUNT = 2
-        NODE_VM_SIZE = "Standard_D8s_v3"
+        IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
+        CLUSTER_LOCATION    = "northeurope"
+        CLUSTER_NAME        = "${env.BRANCH_NAME.replaceAll("_", "-")}-$BUILD_NUMBER"
+        NODE_COUNT          = 2
+        NODE_VM_SIZE        = "Standard_D8s_v3"
     }
     stages {
         stage('cleanup workspace') {
@@ -72,7 +72,7 @@ pipeline {
         }
         stage('run tests') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
                         TESTS_PASSED = "false"
                         def testDiscoveryPattern = "test_*"
@@ -97,11 +97,6 @@ pipeline {
         stage('store tests report ') {
             steps {
                 script {
-                    def testDiscoveryPattern = "test_*"
-                    if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master") {
-                        testDiscoveryPattern = env.BRANCH_NAME
-                        testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-", "_").toLowerCase()
-                    }
                     withCredentials([string(credentialsId: '85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
                         sh """
                         az storage blob upload \
