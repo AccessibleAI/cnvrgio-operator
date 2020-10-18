@@ -77,7 +77,7 @@ pipeline {
                         TESTS_PASSED = "false"
                         def testDiscoveryPattern = "test_*"
                         if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master" && !env.BRANCH_NAME.startsWith("PR-")) {
-                            testDiscoveryPattern = env.BRANCH_NAMEls
+                            testDiscoveryPattern = env.BRANCH_NAME
                             testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-", "_").toLowerCase()
                         }
                         sh """
