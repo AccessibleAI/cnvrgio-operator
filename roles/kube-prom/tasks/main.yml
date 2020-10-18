@@ -1,7 +1,7 @@
 - name: Kube-Prom deployment
   vars:
     resources: |+
-      {{ lookup('fileglob','templates/kube-prom/*',wantlist=true) | reject('search','prometheus-adapter') | reject('search','alertmanager') |  list }}
+      {{ lookup('fileglob','templates/kube-prom/*',wantlist=true)  | reject('search','alertmanager') |  list }}
   block:
     - set_fact:
         resources: "{{ resources |  reject('search','sidekiq') | reject('search','minio') | reject('search','postgres') | list  }}"
@@ -20,6 +20,7 @@
         state: "{{ role_state }}"
       with_fileglob:
         - templates/kube-prom/setup/*
+        - templates/kube-prom/custom_metrics/*
       when: role_state == "present"
 
     - name: Install Kube-Prometheus resources
@@ -69,5 +70,7 @@
       vars:
         template_path: "{{ item }}"
         state: "{{ role_state }}"
-      loop: "{{crds}}"
+      with_fileglob:
+        - templates/kube-prom/setup/*
+        - templates/kube-prom/custom_metrics/*
       when: state == "absent"
