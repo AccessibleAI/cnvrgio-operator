@@ -10,6 +10,17 @@ spec:
     spec:
       serviceAccountName: "{{rbac.service_account_name}}"
       terminationGracePeriodSeconds: 1
+{%  if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{%  endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
+{%  endif %}
       containers:
         - name: minio-exporter-token
           image: "docker.io/cnvrg/cnvrg-boot:v0.24"

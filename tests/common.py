@@ -97,6 +97,21 @@ class CommonBase(object):
         return spec
 
     @staticmethod
+    def get_nip_nip_url():
+        for i in range(0, 600):
+            try:
+                v1 = client.CoreV1Api()
+                service = v1.read_namespaced_service("ingress-nginx-controller", namespace="ingress-nginx")
+                ip = service.status.load_balancer.ingress[0].ip
+                nip_io_url = f"cnvrg.{ip}.nip.io"
+                logging.info(nip_io_url)
+                return nip_io_url
+            except Exception as ex:
+                logging.info("error fetch service external IP, will wait... ")
+                time.sleep(1)
+        return None
+
+    @staticmethod
     def _exec_cmd(cmd):
         child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         streamdata = child.communicate()[0]

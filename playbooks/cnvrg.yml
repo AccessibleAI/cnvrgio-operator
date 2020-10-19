@@ -25,6 +25,13 @@
         - ../roles/cnvrg_router/vars/main.yml
       tags: always
 
+    # CnvrgApp deployment
+    - import_role:
+        name: app
+      vars:
+        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: app
+
     # Cnvrg Nginx Router
     - import_role:
         name: cnvrg_router
@@ -66,13 +73,6 @@
       vars:
          role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: pg_backup
-
-    # CnvrgApp deployment
-    - import_role:
-        name: app
-      vars:
-        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: app
 
     # Redis deployment
     - import_role:
@@ -153,3 +153,9 @@
         role_state: "{{'present' if prometheus.enabled == 'true' else 'absent'}}"
       when: prometheus.enabled == "true"
       tags: prom
+
+    # This Role have to be the last one!!!
+    - import_role:
+        name: app_status
+      when: cnvrg_app.enabled == "true"
+      tags: app_status
