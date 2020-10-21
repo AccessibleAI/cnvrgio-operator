@@ -1,0 +1,29 @@
+- name: Get Cnvrg CR
+  community.kubernetes.k8s_info:
+    api_version: mlops.cnvrg.io/v1
+    kind: CnvrgApp
+    name: cnvrg-app
+    namespace: "{{ ansible_operator_meta.namespace }}"
+  register: cnvrg_spec
+
+- name: Check cnvrg spec ready
+  vars:
+    spec_ready: true
+  block:
+
+    - debug:
+        msg: "{{ cnvrg_spec | to_nice_yaml }}"
+
+    - name: Check webapp status
+      include: "app_status_check.yml"
+      when:
+       - "'cnvrgApp' in cnvrg_spec.resources[0].spec"
+       - "cnvrg_spec.resources[0].spec.cnvrgApp.enabled == 'false'"
+
+  when:
+  - cnvrg_spec.resources | length > 0
+
+
+
+
+

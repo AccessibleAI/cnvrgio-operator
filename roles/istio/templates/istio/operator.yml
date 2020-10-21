@@ -1,12 +1,3 @@
----
-# Source: istio-operator/templates/service_account.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: cnvrg
-  name: istio-operator
----
-# Source: istio-operator/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -33,12 +24,6 @@ rules:
       - '*'
   - apiGroups:
       - networking.istio.io
-    resources:
-      - '*'
-    verbs:
-      - '*'
-  - apiGroups:
-      - rbac.istio.io
     resources:
       - '*'
     verbs:
@@ -89,6 +74,7 @@ rules:
     verbs:
       - get
       - create
+      - update
   - apiGroups:
       - policy
     resources:
@@ -119,7 +105,6 @@ rules:
     verbs:
       - '*'
 ---
-# Source: istio-operator/templates/clusterrole_binding.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -127,33 +112,16 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: istio-operator
-    namespace: cnvrg
+    namespace: "{{ansible_operator_meta.namespace}}"
 roleRef:
   kind: ClusterRole
   name: istio-operator
   apiGroup: rbac.authorization.k8s.io
 ---
-# Source: istio-operator/templates/service.yml
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: cnvrg
-  labels:
-    name: istio-operator
-  name: istio-operator
-spec:
-  ports:
-    - name: http-metrics
-      port: 8383
-      targetPort: 8383
-  selector:
-    name: istio-operator
----
-# Source: istio-operator/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: cnvrg
+  namespace: "{{ansible_operator_meta.namespace}}"
   name: istio-operator
 spec:
   replicas: 1
@@ -165,6 +133,7 @@ spec:
       labels:
         name: istio-operator
     spec:
+      serviceAccountName: istio-operator
 {%  if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
@@ -176,13 +145,22 @@ spec:
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
 {% endif %}
-      serviceAccountName: istio-operator
       containers:
         - name: istio-operator
-          image: "{{ istio.operator_image  }}"
+          image: "{{ istio.operator_image }}"
           command:
             - operator
             - server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1337
+            runAsUser: 1337
+            runAsNonRoot: true
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -193,12 +171,37 @@ spec:
               memory: 128Mi
           env:
             - name: WATCH_NAMESPACE
-              value: cnvrg
+              value: "cnvrg"
             - name: LEADER_ELECTION_NAMESPACE
-              value: cnvrg
+              value: "cnvrg"
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
-              value: cnvrg
+              value: "istio-operator"
+            - name: WAIT_FOR_RESOURCES_TIMEOUT
+              value: "300s"
+            - name: REVISION
+              value: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: "{{ansible_operator_meta.namespace}}"
+  labels:
+    name: istio-operator
+  name: istio-operator
+spec:
+  ports:
+    - name: http-metrics
+      port: 8383
+      targetPort: 8383
+  selector:
+    name: istio-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: "{{ansible_operator_meta.namespace}}"
+  name: istio-operator

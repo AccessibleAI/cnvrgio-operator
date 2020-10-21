@@ -23,6 +23,7 @@
         - ../roles/autoscaler/vars/main.yml
         - ../roles/ingress/vars/main.yml
         - ../roles/cnvrg_router/vars/main.yml
+        - ../roles/status/vars/main.yml
       tags: always
 
     # CnvrgApp deployment
@@ -154,8 +155,9 @@
       when: prometheus.enabled == "true"
       tags: prom
 
-    # This Role have to be the last one!!!
+    ####################### The spec_status have to be the last executed role!!! #######################
     - import_role:
-        name: app_status
-      when: cnvrg_app.enabled == "true"
-      tags: app_status
+        name: status
+      when: status.enabled == "true"
+      tags: status
+    ####################### The spec_status have to be the last executed role!!! #######################
