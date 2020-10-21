@@ -23,6 +23,37 @@ spec:
         - --port=8081
         - --telemetry-host=127.0.0.1
         - --telemetry-port=8082
+        - --collectors=horizontalpodautoscalers
+        - --collectors=certificatesigningrequests
+        - --collectors=configmaps
+        - --collectors=cronjobs
+        - --collectors=daemonsets
+        - --collectors=deployments
+        - --collectors=endpoints
+        - --collectors=ingresses
+        - --collectors=jobs
+        - --collectors=limitranges
+        - --collectors=mutatingwebhookconfigurations
+        - --collectors=namespaces
+        - --collectors=networkpolicies
+        - --collectors=nodes
+        - --collectors=jobs
+        - --collectors=persistentvolumeclaims
+        - --collectors=persistentvolumes
+        - --collectors=poddisruptionbudgets
+        - --collectors=pods
+        - --collectors=replicasets
+        - --collectors=resourcequotas
+        - --collectors=secrets
+        - --collectors=services
+        - --collectors=statefulsets
+        - --collectors=storageclasses
+        - --collectors=validatingwebhookconfigurations
+        - --collectors=volumeattachments
+        - --collectors=replicationcontrollers
+{% if vpa.enabled == "true" %}
+        - --collectors=verticalpodautoscalers
+{%  endif %}
         image: "{{prometheus.kube_state_metrics_image}}"
         name: kube-state-metrics
         securityContext:

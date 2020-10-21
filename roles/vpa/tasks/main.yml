@@ -1,0 +1,70 @@
+# - name: "Get vpa-tls-certs secret"
+#   k8s_info:
+#     kind: Secret
+#     namespace: "{{ansible_operator_meta.namespace}}"
+#     name: "vpa-tls-certs"
+#   register: vpa_tls_certs
+
+- name: Create Certificate For Admission Controller
+  block:
+  # - name: Certificate Json
+  #   set_fact:
+  #     certificate:
+  #       CN: vpa-webhook
+  #       key:
+  #         algo: ecdsa
+  #         size: 256
+  #       hosts:
+  #         - vpa-webhook
+
+  # - name: Copy Certificate File
+  #   copy:
+  #     dest: server
+  #     content: "{{ certificate | to_json }}"
+
+  # - name: Create Certificate
+  #   shell: cat server | cfssl genkey - | cfssljson -bare server
+
+  # - name: Register Server Signing Request
+  #   shell: cat server.csr | base64
+  #   register: server_request
+
+  # - name: Certificate Request
+  #   include_role:
+  #     name: common
+  #     tasks_from: install
+  #   vars:
+  #     template_path: "{{ item }}"
+  #     state: "{{ role_state }}"
+  #   with_fileglob:
+  #     - templates/certificate_request.yml
+
+  # - debug: var=server_request.stdout
+
+  # - name: Generate Secret
+  #   shell: ./gencerts.sh
+  #   args:
+  #     chdir: roles/vpa/templates/
+
+  - name: Create Secret
+    include_role:
+      name: common
+      tasks_from: install
+    vars:
+      template_path: "templates/certificate.yml"
+      state: "{{ role_state }}"
+
+  when:
+  # - role_state == "present"
+  # - dry_run == "false"
+  # - vpa_tls_certs.resources | length == 0
+
+# - name: VPA deployment
+#   include_role:
+#     name: common
+#     tasks_from: install
+#   vars:
+#     template_path: "{{ item }}"
+#     state: "{{ role_state }}"
+#   with_fileglob:
+#     - templates/*

@@ -146,6 +146,14 @@
       when: ingress.enabled == 'true'
       tags: ingress
 
+    # vpa deployment
+    - import_role:
+        name: vpa
+      vars:
+        role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
+      when: vpa.enabled == "true"
+      tags: vpa
+
     # Prometheus deployment
     - import_role:
         name: kube-prom

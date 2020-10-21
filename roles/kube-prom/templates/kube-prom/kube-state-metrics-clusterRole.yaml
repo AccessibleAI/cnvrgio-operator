@@ -56,6 +56,9 @@ rules:
   - autoscaling
   resources:
   - horizontalpodautoscalers
+{% if vpa.enabled == "true" %}
+  - verticalpodautoscalers
+{%  endif %}
   verbs:
   - list
   - watch
