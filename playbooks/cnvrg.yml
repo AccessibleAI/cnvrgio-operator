@@ -151,7 +151,6 @@
         name: vpa
       vars:
         role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
-      when: vpa.enabled == "true"
       tags: vpa
 
     # Prometheus deployment
@@ -159,5 +158,4 @@
         name: kube-prom
       vars:
         role_state: "{{'present' if prometheus.enabled == 'true' else 'absent'}}"
-      when: prometheus.enabled == "true"
       tags: prom

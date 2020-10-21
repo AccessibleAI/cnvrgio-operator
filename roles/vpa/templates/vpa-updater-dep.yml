@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpa-updater
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vpa-updater
+  template:
+    metadata:
+      labels:
+        app: vpa-updater
+    spec:
+      serviceAccountName: vpa-updater
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534 # nobody
+      containers:
+        - name: updater
+          image: k8s.gcr.io/autoscaling/vpa-updater:0.9.0
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 200m
+              memory: 1000Mi
+            requests:
+              cpu: 50m
+              memory: 500Mi
+          ports:
+            - containerPort: 8080
