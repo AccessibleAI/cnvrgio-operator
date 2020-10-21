@@ -3,6 +3,7 @@ WORKDIR /root
 RUN apt update -y && \
      apt-get install -y \
      gettext-base \
+     vim \
      jq
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
