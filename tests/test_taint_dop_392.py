@@ -412,7 +412,6 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
 
     @classmethod
     def setUpClass(cls):
-        cls.get_nip_nip_url()
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
@@ -445,7 +444,6 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
     def setUpClass(cls):
         res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
         node_name = res[1]
-        cls.get_nip_nip_url()
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
