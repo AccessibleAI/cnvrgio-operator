@@ -34,19 +34,19 @@ spec:
   redis:
     enabled: "false"
   es:
-    enabled: "true"
+    enabled: "false"
   minio:
     enabled: "false"
   prometheus:
-    enabled: "false"
+    enabled: "true"
   istio:
     enabled: "false"
   kibana:
     enabled: "false"
   fluentd:
-    enabled: "false"
+    enabled: "true"
   nvidiadp:
-    enabled: "false"
+    enabled: "true"
 """
 
 
