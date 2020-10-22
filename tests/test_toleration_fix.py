@@ -50,7 +50,7 @@ spec:
 """
 
 
-class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
+class CnvrgTolerationFix(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
@@ -89,6 +89,6 @@ class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
 
 
     def test_nvidia_plugin_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l app=nvidia-device-plugin --field-selector=spec.nodeName={}  --timeout=120s".format(nodes[-1])
+        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l name=nvidia-device-plugin-ds --field-selector=spec.nodeName={}  --timeout=120s".format(nodes[-1])
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])

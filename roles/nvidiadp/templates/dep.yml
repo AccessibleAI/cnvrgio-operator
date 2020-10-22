@@ -17,8 +17,6 @@ kind: DaemonSet
 metadata:
   name: nvidia-device-plugin-daemonset
   namespace: "{{ ansible_operator_meta.namespace }}"
-  labels:
-    app: "nvidia-device-plugin"
 spec:
   selector:
     matchLabels:
