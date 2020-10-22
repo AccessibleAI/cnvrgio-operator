@@ -69,5 +69,6 @@
       vars:
         template_path: "{{ item }}"
         state: "{{ role_state }}"
-      loop: "{{crds}}"
+      with_fileglob:
+        - templates/kube-prom/setup/*
       when: state == "absent"

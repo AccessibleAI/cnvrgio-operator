@@ -5,11 +5,11 @@ pipeline {
     agent { label 'cpu1' }
     options { timestamps() }
     environment {
-        IMAGE_NAME = "docker.io/cnvrg/cnvrg-operator"
-        CLUSTER_LOCATION = "northeurope"
-        CLUSTER_NAME = "${env.BRANCH_NAME}-$BUILD_NUMBER"
-        NODE_COUNT = 2
-        NODE_VM_SIZE = "Standard_D8s_v3"
+        IMAGE_NAME          = "docker.io/cnvrg/cnvrg-operator"
+        CLUSTER_LOCATION    = "northeurope"
+        CLUSTER_NAME        = "${env.BRANCH_NAME.replaceAll("_", "-")}-$BUILD_NUMBER"
+        NODE_COUNT          = 2
+        NODE_VM_SIZE        = "Standard_D8s_v3"
     }
     stages {
         stage('cleanup workspace') {
@@ -67,6 +67,8 @@ pipeline {
                         sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
                         sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
                         // sleep for one minute, just to make sure AKS cluster is completely ready
+                        sh "sleep 60"
+                        // deploy nginx ingress
                         sh "KUBECONFIG=${workspace}/kubeconfig kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml"
                     }
                 }
@@ -74,7 +76,7 @@ pipeline {
         }
         stage('run tests') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
                         TESTS_PASSED = "false"
                         def testDiscoveryPattern = "test_*"
@@ -99,11 +101,6 @@ pipeline {
         stage('store tests report ') {
             steps {
                 script {
-                    def testDiscoveryPattern = "test_*"
-                    if (env.BRANCH_NAME != "develop" && env.BRANCH_NAME != "master") {
-                        testDiscoveryPattern = env.BRANCH_NAME
-                        testDiscoveryPattern = "*${testDiscoveryPattern}*".replaceAll("-", "_").toLowerCase()
-                    }
                     withCredentials([string(credentialsId: '85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
                         sh """
                         az storage blob upload \
@@ -119,6 +116,9 @@ pipeline {
             }
         }
         stage('generate helm chart') {
+            when {
+                expression { return (env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "master") }
+            }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
