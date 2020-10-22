@@ -60,6 +60,10 @@ spec:
         - effect: NoSchedule
           key: nvidia.com/gpu
           operator: "Exists"
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
         #- effect: NoExecute
         #  key: nvidia.com/gpu
         #  operator: "Exists"
