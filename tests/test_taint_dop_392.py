@@ -82,8 +82,6 @@ spec:
     enabled: "false"
   conf:
     enabled: "false"
-  conf:
-    enabled: "false"
   cnvrgApp:
     enabled: "false"
   pgBackup:
@@ -111,13 +109,11 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "istio"
+  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
-  istio:
-    enabled: "true"
   minio:
     enabled: "true"
     storageSize: "1Gi"
@@ -137,12 +133,13 @@ spec:
     enabled: "true"
   cnvrgApp:
     enabled: "true"
+    image: "cnvrg/core:core-3.4.1-10-300"
+    customAgentTag: "false"
+    intercom: "false"
   mpi:
     enabled: "false"
   pgBackup:
     enabled: "true"
-  redis:
-    enabled: "false"
   kibana:
     enabled: "false"
   fluentd:
@@ -411,38 +408,35 @@ spec:
 #         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
 #         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
-#
+class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
 
-# class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
-#
-#     @classmethod
-#     def setUpClass(cls):
-#         cls.get_nip_nip_url()
-#         cls.deploy()
-#         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-#         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
-#         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
-#         cls.create_cnvrg_spec(
-#             CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-#         cls.wait_for_cnvrg_spec_ready()
-#
-#     @classmethod
-#     def tearDownClass(cls):
-#         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-#         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
-#         cls.delete_cnvrg_spec()
-#         cls.undeploy()
-#
-#     def test_istiod_deployment(self):
-#         cmd = "kubectl wait --for=condition=ready pod -l app=istiod -ncnvrg --timeout=300s"
-#         res = self.exec_cmd(cmd)
-#         self.assertEqual(0, res[0])
-#
-#     def test_istio_ingress_deployment(self):
-#         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
-#         res = self.exec_cmd(cmd)
-#         self.assertEqual(0, res[0])
-#
+    @classmethod
+    def setUpClass(cls):
+        cls.get_nip_nip_url()
+        cls.deploy()
+        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+        cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
+        cls.create_cnvrg_spec(
+            CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
+        cls.wait_for_cnvrg_spec_ready()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls.delete_cnvrg_spec()
+        cls.undeploy()
+
+    def test_istiod_deployment(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=istiod -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_istio_ingress_deployment(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
 
 
 class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonBase):
@@ -469,5 +463,55 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     def test_pg_deployment(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_app(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_es(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_grafana(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_hostpath_provisioner(self):
+        cmd = "kubectl wait --for=condition=ready pod -l k8s-app=hostpath-provisioner -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_minio(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_prom_instance(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_prom_operator(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_redis(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_sidekiq(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_sidekiq_searchkick(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq-searchkick -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
