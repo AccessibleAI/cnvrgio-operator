@@ -112,6 +112,9 @@ pipeline {
             }
         }
         stage('generate helm chart') {
+            when {
+                expression { return (env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "master") }
+            }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'charts-cnvrg-io', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
