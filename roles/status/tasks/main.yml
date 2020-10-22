@@ -7,8 +7,6 @@
   register: cnvrg_spec
 
 - name: Check cnvrg spec ready
-  vars:
-    spec_ready: true
   block:
 
     - debug:

@@ -117,7 +117,7 @@ class CommonBase(object):
         streamdata = child.communicate()[0]
         stdout = str(streamdata, 'utf-8')
         logging.info(stdout)
-        return (child.returncode, stdout)
+        return (child.returncode, stdout.strip())
 
     def exec_cmd(self, cmd):
         return CommonBase._exec_cmd(cmd)
