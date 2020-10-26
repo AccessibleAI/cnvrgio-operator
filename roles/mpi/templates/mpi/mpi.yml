@@ -19,6 +19,7 @@ rules:
   - get
   - list
   - watch
+  - update
 # This is needed for the launcher Role.
 - apiGroups:
   - ""
