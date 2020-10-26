@@ -335,4 +335,11 @@ cnvrgRouter:
   svcName: "{{ .Values.cnvrgRouter.svcName }}"
   nodePort: "{{ .Values.cnvrgRouter.nodePort }}"
   port: "{{ .Values.cnvrgRouter.port}}"
+
+vpa:
+  enabled: "{{ .Values.vpa.enabled }}"
+  admission: "{{ .Values.vpa.admission }}"
+  recommender: "{{ .Values.vpa.recommender }}"
+  updater: "{{ .Values.vpa.updater }}"
+
 {{- end}}

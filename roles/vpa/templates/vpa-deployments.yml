@@ -1,0 +1,66 @@
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{cnvrg_app.svc_name}}
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       {{cnvrg_app.svc_name}}
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: sidekiq
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       sidekiq
+  updatePolicy:
+    updateMode: "Off"
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: sidekiq-searchkick
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       sidekiq-searchkick
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{pg.svc_name}}
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       {{pg.svc_name}}
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{redis.svc_name}}
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       {{redis.svc_name}}
+  updatePolicy:
+    updateMode: "Off"

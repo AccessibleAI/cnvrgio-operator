@@ -19,23 +19,10 @@
     vars:
       template_path: "templates/certificate.yml"
       state: "{{ role_state }}"
-
   when:
   - role_state == "present"
   - dry_run == "false"
   - vpa_tls_certs.resources | length == 0
-
-- name: Delete vpa_tls_certs Secret
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "templates/certificate.yml"
-    state: "{{ role_state }}"
-  when:
-  - role_state == "absent"
-  - dry_run == "false"
-  - vpa_tls_certs.resources | length > 0
 
 - name: VPA deployment
   include_role:
@@ -51,3 +38,15 @@
     - templates/vpa-recommender-dep.yml
     - templates/vpa-updater-dep.yml
     - templates/svc.yml
+
+- name: VPA deployment2
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_items:
+      - templates/vpa-deployments.yml
+  when:
+  - role_state == "present"
