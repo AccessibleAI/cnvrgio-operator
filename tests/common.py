@@ -98,9 +98,13 @@ class CommonBase(object):
         spec = str(streamdata, 'utf-8')
         return spec
 
-    def exec_cmd(self, cmd):
+    @staticmethod
+    def _exec_cmd(cmd):
         child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         streamdata = child.communicate()[0]
         stdout = str(streamdata, 'utf-8')
         logging.info(stdout)
-        return (child.returncode, stdout)
+        return (child.returncode, stdout.strip())
+
+    def exec_cmd(self, cmd):
+        return CommonBase._exec_cmd(cmd)
