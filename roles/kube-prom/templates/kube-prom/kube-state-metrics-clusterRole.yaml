@@ -67,7 +67,7 @@ rules:
   verbs:
   - list
   - watch
-{%  endif %}  
+{%  endif %}
 - apiGroups:
   - authentication.k8s.io
   resources:
