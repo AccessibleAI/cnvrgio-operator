@@ -249,7 +249,6 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        return
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
@@ -324,7 +323,6 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        return
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
         cls.delete_cnvrg_spec()
