@@ -17,8 +17,6 @@ NAMESPACE = "cnvrg"
 
 
 class CommonBase(object):
-    BRANCH_NAME = "*"
-
     @staticmethod
     def deploy():
         logging.info("deploying env...")
@@ -42,6 +40,7 @@ class CommonBase(object):
         api_instance = client.CustomObjectsApi()
         try:
             api_response = api_instance.create_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL, body)
+            # api_instance.patch_namespaced_custom_object()
             logging.info(api_response)
         except ApiException as e:
             if e.status == 409:
@@ -99,6 +98,21 @@ class CommonBase(object):
         return spec
 
     @staticmethod
+    def get_nip_nip_url():
+        for i in range(0, 600):
+            try:
+                v1 = client.CoreV1Api()
+                service = v1.read_namespaced_service("ingress-nginx-controller", namespace="ingress-nginx")
+                ip = service.status.load_balancer.ingress[0].ip
+                nip_io_url = f"cnvrg.{ip}.nip.io"
+                logging.info(nip_io_url)
+                return nip_io_url
+            except Exception as ex:
+                logging.info("error fetch service external IP, will wait... ")
+                time.sleep(1)
+        return None
+
+    @staticmethod
     def _exec_cmd(cmd):
         child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         streamdata = child.communicate()[0]
@@ -108,3 +122,4 @@ class CommonBase(object):
 
     def exec_cmd(self, cmd):
         return CommonBase._exec_cmd(cmd)
+
