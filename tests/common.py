@@ -35,12 +35,15 @@ class CommonBase(object):
         logging.info(stream.read())
 
     @staticmethod
-    def create_cnvrg_spec(cnvrg_spec):
+    def create_cnvrg_spec(cnvrg_spec, patch=False):
         body = yaml.load(cnvrg_spec, Loader=yaml.FullLoader)
         api_instance = client.CustomObjectsApi()
         try:
-            api_response = api_instance.create_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL, body)
-            # api_instance.patch_namespaced_custom_object()
+            if patch:
+                api_response = api_instance.patch_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL,
+                                                                           "cnvrg-app", body)
+            else:
+                api_response = api_instance.create_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL, body)
             logging.info(api_response)
         except ApiException as e:
             if e.status == 409:

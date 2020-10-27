@@ -48,8 +48,20 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  clusterDomain: "__BASE_DOMAIN__"
-  
+  clusterDomain: "__CLUSTER_DOMAIN__"
+  cnvrgApp:
+    enabled: "true"
+    image: "cnvrg/core:3.1.3"
+  pg:
+    enabled: "true"
+  conf:
+    enabled: "true"
+  redis:
+    enabled: "true"
+  es:
+    enabled: "true"
+  minio:
+    enabled: "true"
 """
 
 
@@ -60,8 +72,9 @@ class SanityAksIstioTest(unittest.TestCase, CommonBase):
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC_ISTIO_ONLY)
         cls.wait_for_cnvrg_spec_ready()
-        ip = cls.get_nip_nip_url("istio")
-        x = 1
+        patched_spec = CNVRG_SPEC_AKS_ISTIO_DEFAULT.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url("istio"))
+        cls.create_cnvrg_spec(patched_spec, True)
+        cls.wait_for_cnvrg_spec_ready()
 
     @classmethod
     def tearDownClass(cls):
