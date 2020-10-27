@@ -40,6 +40,10 @@ spec:
       - key: nvidia.com/gpu
         operator: Exists
         effect: NoSchedule
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
       containers:
       - image: "{{ nvidiadp.image }}"
         name: nvidia-device-plugin-ctr

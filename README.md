@@ -7,19 +7,19 @@
 1. Install helm3
 2. Add cnvrg helm repo
    ```bash
-   helm repo add cnvrg https://helm.cnvrg.io
+   helm repo add cnvrg https://charts.cnvrg.io
    helm repo update
    ```
 
 #### Deploy with defaults (Istio, Minio)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s  --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s  --wait \
     --set clusterDomain=base.domain
 ```
 
 ### Upgrade with helm upgrade
 ```
-helm upgrade cnvrg cnvrg/cnvrgio --reuse-values \
+helm upgrade cnvrg cnvrg/cnvrg --reuse-values \
   --set cnvrgApp.image=cnvrg/app:master-1374-encode
 ```
 
@@ -32,13 +32,13 @@ helm uninstall cnvrg
 ### Install without Helm (raw k8s manifests)
 ```
 kubectl create namespace cnvrg
-helm template cnvrg cnvrg/cnvrgio --no-hooks --set clusterDomain=base.domain > cnvrg.yaml # ... add extra params if required
+helm template cnvrg cnvrg/cnvrg --no-hooks --set clusterDomain=base.domain > cnvrg.yaml # ... add extra params if required
 kubectl apply -f cnvrg.yaml
 ```
 
 ### Dump only the CnvrgApp Custom Resource
 ```
-helm template cnvrg cnvrg/cnvrgio  -s templates/cnvrg-app.yaml
+helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
 ```
 
 
@@ -47,7 +47,7 @@ helm template cnvrg cnvrg/cnvrgio  -s templates/cnvrg-app.yaml
 #### Deploy on EKS | AKS | GKE with  (Istio, Cloud Object Storage)
 ```bash
 # AWS - EKS
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
@@ -61,7 +61,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 
 # Azure - AKS
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
@@ -73,7 +73,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
         --set appSecrets.cnvrgStorageAzureContainer=azure-storage-container-name
 
 # GCP - GKE
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
@@ -85,7 +85,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Deploy OnPrem  (Istio, Minio, HostPath, SMTP, micro storage profile)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=apps.1.2.3.4.nip.io \
     --set storageProfile=micro \
     --set hostpath.enabled="true" \
@@ -99,7 +99,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Deploy OnPrem  (NodePort, Minio, NFS)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
     --set ingressType="nodeport" \
     --set nfs.enabled="true" \
@@ -109,7 +109,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Deploy OnPrem  (NodePort, Minio, Hostpath)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
     --set ingressType="nodeport" \
     --set hostpath.enabled="true" \
@@ -118,7 +118,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Turn On/Off components
 ```
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set cnvrgApp.enabled="false" \
     --set autoscaler.enabled="false" \
     --set cnvrgRouter.enabled="false" \
