@@ -238,87 +238,87 @@ spec:
 #
 
 
-# class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
-#
-#     @classmethod
-#     def setUpClass(cls):
-#         cls.get_nip_nip_url()
-#         cls.deploy()
-#         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-#         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
-#         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-#         cls.wait_for_cnvrg_spec_ready()
-#
-#     @classmethod
-#     def tearDownClass(cls):
-#         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-#         cls.delete_cnvrg_spec()
-#         cls.undeploy()
-#
-#     def test_app(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=app")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_pg(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=postgres")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_es(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=elasticsearch")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_kibana(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=kibana")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_prom_operator(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app.kubernetes.io/name=prometheus-operator")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_minio(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=minio")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_mpi_operator(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=mpi-operator")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_redis(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=redis")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_grafana(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=grafana")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_cnvrg_routing(self):
-#         v1 = client.CoreV1Api()
-#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=routing-service")
-#         self.assertEqual(1, len(pod.items))
-#         self.assertEqual("Running", pod.items[0].status.phase)
-#
-#     def test_custom_nginx_deploy(self):
-#         cmd = "kubectl wait --for=condition=ready pod -l app=test-nginx -ncnvrg --timeout=600s"
-#         res = self.exec_cmd(cmd)
-#         self.assertEqual(0, res[0])
+class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.get_nip_nip_url()
+        cls.deploy()
+        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+        cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
+        cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
+        cls.wait_for_cnvrg_spec_ready()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+        cls.delete_cnvrg_spec()
+        cls.undeploy()
+
+    def test_app(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=app")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_pg(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=postgres")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_es(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=elasticsearch")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_kibana(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=kibana")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_prom_operator(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app.kubernetes.io/name=prometheus-operator")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_minio(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=minio")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_mpi_operator(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=mpi-operator")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_redis(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=redis")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_grafana(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=grafana")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_cnvrg_routing(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=routing-service")
+        self.assertEqual(1, len(pod.items))
+        self.assertEqual("Running", pod.items[0].status.phase)
+
+    def test_custom_nginx_deploy(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=test-nginx -ncnvrg --timeout=600s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
 
 
 class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
