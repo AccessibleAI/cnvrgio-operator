@@ -135,6 +135,9 @@ spec:
             - mountPath: /grafana-dashboard-definitions/0/minio-exporter2
               name: minio-exporter2
               readOnly: false
+            - mountPath: /grafana-dashboard-definitions/0/vpa-dashboard
+              name: vpa-dashboard
+              readOnly: false
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
@@ -234,3 +237,6 @@ spec:
         - configMap:
             name: minio-exporter2
           name: minio-exporter2
+        - configMap:
+            name: vpa-dashboard
+          name: vpa-dashboard
