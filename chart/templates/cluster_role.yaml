@@ -72,12 +72,14 @@ rules:
       - "horizontalpodautoscalers"
     verbs:
       - "*"
+{% if vpa.enabled == "true" %}
   - apiGroups:
-      - "autoscaling.k8s.io"
+    - autoscaling.k8s.io
     resources:
-      - "verticalpodautoscalers"
+    - verticalpodautoscalers
     verbs:
       - "*"
+{%  endif %}
   - apiGroups:
       - "config.istio.io"
     resources:

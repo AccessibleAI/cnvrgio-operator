@@ -61,7 +61,7 @@ class VpaAutoscalerTests(unittest.TestCase, CommonBase):
             cls.delete_cnvrg_spec()
             cls.undeploy()
 
-    def test_admission_ready(self):
+    def test_updater_ready(self):
         cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-updater  --timeout=120s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
@@ -71,8 +71,8 @@ class VpaAutoscalerTests(unittest.TestCase, CommonBase):
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
-    def test_updater_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-admission --timeout=120s"
+    def test_admission_ready(self):
+        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-admission-controller --timeout=120s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
