@@ -16,6 +16,7 @@
       include: "app_status_check.yml"
       when:
        - "'cnvrgApp' in cnvrg_spec.resources[0].spec"
+       - "'enabled' in cnvrg_spec.resources[0].spec.cnvrgApp"
        - "cnvrg_spec.resources[0].spec.cnvrgApp.enabled == 'true'"
 
   when:
