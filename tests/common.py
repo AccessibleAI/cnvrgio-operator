@@ -35,11 +35,15 @@ class CommonBase(object):
         logging.info(stream.read())
 
     @staticmethod
-    def create_cnvrg_spec(cnvrg_spec):
+    def create_cnvrg_spec(cnvrg_spec, patch=False):
         body = yaml.load(cnvrg_spec, Loader=yaml.FullLoader)
         api_instance = client.CustomObjectsApi()
         try:
-            api_response = api_instance.create_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL, body)
+            if patch:
+                api_response = api_instance.patch_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL,
+                                                                           "cnvrg-app", body)
+            else:
+                api_response = api_instance.create_namespaced_custom_object(GROUP, VERSION, NAMESPACE, PLURAL, body)
             logging.info(api_response)
         except ApiException as e:
             if e.status == 409:
@@ -97,11 +101,16 @@ class CommonBase(object):
         return spec
 
     @staticmethod
-    def get_nip_nip_url():
+    def get_nip_nip_url(ingress_type="nginx"):
         for i in range(0, 600):
             try:
                 v1 = client.CoreV1Api()
-                service = v1.read_namespaced_service("ingress-nginx-controller", namespace="ingress-nginx")
+                svc_name = "ingress-nginx-controller"
+                namespace = "ingress-nginx"
+                if ingress_type == "istio":
+                    svc_name = "istio-ingressgateway"
+                    namespace = "cnvrg"
+                service = v1.read_namespaced_service(svc_name, namespace=namespace)
                 ip = service.status.load_balancer.ingress[0].ip
                 nip_io_url = f"cnvrg.{ip}.nip.io"
                 logging.info(nip_io_url)
@@ -121,4 +130,3 @@ class CommonBase(object):
 
     def exec_cmd(self, cmd):
         return CommonBase._exec_cmd(cmd)
-
