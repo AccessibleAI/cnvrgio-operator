@@ -98,11 +98,16 @@ class CommonBase(object):
         return spec
 
     @staticmethod
-    def get_nip_nip_url():
+    def get_nip_nip_url(ingress_type="nginx"):
         for i in range(0, 600):
             try:
                 v1 = client.CoreV1Api()
-                service = v1.read_namespaced_service("ingress-nginx-controller", namespace="ingress-nginx")
+                svc_name = "ingress-nginx-controller"
+                namespace = "ingress-nginx"
+                if ingress_type == "istio":
+                    svc_name = "istio-ingressgateway"
+                    namespace = "cnvrg"
+                service = v1.read_namespaced_service(svc_name, namespace=namespace)
                 ip = service.status.load_balancer.ingress[0].ip
                 nip_io_url = f"cnvrg.{ip}.nip.io"
                 logging.info(nip_io_url)
@@ -122,4 +127,3 @@ class CommonBase(object):
 
     def exec_cmd(self, cmd):
         return CommonBase._exec_cmd(cmd)
-
