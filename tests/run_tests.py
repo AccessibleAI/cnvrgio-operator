@@ -27,4 +27,5 @@ if __name__ == '__main__':
     sys.argv = sys.argv[:1]
     unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner(output='./tests/reports',
                                                            combine_reports=True,
+                                                           report_name="test-report",
                                                            report_title="cnvrg-operator test report"))
