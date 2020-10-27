@@ -78,12 +78,10 @@ class SanityAksIstioTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        return
         cls.delete_cnvrg_spec()
         cls.undeploy()
 
     def test_app_ready_aks_istio(self):
-        pass
-        # cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=120s"
-        # res = self.exec_cmd(cmd)
-        # self.assertEqual(0, res[0])
+        cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=1500s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
