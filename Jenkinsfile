@@ -25,7 +25,7 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
+                    if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
                         echo "=========================================="
                         echo "${currentRC}"
@@ -33,7 +33,7 @@ pipeline {
                         def nextRc = currentRC.toInteger() + 1
                         def nextVersion = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                         NEXT_VERSION = "${nextVersion}-rc${nextRc}"
-                    } else if (env.BRANCH_NAME == "master") {
+                    } else if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                         NEXT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                     } else {
                         NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
