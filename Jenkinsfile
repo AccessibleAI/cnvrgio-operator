@@ -50,7 +50,7 @@ pipeline {
             }
             steps{
                 script{
-                    echo "gonna run tests"
+                    echo "gonna run tests  "
                 }
             }
 
