@@ -36,7 +36,7 @@ pipeline {
                     if (skipTests()) {
                         echo "Gonna skip tests"
                     }else{
-                        echo "will run tests"
+                        echo "will run tests "
                     }
                     if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
