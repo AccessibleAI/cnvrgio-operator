@@ -15,14 +15,12 @@
     dest: "{{ dump_dir }}/{{ template_path.replace('/','-') }}"
   when: dump_dir != ""
 
-
 # Set default value of "no" for K8S wait moduel,when wait_to_complete is not defined
 - name: Set wait flag
   set_fact:
     wait_to_complete: no
   when: wait_to_complete is not defined
   tags: always
-
 
 - name:  wait_to_complete for {{ template_path }}
   debug:

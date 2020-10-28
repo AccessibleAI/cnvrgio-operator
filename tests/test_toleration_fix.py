@@ -10,8 +10,7 @@ v1 = client.CoreV1Api()
 node_list = v1.list_node()
 nodes = []
 for obj in node_list.items:
-  nodes.append(obj.metadata.name)
-
+    nodes.append(obj.metadata.name)
 
 CNVRG_SPEC = """
 apiVersion: mlops.cnvrg.io/v1
@@ -54,7 +53,8 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
-        cls._exec_cmd("kubectl taint node {} kubernetes.azure.com/scalesetpriority=spot:NoSchedule --overwrite".format(nodes[-1]))
+        cls._exec_cmd(
+            "kubectl taint node {} kubernetes.azure.com/scalesetpriority=spot:NoSchedule --overwrite".format(nodes[-1]))
         cls._exec_cmd("kubectl taint node {} nvidia.com/gpu=present:NoSchedule --overwrite".format(nodes[-1]))
         cls._exec_cmd("kubectl label node {} accelerator=nvidia --overwrite".format(nodes[-1]))
         cls.deploy()
@@ -72,23 +72,25 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
             cls._exec_cmd("kubectl label node {} accelerator-".format(nodes[-1]))
 
     def test_fluentd_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l k8s-app=fluentd-logging --field-selector=spec.nodeName={}  --timeout=120s".format(nodes[-1])
+        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l k8s-app=fluentd-logging --field-selector=spec.nodeName={}  --timeout=120s".format(
+            nodes[-1])
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
     def test_dcgm_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l app.kubernetes.io/name=dcgm-exporter --field-selector=spec.nodeName={}  --timeout=120s".format(nodes[-1])
+        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l app.kubernetes.io/name=dcgm-exporter --field-selector=spec.nodeName={}  --timeout=120s".format(
+            nodes[-1])
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
-
 
     def test_node_exporter_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l app.kubernetes.io/name=node-exporter --field-selector=spec.nodeName={}  --timeout=120s".format(nodes[-1])
+        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l app.kubernetes.io/name=node-exporter --field-selector=spec.nodeName={}  --timeout=120s".format(
+            nodes[-1])
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
-
     def test_nvidia_plugin_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l name=nvidia-device-plugin-ds --field-selector=spec.nodeName={}  --timeout=120s".format(nodes[-1])
+        cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l name=nvidia-device-plugin-ds --field-selector=spec.nodeName={}  --timeout=120s".format(
+            nodes[-1])
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])

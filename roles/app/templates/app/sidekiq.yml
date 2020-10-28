@@ -20,6 +20,17 @@ spec:
       labels:
         app: sidekiq
     spec:
+{%  if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{%  endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
 {% if cnvrg_app.edition == "enterprise" %}
       imagePullSecrets:
         - name: {{ registry.name }}

@@ -1,7 +1,7 @@
 ---
 istio:
   enabled: "true"
-  operator_image: "docker.io/istio/operator:1.6.0"
+  operator_image: "docker.io/istio/operator:1.7.3"
   hub: "docker.io/istio"
   tag: "1.6.0"
   proxy_image: "proxyv2"
