@@ -150,7 +150,7 @@ pipeline {
 //                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
 //                        """
 
-                        if (env.BRANCH_NAME == "master") {
+                        if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                             url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
                             def nextRC = sh(script: "scripts/semver.sh bump minor ${NEXT_VERSION}", returnStdout: true).trim()
                             echo "next version gonna be: ${nextRC}-rc0"
