@@ -179,7 +179,7 @@ pipeline {
         }
         failure {
             script {
-                echo 'Failed!'
+                echo 'Failed! '
             }
         }
         always {
