@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -6,6 +7,8 @@ metadata:
 spec:
   profile: minimal
   namespace: "{{ansible_operator_meta.namespace}}"
+  hub: "{{ istio.hub }}"
+  tag: "{{ istio.tag }}"
   values:
     global:
       istioNamespace: "{{ansible_operator_meta.namespace}}"
@@ -17,31 +20,41 @@ spec:
     pilot:
       enabled: true
       k8s:
-{%  if tenancy.enabled == "true" %}
+        {% if tenancy.enabled == "true" %}
         nodeSelector:
-          {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+          "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
+        {% endif %}
+        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
-{% endif %}
+        {% endif %}
     ingressGateways:
     - enabled: true
       k8s:
-{%  if tenancy.enabled == "true" %}
+        {% if tenancy.enabled == "true" %}
         nodeSelector:
-          {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+          "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
+        {% endif %}
+        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
-{% endif %}
+        {% endif %}
+        {% if istio.ingress_svc_annotations != "" %}
+        serviceAnnotations:
+          {% set annotations = istio.ingress_svc_annotations.split(";") %}
+            {% for annotation in annotations %}
+              {% set annotation_itmes = annotation.split(":") %}
+                {% if annotation_itmes|length == 2 %}
+          "{{annotation_itmes[0].strip()}}": "{{annotation_itmes[1].strip()}}"
+              {% endif %}
+          {% endfor %}
+        {% endif %}
         env:
         - name: ISTIO_META_ROUTER_MODE
           value: sni-dnat
@@ -65,6 +78,14 @@ spec:
             cpu: 100m
             memory: 128Mi
         service:
+          {% if istio.external_ip != "" %}
+          type: ClusterIP
+          externalIPs:
+          {% set external_ips = istio.external_ip.split(';') %}
+            {% for external_ip in external_ips %}
+            - "{{ external_ip }}"
+            {% endfor %}
+          {% endif %}
           ports:
           - name: status-port
             port: 15021
