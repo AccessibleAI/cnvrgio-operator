@@ -55,7 +55,6 @@ class IstioExternalIpsAndServiceAnnotationsTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        return
         cls.delete_cnvrg_spec()
         cls.undeploy()
 
