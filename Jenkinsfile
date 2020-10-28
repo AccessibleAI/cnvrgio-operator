@@ -44,17 +44,6 @@ pipeline {
                 }
             }
         }
-        stage("run tests - tests") {
-            when {
-                expression { !skipTests()  }
-            }
-            steps{
-                script{
-                    echo "gonna run tests"
-                }
-            }
-
-        }
         stage('build image') {
             steps {
                 script {
