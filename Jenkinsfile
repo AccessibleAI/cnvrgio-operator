@@ -106,7 +106,7 @@ pipeline {
                 }
             }
         }
-        stage('store tests report ') {
+        stage('store tests report') {
             when {
                 expression { !skipTests()  }
             }

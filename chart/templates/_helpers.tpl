@@ -8,6 +8,12 @@ useHttps: "{{ .Values.useHttps }}"
 orchestrator: "{{ .Values.orchestrator }}"
 securityMode: "{{ .Values.securityMode }}"
 ingressType: "{{ .Values.ingressType }}"
+tenancy:
+  enabled: "{{.Values.tenancy.enabled}}"
+  dedicated_nodes: "{{.Values.tenancy.dedicatedNodes}}"
+  cnvrg:
+    key: "{{.Values.tenancy.cnvrg.key}}"
+    value: "{{.Values.tenancy.cnvrg.value}}"
 https:
   enabled: "{{ .Values.https.enabled }}"
   useWildcardCertificate: "{{ .Values.https.useWildcardCertificate }}"
