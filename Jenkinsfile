@@ -25,12 +25,12 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == "develop") {
+                    if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
                         def nextRc = currentRC.toInteger() + 1
                         def nextVersion = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                         NEXT_VERSION = "${nextVersion}-rc${nextRc}"
-                    } else if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
+                    } else if (env.BRANCH_NAME == "master") {
                         NEXT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                     } else {
                         NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
@@ -133,7 +133,7 @@ pipeline {
 //        }
         stage('bump version') {
             when {
-                expression { return ((env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") && TESTS_PASSED.equals("true")) }
+                expression { return ((env.BRANCH_NAME == "mpi-chart-deploy-DOP-411" || env.BRANCH_NAME == "master") && TESTS_PASSED.equals("true")) }
             }
             steps {
                 script {
