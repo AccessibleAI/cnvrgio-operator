@@ -30,14 +30,6 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
-
-                    def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
-                    echo " ========== should skip tets:    ${skipTests()} "
-                    if (skipTests()) {
-                        echo "Gonna skip tests"
-                    }else{
-                        echo "will run tests "
-                    }
                     if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
                         def nextRC = currentRC.toInteger() + 1
@@ -51,6 +43,17 @@ pipeline {
                     echo "NEXT VERSION: ${NEXT_VERSION}"
                 }
             }
+        }
+        stage("run tests - tests") {
+            when {
+                expression { !skipTests()  }
+            }
+            steps{
+                script{
+                    echo "gonna run tests"
+                }
+            }
+
         }
 //        stage('build image') {
 //            steps {
