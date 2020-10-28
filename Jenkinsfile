@@ -1,6 +1,11 @@
 def CURRENT_VERSION
 def NEXT_VERSION
 def TESTS_PASSED = "true"
+
+def skipTests() {
+    def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
+    return commitMessage.contains("skip tests")
+}
 pipeline {
     agent { label 'cpu1' }
     options { timestamps() }
@@ -25,8 +30,14 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
+
                     def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
-                    echo " ========== commit message:    ${commitMessage} "
+                    echo " ========== should skip tets:    ${skipTests()} "
+                    if (skipTests()) {
+                        echo "Gonna skip tests"
+                    }else{
+                        echo "will run tests"
+                    }
                     if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
                         def nextRC = currentRC.toInteger() + 1
