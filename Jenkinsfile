@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
-                        def currentRC = CURRENT_RC = sh(script: 'git fetch && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
+                        def currentRC = sh(script: 'git fetch && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
                         echo "=========================================="
                         echo "${currentRC}"
                         echo "=========================================="
