@@ -25,11 +25,13 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
+                    def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
+                    echo " ========== commit message: ${commitMessage} "
+                    if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
-                        def nextRc = currentRC.toInteger() + 1
+                        def nextRC = currentRC.toInteger() + 1
                         def nextVersion = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
-                        NEXT_VERSION = "${nextVersion}-rc${nextRc}"
+                        NEXT_VERSION = "${nextVersion}-rc${nextRC}"
                     } else if (env.BRANCH_NAME == "master") {
                         NEXT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                     } else {
@@ -131,32 +133,31 @@ pipeline {
 //                }
 //            }
 //        }
-        stage('bump version') {
-            when {
-                expression { return ((env.BRANCH_NAME == "mpi-chart-deploy-DOP-411" || env.BRANCH_NAME == "master") && TESTS_PASSED.equals("true")) }
-            }
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: '9e673d23-974c-460c-ba67-1188333cf4b4', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
-                        sh """
-                            git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}" 
-                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
-                        """
-
-                        if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
-                            url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
-                            def nextRC = sh(script: "scripts/semver.sh bump minor ${NEXT_VERSION}", returnStdout: true).trim()
-                            echo "next version gonna be: ${nextRC}-rc0"
-                            sh """
-                            git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
-                            """
-                        }
-                    }
-                }
-            }
-        }
+//        stage('bump version') {
+//            when {
+//                expression { return ((env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "master") && TESTS_PASSED.equals("true")) }
+//            }
+//            steps {
+//                script {
+//                    withCredentials([usernamePassword(credentialsId: '9e673d23-974c-460c-ba67-1188333cf4b4', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+//                        def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
+//                        sh """
+//                            git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+//                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+//                        """
+//                        if (env.BRANCH_NAME == "master") {
+//                            url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
+//                            def nextRC = sh(script: "scripts/semver.sh bump minor ${NEXT_VERSION}", returnStdout: true).trim()
+//                            echo "next version gonna be: ${nextRC}-rc0"
+//                            sh """
+//                            git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+//                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+//                            """
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
     post {
         success {
