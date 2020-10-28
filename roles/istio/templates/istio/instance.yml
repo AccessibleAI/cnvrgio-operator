@@ -6,6 +6,8 @@ metadata:
 spec:
   profile: minimal
   namespace: "{{ansible_operator_meta.namespace}}"
+  hub: "{{ istio.hub }}"
+  tag: "{{ istio.tag }}"
   values:
     global:
       istioNamespace: "{{ansible_operator_meta.namespace}}"
