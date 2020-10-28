@@ -25,18 +25,12 @@ pipeline {
         stage('set globals') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
+                    if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
-                        echo "======================== currentRC: ${currentRC}"
                         def nextRc = currentRC.toInteger() + 1
-                        echo "========================"
-                        echo "nextRC: ${nextRc}"
-                        echo "currentRC: ${currentRC}"
-                        echo "========================"
-
                         def nextVersion = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                         NEXT_VERSION = "${nextVersion}-rc${nextRc}"
-                    } else if (env.BRANCH_NAME == "master") {
+                    } else if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                         NEXT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                     } else {
                         NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
@@ -139,7 +133,7 @@ pipeline {
 //        }
         stage('bump version') {
             when {
-                expression { return ((env.BRANCH_NAME == "mpi-chart-deploy-DOP-411" || env.BRANCH_NAME == "master") && TESTS_PASSED.equals("true")) }
+                expression { return ((env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") && TESTS_PASSED.equals("true")) }
             }
             steps {
                 script {
@@ -150,7 +144,7 @@ pipeline {
                             git push https://${USERNAME}:${PASSWORD}@${url} --tags
                         """
 
-                        if (env.BRANCH_NAME == "master") {
+                        if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                             url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
                             def nextRC = sh(script: "scripts/semver.sh bump minor ${NEXT_VERSION}", returnStdout: true).trim()
                             echo "next version gonna be: ${nextRC}-rc0"
