@@ -33,7 +33,7 @@ pipeline {
                         def nextRc = currentRC.toInteger() + 1
                         def nextVersion = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                         NEXT_VERSION = "${nextVersion}-rc${nextRc}"
-                    } else if (env.BRANCH_NAME == "master") {
+                    } else if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                         NEXT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                     } else {
                         NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
@@ -134,32 +134,35 @@ pipeline {
 //                }
 //            }
 //        }
-//        stage('bump version') {
-//            when {
-//                expression { return ((env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "master") && TESTS_PASSED.equals("true")) }
-//            }
-//            steps {
-//                script {
-//                    withCredentials([usernamePassword(credentialsId: '9e673d23-974c-460c-ba67-1188333cf4b4', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-//                        def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
+        stage('bump version') {
+            when {
+                expression { return ((env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") && TESTS_PASSED.equals("true")) }
+            }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: '9e673d23-974c-460c-ba67-1188333cf4b4', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
+                        echo "=================="
+                        echo "gonna tag: ${NEXT_VERSION}"
+                        echo "=================="
 //                        sh """
 //                            git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 //                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
 //                        """
-//
-//                        if (env.BRANCH_NAME == "master") {
-//                            def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
+
+                        if (env.BRANCH_NAME == "master") {
+                            def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
+                            def nextRC = sh(script: "scripts/semver.sh bump minor ${NEXT_VERSION}", returnStdout: true).trim()
+                            echo "next version gonna be: ${nextRC}-rc0"
 //                            sh """
-//                            git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+//                            git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 //                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
 //                            """
-//                        }
-//
-//
-//                    }
-//                }
-//            }
-//        }
+                        }
+                    }
+                }
+            }
+        }
     }
     post {
         success {
