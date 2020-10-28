@@ -142,22 +142,19 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: '9e673d23-974c-460c-ba67-1188333cf4b4', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
-                        echo "=================="
-                        echo "gonna tag: ${NEXT_VERSION}"
-                        echo "=================="
-//                        sh """
-//                            git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-//                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
-//                        """
+                        sh """
+                            git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+                        """
 
                         if (env.BRANCH_NAME == "mpi-chart-deploy-DOP-411") {
                             url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
                             def nextRC = sh(script: "scripts/semver.sh bump minor ${NEXT_VERSION}", returnStdout: true).trim()
                             echo "next version gonna be: ${nextRC}-rc0"
-//                            sh """
-//                            git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-//                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
-//                            """
+                            sh """
+                            git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+                            """
                         }
                     }
                 }
