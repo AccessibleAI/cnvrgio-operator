@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
-                    echo " ========== commit message: ${commitMessage} "
+                    echo " ========== commit message:    ${commitMessage} "
                     if (env.BRANCH_NAME == "develop") {
                         def currentRC = sh(script: 'git fetch --tags && git tag -l --sort -version:refname | head -n 1 | tr "-" " " | awk  \'{print  $2}\' | tr -d rc', returnStdout: true).trim()
                         def nextRC = currentRC.toInteger() + 1
