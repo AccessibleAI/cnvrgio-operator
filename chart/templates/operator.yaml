@@ -17,7 +17,7 @@ spec:
     spec:
       serviceAccountName: cnvrg-operator
       terminationGracePeriodSeconds: 10
-      {{- if eq .Values.tenancy.enabled true }}
+      {{- if eq (.Values.tenancy.enabled | toString) "true" }}
       nodeSelector:
         {{ .Values.tenancy.cnvrg.key }}: "{{ .Values.tenancy.cnvrg.value }}"
       {{- end }}
