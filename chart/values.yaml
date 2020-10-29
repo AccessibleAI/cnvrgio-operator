@@ -49,6 +49,12 @@ useHttps: "false"
 orchestrator: k8s
 securityMode: default
 ingressType: istio
+tenancy:
+  enabled: "false"
+  dedicatedNodes: "false"
+  cnvrg:
+    key: "cnvrg-taint"
+    value: "true"
 https:
   enabled: "false"
   useWildcardCertificate: "true"
