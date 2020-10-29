@@ -53,9 +53,8 @@ class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        if os.getenv("RUN_TEARDOWN", "true") == "true":
-            cls.delete_cnvrg_spec()
-            cls.undeploy()
+        cls.delete_cnvrg_spec()
+        cls.undeploy()
 
     def test_es_pod_deployed(self):
         v1 = client.CoreV1Api()

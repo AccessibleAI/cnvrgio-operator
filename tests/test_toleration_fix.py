@@ -64,12 +64,11 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        if os.getenv("RUN_TEARDOWN", "true") == "true":
-            cls.delete_cnvrg_spec()
-            cls.undeploy()
-            cls._exec_cmd("kubectl taint node {} kubernetes.azure.com/scalesetpriority-".format(nodes[-1]))
-            cls._exec_cmd("kubectl taint node {} nvidia.com/gpu-".format(nodes[-1]))
-            cls._exec_cmd("kubectl label node {} accelerator-".format(nodes[-1]))
+        cls.delete_cnvrg_spec()
+        cls.undeploy()
+        cls._exec_cmd("kubectl taint node {} kubernetes.azure.com/scalesetpriority-".format(nodes[-1]))
+        cls._exec_cmd("kubectl taint node {} nvidia.com/gpu-".format(nodes[-1]))
+        cls._exec_cmd("kubectl label node {} accelerator-".format(nodes[-1]))
 
     def test_fluentd_ready(self):
         cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l k8s-app=fluentd-logging --field-selector=spec.nodeName={}  --timeout=120s".format(
