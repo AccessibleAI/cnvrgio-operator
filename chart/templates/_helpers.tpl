@@ -10,7 +10,7 @@ securityMode: "{{ .Values.securityMode }}"
 ingressType: "{{ .Values.ingressType }}"
 tenancy:
   enabled: "{{.Values.tenancy.enabled}}"
-  dedicated_nodes: "{{.Values.tenancy.dedicatedNodes}}"
+  dedicatedNodes: "{{.Values.tenancy.dedicatedNodes}}"
   cnvrg:
     key: "{{.Values.tenancy.cnvrg.key}}"
     value: "{{.Values.tenancy.cnvrg.value}}"
