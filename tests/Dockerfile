@@ -3,6 +3,7 @@ WORKDIR /root
 RUN apt update -y && \
      apt-get install -y \
      gettext-base \
+     vim \
      jq
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
@@ -13,4 +14,6 @@ RUN mv kustomize /usr/local/bin
 RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
     ./get_helm.sh
+RUN curl -L -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
+RUN chmod +x /usr/local/bin/yq
 CMD python tests/run_tests.py

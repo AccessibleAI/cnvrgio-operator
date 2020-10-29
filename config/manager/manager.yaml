@@ -16,6 +16,11 @@ spec:
         control-plane: cnvrg-operator
     spec:
       serviceAccountName: cnvrg-operator
+      tolerations:
+        - key: "cnvrg-taint"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       containers:
         - name: manager
           image: controller:latest

@@ -15,7 +15,7 @@ metadata:
 spec:
   ingressType: "none"
   mpi:
-    enabled: "true"
+    enabled: "false"
   conf:
     enabled: "false"
   conf:
@@ -27,7 +27,7 @@ spec:
   redis:
     enabled: "false"
   es:
-    enabled: "false"
+    enabled: "true"
   minio:
     enabled: "false"
   prometheus:
@@ -43,7 +43,7 @@ spec:
 """
 
 
-class CnvrgMpiOperatorDop395Test(unittest.TestCase, CommonBase):
+class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
@@ -53,15 +53,16 @@ class CnvrgMpiOperatorDop395Test(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.delete_cnvrg_spec()
-        cls.undeploy()
+        if os.getenv("RUN_TEARDOWN", "true") == "true":
+            cls.delete_cnvrg_spec()
+            cls.undeploy()
 
-    def test_mpi_operator_pod_deployed(self):
+    def test_es_pod_deployed(self):
         v1 = client.CoreV1Api()
-        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=mpi-operator")
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=elasticsearch")
         self.assertEqual(1, len(pod.items))
 
-    def test_mpi_operator_pod_ready(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=mpi-operator -ncnvrg --timeout=120s"
+    def test_es_pod_ready(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -n cnvrg --timeout=120s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])

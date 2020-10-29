@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-ansible = "*"
 ansible-runner = "*"
 ansible-runner-http = "*"
 openshift = "*"
@@ -15,15 +14,13 @@ docker = "*"
 dotmap = "*"
 pandas = "*"
 inflection = "*"
-
-[requires]
-python_version = "3.8"
-
-
+html-testrunner = "*"
+kubernetes = "*"
+coloredlogs = "*"
+ansible = "*"
 
 [scripts]
 op = "ansible-operator run"
 test  = "python tests/run_tests.py"
 #  pipenv run ansible-playbook playbooks/cnvrg.yml --extra-vars='{"debug":"true","dry_run":"true","ansible_operator_meta":{"namespace":"cnvrg"}}'
 #
-

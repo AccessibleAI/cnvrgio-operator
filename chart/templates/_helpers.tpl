@@ -8,6 +8,12 @@ useHttps: "{{ .Values.useHttps }}"
 orchestrator: "{{ .Values.orchestrator }}"
 securityMode: "{{ .Values.securityMode }}"
 ingressType: "{{ .Values.ingressType }}"
+tenancy:
+  enabled: "{{.Values.tenancy.enabled}}"
+  dedicated_nodes: "{{.Values.tenancy.dedicatedNodes}}"
+  cnvrg:
+    key: "{{.Values.tenancy.cnvrg.key}}"
+    value: "{{.Values.tenancy.cnvrg.value}}"
 https:
   enabled: "{{ .Values.https.enabled }}"
   useWildcardCertificate: "{{ .Values.https.useWildcardCertificate }}"
@@ -264,6 +270,13 @@ nvidiadp:
 
 mpi:
   enabled: "{{ .Values.mpi.enabled }}"
+  image: "{{.Values.mpi.image}}"
+  kubectlDeliveryImage: "{{.Values.mpi.kubectlDeliveryImage}}"
+  registry:
+    name: "{{.Values.mpi.registry.name}}"
+    url: "{{.Values.mpi.registry.url}}"
+    user: "{{.Values.mpi.registry.user}}"
+    password: "{{.Values.mpi.registry.password}}"
 
 cnvrgApp:
   replicas: {{ .Values.cnvrgApp.replicas }}

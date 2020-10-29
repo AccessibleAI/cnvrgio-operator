@@ -6,3 +6,4 @@ images:
 - name: controller
   newName: "docker.io/cnvrg/cnvrg-operator"
   newTag: ${TAG}
+

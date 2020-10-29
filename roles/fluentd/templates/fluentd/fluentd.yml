@@ -17,10 +17,24 @@ spec:
         k8s-app: fluentd-logging
         version: v1
     spec:
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
       serviceAccountName: fluentd
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
       containers:
         - name: fluentd
           image: "{{ fluentd.image }}"
