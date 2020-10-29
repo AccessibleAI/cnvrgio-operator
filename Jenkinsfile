@@ -39,7 +39,6 @@ pipeline {
                         NEXT_VERSION = sh(script: 'git fetch && git tag -l --sort -version:refname  | sed \'s/-.*$//g\' | sort --version-sort | tail -n1', returnStdout: true).trim()
                     } else {
                         NEXT_VERSION = "${env.BRANCH_NAME}-$BUILD_NUMBER"
-
                     }
                     echo "NEXT VERSION: ${NEXT_VERSION}"
                 }
