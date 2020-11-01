@@ -49,6 +49,12 @@ useHttps: "false"
 orchestrator: k8s
 securityMode: default
 ingressType: istio
+tenancy:
+  enabled: "false"
+  dedicatedNodes: "false"
+  cnvrg:
+    key: "cnvrg-taint"
+    value: "true"
 https:
   enabled: "false"
   useWildcardCertificate: "true"
@@ -196,9 +202,9 @@ grafana:
   nodePort: 30012
 istio:
   enabled: "true"
-  operatorImage: "docker.io/istio/operator:1.6.0"
+  operatorImage: "docker.io/istio/operator:1.7.3"
   hub: "docker.io/istio"
-  tag: "1.6.0"
+  tag: "1.7.3"
   proxyImage: "proxyv2"
   mixerImage: "mixer"
   pilotImage: "pilot"
@@ -233,8 +239,8 @@ nvidiadp:
     value: nvidia
 mpi:
   enabled: "true"
-  image: "cnvrg/custom:mpi-operator"
-  kubectlDeliveryImage: "mpioperator/kubectl-delivery:latest"
+  image: "mpioperator/mpi-operator:v0.2.3"
+  kubectlDeliveryImage: "mpioperator/kubectl-delivery:v0.2.3"
   registry:
     name: "mpi-private-registry"
     url: "docker.io"

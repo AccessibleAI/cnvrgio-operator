@@ -15,9 +15,9 @@ dotmap = "*"
 pandas = "*"
 inflection = "*"
 html-testrunner = "*"
-ansible = "*"
 kubernetes = "*"
 coloredlogs = "*"
+ansible = "*"
 
 [scripts]
 op = "ansible-operator run"

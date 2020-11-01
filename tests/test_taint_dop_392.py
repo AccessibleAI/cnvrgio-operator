@@ -156,13 +156,11 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
     @classmethod
     def setUpClass(cls):
         cls.deploy()
-        cls._exec_cmd("label node cnvrg-taint --all")
         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
         cls.wait_for_cnvrg_spec_ready()
 
     @classmethod
     def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
 
