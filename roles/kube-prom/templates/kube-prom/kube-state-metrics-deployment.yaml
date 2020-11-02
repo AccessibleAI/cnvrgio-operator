@@ -93,6 +93,4 @@ spec:
           name: https-self
         securityContext:
           runAsUser: 65534
-      nodeSelector:
-        kubernetes.io/os: linux
       serviceAccountName: kube-state-metrics

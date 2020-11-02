@@ -149,8 +149,6 @@ spec:
             - mountPath: /grafana-dashboard-definitions/0/vpa-dashboard
               name: vpa-dashboard
               readOnly: false
-      nodeSelector:
-        beta.kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

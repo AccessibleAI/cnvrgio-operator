@@ -226,6 +226,13 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+    def test_kube_state_metrics(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app.kubernetes.io/name=kube-state-metrics")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
     def test_cnvrg_routing(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=routing-service")
@@ -293,6 +300,11 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     def test_grafana(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_kube_state_metrics(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
@@ -368,6 +380,11 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     def test_grafana(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_kube_state_metrics(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
@@ -452,6 +469,11 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     def test_grafana(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_kube_state_metrics(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
