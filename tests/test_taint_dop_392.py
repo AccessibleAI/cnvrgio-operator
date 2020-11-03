@@ -246,20 +246,6 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
-    def test_vpa_recommender(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_admission_controller(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_updater(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
 
 class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
@@ -434,28 +420,6 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         self.assertEqual(1, len(pod.items))
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
-
-    def test_vpa_recommender(self):
-        v1 = client.CoreV1Api()
-        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=vpa-recommender")
-        self.assertEqual(1, len(pod.items))
-        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
-        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
-
-    def test_vpa_admission_controller(self):
-        v1 = client.CoreV1Api()
-        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=vpa-admission-controller")
-        self.assertEqual(1, len(pod.items))
-        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
-        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
-
-    def test_vpa_updater(self):
-        v1 = client.CoreV1Api()
-        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=vpa-updater")
-        self.assertEqual(1, len(pod.items))
-        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
-        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
-
 class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
 
     @classmethod
