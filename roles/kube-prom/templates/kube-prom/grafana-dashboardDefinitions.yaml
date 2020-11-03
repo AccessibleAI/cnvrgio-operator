@@ -53417,7 +53417,7 @@ items:
                     {
                     "expr": "topk(1,kube_pod_container_resource_requests{job=\"kube-state-metrics\", namespace=\"$namespace\", container=~\".*$deployment.*\", unit=\"core\"})",
                     "format": "time_series",
-                    "instant": false,
+                    "instant": true,
                     "interval": "",
                     "intervalFactor": 2,
                     "legendFormat": "",
@@ -53586,7 +53586,7 @@ items:
                     {
                     "expr": "topk(1,kube_pod_container_resource_requests{job=\"kube-state-metrics\", namespace=\"$namespace\", container=~\".*$deployment.*\", unit=\"byte\"})",
                     "format": "time_series",
-                    "instant": false,
+                    "instant": true,
                     "interval": "",
                     "intervalFactor": 2,
                     "legendFormat": "",
