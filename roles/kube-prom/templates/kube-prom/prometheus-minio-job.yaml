@@ -23,7 +23,7 @@ spec:
 {%  endif %}
       containers:
         - name: minio-exporter-token
-          image: "{{ prometheus.cnvrg_boot }}"
+          image: "{{ prometheus.cnvrg_boot_image }}"
           env:
           - name: CNVRG_STORAGE_BUCKET
             valueFrom:
@@ -64,7 +64,7 @@ spec:
       restartPolicy: "OnFailure"
       initContainers:
       - name: services-check
-        image: "{{ prometheus.cnvrg_boot }}"
+        image: "{{ prometheus.cnvrg_boot_image }}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py services-check"]
         imagePullPolicy: Always
         env:
