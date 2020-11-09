@@ -11,6 +11,8 @@ prometheus:
   adapter_image: "directxman12/k8s-prometheus-adapter:v0.7.0"
   nvidia_exporter_image: "nvidia/dcgm-exporter:1.7.2"
   node_exporter_image: "quay.io/prometheus/node-exporter:v0.18.1"
+  sidekick_exporter_image: "docker.io/strech/sidekiq-prometheus-exporter:0.1.13"
+  cnvrg_boot_image: "docker.io/cnvrg/cnvrg-boot:v0.24"
   svc_name: "prometheus"
   port: 9090
   node_port: 30909

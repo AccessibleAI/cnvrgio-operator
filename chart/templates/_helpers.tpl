@@ -199,6 +199,8 @@ prometheus:
   adapterImage: "{{ .Values.prometheus.adapterImage }}"
   nvidiaExporterImage: "{{ .Values.prometheus.nvidiaExporterImage }}"
   nodeExporterImage: "{{ .Values.prometheus.nodeExporterImage }}"
+  sidekickExporterImage: "{{ .Values.prometheus.sidekickExporter }}"
+  cnvrgBootImage: "{{ .Values.prometheus.cnvrgBoot }}"
   svcName: "{{ .Values.prometheus.svcName }}"
   port: "{{ .Values.prometheus.port }}"
   nodePort: "{{ .Values.prometheus.nodePort }}"
