@@ -1,43 +1,43 @@
-- name: "Get vpa-tls-certs secret"
-  k8s_info:
-    kind: Secret
-    namespace: "{{ansible_operator_meta.namespace}}"
-    name: "vpa-tls-certs"
-  register: vpa_tls_certs
+# - name: "Get vpa-tls-certs secret"
+#   k8s_info:
+#     kind: Secret
+#     namespace: "{{ansible_operator_meta.namespace}}"
+#     name: "vpa-tls-certs"
+#   register: vpa_tls_certs
 
-- name: Create Certificate For Admission Controller
-  block:
-  - name: Generate Secret
-    shell: ./gencerts.sh
-    args:
-      chdir: roles/vpa/templates/
+# - name: Create Certificate For Admission Controller
+#   block:
+#   - name: Generate Secret
+#     shell: ./gencerts.sh
+#     args:
+#       chdir: roles/vpa/templates/
 
-  - name: Create vpa_tls_certs Secret
-    include_role:
-      name: common
-      tasks_from: install
-    vars:
-      template_path: "templates/certificate.yml"
-      state: "{{ role_state }}"
-  when:
-  - role_state == "present"
-  - dry_run == "false"
-  - vpa_tls_certs.resources | length == 0
+#   - name: Create vpa_tls_certs Secret
+#     include_role:
+#       name: common
+#       tasks_from: install
+#     vars:
+#       template_path: "templates/certificate.yml"
+#       state: "{{ role_state }}"
+#   when:
+#   - role_state == "present"
+#   - dry_run == "false"
+#   - vpa_tls_certs.resources | length == 0
 
-- name: VPA deployment
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
-  with_items:
-    - templates/crd.yml
-    - templates/rbac.yml
-    - templates/vpa-admission-controller-dep.yml
-    - templates/vpa-recommender-dep.yml
-    - templates/vpa-updater-dep.yml
-    - templates/svc.yml
+# - name: VPA deployment
+#   include_role:
+#     name: common
+#     tasks_from: install
+#   vars:
+#     template_path: "{{ item }}"
+#     state: "{{ role_state }}"
+#   with_items:
+#     - templates/crd.yml
+#     - templates/rbac.yml
+#     - templates/vpa-admission-controller-dep.yml
+#     - templates/vpa-recommender-dep.yml
+#     - templates/vpa-updater-dep.yml
+#     - templates/svc.yml
 
 - name: VPA deployment2
   include_role:

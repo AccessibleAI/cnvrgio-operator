@@ -64,3 +64,29 @@ spec:
     name:       {{redis.svc_name}}
   updatePolicy:
     updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{es.svc_name}}
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       StatefulSet
+    name:       {{es.svc_name}}
+  updatePolicy:
+    updateMode: "Off"
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: "{{prometheus.svc_name}}-cnvrg"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       StatefulSet
+    name:       "{{prometheus.svc_name}}-cnvrg"
+  updatePolicy:
+    updateMode: "Off"
