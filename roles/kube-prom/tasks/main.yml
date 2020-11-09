@@ -8,7 +8,7 @@
       when: cnvrg_app.enabled == "false"
     - set_fact:
         resources: "{{ resources |  reject('search','minio') | list  }}"
-      when: minio.enabled != "true"
+      when: (minio.enabled != "true") or (app_secrets.cnvrg_storage_type != "minio")
 
     # is state present, create crds in first step
     - name: Install Kube-Prometheus CRDs
