@@ -7,19 +7,19 @@
 1. Install helm3
 2. Add cnvrg helm repo
    ```bash
-   helm repo add cnvrg https://charts.cnvrg.io
+   helm repo add cnvrg https://helm.cnvrg.io
    helm repo update
    ```
 
 #### Deploy with defaults (Istio, Minio)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s  --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s  --wait \
     --set clusterDomain=base.domain
 ```
 
 ### Upgrade with helm upgrade
 ```
-helm upgrade cnvrg cnvrg/cnvrg --reuse-values \
+helm upgrade cnvrg cnvrg/cnvrgio --reuse-values \
   --set cnvrgApp.image=cnvrg/app:master-1374-encode
 ```
 
@@ -32,13 +32,13 @@ helm uninstall cnvrg
 ### Install without Helm (raw k8s manifests)
 ```
 kubectl create namespace cnvrg
-helm template cnvrg cnvrg/cnvrg --no-hooks --set clusterDomain=base.domain > cnvrg.yaml # ... add extra params if required
+helm template cnvrg cnvrg/cnvrgio --no-hooks --set clusterDomain=base.domain > cnvrg.yaml # ... add extra params if required
 kubectl apply -f cnvrg.yaml
 ```
 
 ### Dump only the CnvrgApp Custom Resource
 ```
-helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
+helm template cnvrg cnvrg/cnvrgio  -s templates/cnvrg-app.yaml
 ```
 
 
@@ -47,7 +47,7 @@ helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
 #### Deploy on EKS | AKS | GKE with  (Istio, Cloud Object Storage)
 ```bash
 # AWS - EKS
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
@@ -61,7 +61,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 
 
 # Azure - AKS
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
@@ -73,7 +73,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set appSecrets.cnvrgStorageAzureContainer=azure-storage-container-name
 
 # GCP - GKE
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
@@ -85,7 +85,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 
 #### Deploy OnPrem  (Istio, Minio, HostPath, SMTP, micro storage profile)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
     --set clusterDomain=apps.1.2.3.4.nip.io \
     --set storageProfile=micro \
     --set hostpath.enabled="true" \
@@ -99,7 +99,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 
 #### Deploy OnPrem  (NodePort, Minio, NFS)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
     --set ingressType="nodeport" \
     --set nfs.enabled="true" \
@@ -109,7 +109,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 
 #### Deploy OnPrem  (NodePort, Minio, Hostpath)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
     --set ingressType="nodeport" \
     --set hostpath.enabled="true" \
@@ -118,7 +118,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 
 #### Turn On/Off components
 ```
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
     --set cnvrgApp.enabled="false" \
     --set autoscaler.enabled="false" \
     --set cnvrgRouter.enabled="false" \
@@ -154,6 +154,12 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`orchestrator`|k8s|
 |`securityMode`|default|
 |`ingressType`|istio|
+|`tenancy.enabled`|false|
+|`tenancy.dedicatedNodes`|false|
+|`tenancy.cnvrg.key`|cnvrg-taint|
+|`tenancy.cnvrg.value`|true|
+|`tenancy.minio.key`|minio-taint|
+|`tenancy.minio.value`|true|
 |`https.enabled`|false|
 |`https.cert`|-|
 |`https.key`|-|
@@ -268,6 +274,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`prometheus.adapterImage`|directxman12/k8s-prometheus-adapter:v0.7.0|
 |`prometheus.nvidiaExporterImage`|nvidia/dcgm-exporter:1.7.2|
 |`prometheus.nodeExporterImage`|quay.io/prometheus/node-exporter:v0.18.1|
+|`prometheus.sidekickExporterImage`|docker.io/strech/sidekiq-prometheus-exporter:0.1.13|
+|`prometheus.cnvrgBootImage`|docker.io/cnvrg/cnvrg-boot:v0.24|
 |`prometheus.svcName`|prometheus|
 |`prometheus.port`|9090|
 |`prometheus.nodePort`|30909|
@@ -280,9 +288,9 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`grafana.image`|grafana/grafana:6.7.4|
 |`grafana.nodePort`|30012|
 |`istio.enabled`|true|
-|`istio.operatorImage`|docker.io/istio/operator:1.6.0|
+|`istio.operatorImage`|docker.io/istio/operator:1.7.3|
 |`istio.hub`|docker.io/istio|
-|`istio.tag`|1.6.0|
+|`istio.tag`|1.7.3|
 |`istio.proxyImage`|proxyv2|
 |`istio.mixerImage`|mixer|
 |`istio.pilotImage`|pilot|
@@ -312,8 +320,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`nvidiadp.nodeSelector.key`|accelerator|
 |`nvidiadp.nodeSelector.value`|nvidia|
 |`mpi.enabled`|true|
-|`mpi.image`|mpioperator/mpi-operator:latest|
-|`mpi.kubectlDeliveryImage`|mpioperator/kubectl-delivery:latest|
+|`mpi.image`|mpioperator/mpi-operator:v0.2.3|
+|`mpi.kubectlDeliveryImage`|mpioperator/kubectl-delivery:v0.2.3|
 |`mpi.registry.name`|mpi-private-registry|
 |`mpi.registry.url`|docker.io|
 |`mpi.registry.user`|-|
@@ -335,7 +343,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`cnvrgApp.sidekiqSearchkickCpu`|1|
 |`cnvrgApp.sidekiqSearchkickMemory`|2Gi|
 |`cnvrgApp.sidekiqSearchkickReplicas`|1|
-|`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.23|
+|`cnvrgApp.passengerMaxPoolSize`|20|
+|`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.24|
 |`seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update|
 |`nfs.enabled`|false|
 |`nfs.image`|quay.io/external_storage/nfs-client-provisioner:latest|
@@ -363,3 +372,4 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`cnvrgRouter.svcName`|routing-service|
 |`cnvrgRouter.nodePort`|30081|
 |`cnvrgRouter.port`|80|
+|`status.enabled`|false|

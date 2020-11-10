@@ -42,10 +42,16 @@ spec:
           - "/bin/bash"
           - "-lc"
           args:
-          - "touch /etc/service/sidekiq/down && /sbin/my_init"
+          - >
+            sed -i \
+              "s/passenger_max_request_queue_size 10000;/passenger_max_request_queue_size 10000;\n    passenger_max_pool_size $CNVRG_PASSENGER_MAX_POOL_SIZE;\n/g" \
+              /etc/nginx/nginx.conf
+            touch /etc/service/sidekiq/down && /sbin/my_init
           env:
           - name: "CNVRG_RUN_MODE"
             value: "webapp"
+          - name: "CNVRG_PASSENGER_MAX_POOL_SIZE"
+            value: "{{ cnvrg_app.passenger_max_pool_size | default('20') }}"
           envFrom:
             - configMapRef:
                 name: env-config

@@ -310,6 +310,7 @@ cnvrgApp:
   customAgentTag: "{{ .Values.cnvrgApp.customAgentTag }}"
   intercom: "{{ .Values.cnvrgApp.intercom }}"
   nodePort: "{{ .Values.cnvrgApp.nodePort }}"
+  passengerMaxPoolSize: {{ .Values.cnvrgApp.passengerMaxPoolSize }}
 
 seeder:
   image: "{{ .Values.seeder.image }}"
