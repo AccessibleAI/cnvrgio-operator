@@ -24,6 +24,10 @@ spec:
           operator: "Equal"
           value: "spot"
           effect: "NoSchedule"
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
       containers:
       - args:
         - --web.listen-address=127.0.0.1:9100
