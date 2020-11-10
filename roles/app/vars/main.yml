@@ -5,7 +5,7 @@ cnvrg_app:
   enabled: "true"
   image: ""
   port: 80
-  cpu: 1
+  cpu: 2
   memory: 4Gi
   svc_name: "app"
   custom_agent_tag: "false"
