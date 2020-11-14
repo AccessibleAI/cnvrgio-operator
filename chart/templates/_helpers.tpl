@@ -93,7 +93,6 @@ redis:
 
 pg:
   enabled: "{{ .Values.pg.enabled }}"
-  fixpg:  "{{ .Values.pg.fixpg }}"
   image: "{{ .Values.pg.image }}"
   port: "{{ .Values.pg.port }}"
   {{- if eq .Values.storageProfile "default"}}
@@ -285,6 +284,7 @@ cnvrgApp:
   replicas: {{ .Values.cnvrgApp.replicas }}
   edition: "{{ .Values.cnvrgApp.edition }}"
   enabled: "{{ .Values.cnvrgApp.enabled }}"
+  fixpg:  "{{ .Values.cnvrgApp.fixpg }}"
   image: "{{ .Values.cnvrgApp.image }}"
   port: "{{ .Values.cnvrgApp.port }}"
   {{- if eq .Values.computeProfile "default"}}

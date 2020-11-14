@@ -134,7 +134,6 @@ pg:
   storageClass: use-default
   cpuRequest: 1
   memoryRequest: 2Gi
-  fixpg: "true"
 pgBackup:
   storageSize: 30Gi
   enabled: "false"
@@ -254,6 +253,7 @@ cnvrgApp:
   sidekiqReplicas: 2
   edition: core
   enabled: "true"
+  fixpg: "true"
   image: "cnvrg/core:3.1.2"
   port: 80
   cpu: 1
