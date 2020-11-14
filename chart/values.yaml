@@ -134,6 +134,7 @@ pg:
   storageClass: use-default
   cpuRequest: 1
   memoryRequest: 2Gi
+  fixpg: "true"
 pgBackup:
   storageSize: 30Gi
   enabled: "false"
