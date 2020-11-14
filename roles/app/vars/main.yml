@@ -9,6 +9,7 @@ cnvrg_app:
   memory: 4Gi
   svc_name: "app"
   custom_agent_tag: "false"
+  fixpg: "true"
   intercom: "true"
   node_port: 30080
   sidekiq_cpu: 1

@@ -93,6 +93,7 @@ redis:
 
 pg:
   enabled: "{{ .Values.pg.enabled }}"
+  fixpg:  "{{ .Values.pg.fixpg }}"
   image: "{{ .Values.pg.image }}"
   port: "{{ .Values.pg.port }}"
   {{- if eq .Values.storageProfile "default"}}
