@@ -9,7 +9,7 @@ spec:
   hosts:
   - "{{('elasticalerts.' + cluster_domain).split(':')[0] }}"
   http:
-  - retries
+  - retries:
       attempts: {{ istio.retries_attempts | default ('5') }}
       perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
     route:
