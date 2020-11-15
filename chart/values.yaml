@@ -2,43 +2,87 @@ createNs: true
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
-computeProfile: default
+computeProfile: medium
 storageProfile: default
 computeProfiles:
-  micro:
+  large:
+    storage: 100Gi
+    cnvrgApp:
+      webappCpu: 4
+      webappMemory: 8Gi
+      sidekiqCpu: 4
+      sidekiqMemory: 8Gi
+      searchkiqCpu: 1
+      searchkiqMemory: 2Gi
+      sidekiqReplicas: 2
+      searchkiqReplicas: 1
+    pg:
+      cpu: 4
+      memory: 8Gi
+    minio:
+      cpu: 2
+      memory: 4Gi
+    es:
+      cpu: 1
+      memory: 1Gi
+    prometheus:
+      cpu: 1
+      memory: 1Gi
+    redis:
+      cpu: 500m
+      memory: 1Gi
+  medium:
+    storage: 100Gi
+    cnvrgApp:
+      webappCpu: 2
+      webappMemory: 4Gi
+      sidekiqCpu: 2
+      sidekiqMemory: 4Gi
+      searchkiqCpu: 1
+      searchkiqMemory: 1Gi
+      sidekiqReplicas: 2
+      searchkiqReplicas: 1
+    pg:
+      cpu: 2
+      memory: 4Gi
+    minio:
+      cpu: 1
+      memory: 2Gi
+    es:
+      cpu: 1
+      memory: 1Gi
+    prometheus:
+      cpu: 1
+      memory: 1Gi
+    redis:
+      cpu: 500m
+      memory: 1Gi
+  small:
+    storage: 3Gi
+    cnvrgApp:
+      webappCpu: 100m
+      webappMemory: 100Mi
+      sidekiqCpu: 100m
+      sidekiqMemory: 100Mi
+      searchkiqCpu: 100m
+      searchkiqMemory: 100Mi
+      sidekiqReplicas: 1
+      searchkiqReplicas: 1
     pg:
       cpu: 100m
-      memory: 500Mi
+      memory: 100Mi
     minio:
-      memory: 500Mi
-    kibana:
       cpu: 100m
-      memory: 500Mi
+      memory: 100Mi
     es:
-      cpuRequest: 100m
-      memoryRequest: 500Mi
-    app:
       cpu: 100m
-      memory: 500Mi
-    sidekiq:
+      memory: 100Mi
+    prometheus:
       cpu: 100m
-      memory: 500Mi
-      replicas: 1
-    sidekiqsearchkick:
-      cpu: 100m
-      memory: 500Mi
-      replicas: 1
+      memory: 100Mi
     redis:
       cpu: 100m
-      memory: 500Mi
-
-storageProfiles:
-  micro:
-    pg: 10Gi
-    pgBackup: 10Gi
-    es: 10Gi
-    prometheus: 10Gi
-    minio: 10Gi
+      memory: 100Mi
 
 debug: "false"
 dumpDir: ""
