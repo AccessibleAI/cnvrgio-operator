@@ -9,7 +9,10 @@ spec:
   gateways:
   - "{{istio.gw_name}}"
   http:
-  - route:
+  - retries
+      attempts: {{ istio.retries_attempts | default ('5') }}
+      perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
+    route:
     - destination:
         port:
           number: {{kibana.port}}
