@@ -175,6 +175,7 @@ minio:
   nodePort: "{{ .Values.minio.nodePort }}"
   storageClass: "{{ .Values.minio.storageClass }}"
   {{- if eq .Values.computeProfile "default"}}
+  memoryRequest: "{{ .Values.minio.cpuRequest }}"
   memoryRequest: "{{ .Values.minio.memoryRequest }}"
   {{- end }}
   {{- if eq .Values.computeProfile "micro"}}
@@ -211,6 +212,8 @@ prometheus:
   storageSize: "{{ .Values.storageProfiles.micro.prometheus }}"
   {{- end }}
   storageClass: "{{ .Values.prometheus.storageClass }}"
+  cpuRequest: "{{.Values.prometheus.cpuRequest}}"
+  memoryRequest: "{{.Values.prometheus.memoryRequest}}"
   kubeletMetrics:
     schema: "{{ .Values.prometheus.kubeletMetrics.schema }}"
     port: "{{ .Values.prometheus.kubeletMetrics.port }}"
@@ -312,7 +315,9 @@ cnvrgApp:
   intercom: "{{ .Values.cnvrgApp.intercom }}"
   nodePort: "{{ .Values.cnvrgApp.nodePort }}"
   passengerMaxPoolSize: {{ .Values.cnvrgApp.passengerMaxPoolSize }}
-
+  enableReadinessProbe: "{{.Values.cnvrgApp.enableReadinessProbe}}"
+  readinessPeriodSeconds: "{{.Values.cnvrgApp.readinessPeriodSeconds}}"
+  readinessTimeoutSeconds: "{{.Values.cnvrgApp.readinessTimeoutSeconds}}"
 seeder:
   image: "{{ .Values.seeder.image }}"
   seedCmd: "{{ .Values.seeder.seedCmd }}"

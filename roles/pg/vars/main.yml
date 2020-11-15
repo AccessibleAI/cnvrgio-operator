@@ -11,5 +11,5 @@ pg:
   run_as_group: 26
   fs_group: 26
   storage_class: "use-default"
-  cpu_request: 2
-  memory_request: 4Gi
+  cpu_request: 4
+  memory_request: 8Gi
