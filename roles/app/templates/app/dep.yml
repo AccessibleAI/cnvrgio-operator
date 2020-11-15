@@ -97,6 +97,7 @@ spec:
 {% else %}
           value: "{{pg.svc_name}}:{{pg.port}}"
 {% endif %}
+{% if cnvrg_app.fixpg == "true" %}
       - name: fixpg
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py fixpg"]
@@ -117,6 +118,7 @@ spec:
               name: env-secrets
               key: POSTGRES_HOST
         imagePullPolicy: Always
+{% endif %}
       - name: seeder
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode master"]

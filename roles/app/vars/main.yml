@@ -9,6 +9,7 @@ cnvrg_app:
   memory: 4Gi
   svc_name: "app"
   custom_agent_tag: "false"
+  fixpg: "true"
   intercom: "true"
   node_port: 30080
   sidekiq_cpu: 1
@@ -17,7 +18,7 @@ cnvrg_app:
   sidekiq_searchkick_cpu: 1
   sidekiq_searchkick_memory: 2Gi
   sidekiq_searchkick_replicas: 1
-  passenger_max_pool_size: 20 # the calculation of pax pool size based on this max_app_processes = (4096 * 0.75) / 150 = 20
+  passenger_max_pool_size: 20  # the calculation of pax pool size based on this max_app_processes = (4096 * 0.75) / 150 = 20
 
 seeder:
   image: "docker.io/cnvrg/cnvrg-boot:v0.24"
