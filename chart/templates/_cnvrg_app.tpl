@@ -18,8 +18,8 @@ cnvrgApp:
   {{- if eq .Values.computeProfile "large"}}
   cpu: "{{ .Values.computeProfiles.large.cnvrgApp.webappCpu }}"
   memory: "{{ .Values.computeProfiles.large.cnvrgApp.webappMemory }}"
-  sidekiqCpu: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqCpu}}"
-  sidekiqMemory: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqMemory }}"
+  sidekiqCpu: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiqCpu}}"
+  sidekiqMemory: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiqMemory }}"
   sidekiqSearchkickCpu: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqCpu }}"
   sidekiqSearchkickMemory: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqMemory }}"
   sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiqReplicas }}"
@@ -29,8 +29,8 @@ cnvrgApp:
   {{- if eq .Values.computeProfile "medium"}}
   cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.webappCpu }}"
   memory: "{{ .Values.computeProfiles.medium.cnvrgApp.webappMemory }}"
-  sidekiqCpu: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqCpu}}"
-  sidekiqMemory: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqMemory }}"
+  sidekiqCpu: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiqCpu}}"
+  sidekiqMemory: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiqMemory }}"
   sidekiqSearchkickCpu: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqCpu }}"
   sidekiqSearchkickMemory: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqMemory }}"
   sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiqReplicas }}"
@@ -40,8 +40,8 @@ cnvrgApp:
   {{- if eq .Values.computeProfile "small"}}
   cpu: "{{ .Values.computeProfiles.small.cnvrgApp.webappCpu }}"
   memory: "{{ .Values.computeProfiles.small.cnvrgApp.webappMemory }}"
-  sidekiqCpu: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqCpu}}"
-  sidekiqMemory: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqMemory }}"
+  sidekiqCpu: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqCpu}}"
+  sidekiqMemory: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqMemory }}"
   sidekiqSearchkickCpu: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqCpu }}"
   sidekiqSearchkickMemory: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqMemory }}"
   sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqReplicas }}"
