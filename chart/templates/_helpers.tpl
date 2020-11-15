@@ -284,6 +284,7 @@ cnvrgApp:
   replicas: {{ .Values.cnvrgApp.replicas }}
   edition: "{{ .Values.cnvrgApp.edition }}"
   enabled: "{{ .Values.cnvrgApp.enabled }}"
+  fixpg:  "{{ .Values.cnvrgApp.fixpg }}"
   image: "{{ .Values.cnvrgApp.image }}"
   port: "{{ .Values.cnvrgApp.port }}"
   {{- if eq .Values.computeProfile "default"}}
