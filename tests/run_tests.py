@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG, format="|%(asctime)s|%(levelname)-5s %(
 def load_tests(loader, tests, pattern):
     suite = TestSuite()
     test_pattern = os.getenv("TEST_DISCOVERY_PATTERN")
+    logging.info(test_pattern)
     for all_test_suite in unittest.defaultTestLoader.discover('tests', pattern=test_pattern):
         logging.info(all_test_suite)
         for test_suite in all_test_suite:

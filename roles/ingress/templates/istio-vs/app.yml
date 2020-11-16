@@ -9,20 +9,13 @@ spec:
   gateways:
     - "{{istio.gw_name}}"
   http:
-    - timeout: 4020s
-      retries:
-        attempts: 10
-        perTryTimeout: 4020s
-      match:
-        - uri:
-            prefix: /cable
-      route:
-        - destination:
-            host: "{{cnvrg_app.svc_name + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
-    - timeout: 4020s
-      retries:
-        attempts: 10
-        perTryTimeout: 4020s
-      route:
-        - destination:
-            host: "{{cnvrg_app.svc_name + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
+  - retries:
+      attempts: {{ istio.retries_attempts | default ('5') }}
+      perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
+    route:
+      - destination:
+          host: "{{cnvrg_app.svc_name + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
+    headers:
+      request:
+        set:
+          x-forwarded-proto: "{{ 'https' if https.enabled == 'true' else 'http' }}"

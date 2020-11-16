@@ -1,6 +1,8 @@
 ---
 ingress:
   enabled: "true" #
+  retries_attempts: 5
+  per_try_timeout: 1s
   descriptions:
     ingress:
       enabled: |

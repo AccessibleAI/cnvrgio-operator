@@ -2,43 +2,87 @@ createNs: true
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
 specProfile: default
-computeProfile: default
+computeProfile: medium
 storageProfile: default
 computeProfiles:
-  micro:
+  large:
+    storage: 100Gi
+    cnvrgApp:
+      webappCpu: 4
+      webappMemory: 8Gi
+      sidekiqCpu: 4
+      sidekiqMemory: 8Gi
+      searchkiqCpu: 1
+      searchkiqMemory: 2Gi
+      sidekiqReplicas: 2
+      searchkiqReplicas: 1
+    pg:
+      cpu: 4
+      memory: 8Gi
+    minio:
+      cpu: 2
+      memory: 4Gi
+    es:
+      cpu: 1
+      memory: 1Gi
+    prometheus:
+      cpu: 1
+      memory: 1Gi
+    redis:
+      cpu: 500m
+      memory: 1Gi
+  medium:
+    storage: 100Gi
+    cnvrgApp:
+      webappCpu: 2
+      webappMemory: 4Gi
+      sidekiqCpu: 2
+      sidekiqMemory: 4Gi
+      searchkiqCpu: 1
+      searchkiqMemory: 1Gi
+      sidekiqReplicas: 2
+      searchkiqReplicas: 1
+    pg:
+      cpu: 2
+      memory: 4Gi
+    minio:
+      cpu: 1
+      memory: 2Gi
+    es:
+      cpu: 1
+      memory: 1Gi
+    prometheus:
+      cpu: 1
+      memory: 1Gi
+    redis:
+      cpu: 500m
+      memory: 1Gi
+  small:
+    storage: 3Gi
+    cnvrgApp:
+      webappCpu: 100m
+      webappMemory: 100Mi
+      sidekiqCpu: 100m
+      sidekiqMemory: 100Mi
+      searchkiqCpu: 100m
+      searchkiqMemory: 100Mi
+      sidekiqReplicas: 1
+      searchkiqReplicas: 1
     pg:
       cpu: 100m
-      memory: 500Mi
+      memory: 100Mi
     minio:
-      memory: 500Mi
-    kibana:
       cpu: 100m
-      memory: 500Mi
+      memory: 100Mi
     es:
-      cpuRequest: 100m
-      memoryRequest: 500Mi
-    app:
       cpu: 100m
-      memory: 500Mi
-    sidekiq:
+      memory: 100Mi
+    prometheus:
       cpu: 100m
-      memory: 500Mi
-      replicas: 1
-    sidekiqsearchkick:
-      cpu: 100m
-      memory: 500Mi
-      replicas: 1
+      memory: 100Mi
     redis:
       cpu: 100m
-      memory: 500Mi
-
-storageProfiles:
-  micro:
-    pg: 10Gi
-    pgBackup: 10Gi
-    es: 10Gi
-    prometheus: 10Gi
-    minio: 10Gi
+      memory: 100Mi
 
 debug: "false"
 dumpDir: ""
@@ -132,8 +176,8 @@ pg:
   runAsGroup: 26
   fsGroup: 26
   storageClass: use-default
-  cpuRequest: 1
-  memoryRequest: 2Gi
+  cpuRequest: 4
+  memoryRequest: 8Gi
 pgBackup:
   storageSize: 30Gi
   enabled: "false"
@@ -144,7 +188,7 @@ pgBackup:
   cronTime: "1 1 * * *"
 es:
   enabled: "true"
-  image: "docker.elastic.co/elasticsearch/elasticsearch:6.2.4"
+  image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
   maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
   port: "9200"
   storageSize: 30Gi
@@ -169,6 +213,7 @@ minio:
   svcName: minio
   nodePort: 30090
   storageClass: use-default
+  cpuRequest: 2
   memoryRequest: 4Gi
   sharedStorage:
     enabled: "false"
@@ -194,6 +239,8 @@ prometheus:
   nodePort: 30909
   storageSize: 40Gi
   storageClass: use-default
+  cpuRequest: 1
+  memoryRequest: 1Gi
   kubeletMetrics:
     schema: https
     port: https-metrics
@@ -217,7 +264,7 @@ kibana:
   enabled: "true"
   svcName: kibana
   port: 5601
-  image: "docker.elastic.co/kibana/kibana-oss:6.2.4"
+  image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
   nodePort: 30601
   cpuRequest: 500m
   memoryRequest: 500Mi
@@ -253,20 +300,24 @@ cnvrgApp:
   sidekiqReplicas: 2
   edition: core
   enabled: "true"
+  fixpg: "true"
   image: "cnvrg/core:3.1.2"
   port: 80
-  cpu: 1
+  cpu: 4
   memory: 4Gi
   svcName: app
   customAgentTag: "false"
   intercom: "true"
   nodePort: 30080
-  sidekiqCpu: 1
-  sidekiqMemory: 2Gi
+  sidekiqCpu: 2
+  sidekiqMemory: 4Gi
   sidekiqSearchkickCpu: 1
   sidekiqSearchkickMemory: 2Gi
   sidekiqSearchkickReplicas: 1
   passengerMaxPoolSize: 20
+  enableReadinessProbe: "true"
+  readinessPeriodSeconds: 100
+  readinessTimeoutSeconds: 60
 seeder:
   image: docker.io/cnvrg/cnvrg-boot:v0.23
   seedCmd: rails db:migrate && rails db:seed && rails libraries:update

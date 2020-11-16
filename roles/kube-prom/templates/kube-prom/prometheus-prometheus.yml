@@ -50,7 +50,8 @@ spec:
   replicas: 1
   resources:
     requests:
-      memory: 400Mi
+      cpu: "{{ prometheus.cpu_request | default('1') }}"
+      memory: "{{ prometheus.memory_request | default('1Gi') }}"
   ruleSelector:
     matchLabels:
       prometheus: k8s

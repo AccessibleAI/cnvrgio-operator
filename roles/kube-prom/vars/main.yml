@@ -16,7 +16,9 @@ prometheus:
   svc_name: "prometheus"
   port: 9090
   node_port: 30909
-  storage_size: 40Gi
+  storage_size: 100Gi
+  cpu_request: 1
+  memory_request: 1Gi
   storage_class: "use-default"
   kubelet_metrics:
     schema: https

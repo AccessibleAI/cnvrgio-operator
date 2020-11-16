@@ -343,7 +343,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`cnvrgApp.sidekiqSearchkickCpu`|1|
 |`cnvrgApp.sidekiqSearchkickMemory`|2Gi|
 |`cnvrgApp.sidekiqSearchkickReplicas`|1|
-|`cnvrgApp.passengerMaxPoolSize`|20|
+|`cnvrgApp.passengerMaxPoolSize`|20| 
 |`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.24|
 |`seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update|
 |`nfs.enabled`|false|
