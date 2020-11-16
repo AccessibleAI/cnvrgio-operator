@@ -116,18 +116,31 @@ spec:
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
+  
   minio:
     enabled: "true"
     storageSize: "1Gi"
+    cpuRequest: 100m
+    memoryRequest: 100Mi    
+  
   prometheus:
     enabled: "true"
     storageSize: "1Gi"
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    
   es:
     enabled: "true"
     storageSize: "1Gi"
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    
   pg:
     enabled: "true"
     storageSize: "1Gi"
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    
   hostpath:
     enabled: "true"
     nodeName: "__NODE_NAME__"

@@ -10,9 +10,8 @@ spec:
   - "{{('elasticalerts.' + cluster_domain).split(':')[0] }}"
   http:
   - retries:
-      attempts: 4
-      perTryTimeout: 40s
-    timeout: 80s
+      attempts: {{ istio.retries_attempts | default ('5') }}
+      perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
     route:
     - destination:
         host: elastalert.cnvrg.svc.cluster.local

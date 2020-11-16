@@ -4,9 +4,23 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  {{- if eq .Values.specProfile "default"}}
-  {{- include "spec.default" . | indent 2 }}
-  {{- end }}
-  {{- if eq .Values.specProfile "microk8s"}}
-  {{- include "spec.microk8s" . | indent 2 }}
-  {{- end }}
+  {{- include "spec.globals" . | indent 2 }}
+  {{- include "spec.tenancy" . | indent 2 }}
+  {{- include "spec.https" . | indent 2 }}
+  {{- include "spec.conf" . | indent 2 }}
+  {{- include "spec.cnvrgApp" . | indent 2 }}
+  {{- include "spec.redis" . | indent 2 }}
+  {{- include "spec.pg" . | indent 2 }}
+  {{- include "spec.es" . | indent 2 }}
+  {{- include "spec.minio" . | indent 2 }}
+  {{- include "spec.promehteus" . | indent 2 }}
+  {{- include "spec.istio" . | indent 2 }}
+  {{- include "spec.kibana" . | indent 2 }}
+  {{- include "spec.fluentd" . | indent 2 }}
+  {{- include "spec.nvidiadp" . | indent 2 }}
+  {{- include "spec.mpi" . | indent 2 }}
+  {{- include "spec.nfs" . | indent 2 }}
+  {{- include "spec.cnvrgRouter" . | indent 2 }}
+  {{- include "spec.autoscaler" . | indent 2 }}
+  {{- include "spec.ingress" . | indent 2 }}
+

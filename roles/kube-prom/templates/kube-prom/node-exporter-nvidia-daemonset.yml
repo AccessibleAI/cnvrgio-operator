@@ -64,9 +64,10 @@ spec:
           operator: "Equal"
           value: "spot"
           effect: "NoSchedule"
-        #- effect: NoExecute
-        #  key: nvidia.com/gpu
-        #  operator: "Exists"
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
 {% if nvidiadp.node_selector.enabled == "true" %}
       nodeSelector:
         {{ nvidiadp.node_selector.key }}: "{{ nvidiadp.node_selector.value }}"

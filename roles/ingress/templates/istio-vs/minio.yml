@@ -9,10 +9,9 @@ spec:
   gateways:
   - "{{istio.gw_name}}"
   http:
-  - timeout: 50s
-    retries:
-      attempts: 4
-      perTryTimeout: 30s
+  - retries:
+      attempts: {{ istio.retries_attempts | default ('5') }}
+      perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
     route:
     - destination:
         host: "{{minio.svc_name + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
