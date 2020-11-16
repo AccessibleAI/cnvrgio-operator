@@ -13,11 +13,15 @@ class CnvrgAppReadinessTest(unittest.TestCase, CommonBase):
     @classmethod
     def setUpClass(cls):
         cls._exec_cmd(f"mkdir {cls.MANIFESTS_PATH}")
-        params = f'{{"dump_dir":"{cls.MANIFESTS_PATH}","cnvrgApp":{{"image":"image"}},"debug":"true","dry_run":"true","ansible_operator_meta":{{"namespace":"cnvrg"}}'
+        params = f'{{"dump_dir":"{cls.MANIFESTS_PATH}","cnvrgApp":{{"image":"image"}},"debug":"true","dry_run":"true","ansible_operator_meta":{{"namespace":"cnvrg"}}}}'
         cmd = f"ansible-playbook playbooks/cnvrg.yml --extra-vars='{params}' --tags app"
         cls._exec_cmd(cmd)
         cls.MANIFESTS = [f for f in listdir(cls.MANIFESTS_PATH) if isfile(join(cls.MANIFESTS_PATH, f))]
 
     def test_app_create_dry_run(self):
-        logging.info(self.MANIFESTS)
+        for manifest in self.MANIFESTS:
+            cmd = f"kubectl create -f {self.MANIFESTS_PATH}/{manifest} --dry-run=server"
+            logging.info(cmd)
+            res = self.exec_cmd(cmd)
+            logging.info(res[0])
         pass
