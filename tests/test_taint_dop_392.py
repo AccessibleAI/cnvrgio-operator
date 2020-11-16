@@ -443,7 +443,6 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     @classmethod
     def tearDownClass(cls):
-        return
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
