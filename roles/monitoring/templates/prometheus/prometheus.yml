@@ -43,6 +43,29 @@ metadata:
   name: prometheus
   namespace: "{{ansible_operator_meta.namespace}}"
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    prometheus: cnvrg
+  name: "{{moniotring.prometheus.svc_name}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+{% if ingress_type == "nodeport" %}
+  type: NodePort
+{% endif %}
+  ports:
+  - name: web
+    port: {{moniotring.prometheus.port}}
+    targetPort: web
+{% if ingress_type == "nodeport" %}
+    nodePort: {{ moniotring.prometheus.node_port }}
+{% endif %}
+  selector:
+    app: prometheus
+    prometheus: cnvrg
+
+---
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
@@ -56,17 +79,17 @@ spec:
     disableMountSubPath: true
     volumeClaimTemplate:
       spec:
+        resources:
+          requests:
+            storage: "{{ moniotring.prometheus.storage_size }}"
         {% if hostpath.enabled == "true" %}
         storageClassName: {{ hostpath.storage_class_name }}
         {% elif nfs.enabled == "true" %}
         storageClassName: "{{ nfs.storage_class_name }}"
         {% elif pg.storage_class != "use-default" %}
-        storageClassName: "{{ prometheus.storage_class }}"
+        storageClassName: "{{ moniotring.prometheus.storage_class }}"
         {% endif %}
-  resources:
-    requests:
-      storage: "{{ prometheus.storage_size }}"
-  image: "{{ prometheus.image }}"
+  image: "{{ moniotring.prometheus.prometheus_image }}"
   {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
   tolerations:
     - key: "{{ tenancy.cnvrg.key }}"
@@ -79,18 +102,19 @@ spec:
     kubernetes.io/hostname: "{{ hostpath.node_name }}"
   {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
   nodeSelector:
-  {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+    {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
   {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
   nodeSelector:
     kubernetes.io/hostname: "{{ hostpath.node_name }}"
-  {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+    {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
   {% endif %}
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   replicas: 1
   resources:
     requests:
-      memory: 400Mi
+      cpu: {{monitoring.prometheus.cpu_request}}
+      memory: {{monitoring.prometheus.memory_request}}
   ruleSelector:
     matchLabels:
       prometheus: k8s
