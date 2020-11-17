@@ -10,8 +10,9 @@ spec:
   - "{{istio.gw_name}}"
   http:
   - retries:
-      attempts: {{ istio.retries_attempts | default ('5') }}
-      perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
+      attempts: {{ ingress.retries_attempts | default ('5') }}
+      perTryTimeout: {{ ingress.per_try_timeout | default ('180s') }}
+    timeout: {{ ingress.timeout | default ('900s') }}
     route:
       - destination:
           port:
