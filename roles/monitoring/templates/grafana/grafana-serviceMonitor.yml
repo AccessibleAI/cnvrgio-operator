@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: grafana
-  namespace: monitoring
+  namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   endpoints:
   - interval: 15s

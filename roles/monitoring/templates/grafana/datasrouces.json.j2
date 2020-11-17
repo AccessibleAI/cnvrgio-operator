@@ -1,0 +1,14 @@
+{
+  "apiVersion": 1,
+  "datasources": [
+    {
+      "access": "proxy",
+      "editable": false,
+      "name": "prometheus",
+      "orgId": 1,
+      "type": "prometheus",
+      "url": "http://{{monitoring.prometheus.svc_name}}.{{ansible_operator_meta.namespace}}.svc:{{monitoring.prometheus.port}}",
+      "version": 1
+    }
+  ]
+}
