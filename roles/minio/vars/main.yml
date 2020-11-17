@@ -8,7 +8,8 @@ minio:
   svc_name: "minio"
   node_port: 30090
   storage_class: "use-default"
-  memory_request: 4Gi
+  cpu_request: 1
+  memory_request: 2Gi
   shared_storage:
     enabled: "false"
     storage_class_name: "minio-shared-backend"

@@ -60,6 +60,7 @@ spec:
           name: cnvrg-app
           ports:
             - containerPort: {{cnvrg_app.port}}
+{% if (cnvrg_app.enable_readiness_probe | default ('true')) == "true" %}
           readinessProbe:
             failureThreshold: 3
             httpGet:
@@ -67,8 +68,10 @@ spec:
               port: {{cnvrg_app.port}}
               scheme: HTTP
             initialDelaySeconds: 5
-            periodSeconds: 5
             successThreshold: 1
+            periodSeconds: {{ cnvrg_app.readiness_period_seconds | default('100') }}
+            timeoutSeconds: {{ cnvrg_app.readiness_timeout_seconds |default('60') }}
+{%  endif %}
           resources:
             requests:
               cpu: "{{cnvrg_app.cpu}}"

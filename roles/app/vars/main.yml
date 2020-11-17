@@ -5,21 +5,23 @@ cnvrg_app:
   enabled: "true"
   image: ""
   port: 80
-  cpu: 1
+  cpu: 2
   memory: 4Gi
   svc_name: "app"
   custom_agent_tag: "false"
   fixpg: "true"
   intercom: "true"
   node_port: 30080
-  sidekiq_cpu: 1
-  sidekiq_memory: 2Gi
+  sidekiq_cpu: 2
+  sidekiq_memory: 4Gi
   sidekiq_replicas: 2
   sidekiq_searchkick_cpu: 1
-  sidekiq_searchkick_memory: 2Gi
+  sidekiq_searchkick_memory: 1Gi
   sidekiq_searchkick_replicas: 1
   passenger_max_pool_size: 20  # the calculation of pax pool size based on this max_app_processes = (4096 * 0.75) / 150 = 20
-
+  enable_readiness_probe: "true"
+  readiness_period_seconds: 100
+  readiness_timeout_seconds: 60
 seeder:
   image: "docker.io/cnvrg/cnvrg-boot:v0.24"
   seed_cmd: "rails db:migrate && rails db:seed && rails libraries:update"

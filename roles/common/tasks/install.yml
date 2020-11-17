@@ -12,7 +12,7 @@
 - name: Template a file to /tmp
   template:
     src: "{{ template_path }}"
-    dest: "{{ dump_dir }}/{{ template_path.replace('/','-') }}"
+    dest: "{{ dump_dir }}/{{ template_path.replace('/','_') }}"
   when: dump_dir != ""
 
 # Set default value of "no" for K8S wait moduel,when wait_to_complete is not defined
