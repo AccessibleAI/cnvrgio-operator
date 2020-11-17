@@ -1,0 +1,23 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    prometheus: cnvrg
+  name: "{{monitoring.prometheus.svc_name}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+  spec:
+  {% if ingress_type == "nodeport" %}
+  type: NodePort
+  {% endif %}
+  ports:
+    - name: web
+      port: {{monitoring.prometheus.port}}
+      targetPort: web
+  {% if ingress_type == "nodeport" %}
+  nodePort: {{ monitoring.prometheus.node_port }}
+  {% endif %}
+  selector:
+    app: prometheus
+    prometheus: cnvrg
+  sessionAffinity: ClientIP
