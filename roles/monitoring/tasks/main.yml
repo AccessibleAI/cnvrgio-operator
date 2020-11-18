@@ -11,7 +11,7 @@
     - monitoring.enabled == "true"
     - monitoring.prometheus_operator.enabled == "true"
 
-- name: Deploy Prometheus instance
+- name: Deploy Default Service Monitors
   include_role:
     name: common
     tasks_from: install
@@ -19,12 +19,12 @@
     template_path: "{{ item }}"
     state: "{{ role_state }}"
   with_fileglob:
-    - templates/prometheus/*
+    - templates/default-service-monitors/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.prometheus.enabled == "true"
+    - monitoring.default_service_monitors.enabled == "true"
 
-- name: Deploy Prometheus Node Exporter
+- name: Deploy Node Exporter
   include_role:
     name: common
     tasks_from: install
@@ -49,6 +49,71 @@
   when:
     - monitoring.enabled == "true"
     - monitoring.kube_state_metrics.enabled == "true"
+
+- name: Deploy Prometheus instance
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/prometheus/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.prometheus.enabled == "true"
+
+- name: Deploy Minio Exporter
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/minio-exporter/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.minio_exporter.enabled == "true"
+
+- name: Deploy Sidekiq Exporter
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/sidekiq-exporter/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.sidekiq_exporter.enabled == "true"
+
+- name: Deploy DCGM Exporter
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/dcgm-exporter/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.dcgm_exporter.enabled == "true"
+
+- name: Deploy Idle Metrics Exporter
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/idle-metrics-exporter/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.idle_metrics_exporter.enabled == "true"
 
 - name: Deploy Grafana
   include_role:

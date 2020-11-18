@@ -18,6 +18,7 @@ html-testrunner = "*"
 kubernetes = "*"
 coloredlogs = "*"
 ansible = "*"
+dotted = "*"
 
 [scripts]
 op = "ansible-operator run"
