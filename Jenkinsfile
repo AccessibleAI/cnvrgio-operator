@@ -3,8 +3,13 @@ def NEXT_VERSION
 def TESTS_PASSED = "true"
 
 def skipTests() {
-    def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
-    return commitMessage.contains("skip tests")
+    try {
+        def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
+        return commitMessage.contains("skip tests")
+    } catch (Exception e) {
+        echo "Error: " + e.toString()
+        return false
+    }
 }
 pipeline {
     agent { label 'cpu1' }

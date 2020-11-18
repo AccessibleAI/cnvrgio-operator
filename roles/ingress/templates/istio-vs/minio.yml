@@ -11,7 +11,8 @@ spec:
   http:
   - retries:
       attempts: {{ istio.retries_attempts | default ('5') }}
-      perTryTimeout: {{ istio.per_try_timeout | default ('1s') }}
+      perTryTimeout: 172800s
+    timeout: 864000s
     route:
     - destination:
         host: "{{minio.svc_name + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"

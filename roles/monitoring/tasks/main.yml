@@ -1,0 +1,51 @@
+- name: Deploy Prometheus operator
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/prometheus-operator/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.prometheus_operator.enabled == "true"
+
+- name: Deploy Prometheus instance
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/prometheus/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.prometheus.enabled == "true"
+
+- name: Deploy Prometheus Node Exporter
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/node-exporter/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.node_exporter.enabled == "true"
+
+- name: Deploy Prometheus Kube State Metrics
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/kube-state-metrics/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.kube_state_metrics.enabled == "true"
