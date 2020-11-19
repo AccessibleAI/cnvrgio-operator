@@ -3,7 +3,7 @@
 ### Following table lists required compute and storage resources for cnvrg control plan 
 
 
-##### Large cluster
+#### Large cluster
 |**Workload**|**Replicas**|**CPU Request**|**Memory Request**|**Storage**|**CPU Limit**|**Memory Limit**
 | ---|---|---|---|---|---|---|
 |`webapp`| 1 | 4 | 8Gi | - | - | - 
@@ -21,9 +21,9 @@
 |`kibana`| 1 | 500m | 500Mi | - | 1 | 2Gi 
 |`nfs-provisioner`| 1 | 100m | 100Mi | - | 200m | 200Mi 
 |**TOTAL**| **15** | **~20** | **~40Gi** | 300Gi + 1T | - | - 
-:::
 
-##### Medium cluster
+
+#### Medium cluster
 |**Workload**|**Replicas**|**CPU Request**|**Memory Request**|**Storage**|**CPU Limit**|**Memory Limit**
 | ---|---|---|---|---|---|---|
 |`webapp`| 1 | 2 | 4Gi | - | - | - 
@@ -41,9 +41,9 @@
 |`kibana`| 1 | 500m | 500Mi | - | 1 | 2Gi 
 |`nfs-provisioner`| 1 | 100m | 100Mi | - | 200m | 200Mi 
 |**TOTAL**| **15** | **~12** | **~26Gi** | 300Gi + 1T | - | - 
-:::
 
-##### Small cluster
+
+#### Small cluster
 Small cluster mainly intend for demos and single user usage. 
 There is no any warranty that workloads will be executed, or even scheduled, since this profile doesn't specify any compute/storage resources.
 
@@ -64,4 +64,3 @@ There is no any warranty that workloads will be executed, or even scheduled, sin
 |`kibana`| 1 | - | - | - | - | - | - 
 |`nfs-provisioner`| 1 | - | - | - | - | - 
 |**TOTAL**| **15** | **-** | **-** | - | - | - 
-:::

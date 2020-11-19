@@ -157,8 +157,6 @@ spec:
           name: grafana-idle-metrics
           readOnly: false
         {% endif %}
-      nodeSelector:
-        beta.kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
