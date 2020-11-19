@@ -1,13 +1,29 @@
 {{- define "spec.monitoring" }}
 monitoring:
+{{- /*
+    The prometheus.enabled is depricated, and will be removed in the future.
+    instaed, use --set monitoring.enabled=<"true"|"false">
+*/ -}}
+  {{- if .Values.prometheus }}
+    {{- if .Values.prometheus.enabled }}
+        {{- if eq (.Values.prometheus.enabled | toString) "true" }}
+  enabled: "true"
+        {{- else }}
+  enabled: "false"
+        {{- end }}
+    {{- else }}
+  enabled: "false"
+    {{- end }}
+  {{- else }}
   enabled: "{{ .Values.monitoring.enabled}}"
+  {{- end }}
   prometheusOperator:
-    enabled: "{{ .Values.monitoring.prometheusOperator.enabled }} "
+    enabled: "{{ .Values.monitoring.prometheusOperator.enabled }}"
     images:
-      operatorImage: "{{ .Values.monitoring.prometheusOperator.images.operatorImage }} "
-      configReloaderImage: "{{ .Values.monitoring.prometheusOperator.images.configReloaderImage }} "
-      prometheusConfigReloaderImage: "{{ .Values.monitoring.prometheusOperator.images.prometheusConfigReloaderImage }} "
-      kubeRbacProxyImage: "{{ .Values.monitoring.prometheusOperator.images.kubeRbacProxyImage }} "
+      operatorImage: "{{ .Values.monitoring.prometheusOperator.images.operatorImage }}"
+      configReloaderImage: "{{ .Values.monitoring.prometheusOperator.images.configReloaderImage }}"
+      prometheusConfigReloaderImage: "{{ .Values.monitoring.prometheusOperator.images.prometheusConfigReloaderImage }}"
+      kubeRbacProxyImage: "{{ .Values.monitoring.prometheusOperator.images.kubeRbacProxyImage }}"
   prometheus:
     enabled: "{{ .Values.monitoring.prometheus.enabled }}"
     image: "{{ .Values.monitoring.prometheus.image }}"

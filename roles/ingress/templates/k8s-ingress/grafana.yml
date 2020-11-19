@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: "{{grafana.svc_name}}"
+  name: "{{monitoring.grafana.svc_name}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   rules:
-    - host: "{{(grafana.svc_name + "." + cluster_domain).split(':')[0] }}"
+    - host: "{{(monitoring.grafana.svc_name + "." + cluster_domain).split(':')[0] }}"
       http:
         paths:
           - path: /
             backend:
-              serviceName: "{{grafana.svc_name}}"
-              servicePort: {{grafana.port}}
+              serviceName: "{{monitoring.grafana.svc_name}}"
+              servicePort: {{monitoring.grafana.port}}

@@ -292,7 +292,7 @@ kibana:
   memoryLimit: 2000Mi
 fluentd:
   enabled: "true"
-  image: "fluent/fluentd-kubernetes-daemonset:v1.11.0-debian-elasticsearch6-1.0"
+  image: "fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1"
   journalPath: /var/log/journal
   containersPath: /var/lib/docker/containers
   journald: "false"
