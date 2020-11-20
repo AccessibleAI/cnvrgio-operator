@@ -7,19 +7,20 @@
 1. Install helm3
 2. Add cnvrg helm repo
    ```bash
-   helm repo add cnvrg https://helm.cnvrg.io
+   helm repo add cnvrg https://charts.cnvrg.io
    helm repo update
+   helm search repo cnvrg -l
    ```
 
 #### Deploy with defaults (Istio, Minio)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s  --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s  --wait \
     --set clusterDomain=base.domain
 ```
 
 ### Upgrade with helm upgrade
 ```
-helm upgrade cnvrg cnvrg/cnvrgio --reuse-values \
+helm upgrade cnvrg cnvrg/cnvrg --reuse-values \
   --set cnvrgApp.image=cnvrg/app:master-1374-encode
 ```
 
@@ -32,13 +33,13 @@ helm uninstall cnvrg
 ### Install without Helm (raw k8s manifests)
 ```
 kubectl create namespace cnvrg
-helm template cnvrg cnvrg/cnvrgio --no-hooks --set clusterDomain=base.domain > cnvrg.yaml # ... add extra params if required
+helm template cnvrg cnvrg/cnvrg --no-hooks --set clusterDomain=base.domain > cnvrg.yaml # ... add extra params if required
 kubectl apply -f cnvrg.yaml
 ```
 
 ### Dump only the CnvrgApp Custom Resource
 ```
-helm template cnvrg cnvrg/cnvrgio  -s templates/cnvrg-app.yaml
+helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
 ```
 
 
@@ -47,7 +48,7 @@ helm template cnvrg cnvrg/cnvrgio  -s templates/cnvrg-app.yaml
 #### Deploy on EKS | AKS | GKE with  (Istio, Cloud Object Storage)
 ```bash
 # AWS - EKS
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
@@ -61,7 +62,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 
 # Azure - AKS
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
@@ -73,7 +74,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
         --set appSecrets.cnvrgStorageAzureContainer=azure-storage-container-name
 
 # GCP - GKE
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
@@ -85,7 +86,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Deploy OnPrem  (Istio, Minio, HostPath, SMTP, micro storage profile)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=apps.1.2.3.4.nip.io \
     --set storageProfile=micro \
     --set hostpath.enabled="true" \
@@ -99,7 +100,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Deploy OnPrem  (NodePort, Minio, NFS)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
     --set ingressType="nodeport" \
     --set nfs.enabled="true" \
@@ -109,7 +110,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Deploy OnPrem  (NodePort, Minio, Hostpath)
 ```bash
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
     --set ingressType="nodeport" \
     --set hostpath.enabled="true" \
@@ -118,7 +119,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 
 #### Turn On/Off components
 ```
-helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set cnvrgApp.enabled="false" \
     --set autoscaler.enabled="false" \
     --set cnvrgRouter.enabled="false" \
@@ -224,8 +225,8 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`pg.runAsGroup`|26|
 |`pg.fsGroup`|26|
 |`pg.storageClass`|use-default|
-|`pg.cpuRequest`|1|
-|`pg.memoryRequest`|2Gi|
+|`pg.cpuRequest`|2|
+|`pg.memoryRequest`|4Gi|
 |`pgBackup.storageSize`|30Gi|
 |`pgBackup.enabled`|false|
 |`pgBackup.name`|pg-backup|
@@ -234,7 +235,7 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`pgBackup.storageClass`|use-default|
 |`pgBackup.cronTime`|1 1 * * *|
 |`es.enabled`|true|
-|`es.image`|docker.elastic.co/elasticsearch/elasticsearch:6.2.4|
+|`es.image`|docker.io/cnvrg/cnvrg-es:v7.8.1|
 |`es.maxMapImage`|docker.io/cnvrg/cnvrg-tools:v0.3|
 |`es.port`|9200|
 |`es.storageSize`|30Gi|
@@ -258,35 +259,45 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`minio.svcName`|minio|
 |`minio.nodePort`|30090|
 |`minio.storageClass`|use-default|
-|`minio.memoryRequest`|4Gi|
+|`minio.cpuRequest`|1|
+|`minio.memoryRequest`|2Gi|
 |`minio.sharedStorage.enabled`|false|
 |`minio.sharedStorage.storageClassName`|minio-shared-backend|
 |`minio.sharedStorage.nfsServer`|-|
 |`minio.sharedStorage.path`|-|
-|`prometheus.enabled`|true|
-|`prometheus.image`|quay.io/prometheus/prometheus:v2.17.2|
-|`prometheus.operatorImage`|quay.io/coreos/prometheus-operator:v0.38.1|
-|`prometheus.configReloaderImage`|jimmidyson/configmap-reload:v0.3.0|
-|`prometheus.prometheusConfigReloaderImage`|quay.io/coreos/prometheus-config-reloader:v0.38.1|
-|`prometheus.kubeRbacProxyImage`|quay.io/coreos/kube-rbac-proxy:v0.4.1|
-|`prometheus.kubeStateMetricsImage`|quay.io/coreos/kube-state-metrics:v1.9.5|
-|`prometheus.alertManagerImage`|quay.io/prometheus/alertmanager:v0.20.0|
-|`prometheus.adapterImage`|directxman12/k8s-prometheus-adapter:v0.7.0|
-|`prometheus.nvidiaExporterImage`|nvidia/dcgm-exporter:1.7.2|
-|`prometheus.nodeExporterImage`|quay.io/prometheus/node-exporter:v0.18.1|
-|`prometheus.sidekickExporterImage`|docker.io/strech/sidekiq-prometheus-exporter:0.1.13|
-|`prometheus.cnvrgBootImage`|docker.io/cnvrg/cnvrg-boot:v0.24|
-|`prometheus.svcName`|prometheus|
-|`prometheus.port`|9090|
-|`prometheus.nodePort`|30909|
-|`prometheus.storageSize`|40Gi|
-|`prometheus.storageClass`|use-default|
-|`prometheus.kubeletMetrics.schema`|https|
-|`prometheus.kubeletMetrics.port`|https-metrics|
-|`grafana.svcName`|grafana|
-|`grafana.port`|3000|
-|`grafana.image`|grafana/grafana:6.7.4|
-|`grafana.nodePort`|30012|
+|`monitoring.enabled`|true|
+|`monitoring.prometheusOperator.enabled`|true|
+|`monitoring.prometheusOperator.images.operatorImage`|quay.io/coreos/prometheus-operator:v0.40.0|
+|`monitoring.prometheusOperator.images.configReloaderImage`|jimmidyson/configmap-reload:v0.3.0|
+|`monitoring.prometheusOperator.images.prometheusConfigReloaderImage`|quay.io/coreos/prometheus-config-reloader:v0.40.0|
+|`monitoring.prometheusOperator.images.kubeRbacProxyImage`|quay.io/coreos/kube-rbac-proxy:v0.4.1|
+|`monitoring.prometheus.enabled`|true|
+|`monitoring.prometheus.image`|quay.io/prometheus/prometheus:v2.22.2|
+|`monitoring.prometheus.cpuRequest`|1|
+|`monitoring.prometheus.memoryRequest`|1Gi|
+|`monitoring.prometheus.svcName`|prometheus|
+|`monitoring.prometheus.port`|9090|
+|`monitoring.prometheus.nodePort`|30909|
+|`monitoring.prometheus.storageSize`|100Gi|
+|`monitoring.prometheus.storageClass`|use-default|
+|`monitoring.nodeExporter.enabled`|true|
+|`monitoring.nodeExporter.image`|quay.io/prometheus/node-exporter:v0.18.1|
+|`monitoring.kubeStateMetrics.enabled`|true|
+|`monitoring.kubeStateMetrics.image`|quay.io/coreos/kube-state-metrics:v1.9.5|
+|`monitoring.grafana.enabled`|true|
+|`monitoring.grafana.image`|grafana/grafana:7.1.0|
+|`monitoring.grafana.svcName`|grafana|
+|`monitoring.grafana.port`|3000|
+|`monitoring.grafana.nodePort`|30012|
+|`monitoring.defaultServiceMonitors.enabled`|true|
+|`monitoring.sidekiqExporter.enabled`|true|
+|`monitoring.sidekiqExporter.image`|docker.io/strech/sidekiq-prometheus-exporter:0.1.13|
+|`monitoring.minioExporter.enabled`|true|
+|`monitoring.minioExporter.image`|docker.io/cnvrg/cnvrg-boot:v0.24|
+|`monitoring.dcgmExporter.enabled`|true|
+|`monitoring.dcgmExporter.image`|nvidia/dcgm-exporter:1.7.2|
+|`monitoring.dcgmExporter.port`|9400|
+|`monitoring.idleMetricsExporter.enabled`|true|
 |`istio.enabled`|true|
 |`istio.operatorImage`|docker.io/istio/operator:1.7.3|
 |`istio.hub`|docker.io/istio|
@@ -300,14 +311,14 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`kibana.enabled`|true|
 |`kibana.svcName`|kibana|
 |`kibana.port`|5601|
-|`kibana.image`|docker.elastic.co/kibana/kibana-oss:6.2.4|
+|`kibana.image`|docker.elastic.co/kibana/kibana-oss:7.8.1|
 |`kibana.nodePort`|30601|
 |`kibana.cpuRequest`|500m|
 |`kibana.memoryRequest`|500Mi|
 |`kibana.cpuLimit`|1|
 |`kibana.memoryLimit`|2000Mi|
 |`fluentd.enabled`|true|
-|`fluentd.image`|fluent/fluentd-kubernetes-daemonset:v1.11.0-debian-elasticsearch6-1.0|
+|`fluentd.image`|fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1|
 |`fluentd.journalPath`|/var/log/journal|
 |`fluentd.containersPath`|/var/lib/docker/containers|
 |`fluentd.journald`|false|
@@ -331,19 +342,23 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`cnvrgApp.enabled`|true|
 |`cnvrgApp.image`|-|
 |`cnvrgApp.port`|80|
-|`cnvrgApp.cpu`|1|
+|`cnvrgApp.cpu`|2|
 |`cnvrgApp.memory`|4Gi|
 |`cnvrgApp.svcName`|app|
 |`cnvrgApp.customAgentTag`|false|
+|`cnvrgApp.fixpg`|true|
 |`cnvrgApp.intercom`|true|
 |`cnvrgApp.nodePort`|30080|
-|`cnvrgApp.sidekiqCpu`|1|
-|`cnvrgApp.sidekiqMemory`|2Gi|
+|`cnvrgApp.sidekiqCpu`|2|
+|`cnvrgApp.sidekiqMemory`|4Gi|
 |`cnvrgApp.sidekiqReplicas`|2|
 |`cnvrgApp.sidekiqSearchkickCpu`|1|
-|`cnvrgApp.sidekiqSearchkickMemory`|2Gi|
+|`cnvrgApp.sidekiqSearchkickMemory`|1Gi|
 |`cnvrgApp.sidekiqSearchkickReplicas`|1|
-|`cnvrgApp.passengerMaxPoolSize`|20| 
+|`cnvrgApp.passengerMaxPoolSize`|20|
+|`cnvrgApp.enableReadinessProbe`|true|
+|`cnvrgApp.readinessPeriodSeconds`|100|
+|`cnvrgApp.readinessTimeoutSeconds`|60|
 |`seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.24|
 |`seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update|
 |`nfs.enabled`|false|
@@ -367,6 +382,9 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 |`hostpath.memoryLimit`|200Mi|
 |`autoscaler.enabled`|false|
 |`ingress.enabled`|true|either create ingress rules or not based on `ingressType`,if set to false,none of the ingress rules will be created
+|`ingress.timeout`|900s|
+|`ingress.retriesAttempts`|5|
+|`ingress.perTryTimeout`|180s|
 |`cnvrgRouter.enabled`|false|
 |`cnvrgRouter.image`|nginx|
 |`cnvrgRouter.svcName`|routing-service|

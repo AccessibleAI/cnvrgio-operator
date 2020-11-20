@@ -1,0 +1,74 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-exporter-token
+  namespace: "{{ansible_operator_meta.namespace}}"
+  labels:
+    app: minio-exporter-token
+spec:
+  template:
+    spec:
+      serviceAccountName: "{{rbac.service_account_name}}"
+      terminationGracePeriodSeconds: 1
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
+      {% endif %}
+      containers:
+        - name: minio-exporter-token
+          image: "{{ monitoring.minio_exporter.image }}"
+          env:
+          - name: CNVRG_STORAGE_BUCKET
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: CNVRG_STORAGE_BUCKET
+          - name: CNVRG_STORAGE_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: CNVRG_STORAGE_ACCESS_KEY
+          - name: CNVRG_STORAGE_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: CNVRG_STORAGE_SECRET_KEY
+          - name: "CNVRG_NS"
+            value: "{{ ansible_operator_meta.namespace }}"
+          args:
+            - /bin/bash
+            - -c
+            - |+
+              _term() {
+                echo "Caught SIGTERM signal!"
+                exit
+              }
+              trap _term SIGTERM
+              ./mc alias set minio http://{{ minio.svc_name }} $CNVRG_STORAGE_ACCESS_KEY $CNVRG_STORAGE_SECRET_KEY
+              retVal=$?
+              if [ $retVal -ne 0 ]; then
+                  echo "Error in connection to minio"
+                  exit $retVal
+              else
+                  export TOKEN=$(./mc admin prometheus generate  minio | grep bearer_token: | awk '{print $2}')
+                  export MINIO_TOKEN=$(echo -n $TOKEN | base64 -w 0)
+                  python3 cnvrg-boot.py minio-exporter
+              fi
+      restartPolicy: "OnFailure"
+      initContainers:
+      - name: services-check
+        image: "{{ monitoring.minio_exporter.image }}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py services-check"]
+        imagePullPolicy: Always
+        env:
+        - name: "CNVRG_SERVICE_LIST"
+          value: "http://{{ minio.svc_name }}/minio/health/ready"
+  backoffLimit: 4

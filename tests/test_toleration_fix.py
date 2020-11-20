@@ -36,7 +36,7 @@ spec:
     enabled: "false"
   minio:
     enabled: "false"
-  prometheus:
+  monitoring:
     enabled: "true"
   istio:
     enabled: "false"

@@ -1,0 +1,22 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  jobLabel: minio
+  selector:
+    matchLabels:
+      app: minio
+  namespaceSelector:
+    matchNames:
+      - "{{ansible_operator_meta.namespace}}"
+  endpoints:
+  - path: /minio/prometheus/metrics
+    interval: 30s
+    scrapeTimeout: 10s
+    scheme: http
+    bearerTokenSecret:
+      name: minio-exporter-token
+      key: token
