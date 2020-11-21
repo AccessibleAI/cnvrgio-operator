@@ -1,0 +1,61 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "dcgm-exporter"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app.kubernetes.io/name: "dcgm-exporter"
+    app.kubernetes.io/version: "2.0.0-rc.11"
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "dcgm-exporter"
+      app.kubernetes.io/version: "2.0.0-rc.11"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "dcgm-exporter"
+        app.kubernetes.io/version: "2.0.0-rc.11"
+      name: "dcgm-exporter"
+    spec:
+      containers:
+      - image: "{{ monitoring.dcgm_exporter.image }}"
+        env:
+        - name: "DCGM_EXPORTER_LISTEN"
+          value: ":{{ monitoring.dcgm_exporter.port }}"
+        - name: "DCGM_EXPORTER_KUBERNETES"
+          value: "true"
+        name: "dcgm-exporter"
+        ports:
+        - name: "metrics"
+          containerPort: {{ monitoring.dcgm_exporter.port }}
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+        volumeMounts:
+        - name: "pod-gpu-resources"
+          readOnly: true
+          mountPath: "/var/lib/kubelet/pod-resources"
+      volumes:
+      - name: "pod-gpu-resources"
+        hostPath:
+          path: "/var/lib/kubelet/pod-resources"
+      tolerations:
+        - effect: NoSchedule
+          key: nvidia.com/gpu
+          operator: "Exists"
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
+      {% if nvidiadp.node_selector.enabled == "true" %}
+      nodeSelector:
+        {{ nvidiadp.node_selector.key }}: "{{ nvidiadp.node_selector.value }}"
+      {% endif %}

@@ -1,8 +1,0 @@
-apiVersion: v1
-data:
-  datasources.yaml: {{grafana.datasources | b64encode }}
-kind: Secret
-metadata:
-  name: grafana-datasources
-  namespace: "{{ansible_operator_meta.namespace}}"
-type: Opaque

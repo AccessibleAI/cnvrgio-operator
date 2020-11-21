@@ -83,7 +83,6 @@ computeProfiles:
     redis:
       cpu: 100m
       memory: 100Mi
-
 debug: "false"
 dumpDir: ""
 dryRun: "false"
@@ -220,30 +219,51 @@ minio:
     storageClassName: "minio-shared-backend"
     nfsServer: ""
     path: ""
-prometheus:
+monitoring:
   enabled: "true"
-  image: "quay.io/prometheus/prometheus:v2.17.2"
-  operatorImage: "quay.io/coreos/prometheus-operator:v0.38.1"
-  configReloaderImage: "jimmidyson/configmap-reload:v0.3.0"
-  prometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:v0.38.1"
-  kubeRbacProxyImage: "quay.io/coreos/kube-rbac-proxy:v0.4.1"
-  kubeStateMetricsImage: "quay.io/coreos/kube-state-metrics:v1.9.5"
-  alertManagerImage: "quay.io/prometheus/alertmanager:v0.20.0"
-  adapterImage: "directxman12/k8s-prometheus-adapter:v0.7.0"
-  nvidiaExporterImage: "nvidia/dcgm-exporter:1.7.2"
-  nodeExporterImage: "quay.io/prometheus/node-exporter:v0.18.1"
-  sidekickExporterImage: "docker.io/strech/sidekiq-prometheus-exporter:0.1.13"
-  cnvrgBootImage: "docker.io/cnvrg/cnvrg-boot:v0.24"
-  svcName: prometheus
-  port: 9090
-  nodePort: 30909
-  storageSize: 40Gi
-  storageClass: use-default
-  cpuRequest: 1
-  memoryRequest: 1Gi
-  kubeletMetrics:
-    schema: https
-    port: https-metrics
+  prometheusOperator:
+    enabled: "true"
+    images:
+      operatorImage: "quay.io/coreos/prometheus-operator:v0.40.0"
+      configReloaderImage: "jimmidyson/configmap-reload:v0.3.0"
+      prometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:v0.40.0"
+      kubeRbacProxyImage: "quay.io/coreos/kube-rbac-proxy:v0.4.1"
+  prometheus:
+    enabled: "true"
+    image: "quay.io/prometheus/prometheus:v2.22.2"
+    cpuRequest: 1
+    memoryRequest: 1Gi
+    svcName: "prometheus"
+    port: 9090
+    nodePort: 30909
+    storageSize: 100Gi
+    storageClass: "use-default"
+  nodeExporter:
+    enabled: "true"
+    image: "quay.io/prometheus/node-exporter:v0.18.1"
+  kubeStateMetrics:
+    enabled: "true"
+    image: "quay.io/coreos/kube-state-metrics:v1.9.5"
+  grafana:
+    enabled: "true"
+    image: grafana/grafana:7.1.0
+    svcName: "grafana"
+    port: 3000
+    nodePort: 30012
+  defaultServiceMonitors:
+    enabled: "true"
+  sidekiqExporter:
+    enabled: "true"
+    image: "docker.io/strech/sidekiq-prometheus-exporter:0.1.13"
+  minioExporter:
+    enabled: "true"
+    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+  dcgmExporter:
+    enabled: "true"
+    image: "nvidia/dcgm-exporter:1.7.2"
+    port: 9400
+  idleMetricsExporter:
+    enabled: "true"
 grafana:
   svcName: grafana
   port: 3000
@@ -272,7 +292,7 @@ kibana:
   memoryLimit: 2000Mi
 fluentd:
   enabled: "true"
-  image: "fluent/fluentd-kubernetes-daemonset:v1.11.0-debian-elasticsearch6-1.0"
+  image: "fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1"
   journalPath: /var/log/journal
   containersPath: /var/lib/docker/containers
   journald: "false"

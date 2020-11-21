@@ -52,7 +52,7 @@ spec:
     enabled: "true"
   minio:
     enabled: "true"
-  prometheus:
+  monitoring:
     enabled: "true"
   istio:
     enabled: "true"
@@ -94,7 +94,7 @@ spec:
     enabled: "false"
   minio:
     enabled: "false"
-  prometheus:
+  monitoring:
     enabled: "false"
   kibana:
     enabled: "false"
@@ -123,11 +123,13 @@ spec:
     cpuRequest: 100m
     memoryRequest: 100Mi    
   
-  prometheus:
-    enabled: "true"
-    storageSize: "1Gi"
-    cpuRequest: 100m
-    memoryRequest: 100Mi
+  monitoring:
+    enabled: "true"    
+    prometheus:
+      enabled: "true"
+      storageSize: "1Gi"
+      cpuRequest: 100m
+      memoryRequest: 100Mi
     
   es:
     enabled: "true"

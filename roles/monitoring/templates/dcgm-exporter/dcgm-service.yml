@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: "dcgm-exporter"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app.kubernetes.io/name: "dcgm-exporter"
+    app.kubernetes.io/version: "2.0.0-rc.11"
+spec:
+  selector:
+    app.kubernetes.io/name: "dcgm-exporter"
+    app.kubernetes.io/version: "2.0.0-rc.11"
+  ports:
+  - name: "metrics"
+    port: {{ monitoring.dcgm_exporter.port }}

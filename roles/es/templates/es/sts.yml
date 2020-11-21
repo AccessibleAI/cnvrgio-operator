@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -14,30 +15,30 @@ spec:
       labels:
         app: "{{es.svc_name}}"
     spec:
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
-{% if security_mode == "default" %}
+      {% endif %}
+      {% if security_mode == "default" %}
       securityContext:
         runAsUser: {{ es.run_as_user }}
         runAsGroup: {{ es.run_as_group }}
         fsGroup: {{ es.fs_group }}
-{% endif %}
-{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      {% endif %}
+      {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
         kubernetes.io/hostname: "{{ hostpath.node_name }}"
-{% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
         kubernetes.io/hostname: "{{ hostpath.node_name }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
+      {% endif %}
       containers:
       - name: elastic
         image: "{{es.image}}"
@@ -96,10 +97,10 @@ spec:
       resources:
         requests:
           storage: "{{es.storage_size}}"
-{% if hostpath.enabled == "true" %}
+      {% if hostpath.enabled == "true" %}
       storageClassName: {{ hostpath.storage_class_name }}
-{% elif nfs.enabled == "true" %}
+      {% elif nfs.enabled == "true" %}
       storageClassName: "{{ nfs.storage_class_name }}"
-{% elif pg.storage_class != "use-default" %}
+      {% elif pg.storage_class != "use-default" %}
       storageClassName: "{{ es.storage_class }}"
-{% endif %}
+      {% endif %}

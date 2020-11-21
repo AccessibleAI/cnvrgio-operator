@@ -132,8 +132,31 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/workload-total
           name: grafana-dashboard-workload-total
           readOnly: false
-      nodeSelector:
-        beta.kubernetes.io/os: linux
+        {% if monitoring.sidekiq_exporter.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/sidekiq-exporter
+          name: grafana-dashboard-cnvrg-sidekiq-exporter
+          readOnly: false
+        {% endif %}
+        {% if monitoring.minio_exporter.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/minio-exporter
+          name: grafana-dashboard-cnvrg-minio-exporter
+          readOnly: false
+        {% endif %}
+        {% if monitoring.node_exporter.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/node-exporter-full
+          name: node-exporter-full
+          readOnly: false
+        {% endif %}
+        {% if monitoring.dcgm_exporter.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/dcgm-exporter
+          name: dcgm-exporter-dashboard
+          readOnly: false
+        {% endif %}
+        {% if monitoring.idle_metrics_exporter.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/idle-exporter
+          name: grafana-idle-metrics
+          readOnly: false
+        {% endif %}
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
@@ -216,3 +239,28 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
+      {% if monitoring.sidekiq_exporter.enabled == "true" %}
+      - configMap:
+          name: grafana-dashboard-cnvrg-sidekiq-exporter
+        name: grafana-dashboard-cnvrg-sidekiq-exporter
+      {% endif %}
+      {% if monitoring.minio_exporter.enabled == "true" %}
+      - configMap:
+          name: grafana-dashboard-cnvrg-minio-exporter
+        name: grafana-dashboard-cnvrg-minio-exporter
+      {% endif %}
+      {% if monitoring.node_exporter.enabled == "true" %}
+      - configMap:
+          name: node-exporter-full
+        name: node-exporter-full
+      {% endif %}
+      {% if monitoring.dcgm_exporter.enabled == "true" %}
+      - configMap:
+          name: dcgm-exporter-dashboard
+        name: dcgm-exporter-dashboard
+      {% endif %}
+      {% if monitoring.idle_metrics_exporter.enabled == "true" %}
+      - configMap:
+          name: grafana-idle-metrics
+        name: grafana-idle-metrics
+      {% endif %}

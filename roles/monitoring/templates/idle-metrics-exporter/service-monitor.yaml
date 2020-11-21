@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cnvrg-jobs
+  namespace: "{{ansible_operator_meta.namespace}}"
+  labels:
+    app: cnvrg-jobs
+spec:
+  jobLabel: cnvrg-job
+  selector:
+    matchLabels:
+      exporter: cnvrg-job
+  namespaceSelector:
+    matchNames:
+      - "{{ansible_operator_meta.namespace}}"
+  endpoints:
+    - interval: 30s
+      scrapeTimeout: 10s
+      port: "http"

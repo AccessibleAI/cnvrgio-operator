@@ -22,13 +22,18 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {%  endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
       tolerations:
+        - effect: NoSchedule
+          key: nvidia.com/gpu
+          operator: "Exists"
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
-      {% endif %}
       containers:
       - args:
         - --host=127.0.0.1
