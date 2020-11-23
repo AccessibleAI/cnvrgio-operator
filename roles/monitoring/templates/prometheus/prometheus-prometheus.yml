@@ -44,6 +44,7 @@ spec:
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   replicas: 1
+  retentionSize: "{{ monitoring.prometheus.storage_size|regex_replace('[a-zA-Z]', '')|int - 2 }}GiB"
   resources:
     requests:
       cpu: "{{ monitoring.prometheus.cpu_request | default('1') }}"

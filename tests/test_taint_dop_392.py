@@ -12,7 +12,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingr  essType: "k8singress"
+  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -23,6 +23,13 @@ spec:
     enabled: "true"
   pgBackup:
     enabled: "true"
+  monitoring:
+    enabled: "true"    
+    prometheus:
+      enabled: "true"
+      storageSize: "5Gi"
+      cpuRequest: 100m
+      memoryRequest: 100Mi
 """
 
 CNVRG_SPEC_WITH_TOLERATION = """
