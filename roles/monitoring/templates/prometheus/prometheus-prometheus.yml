@@ -44,7 +44,7 @@ spec:
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   replicas: 1
-  retentionSize: "{{ monitoring.prometheus.storage_size|regex_replace('[a-zA-Z]', '')|int - 2 }}GiB"
+  retentionSize: "{{ monitoring.prometheus.storage_size|regex_replace('[a-zA-Z]', '')|int - 2 }}GiB" # https://www.robustperception.io/configuring-prometheus-storage-retention
   resources:
     requests:
       cpu: "{{ monitoring.prometheus.cpu_request | default('1') }}"

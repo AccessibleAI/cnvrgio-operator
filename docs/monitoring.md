@@ -16,24 +16,34 @@ Configure monitoring stack with helm chart flags
 ```bash
 # completely enable or disable monitoring stack
 --set monitoring.enabled=<"true"|"false">
+
 # enable or disable prometheus operator 
 --set monitoring.prometheusOperator.enabled=<"true"|"false">
+
 # enable or disable prometheus instance 
 --set monitoring.prometheus.enabled=<"true"|"false">
+
 # enable or disable prometheus node exporter  
 --set monitoring.nodeExporter.enabled=<"true"|"false">
+
 # enable or disable kube state metrics  
 --set monitoring.kubeStateMetrics.enabled=<"true"|"false">
+
 # enable or disable Grafana 
 --set monitoring.grafana.enabled=<"true"|"false">
+
 # enable or disable default service monitors, (full list of default monitors is here: roles/monitoring/templates/default-service-monitors)
 --set monitoring.defaultServiceMonitors.enabled=<"true"|"false">
+
 # enable or disable sidekiq exporter
 --set monitoring.sidekiqExporter.enabled=<"true"|"false">
+
 # enable or disable minio exporter
 --set monitoring.minioExporter.enabled=<"true"|"false">
+
 # enable or disable dcgm exporter
 --set monitoring.dcgmExporter.enabled=<"true"|"false">
+
 # enable or disable idle metrics exporter
 --set monitoring.idleMetricsExporter.enabled=<"true"|"false">
 ```
@@ -63,8 +73,9 @@ monitoring:
   idleMetricsExporter:
     enabled: "true|false"
 ```
-### Integration with external Prometheus - Prometheus Federation
+### Integration with external Prometheus - Prometheus Federation (supported setup)
 
+To scrap all metrics from cnvrg Prometheus instance add the following into yours Prometheus instance 
 ```yaml
   - job_name: cnvrg_app_cluster_federation_all_exporters
     honor_labels: true
@@ -74,8 +85,11 @@ monitoring:
         - '{job=~".+"}'
     static_configs:
       - targets:
-        - prometheus.ext-prom.azops.cnvrg.io
+        - <cnvrg-prometheus-url>
+```
 
+To scrap cnvrg specific metrics from cnvrg Prometheus instance add the following into yours Prometheus instance
+```yaml
   - job_name: cnvrg_app_cluster_federation_minimum_required_exporters
     honor_labels: true
     metrics_path: /federate
@@ -84,21 +98,29 @@ monitoring:
         - '{job=~"kube-state-metrics|node-exporter|dcgm-exporter|cnvrg-job|sidekiq-prometheus-exporter|minio"}'
     static_configs:
       - targets:
-        - prometheus.ext-prom.azops.cnvrg.io
+        - <cnvrg-prometheus-url>
 ```
 
-```
-curl -G --data-urlencode 'match[]={job=~".+"}' http://prometheus.ext-prom.azops.cnvrg.io/federate
-```
+External labels for identify cnvrg Prometheus federated metrics
+```bash
+cnvrg_cluster="<cnvrg-cluster-domain>"
+``` 
+For example, execute following query on upstream Prometheus instance 
+where `cnvrg_cluster` equals source `"<cnvrg-cluster-domain>"`  
+```bash
+node_memory_MemFree_bytes{cnvrg_cluster="<cnvrg-cluster-domain>"}
+```  
 
-or 
+For debugging purpose, you may use the following commands 
+to check if desired metrics available on cnvrg Prometheus instance  
 
 ```bash
-
-curl -sG --data-urlencode 'match[]={job=~"kube-state-metrics|node-exporter|dcgm-exporter|cnvrg-job|sidekiq-prometheus-exporter|minio"}' http://prometheus.ext-prom.azops.cnvrg.io/federate
+curl -G --data-urlencode 'match[]={job=~".+"}' <cnvrg-prometheus-url>/federate
+# or 
+curl -sG --data-urlencode 'match[]={job=~"kube-state-metrics|node-exporter|dcgm-exporter|cnvrg-job|sidekiq-prometheus-exporter|minio"}' <cnvrg-prometheus-url>/federate
 ```
     
-### Integration with external Prometheus without Prometheus Federation 
+### Integration with external Prometheus without Prometheus Federation (not supported method - the application functionality may be partially broken in such a setup)
  
 #### Prometheus exporters 
 * [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)
