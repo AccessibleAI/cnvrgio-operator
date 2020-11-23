@@ -22,8 +22,8 @@ cnvrgApp:
   sidekiqMemory: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiqMemory }}"
   sidekiqSearchkickCpu: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqCpu }}"
   sidekiqSearchkickMemory: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqMemory }}"
-  sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiqReplicas }}"
-  sidekiqReplicas: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqReplicas }}"
+  sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiqReplicas }}"
+  sidekiqReplicas: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiqReplicas }}"
   {{- end }}
 
   {{- if eq .Values.computeProfile "medium"}}
@@ -33,8 +33,8 @@ cnvrgApp:
   sidekiqMemory: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiqMemory }}"
   sidekiqSearchkickCpu: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqCpu }}"
   sidekiqSearchkickMemory: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqMemory }}"
-  sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiqReplicas }}"
-  sidekiqReplicas: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqReplicas }}"
+  sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiqReplicas }}"
+  sidekiqReplicas: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiqReplicas }}"
   {{- end }}
 
   {{- if eq .Values.computeProfile "small"}}
@@ -44,8 +44,8 @@ cnvrgApp:
   sidekiqMemory: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqMemory }}"
   sidekiqSearchkickCpu: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqCpu }}"
   sidekiqSearchkickMemory: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqMemory }}"
-  sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqReplicas }}"
-  sidekiqReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqReplicas }}"
+  sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqReplicas }}"
+  sidekiqReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqReplicas }}"
   {{- end }}
 seeder:
   image: "{{ .Values.seeder.image }}"
