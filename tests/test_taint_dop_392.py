@@ -12,7 +12,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+  ingr  essType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
