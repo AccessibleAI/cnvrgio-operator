@@ -63,8 +63,42 @@ monitoring:
   idleMetricsExporter:
     enabled: "true|false"
 ```
+### Integration with external Prometheus - Prometheus Federation
+
+```yaml
+  - job_name: cnvrg_app_cluster_federation_all_exporters
+    honor_labels: true
+    metrics_path: /federate
+    params:
+      match[]:
+        - '{job=~".+"}'
+    static_configs:
+      - targets:
+        - prometheus.ext-prom.azops.cnvrg.io
+
+  - job_name: cnvrg_app_cluster_federation_minimum_required_exporters
+    honor_labels: true
+    metrics_path: /federate
+    params:
+      match[]:
+        - '{job=~"kube-state-metrics|node-exporter|dcgm-exporter|cnvrg-job|sidekiq-prometheus-exporter|minio"}'
+    static_configs:
+      - targets:
+        - prometheus.ext-prom.azops.cnvrg.io
+```
+
+```
+curl -G --data-urlencode 'match[]={job=~".+"}' http://prometheus.ext-prom.azops.cnvrg.io/federate
+```
+
+or 
+
+```bash
+
+curl -sG --data-urlencode 'match[]={job=~"kube-state-metrics|node-exporter|dcgm-exporter|cnvrg-job|sidekiq-prometheus-exporter|minio"}' http://prometheus.ext-prom.azops.cnvrg.io/federate
+```
     
-### Integration with external Prometheus
+### Integration with external Prometheus without Prometheus Federation 
  
 #### Prometheus exporters 
 * [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)
@@ -76,8 +110,10 @@ monitoring:
 * [kube-state-metrics-service-monitor](../roles/monitoring/templates/kube-state-metrics/kube-state-metrics-serviceMonitor.yaml)
 * [node-exporter-service-monitor](../roles/monitoring/templates/node-exporter/node-exporter-serviceMonitor.yaml)
 * [dcgm-exporter-service-monitor](../roles/monitoring/templates/dcgm-exporter/service-monitor.yml)
-* [minio-service-monitor](../roles/monitoring/templates/minio-exporter/prometheus-minio-serviceMonitor.yaml)
 * [idle-metrics-service-monitor](../roles/monitoring/templates/idle-metrics-exporter/service-monitor.yaml)
+* [sidekiq-exporter](../roles/monitoring/templates/sidekiq-exporter/sidekiq-exporter-serviceMonitor.yaml)
+* [minio-service-monitor](../roles/monitoring/templates/minio-exporter/prometheus-minio-serviceMonitor.yaml)
+
 
 #### Required Prometheus rules (use either kube-prometheus rules, or vanilla prometheus rules yaml file)
 * [kube-prometheus-rules](https://github.com/prometheus-operator/kube-prometheus/blob/master/manifests/prometheus-rules.yaml)  or [kube-prometheus-rules.yaml](./kube-prometheus-rules.yaml)

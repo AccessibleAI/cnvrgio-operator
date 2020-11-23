@@ -48,6 +48,8 @@ spec:
     requests:
       cpu: "{{ monitoring.prometheus.cpu_request | default('1') }}"
       memory: "{{ monitoring.prometheus.memory_request | default('1Gi') }}"
+  externalLabels:
+    cnvrg_cluster: "{{ cluster_domain }}"
   ruleSelector:
     matchLabels:
       prometheus: k8s
