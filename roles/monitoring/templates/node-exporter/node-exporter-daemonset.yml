@@ -30,7 +30,7 @@ spec:
           effect: "NoSchedule"
       containers:
       - args:
-        - --web.listen-address=127.0.0.1:9100
+        - --web.listen-address=127.0.0.1:{{ monitoring.node_exporter.port }}
         - --path.procfs=/host/proc
         - --path.sysfs=/host/sys
         - --path.rootfs=/host/root
@@ -59,9 +59,9 @@ spec:
           readOnly: true
       - args:
         - --logtostderr
-        - --secure-listen-address=[$(IP)]:9100
+        - --secure-listen-address=[$(IP)]:{{ monitoring.node_exporter.port }}
         - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-        - --upstream=http://127.0.0.1:9100/
+        - --upstream=http://127.0.0.1:{{ monitoring.node_exporter.port }}/
         env:
         - name: IP
           valueFrom:
@@ -70,8 +70,8 @@ spec:
         image: {{ monitoring.prometheus_operator.images.kube_rbac_proxy_image }}
         name: kube-rbac-proxy
         ports:
-        - containerPort: 9100
-          hostPort: 9100
+        - containerPort: {{ monitoring.node_exporter.port }}
+          hostPort: {{ monitoring.node_exporter.port }}
           name: https
         resources:
           limits:

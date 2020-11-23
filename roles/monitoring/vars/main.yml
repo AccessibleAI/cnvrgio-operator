@@ -19,6 +19,7 @@ monitoring:
     storage_class: "use-default"
   node_exporter:
     enabled: "true"
+    port: 9100
     image: "quay.io/prometheus/node-exporter:v0.18.1"
   kube_state_metrics:
     enabled: "true"
