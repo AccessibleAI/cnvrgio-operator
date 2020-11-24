@@ -7,27 +7,22 @@
           var chart = new CanvasJS.Chart("chartContainer", {
               theme: "dark2",
               animationEnabled: true,
-              exportEnabled: true,
+              exportEnabled: false,
               title: {
-                  text: "Tests execution time graph"
+                  text: "Tests execution time graph",
+                  fontSize: 20,
               },
               axisX: {
-                  margin: 10,
-                  labelPlacement: "inside",
-                  tickPlacement: "inside"
+                  title: "Tests",
+                  labelFontSize: 10,
+                  titleFontSize: 10,
               },
-              axisY2: {
-                  title: "Views (in billion)",
-                  titleFontSize: 14,
-                  includeZero: true,
+              axisY: {
+                  title: "Time in seconds",
+                  labelFontSize: 10,
+                  titleFontSize: 10,
               },
-              data: [{
-                  type: "bar",
-                  axisYType: "secondary",
-
-                  indexLabel: "{y}",
-                  dataPoints: ${EXEC_TIME_REPORT}
-              }]
+              data: ${EXEC_TIME_REPORT}
           });
           chart.render();
       }

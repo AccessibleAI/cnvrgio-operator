@@ -110,6 +110,7 @@ class CommonBase(object):
         exec_report.append({"label": test_name, "y": total_time})
         with open(report_file, "w") as f:
             f.write(json.dumps(exec_report))
+
         f.close()
 
     @staticmethod

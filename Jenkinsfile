@@ -145,10 +145,20 @@ pipeline {
                          --account-key ${ACCOUNT_KEY}
                         """
                         echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
+
                         // Time execution report
                         sh """
-                        mv tests-duration-execution-report.json 
+                        EXEC_TIME_REPORT=\$(cat tests-duration-execution-report.json) envsubst < tests/exec-time-report.tmpl > exec-time-report-${NEXT_VERSION}.html  
                         """
+                        sh """
+                        az storage blob upload \
+                         --account-name operatortestreports \
+                         --container-name reports \
+                         --name exec-time-report-${NEXT_VERSION}.html \
+                         --file "exec-time-report-${NEXT_VERSION}.html" \
+                         --account-key ${ACCOUNT_KEY}
+                        """
+                        echo "https://operatortestreports.blob.core.windows.net/reports/exec-time-report-${NEXT_VERSION}.html"
                     }
                 }
             }
