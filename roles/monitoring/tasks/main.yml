@@ -74,6 +74,7 @@
     - templates/minio-exporter/*
   when:
     - monitoring.enabled == "true"
+    - (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio")    
     - monitoring.minio_exporter.enabled == "true"
 
 - name: Deploy Sidekiq Exporter
@@ -88,6 +89,7 @@
   when:
     - monitoring.enabled == "true"
     - monitoring.sidekiq_exporter.enabled == "true"
+    - cnvrg_app.enabled == "true"
 
 - name: Deploy DCGM Exporter
   include_role:
