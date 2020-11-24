@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: "{{prometheus.svc_name}}"
+  name: "{{monitoring.prometheus.svc_name}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   rules:
-    - host: "{{(prometheus.svc_name + '.' + cluster_domain).split(':')[0] }}"
+    - host: "{{(monitoring.prometheus.svc_name + '.' + cluster_domain).split(':')[0] }}"
       http:
         paths:
           - path: /
             backend:
-              serviceName: "{{prometheus.svc_name}}"
-              servicePort: {{prometheus.port}}
+              serviceName: "{{monitoring.prometheus.svc_name}}"
+              servicePort: {{monitoring.prometheus.port}}

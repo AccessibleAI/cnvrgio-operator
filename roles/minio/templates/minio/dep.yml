@@ -81,6 +81,7 @@ spec:
             periodSeconds: 20
           resources:
             requests:
+              cpu: "{{ minio.cpu_request | default('2') }}"
               memory: "{{ minio.memory_request }}"
       volumes:
         - name: minio-storage

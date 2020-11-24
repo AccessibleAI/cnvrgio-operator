@@ -9,12 +9,12 @@ spec:
   gateways:
   - "{{istio.gw_name}}"
   http:
-  - timeout: 50s
-    retries:
-      attempts: 4
-      perTryTimeout: 30s
+  - retries:
+      attempts: {{ ingress.retries_attempts | default ('5') }}
+      perTryTimeout: {{ ingress.per_try_timeout | default ('180s') }}
+    timeout: {{ ingress.timeout | default ('900s') }}
     route:
-    - destination:
-        port:
-          number: {{cnvrg_router.port}}
-        host: "{{cnvrg_router.svc_name +'.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
+      - destination:
+          port:
+            number: {{cnvrg_router.port}}
+          host: "{{cnvrg_router.svc_name +'.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"

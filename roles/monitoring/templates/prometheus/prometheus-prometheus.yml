@@ -1,0 +1,65 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    app: prometheus
+    prometheus: cnvrg
+  name: cnvrg
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  storage:
+    disableMountSubPath: true
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: "{{ monitoring.prometheus.storage_size }}"
+        {% if hostpath.enabled == "true" %}
+        storageClassName: {{ hostpath.storage_class_name }}
+        {% elif nfs.enabled == "true" %}
+        storageClassName: "{{ nfs.storage_class_name }}"
+        {% elif pg.storage_class != "use-default" %}
+        storageClassName: "{{ monitoring.prometheus.storage_class }}"
+        {% endif %}
+  image: "{{ monitoring.prometheus.image }}"
+  {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+  tolerations:
+    - key: "{{ tenancy.cnvrg.key }}"
+      operator: "Equal"
+      value: "{{ tenancy.cnvrg.value }}"
+      effect: "NoSchedule"
+  {% endif %}
+  {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+  nodeSelector:
+    kubernetes.io/hostname: "{{ hostpath.node_name }}"
+  {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+  nodeSelector:
+    {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+  {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+  nodeSelector:
+    kubernetes.io/hostname: "{{ hostpath.node_name }}"
+    {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+  {% endif %}
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  replicas: 1
+  retentionSize: "{{ monitoring.prometheus.storage_size|regex_replace('[a-zA-Z]', '')|int - 2 }}GiB" # https://www.robustperception.io/configuring-prometheus-storage-retention
+  resources:
+    requests:
+      cpu: "{{ monitoring.prometheus.cpu_request | default('1') }}"
+      memory: "{{ monitoring.prometheus.memory_request | default('1Gi') }}"
+  externalLabels:
+    cnvrg_cluster: "{{ cluster_domain }}"
+  ruleSelector:
+    matchLabels:
+      prometheus: k8s
+      role: alert-rules
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: v2.20.0

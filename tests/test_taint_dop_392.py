@@ -25,6 +25,13 @@ spec:
     enabled: "true"
   vpa:
     enabled: "true"
+  monitoring:
+    enabled: "true"
+    prometheus:
+      enabled: "true"
+      storageSize: "5Gi"
+      cpuRequest: 100m
+      memoryRequest: 100Mi
 """
 
 CNVRG_SPEC_WITH_TOLERATION = """
@@ -54,7 +61,7 @@ spec:
     enabled: "true"
   minio:
     enabled: "true"
-  prometheus:
+  monitoring:
     enabled: "true"
   istio:
     enabled: "true"
@@ -98,7 +105,7 @@ spec:
     enabled: "false"
   minio:
     enabled: "false"
-  prometheus:
+  monitoring:
     enabled: "false"
   kibana:
     enabled: "false"
@@ -120,18 +127,33 @@ spec:
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
+
   minio:
     enabled: "true"
     storageSize: "1Gi"
-  prometheus:
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+
+  monitoring:
     enabled: "true"
-    storageSize: "1Gi"
+    prometheus:
+      enabled: "true"
+      storageSize: "1Gi"
+      cpuRequest: 100m
+      memoryRequest: 100Mi
+
   es:
     enabled: "true"
     storageSize: "1Gi"
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+
   pg:
     enabled: "true"
     storageSize: "1Gi"
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+
   hostpath:
     enabled: "true"
     nodeName: "__NODE_NAME__"

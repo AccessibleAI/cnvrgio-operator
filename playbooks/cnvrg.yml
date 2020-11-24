@@ -11,7 +11,7 @@
         - ../roles/pg_backup/vars/main.yml
         - ../roles/es/vars/main.yml
         - ../roles/minio/vars/main.yml
-        - ../roles/kube-prom/vars/main.yml
+        - ../roles/monitoring/vars/main.yml
         - ../roles/istio/vars/main.yml
         - ../roles/kibana/vars/main.yml
         - ../roles/fluentd/vars/main.yml
@@ -155,12 +155,13 @@
       tags: vpa
 
     # Prometheus deployment
+    # Monitoring
     - import_role:
-        name: kube-prom
+        name: monitoring
       vars:
-        role_state: "{{'present' if prometheus.enabled == 'true' else 'absent'}}"
-      when: prometheus.enabled == "true"
-      tags: prom
+        role_state: "{{'present' if monitoring.enabled == 'true' else 'absent'}}"
+      when: monitoring.enabled == "true"
+      tags: monitoring
 
     ####################### The spec_status have to be the last executed role!!! #######################
     - import_role:

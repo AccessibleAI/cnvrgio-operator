@@ -34,7 +34,7 @@ spec:
     enabled: "false"
   minio:
     enabled: "false"
-  prometheus:
+  monitoring:
     enabled: "false"
   kibana:
     enabled: "false"

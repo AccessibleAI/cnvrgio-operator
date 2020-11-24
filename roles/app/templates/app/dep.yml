@@ -42,10 +42,16 @@ spec:
           - "/bin/bash"
           - "-lc"
           args:
-          - "touch /etc/service/sidekiq/down && /sbin/my_init"
+          - >
+            sed -i \
+              "s/passenger_max_request_queue_size 10000;/passenger_max_request_queue_size 10000;\n    passenger_max_pool_size $CNVRG_PASSENGER_MAX_POOL_SIZE;\n/g" \
+              /etc/nginx/nginx.conf
+            touch /etc/service/sidekiq/down && /sbin/my_init
           env:
           - name: "CNVRG_RUN_MODE"
             value: "webapp"
+          - name: "CNVRG_PASSENGER_MAX_POOL_SIZE"
+            value: "{{ cnvrg_app.passenger_max_pool_size | default('20') }}"
           envFrom:
             - configMapRef:
                 name: env-config
@@ -54,6 +60,7 @@ spec:
           name: cnvrg-app
           ports:
             - containerPort: {{cnvrg_app.port}}
+{% if (cnvrg_app.enable_readiness_probe | default ('true')) == "true" %}
           readinessProbe:
             failureThreshold: 3
             httpGet:
@@ -61,8 +68,10 @@ spec:
               port: {{cnvrg_app.port}}
               scheme: HTTP
             initialDelaySeconds: 5
-            periodSeconds: 5
             successThreshold: 1
+            periodSeconds: {{ cnvrg_app.readiness_period_seconds | default('100') }}
+            timeoutSeconds: {{ cnvrg_app.readiness_timeout_seconds |default('60') }}
+{%  endif %}
           resources:
             requests:
               cpu: "{{cnvrg_app.cpu}}"
@@ -86,11 +95,12 @@ spec:
         imagePullPolicy: Always
         env:
         - name: "CNVRG_SERVICE_LIST"
-{% if app_secrets.cnvrg_storage_type == "minio" %}
+{% if minio.enabled == "true" and  app_secrets.cnvrg_storage_type == "minio" %}
           value: "{{pg.svc_name}}:{{pg.port}};{{app_secrets.cnvrg_storage_endpoint}}/minio/health/ready"
 {% else %}
           value: "{{pg.svc_name}}:{{pg.port}}"
 {% endif %}
+{% if cnvrg_app.fixpg == "true" %}
       - name: fixpg
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py fixpg"]
@@ -111,6 +121,7 @@ spec:
               name: env-secrets
               key: POSTGRES_HOST
         imagePullPolicy: Always
+{% endif %}
       - name: seeder
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode master"]
@@ -134,4 +145,5 @@ spec:
         - name: "CNVRG_GCP_KEYFILE_MOUNT_PATH"
           value: "{{ conf.gcp_keyfile_mount_path }}"
 {% endif %}
+
 

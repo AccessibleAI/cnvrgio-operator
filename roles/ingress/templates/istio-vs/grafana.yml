@@ -1,16 +1,20 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: "{{grafana.svc_name}}"
+  name: "{{monitoring.grafana.svc_name}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   hosts:
-  - "{{(grafana.svc_name + "." + cluster_domain).split(':')[0] }}"
+  - "{{(monitoring.grafana.svc_name + "." + cluster_domain).split(':')[0] }}"
   gateways:
   - "{{istio.gw_name}}"
   http:
-  - route:
+  - retries:
+      attempts: {{ istio.retries_attempts | default ('5') }}
+      perTryTimeout: {{ istio.per_try_timeout | default ('180s') }}
+    timeout: {{ ingress.timeout | default ('900s') }}
+    route:
     - destination:
+        host: "{{monitoring.grafana.svc_name +"."+ ansible_operator_meta.namespace + ".svc.cluster.local" }}"
         port:
-          number: {{grafana.port}}
-        host: "{{grafana.svc_name +"."+ ansible_operator_meta.namespace + ".svc.cluster.local" }}"
+          number: {{monitoring.grafana.port}}

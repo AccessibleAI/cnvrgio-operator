@@ -1,0 +1,48 @@
+monitoring:
+  enabled: "true"
+  prometheus_operator:
+    enabled: "true"
+    images:
+      operator_image: "quay.io/coreos/prometheus-operator:v0.40.0"
+      config_reloader_image: "jimmidyson/configmap-reload:v0.3.0"
+      prometheus_config_reloader_image: "quay.io/coreos/prometheus-config-reloader:v0.40.0"
+      kube_rbac_proxy_image: "quay.io/coreos/kube-rbac-proxy:v0.4.1"
+  prometheus:
+    enabled: "true"
+    image: "quay.io/prometheus/prometheus:v2.22.2"
+    cpu_request: 1
+    memory_request: 1Gi
+    svc_name: "prometheus"
+    port: 9090
+    node_port: 30909
+    storage_size: 100Gi
+    storage_class: "use-default"
+  node_exporter:
+    enabled: "true"
+    port: 9100
+    image: "quay.io/prometheus/node-exporter:v0.18.1"
+  kube_state_metrics:
+    enabled: "true"
+    image: "quay.io/coreos/kube-state-metrics:v1.9.5"
+  grafana:
+    enabled: "true"
+    image: grafana/grafana:7.1.0
+    svc_name: "grafana"
+    port: 3000
+    node_port: 30012
+  default_service_monitors:
+    enabled: "true"
+  sidekiq_exporter:
+    enabled: "true"
+    image: "docker.io/strech/sidekiq-prometheus-exporter:0.1.13"
+  minio_exporter:
+    enabled: "true"
+    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+  dcgm_exporter:
+    enabled: "true"
+    image: "nvidia/dcgm-exporter:1.7.2"
+    port: 9400
+  idle_metrics_exporter:
+    enabled: "true"
+
+

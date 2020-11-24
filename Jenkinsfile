@@ -3,8 +3,22 @@ def NEXT_VERSION
 def TESTS_PASSED = "true"
 
 def skipTests() {
-    def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
-    return commitMessage.contains("skip tests")
+    try {
+        def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
+        return commitMessage.contains("skip tests")
+    } catch (Exception e) {
+        echo "Error: " + e.toString()
+        return false
+    }
+}
+def skipAll() {
+    try {
+        def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
+        return commitMessage.contains("skip all")
+    } catch (Exception e) {
+        echo "Error: " + e.toString()
+        return false
+    }
 }
 pipeline {
     agent { label 'cpu1' }
@@ -19,7 +33,12 @@ pipeline {
     stages {
         stage('cleanup workspace') {
             steps {
-                cleanWs()
+                script{
+                    if (skipAll()) {
+                        currentBuild.result = 'ABORTED'
+                    }
+                    cleanWs()
+                }
             }
         }
         stage('checkout') {
@@ -164,6 +183,10 @@ pipeline {
                             sh """
                             git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                             git push https://${USERNAME}:${PASSWORD}@${url} --tags
+
+                            docker run  -v ${workspace}:/root \
+                            cnvrg/cnvrg-operator-test-runtime:latest bash -lc 'cd scripts; python dump-helm-docs.py; python dump-offline_images.py'
+                            git add README.md docs/offline_images.md; git commit -m  "update docs #skip all"; git push https://${USERNAME}:${PASSWORD}@${url}
                             """
                         }
                     }
