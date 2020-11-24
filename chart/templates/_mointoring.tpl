@@ -77,4 +77,7 @@ monitoring:
     port: "{{ .Values.monitoring.dcgmExporter.port }}"
   idleMetricsExporter:
     enabled: "{{ .Values.monitoring.idleMetricsExporter.enabled }}"
+  metricsServer:
+    enabled:  "{{ .Values.monitoring.metricsServer.enabled }}"
+    image: "{{ .Values.monitoring.metricsServer.image }}"
 {{- end }}

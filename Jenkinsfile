@@ -1,3 +1,4 @@
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 def CURRENT_VERSION
 def NEXT_VERSION
 def TESTS_PASSED = "true"
@@ -35,7 +36,9 @@ pipeline {
             steps {
                 script{
                     if (skipAll()) {
+                        echo 'Aborting Build'
                         currentBuild.result = 'ABORTED'
+                        throw new FlowInterruptedException(Result.ABORTED)
                     }
                     cleanWs()
                 }
