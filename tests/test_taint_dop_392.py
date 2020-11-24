@@ -1,5 +1,5 @@
 import unittest
-import os
+import time
 from common import CommonBase
 from kubernetes import client, config
 
@@ -177,6 +177,7 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
         cls.wait_for_cnvrg_spec_ready()
@@ -185,6 +186,7 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
     def tearDownClass(cls):
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsNoTaintsSetTest")
 
     def test_pg(self):
         v1 = client.CoreV1Api()
@@ -260,6 +262,7 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.get_nip_nip_url()
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
@@ -272,6 +275,7 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesFalseTest")
 
     def test_app(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
@@ -333,6 +337,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.get_nip_nip_url()
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
@@ -347,6 +352,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueTest")
 
     def test_app(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
@@ -410,6 +416,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
@@ -424,6 +431,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
 
     def test_istiod_deployment(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=istiod -ncnvrg --timeout=300s"
@@ -440,6 +448,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
         node_name = res[1]
         cls.deploy()
@@ -456,6 +465,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
 
     def test_pg_deployment(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"

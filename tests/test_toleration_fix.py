@@ -53,6 +53,7 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls._exec_cmd(
             "kubectl taint node {} kubernetes.azure.com/scalesetpriority=spot:NoSchedule --overwrite".format(nodes[-1]))
         cls._exec_cmd("kubectl taint node {} nvidia.com/gpu=present:NoSchedule --overwrite".format(nodes[-1]))
@@ -69,6 +70,7 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl taint node {} kubernetes.azure.com/scalesetpriority-".format(nodes[-1]))
         cls._exec_cmd("kubectl taint node {} nvidia.com/gpu-".format(nodes[-1]))
         cls._exec_cmd("kubectl label node {} accelerator-".format(nodes[-1]))
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTolerationFix")
 
     def test_fluentd_ready(self):
         cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l k8s-app=fluentd-logging --field-selector=spec.nodeName={}  --timeout=600s".format(

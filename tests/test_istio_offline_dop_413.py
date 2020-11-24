@@ -1,8 +1,7 @@
 import unittest
-import os
+import time
 from common import CommonBase
-from kubernetes import client, config
-import logging
+from kubernetes import config
 
 config.load_kube_config()
 
@@ -49,6 +48,7 @@ class IstioExternalIpsAndServiceAnnotationsTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC_ISTIO_ONLY)
         cls.wait_for_cnvrg_spec_ready()
@@ -57,6 +57,7 @@ class IstioExternalIpsAndServiceAnnotationsTest(unittest.TestCase, CommonBase):
     def tearDownClass(cls):
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "IstioExternalIpsAndServiceAnnotationsTest")
 
     def test_istio_ingress_service_annotations1(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"

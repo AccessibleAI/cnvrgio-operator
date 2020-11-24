@@ -1,8 +1,7 @@
 import unittest
-import os
+import time
 from common import CommonBase
-from kubernetes import client, config
-import logging
+from kubernetes import config
 
 config.load_kube_config()
 
@@ -69,6 +68,7 @@ class SanityAksIstioTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC_ISTIO_ONLY)
         cls.wait_for_cnvrg_spec_ready()
@@ -80,6 +80,7 @@ class SanityAksIstioTest(unittest.TestCase, CommonBase):
     def tearDownClass(cls):
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "SanityAksIstioTest")
 
     def test_app_ready_aks_istio(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=1500s"
