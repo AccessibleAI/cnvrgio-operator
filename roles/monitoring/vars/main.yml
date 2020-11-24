@@ -44,5 +44,8 @@ monitoring:
     port: 9400
   idle_metrics_exporter:
     enabled: "true"
+  metrics_server:
+    enabled: "true"
+    image: "k8s.gcr.io/metrics-server/metrics-server:v0.3.7"
 
 
