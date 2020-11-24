@@ -135,6 +135,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: '85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
+                        // Unittests report
                         sh """
                         az storage blob upload \
                          --account-name operatortestreports \
@@ -144,6 +145,10 @@ pipeline {
                          --account-key ${ACCOUNT_KEY}
                         """
                         echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
+                        // Time execution report
+                        sh """
+                        mv tests-duration-execution-report.json 
+                        """
                     }
                 }
             }

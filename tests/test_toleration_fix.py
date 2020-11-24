@@ -1,8 +1,6 @@
 import unittest
-import os
 from common import CommonBase
 from kubernetes import client, config
-import logging
 import time
 
 config.load_kube_config()
