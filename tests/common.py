@@ -99,7 +99,7 @@ class CommonBase(object):
     @staticmethod
     def log_total_test_execution_time(start_time, test_name):
         report_file = './tests-duration-execution-report.json'
-        exec_report = {}
+        exec_report = []
         total_time = time.time() - start_time
         if os.path.isfile(report_file):
             try:
@@ -107,7 +107,7 @@ class CommonBase(object):
                     exec_report = json.loads(f.read())
             except Exception as ex:
                 logging.error(f"error during reading duration exec report, {ex}")
-        exec_report[test_name] = total_time
+        exec_report.append({"label": test_name, "y": total_time})
         with open(report_file, "w") as f:
             f.write(json.dumps(exec_report))
         f.close()
