@@ -1,6 +1,6 @@
 import unittest
 from common import CommonBase
-import yaml
+import yaml, time
 
 
 class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
@@ -10,11 +10,16 @@ class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cmd = "helm template chart -s templates/cnvrg-app.yaml --set computeProfile=large"
         res = cls._exec_cmd(cmd)
         cls.SPEC = yaml.load(res[1], Loader=yaml.FullLoader)
         res = cls._exec_cmd("helm show values chart")
         cls.VALUES = yaml.load(res[1], Loader=yaml.FullLoader)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.log_total_test_execution_time(cls._started_at, "ComputeProfilesLargeWithHelmChartTest")
 
     def test_large_profile_webapp_cpu(self):
         self.assertEqual(

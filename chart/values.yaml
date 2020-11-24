@@ -264,11 +264,9 @@ monitoring:
     port: 9400
   idleMetricsExporter:
     enabled: "true"
-grafana:
-  svcName: grafana
-  port: 3000
-  image: grafana/grafana:6.7.4
-  nodePort: 30012
+  metricsServer:
+    enabled: "true"
+    image: "k8s.gcr.io/metrics-server/metrics-server:v0.3.7"
 istio:
   enabled: "true"
   operatorImage: "docker.io/istio/operator:1.7.3"

@@ -5,6 +5,8 @@ import yaml
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 import time
+import os.path
+import json
 
 log_format = "|%(asctime)s|%(levelname)-5s %(message)s"
 logging.basicConfig(level=logging.INFO, format=log_format)
@@ -17,6 +19,7 @@ NAMESPACE = "cnvrg"
 
 
 class CommonBase(object):
+
     @staticmethod
     def deploy():
         logging.info("deploying env...")
@@ -92,6 +95,22 @@ class CommonBase(object):
         except Exception as ex:
             logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
         return False
+
+    @staticmethod
+    def log_total_test_execution_time(start_time, test_name):
+        report_file = './tests-duration-execution-report.json'
+        exec_report = {}
+        total_time = time.time() - start_time
+        if os.path.isfile(report_file):
+            try:
+                with open(report_file, "r") as f:
+                    exec_report = json.loads(f.read())
+            except Exception as ex:
+                logging.error(f"error during reading duration exec report, {ex}")
+        exec_report[test_name] = total_time
+        with open(report_file, "w") as f:
+            f.write(json.dumps(exec_report))
+        f.close()
 
     @staticmethod
     def get_spec_from_chart(cmd):

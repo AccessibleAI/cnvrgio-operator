@@ -266,9 +266,9 @@ spec:
         name: node-exporter-full
       {% endif %}
       {% if vpa.enabled == "true" %}
-        - configMap:
-            name: vpa-dashboard
+      - configMap:
           name: vpa-dashboard
+        name: vpa-dashboard
       {% endif %}
       {% if monitoring.dcgm_exporter.enabled == "true" %}
       - configMap:

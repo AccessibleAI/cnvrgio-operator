@@ -47,6 +47,7 @@ class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC)
         cls.wait_for_cnvrg_spec_ready()
@@ -55,6 +56,7 @@ class CnvrgEsSmallFixTest(unittest.TestCase, CommonBase):
     def tearDownClass(cls):
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgEsSmallFixTest")
 
     def test_es_pod_deployed(self):
         v1 = client.CoreV1Api()
