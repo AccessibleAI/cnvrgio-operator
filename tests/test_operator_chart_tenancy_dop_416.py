@@ -1,5 +1,5 @@
 import unittest
-import os
+import time
 from common import CommonBase
 from kubernetes import client, config
 
