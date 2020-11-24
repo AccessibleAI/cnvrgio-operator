@@ -1,0 +1,15 @@
+# cnvrg.io operator
+## Deploy cnvrg stack with custom repo
+
+### Quick start
+
+#### List of images to download
+```
+__DUMP_IMAGES__
+```
+
+### Helm command to install with custom repo
+```
+helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
+__DUMP_IMAGES_COMMANDS__
+```
