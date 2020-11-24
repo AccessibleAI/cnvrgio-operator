@@ -7,7 +7,7 @@ Follow these steps to change your cnvrg cluster domain.
 Perform the following actions to change cluster domain name
 - Define your new cluster domain 
     ```bash
-    export NEW_CLUSTER_DOMAIN=cnvrg.new.cluster.domain.example.com
+    export NEW_CLUSTER_DOMAIN=cnvrg.new.cluster.domain.example.com 
     ```
 - Update following keys in `env-secret` K8S secret
     - `DEFAULT_COMPUTE_CLUSTER_DOMAIN`
