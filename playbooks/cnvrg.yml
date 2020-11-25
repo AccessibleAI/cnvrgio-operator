@@ -146,13 +146,6 @@
       when: ingress.enabled == 'true'
       tags: ingress
 
-    # vpa deployment
-    - import_role:
-        name: vpa
-      vars:
-        role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
-      tags: vpa
-
     # Prometheus deployment
     # Monitoring
     - import_role:
@@ -161,3 +154,10 @@
         role_state: "{{'present' if monitoring.enabled == 'true' else 'absent'}}"
       when: monitoring.enabled == "true"
       tags: monitoring
+
+    # vpa deployment
+    - import_role:
+        name: vpa
+      vars:
+        role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
+      tags: vpa
