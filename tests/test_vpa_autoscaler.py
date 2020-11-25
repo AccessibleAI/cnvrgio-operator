@@ -83,4 +83,4 @@ class VpaAutoscalerTests(unittest.TestCase, CommonBase):
           time.sleep(2)
           if res[1] > '4':
             break
-        self.assertTrue(res[1] > '4')
+        self.assertTrue(res[1] > '4') 
