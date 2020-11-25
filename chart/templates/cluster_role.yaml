@@ -132,8 +132,7 @@ rules:
     resources:
       - "apiservices"
     verbs:
-      - "get"
-      - "patch"
+      - "*"
   - apiGroups:
       - "storage.k8s.io"
     resources:
