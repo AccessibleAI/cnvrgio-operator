@@ -137,7 +137,7 @@ spec:
           name: grafana-dashboard-cnvrg-sidekiq-exporter
           readOnly: false
         {% endif %}
-        {% if monitoring.minio_exporter.enabled == "true" %}
+        {% if (monitoring.minio_exporter.enabled == "true") and (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio") %}
         - mountPath: /grafana-dashboard-definitions/0/minio-exporter
           name: grafana-dashboard-cnvrg-minio-exporter
           readOnly: false
@@ -244,7 +244,7 @@ spec:
           name: grafana-dashboard-cnvrg-sidekiq-exporter
         name: grafana-dashboard-cnvrg-sidekiq-exporter
       {% endif %}
-      {% if monitoring.minio_exporter.enabled == "true" %}
+      {% if (monitoring.minio_exporter.enabled == "true") and (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio") %}
       - configMap:
           name: grafana-dashboard-cnvrg-minio-exporter
         name: grafana-dashboard-cnvrg-minio-exporter
