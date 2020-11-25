@@ -132,7 +132,7 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/workload-total
           name: grafana-dashboard-workload-total
           readOnly: false
-        {% if monitoring.sidekiq_exporter.enabled == "true" %}
+        {% if monitoring.sidekiq_exporter.enabled == "true" and cnvrg_app.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/sidekiq-exporter
           name: grafana-dashboard-cnvrg-sidekiq-exporter
           readOnly: false
@@ -239,7 +239,7 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
-      {% if monitoring.sidekiq_exporter.enabled == "true" %}
+      {% if monitoring.sidekiq_exporter.enabled == "true" and cnvrg_app.enabled == "true" %}
       - configMap:
           name: grafana-dashboard-cnvrg-sidekiq-exporter
         name: grafana-dashboard-cnvrg-sidekiq-exporter
