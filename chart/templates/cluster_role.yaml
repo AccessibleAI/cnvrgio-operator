@@ -70,6 +70,13 @@ rules:
       - "autoscaling"
     resources:
       - "horizontalpodautoscalers"
+      - verticalpodautoscalers
+    verbs:
+      - "*"
+  - apiGroups:
+    - autoscaling.k8s.io
+    resources:
+    - verticalpodautoscalers
     verbs:
       - "*"
   - apiGroups:

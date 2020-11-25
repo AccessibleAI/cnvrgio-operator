@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: vpa-tls-certs
+  namespace: {{ ansible_operator_meta.namespace }}
+data:
+  caCert.pem: "{{ lookup('file', '/tmp/vpa-certs/caCert.pem',rstrip=False) | b64encode }}"
+  caKey.pem: "{{ lookup('file', '/tmp/vpa-certs/caKey.pem',rstrip=False) | b64encode }}"
+  serverCert.pem: "{{ lookup('file', '/tmp/vpa-certs/serverCert.pem',rstrip=False) | b64encode }}"
+  serverKey.pem: "{{ lookup('file', '/tmp/vpa-certs/serverKey.pem',rstrip=False) | b64encode }}"

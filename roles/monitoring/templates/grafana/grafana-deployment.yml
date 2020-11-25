@@ -141,6 +141,14 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/minio-exporter
           name: grafana-dashboard-cnvrg-minio-exporter
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/minio-exporter2
+          name: grafana-dashboard-cnvrg-minio-exporter2
+          readOnly: false
+        {% endif %}
+        {% if vpa.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/vpa-dashboard
+          name: vpa-dashboard
+          readOnly: false
         {% endif %}
         {% if monitoring.node_exporter.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/node-exporter-full
@@ -248,11 +256,19 @@ spec:
       - configMap:
           name: grafana-dashboard-cnvrg-minio-exporter
         name: grafana-dashboard-cnvrg-minio-exporter
+      - configMap:
+          name: grafana-dashboard-cnvrg-minio-exporter2
+        name: grafana-dashboard-cnvrg-minio-exporter2
       {% endif %}
       {% if monitoring.node_exporter.enabled == "true" %}
       - configMap:
           name: node-exporter-full
         name: node-exporter-full
+      {% endif %}
+      {% if vpa.enabled == "true" %}
+      - configMap:
+          name: vpa-dashboard
+        name: vpa-dashboard
       {% endif %}
       {% if monitoring.dcgm_exporter.enabled == "true" %}
       - configMap:
