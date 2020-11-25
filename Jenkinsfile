@@ -148,7 +148,7 @@ pipeline {
 
                         // Time execution report
                         sh """
-                        EXEC_TIME_REPORT=\$(cat tests-duration-execution-report.json) envsubst < tests/exec-time-report.tmpl > exec-time-report-${NEXT_VERSION}.html  
+                        EXEC_TIME_REPORT=\$(cat tests-duration-execution-report.json) envsubst < tests/exec-time-report.tmpl > exec-time-report-${NEXT_VERSION}.html
                         """
                         sh """
                         az storage blob upload \
@@ -235,7 +235,7 @@ pipeline {
                         az group delete --name ${CLUSTER_NAME} --no-wait -y
                     else
                         echo "cluster not found, skipping cluster delete"
-                    fi
+                    fi 
                     """
                 }
             }
