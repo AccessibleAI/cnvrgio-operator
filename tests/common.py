@@ -74,6 +74,21 @@ class CommonBase(object):
             logging.error("Exception when calling CustomObjectsApi->delete_namespaced_custom_object: %s\n" % e)
 
     @staticmethod
+    def waif_for_istio_cr_ready(name="cnvrg-istio"):
+        try:
+            for i in range(0, 1800):
+                res = CommonBase._exec_cmd(
+                    f"kubectl get istiooperators.install.istio.io {name} -ncnvrg | grep HEALTHY | wc -l")
+                if res[1] == "1":
+                    return True
+                logging.info("Istio CR not ready yet...")
+                time.sleep(1)
+        except Exception as ex:
+            logging.error("Exception when calling waif_for_istio_cr_ready: %s\n" % ex)
+            return False
+        return False
+
+    @staticmethod
     def wait_for_cnvrg_spec_ready(name="cnvrg-app"):
         try:
             for i in range(0, 1800):
