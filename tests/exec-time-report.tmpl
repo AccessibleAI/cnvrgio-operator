@@ -4,6 +4,21 @@
   <script>
       window.onload = function () {
 
+
+          function compareDataPointYAscend(dataPoint1, dataPoint2) {
+              return dataPoint1.y - dataPoint2.y;
+          }
+
+          function getData() {
+              data = ${EXEC_TIME_REPORT}
+              let res = []
+              data.forEach(el => {
+                  if (el.y > 1) el.y = Math.floor(el.y / 60);
+                  res.push(el)
+              })
+              return res
+          }
+
           var chart = new CanvasJS.Chart("chartContainer", {
               theme: "dark2",
               animationEnabled: true,
@@ -18,12 +33,17 @@
                   titleFontSize: 10,
               },
               axisY: {
-                  title: "Time in seconds",
+                  title: "Time in minutes",
                   labelFontSize: 10,
                   titleFontSize: 10,
+                  interval: 5
               },
-              data: ${EXEC_TIME_REPORT}
+              data: [{
+                  type: "bar",
+                  dataPoints: getData()
+              }]
           });
+          chart.options.data[0].dataPoints.sort(compareDataPointYAscend);
           chart.render();
       }
   </script>

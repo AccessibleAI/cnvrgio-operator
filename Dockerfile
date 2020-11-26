@@ -1,9 +1,9 @@
-FROM quay.io/operator-framework/ansible-operator:v1.0.0
+FROM quay.io/operator-framework/ansible-operator:v1.2.0
 
 LABEL name="cnvrg-operator" \
 	  vendor="cnvrg.io" \
-      version="v0.350.0" \
-      release="v0.350.0" \
+      version="v1.0" \
+      release="v1.0" \
  	  summary="cnvrg.io Operator" \
       description="cnvrg.io Operator"
 
