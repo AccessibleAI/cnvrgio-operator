@@ -186,7 +186,8 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):
@@ -291,6 +292,7 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+
 class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     @classmethod
@@ -301,7 +303,8 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):
@@ -397,7 +400,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
         cls.create_cnvrg_spec(CNVRG_SPEC_WITH_TOLERATION.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):
@@ -484,6 +488,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+
 class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
 
     @classmethod
@@ -495,7 +500,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
         cls.create_cnvrg_spec(
             CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):
@@ -529,7 +535,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         spec = CNVRG_SPEC_WITH_TOLERATION_HOSTPATH.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url())
         spec = spec.replace("__NODE_NAME__", node_name)
         cls.create_cnvrg_spec(spec)
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):

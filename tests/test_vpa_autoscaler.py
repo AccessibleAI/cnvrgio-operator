@@ -47,19 +47,21 @@ spec:
 """
 
 
-class VpaAutoscalerTests(unittest.TestCase, CommonBase):
+class VpaAutoscalerTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC)
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):
-        if os.getenv("RUN_TEARDOWN", "true") == "true":
-            cls.delete_cnvrg_spec()
-            cls.undeploy()
+        cls.delete_cnvrg_spec()
+        cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "VpaAutoscalerTest")
 
     def test_updater_ready(self):
         cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-updater  --timeout=120s"

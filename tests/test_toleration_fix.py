@@ -58,7 +58,8 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl label node {} accelerator=nvidia --overwrite".format(nodes[-1]))
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC)
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
         time.sleep(3)
 
     @classmethod

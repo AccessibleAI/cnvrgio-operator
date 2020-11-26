@@ -94,6 +94,7 @@ class CommonBase(object):
             logging.error("Cnvrg spec not ready, and timeout reached (30m)")
         except Exception as ex:
             logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
+            return False
         return False
 
     @staticmethod

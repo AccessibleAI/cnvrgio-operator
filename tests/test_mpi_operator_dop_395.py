@@ -49,7 +49,8 @@ class CnvrgMpiOperatorDop395Test(unittest.TestCase, CommonBase):
         cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC)
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
 
     @classmethod
     def tearDownClass(cls):
