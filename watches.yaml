@@ -4,7 +4,12 @@
   group: mlops.cnvrg.io
   kind: CnvrgApp
   playbook: playbooks/cnvrg.yml
+  reconcilePeriod: 900s
   finalizer:
     name: finalizer.cnvrgapp.cnvrg.io
     role: finalaizer
+  blacklist:
+  - group: autoscaling.k8s.io
+    version: v1
+    kind: VerticalPodAutoscaler
 # +kubebuilder:scaffold:watch
