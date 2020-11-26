@@ -15,6 +15,16 @@ spec:
       labels:
         app: "{{es.svc_name}}"
     spec:
+      {% if es.patch_es_nodes == "true" %}
+      initContainers:
+      - name: "maxmap"
+        image: {{ es.max_map_image }}
+        imagePullPolicy: "Always"
+        command: [ "/bin/bash","-c","sysctl -w vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+          runAsUser: 0
+      {% endif %}
       {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
@@ -55,8 +65,6 @@ spec:
               fieldPath: metadata.name
         - name: "ES_DISCOVERY_TYPE"
           value: "single-node"
-        - name: discovery.type
-          value: single-node
         - name: "ES_PATH_DATA"
           value: "/usr/share/elasticsearch/data/data"
         - name: "ES_PATH_LOGS"
