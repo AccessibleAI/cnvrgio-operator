@@ -23,8 +23,10 @@ spec:
     enabled: "true"
   pgBackup:
     enabled: "true"
+  vpa:
+    enabled: "true"
   monitoring:
-    enabled: "true"    
+    enabled: "true"
     prometheus:
       enabled: "true"
       storageSize: "5Gi"
@@ -70,6 +72,8 @@ spec:
   nvidiadp:
     enabled: "false"
   mpi:
+    enabled: "true"
+  vpa:
     enabled: "true"
 """
 
@@ -123,33 +127,33 @@ spec:
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
-  
+
   minio:
     enabled: "true"
     storageSize: "1Gi"
     cpuRequest: 100m
-    memoryRequest: 100Mi    
-  
+    memoryRequest: 100Mi
+
   monitoring:
-    enabled: "true"    
+    enabled: "true"
     prometheus:
       enabled: "true"
       storageSize: "1Gi"
       cpuRequest: 100m
       memoryRequest: 100Mi
-    
+
   es:
     enabled: "true"
     storageSize: "1Gi"
     cpuRequest: 100m
     memoryRequest: 100Mi
-    
+
   pg:
     enabled: "true"
     storageSize: "1Gi"
     cpuRequest: 100m
     memoryRequest: 100Mi
-    
+
   hostpath:
     enabled: "true"
     nodeName: "__NODE_NAME__"
@@ -170,6 +174,8 @@ spec:
     enabled: "false"
   nvidiadp:
     enabled: "false"
+  vpa:
+    enabled: "true"
 """
 
 
@@ -250,6 +256,13 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+    def test_kube_state_metrics(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app.kubernetes.io/name=kube-state-metrics")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
     def test_cnvrg_routing(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=routing-service")
@@ -257,6 +270,26 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+    def test_vpa_recommender(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=vpa-recommender")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
+    def test_vpa_admission_controller(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=vpa-admission-controller")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
+    def test_vpa_updater(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=vpa-updater")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
 class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
@@ -322,6 +355,11 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
+    def test_kube_state_metrics(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
     def test_cnvrg_routing(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=routing-service -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
@@ -329,6 +367,21 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     def test_custom_nginx_deploy(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=test-nginx -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_recommender(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_admission_controller(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_updater(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
@@ -399,8 +452,28 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
+    def test_kube_state_metrics(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
     def test_cnvrg_routing(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=routing-service -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_recommender(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_admission_controller(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_updater(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
@@ -410,7 +483,6 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         self.assertEqual(1, len(pod.items))
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
-
 
 class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
 
@@ -487,6 +559,11 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
+    def test_kube_state_metrics(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
     def test_hostpath_provisioner(self):
         cmd = "kubectl wait --for=condition=ready pod -l k8s-app=hostpath-provisioner -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
@@ -519,5 +596,20 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     def test_sidekiq_searchkick(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq-searchkick -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_recommender(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_admission_controller(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_updater(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])

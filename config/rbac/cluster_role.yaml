@@ -70,8 +70,15 @@ rules:
       - "autoscaling"
     resources:
       - "horizontalpodautoscalers"
+      - verticalpodautoscalers
     verbs:
       - "*"
+  - apiGroups:
+    - autoscaling.k8s.io
+    resources:
+    - verticalpodautoscalers
+    verbs:
+    - "*"
   - apiGroups:
       - "config.istio.io"
     resources:
@@ -132,8 +139,7 @@ rules:
     resources:
       - "apiservices"
     verbs:
-      - "get"
-      - "patch"
+      - "*"
   - apiGroups:
       - "storage.k8s.io"
     resources:

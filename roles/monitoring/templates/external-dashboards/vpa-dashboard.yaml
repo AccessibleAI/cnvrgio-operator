@@ -1,0 +1,1524 @@
+apiVersion: v1
+data:
+  vpa-dashboard.json: |-
+    {
+        "annotations": {
+            "list": [
+            {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+            ]
+        },
+        "description": "A quick and simple dashboard for viewing how your vertical pod autoscaler is doing.",
+        "editable": true,
+        "gnetId": 10257,
+        "graphTooltip": 0,
+        "iteration": 1606231242480,
+        "links": [],
+        "panels": [
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "none",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 0,
+                "y": 0
+            },
+            "id": 10,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_pod_container_resource_requests{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", node=\"gke-gke-cicd-2493-default-pool-d752dd29-glmr\", pod=\"elasticsearch-0\", resource=\"cpu\", unit=\"core\"}",
+            "targets": [
+                {
+                "expr": "topk(1,kube_pod_container_resource_requests{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\".*$deployment.*\", unit=\"core\"})",
+                "format": "time_series",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Requested Cpu",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The recommended CPU request and memory request for the container.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "none",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 3,
+                "y": 0
+            },
+            "id": 5,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"cpu\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"core\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Target Cpu",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The minimum recommended CPU request and memory request for the container. This amount is not guaranteed to be sufficient for the application to be stable. Running with smaller CPU and memory requests is likely to have a significant impact on performance or availability.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "none",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 6,
+                "y": 0
+            },
+            "id": 16,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_lowerbound{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"cpu\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"core\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_lowerbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Lower Bound Cpu",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The maximum recommended CPU request and memory request for the container. CPU and memory requests higher than these values are likely to be wasted.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "none",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 9,
+                "y": 0
+            },
+            "id": 17,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"cpu\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"core\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "upperBound Cpu",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The most recent resource recommendation computed by the autoscaler, based on actual resource usage,",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "none",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 12,
+                "y": 0
+            },
+            "id": 20,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"cpu\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"core\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "uncappedTarget Cpu",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The most recent resource recommendation computed by the autoscaler, based on actual resource usage,",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "none",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 6,
+                "w": 5,
+                "x": 15,
+                "y": 0
+            },
+            "id": 23,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "namespace:kube_pod_container_resource_requests_cpu_cores:sum{namespace=\"cnvrg\"}",
+            "targets": [
+                {
+                "expr": "namespace:kube_pod_container_resource_requests_cpu_cores:sum{namespace=\"$namespace\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Overall Cpu Requests in Namespace",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The most recent resource recommendation computed by the autoscaler, based on actual resource usage,",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "decbytes",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 6,
+                "w": 4,
+                "x": 20,
+                "y": 0
+            },
+            "id": 24,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "namespace:kube_pod_container_resource_requests_memory_bytes:sum{namespace=\"cnvrg\"}",
+            "targets": [
+                {
+                "expr": "namespace:kube_pod_container_resource_requests_memory_bytes:sum{namespace=\"$namespace\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Overall Memory Requests in Namespace",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "bytes",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 0,
+                "y": 3
+            },
+            "id": 13,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_pod_container_resource_requests{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", node=\"gke-gke-cicd-2493-default-pool-d752dd29-glmr\", pod=\"elasticsearch-0\", resource=\"memory\", unit=\"byte\"}",
+            "targets": [
+                {
+                "expr": "topk(1,kube_pod_container_resource_requests{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\".*$deployment.*\", unit=\"byte\"})",
+                "format": "time_series",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Requested Memory",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The recommended CPU request and memory request for the container.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "decbytes",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 3,
+                "y": 3
+            },
+            "id": 12,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"memory\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"byte\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Target Memory",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The minimum recommended CPU request and memory request for the container. This amount is not guaranteed to be sufficient for the application to be stable. Running with smaller CPU and memory requests is likely to have a significant impact on performance or availability.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "decbytes",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 6,
+                "y": 3
+            },
+            "id": 19,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_lowerbound{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"memory\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"byte\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_lowerbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Lower Bound Memory",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The maximum recommended CPU request and memory request for the container. CPU and memory requests higher than these values are likely to be wasted.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "decbytes",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 9,
+                "y": 3
+            },
+            "id": 18,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_upperbound{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"memory\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"byte\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_upperbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Upper Bound Memory",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+                "#299c46",
+                "rgba(237, 129, 40, 0.89)",
+                "#d44a3a"
+            ],
+            "datasource": "$datasource",
+            "decimals": null,
+            "description": "The most recent resource recommendation computed by the autoscaler, based on actual resource usage, not taking into account the ContainerResourcePolicy.",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {}
+                },
+                "overrides": []
+            },
+            "format": "decbytes",
+            "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 3,
+                "x": 12,
+                "y": 3
+            },
+            "id": 21,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+                {
+                "name": "value to text",
+                "value": 1
+                },
+                {
+                "name": "range to text",
+                "value": 2
+                }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+                {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+                }
+            ],
+            "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+            },
+            "tableColumn": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_upperbound{container=\"elastic\", instance=\"10.28.0.19:8443\", job=\"kube-state-metrics\", namespace=\"cnvrg\", resource=\"memory\", target_api_version=\"apps/v1\", target_kind=\"StatefulSet\", target_name=\"elasticsearch\", unit=\"byte\", verticalpodautoscaler=\"elasticsearch\"}",
+            "targets": [
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_upperbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+                }
+            ],
+            "thresholds": "",
+            "title": "Uncapped Target Memory",
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+                {
+                "op": "=",
+                "text": "0",
+                "value": "null"
+                }
+            ],
+            "valueName": "current"
+            },
+            {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "$datasource",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {
+                    "align": null
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                    {
+                        "color": "green",
+                        "value": null
+                    },
+                    {
+                        "color": "red",
+                        "value": 80
+                    }
+                    ]
+                }
+                },
+                "overrides": []
+            },
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 9,
+                "w": 12,
+                "x": 0,
+                "y": 6
+            },
+            "hiddenSeries": false,
+            "id": 14,
+            "legend": {
+                "alignAsTable": false,
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "rightSide": false,
+                "show": true,
+                "total": false,
+                "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "paceLength": 10,
+            "percentage": false,
+            "pluginVersion": "7.1.0",
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+                {
+                "$$hashKey": "object:1566",
+                "alias": "Max",
+                "color": "#C4162A"
+                },
+                {
+                "$$hashKey": "object:1567",
+                "alias": "Min",
+                "color": "#1F60C4"
+                }
+            ],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+                {
+                "expr": "topk(1,kube_pod_container_resource_requests{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\".*$deployment.*\", unit=\"byte\"})",
+                "instant": false,
+                "interval": "",
+                "legendFormat": "Request",
+                "refId": "B"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "interval": "",
+                "legendFormat": "Target",
+                "refId": "A"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_lowerbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "interval": "",
+                "legendFormat": "Lower Bound",
+                "refId": "C"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_upperbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "interval": "",
+                "legendFormat": "Upper Bound",
+                "refId": "D"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_uncappedtarget{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"byte\"}",
+                "interval": "",
+                "legendFormat": "Uncapped Target",
+                "refId": "E"
+                }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Memory --- Current + Target",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                "$$hashKey": "object:1586",
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+                },
+                {
+                "$$hashKey": "object:1587",
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false,
+                "alignLevel": null
+            }
+            },
+            {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "$datasource",
+            "fieldConfig": {
+                "defaults": {
+                "custom": {
+                    "align": null
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                    {
+                        "color": "green",
+                        "value": null
+                    },
+                    {
+                        "color": "red",
+                        "value": 80
+                    }
+                    ]
+                }
+                },
+                "overrides": []
+            },
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 9,
+                "w": 12,
+                "x": 12,
+                "y": 6
+            },
+            "hiddenSeries": false,
+            "id": 22,
+            "legend": {
+                "alignAsTable": false,
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "rightSide": false,
+                "show": true,
+                "total": false,
+                "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "paceLength": 10,
+            "percentage": false,
+            "pluginVersion": "7.1.0",
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+                {
+                "$$hashKey": "object:1566",
+                "alias": "Max",
+                "color": "#C4162A"
+                },
+                {
+                "$$hashKey": "object:1567",
+                "alias": "Min",
+                "color": "#1F60C4"
+                }
+            ],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+                {
+                "expr": "topk(1,kube_pod_container_resource_requests{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\".*$deployment.*\", unit=\"core\"})",
+                "instant": false,
+                "interval": "",
+                "legendFormat": "Request",
+                "refId": "B"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_target{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "interval": "",
+                "legendFormat": "Target",
+                "refId": "A"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_lowerbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "interval": "",
+                "legendFormat": "Lower Bound",
+                "refId": "C"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_upperbound{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "interval": "",
+                "legendFormat": "Upper Bound",
+                "refId": "D"
+                },
+                {
+                "expr": "kube_verticalpodautoscaler_status_recommendation_containerrecommendations_uncappedtarget{job=\"kube-state-metrics\", namespace=\"$namespace\", target_name=\"$deployment\", unit=\"core\"}",
+                "interval": "",
+                "legendFormat": "Uncapped Target",
+                "refId": "E"
+                }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "CPU --- Current + Target",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                "$$hashKey": "object:1586",
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+                },
+                {
+                "$$hashKey": "object:1587",
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false,
+                "alignLevel": null
+            }
+            }
+        ],
+        "refresh": "10s",
+        "schemaVersion": 26,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+            {
+                "current": {
+                "selected": false,
+                "text": "prometheus",
+                "value": "prometheus"
+                },
+                "hide": 0,
+                "includeAll": false,
+                "label": null,
+                "multi": false,
+                "name": "datasource",
+                "options": [],
+                "query": "prometheus",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "type": "datasource"
+            },
+            {
+                "allValue": null,
+                "current": {
+                "selected": false,
+                "text": "cnvrg",
+                "value": "cnvrg"
+                },
+                "datasource": "$datasource",
+                "definition": "label_values({job=\"kube-state-metrics\"}, namespace)",
+                "hide": 0,
+                "includeAll": false,
+                "label": "Namespace",
+                "multi": false,
+                "name": "namespace",
+                "options": [],
+                "query": "label_values({job=\"kube-state-metrics\"}, namespace)",
+                "refresh": 2,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "tagValuesQuery": "",
+                "tags": [],
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+            },
+            {
+                "allValue": null,
+                "current": {
+                "selected": false,
+                "text": "elasticsearch",
+                "value": "elasticsearch"
+                },
+                "datasource": "$datasource",
+                "definition": "label_values(kube_verticalpodautoscaler_labels{job=\"kube-state-metrics\"}, target_name)",
+                "hide": 0,
+                "includeAll": false,
+                "label": "",
+                "multi": false,
+                "name": "deployment",
+                "options": [],
+                "query": "label_values(kube_verticalpodautoscaler_labels{job=\"kube-state-metrics\"}, target_name)",
+                "refresh": 2,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "tagValuesQuery": "",
+                "tags": [],
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+            }
+            ]
+        },
+        "time": {
+            "from": "now-1h",
+            "to": "now"
+        },
+        "timepicker": {
+            "refresh_intervals": [
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
+            ],
+            "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",
+            "12h",
+            "24h",
+            "2d",
+            "7d",
+            "30d"
+            ]
+        },
+        "timezone": "",
+        "title": "Kubernetes / Vertical Pod Autoscaler",
+        "uid": "alJY6yWZz",
+        "version": 328
+    }
+kind: ConfigMap
+metadata:
+  name: vpa-dashboard
+  namespace: "{{ansible_operator_meta.namespace}}"

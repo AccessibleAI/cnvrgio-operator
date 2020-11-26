@@ -56,9 +56,21 @@ rules:
   - autoscaling
   resources:
   - horizontalpodautoscalers
+{% if vpa.enabled == "true" %}
+  - verticalpodautoscalers
+{%  endif %}
   verbs:
   - list
   - watch
+{% if vpa.enabled == "true" %}
+- apiGroups:
+  - autoscaling.k8s.io
+  resources:
+  - verticalpodautoscalers
+  verbs:
+  - list
+  - watch
+{%  endif %}
 - apiGroups:
   - authentication.k8s.io
   resources:
