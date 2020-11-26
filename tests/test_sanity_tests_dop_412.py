@@ -71,7 +71,6 @@ class SanityAksIstioTest(unittest.TestCase, CommonBase):
         cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC_ISTIO_ONLY)
-        cls.wait_for_cnvrg_spec_ready()
         patched_spec = CNVRG_SPEC_AKS_ISTIO_DEFAULT.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url("istio"))
         cls.create_cnvrg_spec(patched_spec, True)
         if cls.wait_for_cnvrg_spec_ready() is False:

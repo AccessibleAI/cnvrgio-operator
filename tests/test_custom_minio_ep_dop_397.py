@@ -24,7 +24,7 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
             --set ingress.enabled="false" \
             --set istio.enabled="false" \
             --set kibana.enabled="false" \
-            --set prometheus.enabled="false" \
+            --set monitoring.enabled="false" \
             --set minio.enabled="false" \
             --set mpi.enabled="false" \
             --set nfs.enabled="false" \

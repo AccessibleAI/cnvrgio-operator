@@ -123,7 +123,7 @@ class CommonBase(object):
 
     @staticmethod
     def get_nip_nip_url(ingress_type="nginx"):
-        for i in range(0, 600):
+        for i in range(0, 1800):
             try:
                 v1 = client.CoreV1Api()
                 svc_name = "ingress-nginx-controller"
@@ -139,7 +139,7 @@ class CommonBase(object):
             except Exception as ex:
                 logging.info("error fetch service external IP, will wait... ")
                 time.sleep(1)
-        return None
+        exit(1)
 
     @staticmethod
     def _exec_cmd(cmd):

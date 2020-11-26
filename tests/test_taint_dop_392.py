@@ -23,8 +23,6 @@ spec:
     enabled: "true"
   pgBackup:
     enabled: "true"
-  vpa:
-    enabled: "true"
   monitoring:
     enabled: "true"
     prometheus:
@@ -91,6 +89,8 @@ spec:
     dedicatedNodes: "true"
   istio:
     enabled: "true"
+    externalIp: "1.1.1.1;2.2.2.2;3.3.3.3"
+    ingressSvcAnnotations: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp; service.beta.kubernetes.io/aws-load-balancer-internal: true"
   mpi:
     enabled: "false"
   conf:
@@ -174,8 +174,6 @@ spec:
     enabled: "false"
   nvidiadp:
     enabled: "false"
-  vpa:
-    enabled: "true"
 """
 
 
@@ -488,6 +486,32 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+    def test_updater_ready(self):
+        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-updater  --timeout=120s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_recommender_ready(self):
+        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-recommender  --timeout=120s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_admission_ready(self):
+        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-admission-controller --timeout=120s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_vpa_deployments_ready(self):
+        for i in range(60):
+            cmd = "kubectl -n cnvrg get vpa |  grep -v NAME | wc -l"
+            res = self.exec_cmd(cmd)
+            time.sleep(2)
+            if res[1] > '4':
+                break
+        self.assertTrue(res[1] > '4')
+
+    #
+
 
 class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
 
@@ -520,6 +544,30 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
+
+    def test_istio_ingress_service_annotations1(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+        cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -r '.metadata.annotations.\"service.beta.kubernetes.io/aws-load-balancer-backend-protocol\"'"
+        res = self.exec_cmd(cmd)
+        self.assertEqual("tcp", res[1])
+
+    def test_istio_ingress_service_annotations2(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+        cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -r '.metadata.annotations.\"service.beta.kubernetes.io/aws-load-balancer-internal\"'"
+        res = self.exec_cmd(cmd)
+        self.assertEqual("true", res[1])
+
+    def test_istio_ingress_service_external_ips(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+        cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -rc .spec.externalIPs"
+        res = self.exec_cmd(cmd)
+        self.assertEqual('["1.1.1.1","2.2.2.2","3.3.3.3"]', res[1])
 
 
 class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonBase):

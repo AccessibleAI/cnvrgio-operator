@@ -34,8 +34,30 @@ spec:
     enabled: "false"
   minio:
     enabled: "false"
+  ingress:
+    enabled: "false"
   monitoring:
     enabled: "true"
+    prometheusOperator:
+      enabled: "true"
+    prometheus:
+      enabled: "false"
+    kibana:
+      enabled: "false"
+    grafana:
+      enabled: "false"
+    kubeStateMetrics:
+      enabled: "false"
+    defaultServiceMonitors:
+      enabled: "false"
+    sidekiqExporter:
+      enabled: "false"
+    minioExporter:
+      enabled: "false"
+    idleMetricsExporter:
+      enabled: "false"  
+    metricsServer:
+      enabled: "false"
   istio:
     enabled: "false"
   kibana:
