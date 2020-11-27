@@ -2,13 +2,14 @@ import unittest
 import time
 from common import CommonBase
 from kubernetes import client, config
-
+import logging
 config.load_kube_config()
 
 
 class TaintsOperatorDeploymentTest(unittest.TestCase, CommonBase):
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> TaintsOperatorDeploymentTest")
         cls._started_at = time.time()
         cls._exec_cmd("kubectl create ns cnvrg")
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")

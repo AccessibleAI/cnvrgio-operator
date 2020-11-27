@@ -75,23 +75,23 @@ class CommonBase(object):
 
     @staticmethod
     def waif_for_istio_cr_ready(name="cnvrg-istio"):
-        try:
-            for i in range(0, 1800):
+        for i in range(0, 1800):
+            try:
                 res = CommonBase._exec_cmd(
                     f"kubectl get istiooperators.install.istio.io {name} -ncnvrg | grep HEALTHY | wc -l")
                 if res[1] == "1":
                     return True
                 logging.info("Istio CR not ready yet...")
                 time.sleep(1)
-        except Exception as ex:
-            logging.error("Exception when calling waif_for_istio_cr_ready: %s\n" % ex)
-            return False
+            except Exception as ex:
+                logging.error("Exception when calling waif_for_istio_cr_ready: %s\n" % ex)
+                logging.error("Continue waif_for_istio_cr_ready loop... ")
         return False
 
     @staticmethod
     def wait_for_cnvrg_spec_ready(name="cnvrg-app"):
-        try:
-            for i in range(0, 1800):
+        for i in range(0, 1800):
+            try:
                 spec = CommonBase.get_cnvrg_spec(name)
                 if 'status' not in spec:
                     logging.info(f"cnvrg sepc don't have status object yet, ttl: {1800 - i} sec")
@@ -106,10 +106,10 @@ class CommonBase(object):
                             return True
                 logging.info(f"cnvrg spec not ready yet, ttl: {1800 - i} sec")
                 time.sleep(1)
-            logging.error("Cnvrg spec not ready, and timeout reached (30m)")
-        except Exception as ex:
-            logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
-            return False
+            except Exception as ex:
+                logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
+                logging.error("Continue wait_for_cnvrg_spec_ready loop ...")
+        logging.error("Cnvrg spec not ready, and timeout reached (30m)")
         return False
 
     @staticmethod

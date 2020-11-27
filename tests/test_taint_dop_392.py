@@ -2,7 +2,7 @@ import unittest
 import time
 from common import CommonBase
 from kubernetes import client, config
-
+import logging
 config.load_kube_config()
 
 CNVRG_SPEC = """
@@ -185,6 +185,7 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTaintsNoTaintsSetTest")
         cls._started_at = time.time()
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
@@ -299,6 +300,7 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesFalseTest")
         cls._started_at = time.time()
         cls.get_nip_nip_url()
         cls.deploy()
@@ -395,6 +397,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueTest")
         cls._started_at = time.time()
         cls.get_nip_nip_url()
         cls.deploy()
@@ -519,6 +522,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
         cls._started_at = time.time()
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
@@ -578,6 +582,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
         cls._started_at = time.time()
         res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
         node_name = res[1]

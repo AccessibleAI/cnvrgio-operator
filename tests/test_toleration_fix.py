@@ -2,6 +2,7 @@ import unittest
 from common import CommonBase
 from kubernetes import client, config
 import time
+import logging
 
 config.load_kube_config()
 v1 = client.CoreV1Api()
@@ -73,6 +74,7 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTolerationFix")
         cls._started_at = time.time()
         cls._exec_cmd(
             "kubectl taint node {} kubernetes.azure.com/scalesetpriority=spot:NoSchedule --overwrite".format(nodes[-1]))

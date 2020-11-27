@@ -2,6 +2,7 @@ import unittest
 import time
 from common import CommonBase
 from kubernetes import config
+import logging
 
 config.load_kube_config()
 
@@ -10,6 +11,7 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> MinioCustomEPDop397Test")
         cls._started_at = time.time()
         cls.deploy()
         helm_cmd = """

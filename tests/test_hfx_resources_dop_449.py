@@ -1,7 +1,7 @@
 import unittest
 from common import CommonBase
 import yaml, time
-
+import logging
 
 class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
     SPEC = ""
@@ -10,6 +10,7 @@ class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> ComputeProfilesLargeWithHelmChartTest")
         cls._started_at = time.time()
         cmd = "helm template chart -s templates/cnvrg-app.yaml --set computeProfile=large"
         res = cls._exec_cmd(cmd)
