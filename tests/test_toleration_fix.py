@@ -1,9 +1,8 @@
 import unittest
-import os
 from common import CommonBase
 from kubernetes import client, config
-import logging
 import time
+import logging
 
 config.load_kube_config()
 v1 = client.CoreV1Api()
@@ -36,8 +35,31 @@ spec:
     enabled: "false"
   minio:
     enabled: "false"
+  ingress:
+    enabled: "false"
   monitoring:
     enabled: "true"
+    prometheusOperator:
+      enabled: "true"
+    prometheus:
+      enabled: "false"
+    grafana:
+      enabled: "false"
+    nodeExporter:
+      enabled: "true"
+      port: 19100
+    kubeStateMetrics:
+      enabled: "false"
+    defaultServiceMonitors:
+      enabled: "false"
+    sidekiqExporter:
+      enabled: "false"
+    minioExporter:
+      enabled: "false"
+    idleMetricsExporter:
+      enabled: "false"  
+    metricsServer:
+      enabled: "false"
   istio:
     enabled: "false"
   kibana:
@@ -53,13 +75,16 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> CnvrgTolerationFix")
+        cls._started_at = time.time()
         cls._exec_cmd(
             "kubectl taint node {} kubernetes.azure.com/scalesetpriority=spot:NoSchedule --overwrite".format(nodes[-1]))
         cls._exec_cmd("kubectl taint node {} nvidia.com/gpu=present:NoSchedule --overwrite".format(nodes[-1]))
         cls._exec_cmd("kubectl label node {} accelerator=nvidia --overwrite".format(nodes[-1]))
         cls.deploy()
         cls.create_cnvrg_spec(CNVRG_SPEC)
-        cls.wait_for_cnvrg_spec_ready()
+        if cls.wait_for_cnvrg_spec_ready() is False:
+            assert False, 'CnvrgApp Spec was not ready in 30 min!'
         time.sleep(3)
 
     @classmethod
@@ -69,6 +94,7 @@ class CnvrgTolerationFix(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl taint node {} kubernetes.azure.com/scalesetpriority-".format(nodes[-1]))
         cls._exec_cmd("kubectl taint node {} nvidia.com/gpu-".format(nodes[-1]))
         cls._exec_cmd("kubectl label node {} accelerator-".format(nodes[-1]))
+        cls.log_total_test_execution_time(cls._started_at, "CnvrgTolerationFix")
 
     def test_fluentd_ready(self):
         cmd = "kubectl -n cnvrg wait --for=condition=PodScheduled pod -l k8s-app=fluentd-logging --field-selector=spec.nodeName={}  --timeout=600s".format(

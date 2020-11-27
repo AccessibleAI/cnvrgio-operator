@@ -10,7 +10,7 @@ spec:
   clusterIP: None
   ports:
   - name: https
-    port: 9100
+    port: {{ monitoring.node_exporter.port }}
     targetPort: https
   selector:
     app.kubernetes.io/name: node-exporter

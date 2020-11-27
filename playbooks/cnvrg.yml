@@ -23,7 +23,6 @@
         - ../roles/autoscaler/vars/main.yml
         - ../roles/ingress/vars/main.yml
         - ../roles/cnvrg_router/vars/main.yml
-        - ../roles/status/vars/main.yml
       tags: always
 
     # CnvrgApp deployment
@@ -147,6 +146,7 @@
       when: ingress.enabled == 'true'
       tags: ingress
 
+    # Prometheus deployment
     # Monitoring
     - import_role:
         name: monitoring
@@ -155,9 +155,9 @@
       when: monitoring.enabled == "true"
       tags: monitoring
 
-    ####################### The spec_status have to be the last executed role!!! #######################
+    # vpa deployment
     - import_role:
-        name: status
-      when: status.enabled == "true"
-      tags: status
-    ####################### The spec_status have to be the last executed role!!! #######################
+        name: vpa
+      vars:
+        role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
+      tags: vpa

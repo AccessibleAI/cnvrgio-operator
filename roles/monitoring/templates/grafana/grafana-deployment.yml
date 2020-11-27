@@ -132,14 +132,22 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/workload-total
           name: grafana-dashboard-workload-total
           readOnly: false
-        {% if monitoring.sidekiq_exporter.enabled == "true" %}
+        {% if monitoring.sidekiq_exporter.enabled == "true" and cnvrg_app.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/sidekiq-exporter
           name: grafana-dashboard-cnvrg-sidekiq-exporter
           readOnly: false
         {% endif %}
-        {% if monitoring.minio_exporter.enabled == "true" %}
+        {% if (monitoring.minio_exporter.enabled == "true") and (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio") %}
         - mountPath: /grafana-dashboard-definitions/0/minio-exporter
           name: grafana-dashboard-cnvrg-minio-exporter
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/minio-exporter2
+          name: grafana-dashboard-cnvrg-minio-exporter2
+          readOnly: false
+        {% endif %}
+        {% if vpa.enabled == "true" %}
+        - mountPath: /grafana-dashboard-definitions/0/vpa-dashboard
+          name: vpa-dashboard
           readOnly: false
         {% endif %}
         {% if monitoring.node_exporter.enabled == "true" %}
@@ -239,20 +247,28 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
-      {% if monitoring.sidekiq_exporter.enabled == "true" %}
+      {% if monitoring.sidekiq_exporter.enabled == "true" and cnvrg_app.enabled == "true" %}
       - configMap:
           name: grafana-dashboard-cnvrg-sidekiq-exporter
         name: grafana-dashboard-cnvrg-sidekiq-exporter
       {% endif %}
-      {% if monitoring.minio_exporter.enabled == "true" %}
+      {% if (monitoring.minio_exporter.enabled == "true") and (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio") %}
       - configMap:
           name: grafana-dashboard-cnvrg-minio-exporter
         name: grafana-dashboard-cnvrg-minio-exporter
+      - configMap:
+          name: grafana-dashboard-cnvrg-minio-exporter2
+        name: grafana-dashboard-cnvrg-minio-exporter2
       {% endif %}
       {% if monitoring.node_exporter.enabled == "true" %}
       - configMap:
           name: node-exporter-full
         name: node-exporter-full
+      {% endif %}
+      {% if vpa.enabled == "true" %}
+      - configMap:
+          name: vpa-dashboard
+        name: vpa-dashboard
       {% endif %}
       {% if monitoring.dcgm_exporter.enabled == "true" %}
       - configMap:

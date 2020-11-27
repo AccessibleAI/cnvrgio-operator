@@ -1,7 +1,7 @@
 import unittest
-import os
+import time
 from common import CommonBase
-from kubernetes import client, config
+from kubernetes import config
 import logging
 
 config.load_kube_config()
@@ -11,6 +11,8 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> MinioCustomEPDop397Test")
+        cls._started_at = time.time()
         cls.deploy()
         helm_cmd = """
             helm template chart \
@@ -24,7 +26,7 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
             --set ingress.enabled="false" \
             --set istio.enabled="false" \
             --set kibana.enabled="false" \
-            --set prometheus.enabled="false" \
+            --set monitoring.enabled="false" \
             --set minio.enabled="false" \
             --set mpi.enabled="false" \
             --set nfs.enabled="false" \
@@ -40,6 +42,7 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
     def tearDownClass(cls):
         cls.delete_cnvrg_spec()
         cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "MinioCustomEPDop397Test")
 
     def test_custom_cnvrg_storage(self):
         cmd = "kubectl get secret env-secrets -ncnvrg -ojson | jq -r .data.CNVRG_STORAGE_ENDPOINT | base64 -d"

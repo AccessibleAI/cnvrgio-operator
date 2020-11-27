@@ -53,6 +53,7 @@ monitoring:
   nodeExporter:
     enabled: "{{ .Values.monitoring.nodeExporter.enabled }}"
     image: "{{ .Values.monitoring.nodeExporter.image }}"
+    port: "{{ .Values.monitoring.nodeExporter.port }}"
 
   kubeStateMetrics:
     enabled: "{{ .Values.monitoring.kubeStateMetrics.enabled }}"
@@ -77,4 +78,7 @@ monitoring:
     port: "{{ .Values.monitoring.dcgmExporter.port }}"
   idleMetricsExporter:
     enabled: "{{ .Values.monitoring.idleMetricsExporter.enabled }}"
+  metricsServer:
+    enabled:  "{{ .Values.monitoring.metricsServer.enabled }}"
+    image: "{{ .Values.monitoring.metricsServer.image }}"
 {{- end }}

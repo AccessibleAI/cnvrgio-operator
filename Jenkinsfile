@@ -1,3 +1,4 @@
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 def CURRENT_VERSION
 def NEXT_VERSION
 def TESTS_PASSED = "true"
@@ -6,6 +7,15 @@ def skipTests() {
     try {
         def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
         return commitMessage.contains("skip tests")
+    } catch (Exception e) {
+        echo "Error: " + e.toString()
+        return false
+    }
+}
+def skipAll() {
+    try {
+        def commitMessage = sh(script: 'git log --format=format:%s -1 ${GIT_COMMIT}', returnStdout: true).trim()
+        return commitMessage.contains("skip all")
     } catch (Exception e) {
         echo "Error: " + e.toString()
         return false
@@ -24,7 +34,14 @@ pipeline {
     stages {
         stage('cleanup workspace') {
             steps {
-                cleanWs()
+                script{
+                    if (skipAll()) {
+                        echo 'Aborting Build'
+                        currentBuild.result = 'ABORTED'
+                        throw new FlowInterruptedException(Result.ABORTED)
+                    }
+                    cleanWs()
+                }
             }
         }
         stage('checkout') {
@@ -118,6 +135,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: '85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
+                        // Unittests report
                         sh """
                         az storage blob upload \
                          --account-name operatortestreports \
@@ -127,6 +145,20 @@ pipeline {
                          --account-key ${ACCOUNT_KEY}
                         """
                         echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
+
+                        // Time execution report
+                        sh """
+                        EXEC_TIME_REPORT=\$(cat tests-duration-execution-report.json) envsubst < tests/exec-time-report.tmpl > exec-time-report-${NEXT_VERSION}.html
+                        """
+                        sh """
+                        az storage blob upload \
+                         --account-name operatortestreports \
+                         --container-name reports \
+                         --name exec-time-report-${NEXT_VERSION}.html \
+                         --file "exec-time-report-${NEXT_VERSION}.html" \
+                         --account-key ${ACCOUNT_KEY}
+                        """
+                        echo "https://operatortestreports.blob.core.windows.net/reports/exec-time-report-${NEXT_VERSION}.html"
                     }
                 }
             }
@@ -169,6 +201,10 @@ pipeline {
                             sh """
                             git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
                             git push https://${USERNAME}:${PASSWORD}@${url} --tags
+
+                            docker run  -v ${workspace}:/root \
+                            cnvrg/cnvrg-operator-test-runtime:latest bash -lc 'cd scripts; python dump-helm-docs.py; python dump-offline_images.py'
+                            git add README.md docs/offline_images.md; git commit -m  "update docs #skip all"; git push https://${USERNAME}:${PASSWORD}@${url}
                             """
                         }
                     }
@@ -199,7 +235,7 @@ pipeline {
                         az group delete --name ${CLUSTER_NAME} --no-wait -y
                     else
                         echo "cluster not found, skipping cluster delete"
-                    fi
+                    fi 
                     """
                 }
             }

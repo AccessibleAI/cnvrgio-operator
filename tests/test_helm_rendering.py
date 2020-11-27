@@ -1,6 +1,7 @@
 import unittest
 from common import CommonBase
-import yaml
+import yaml, time
+import logging
 
 
 class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
@@ -10,11 +11,17 @@ class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        logging.info("starting -> ComputeProfilesLargeWithHelmChartTest")
+        cls._started_at = time.time()
         cmd = "helm template chart -s templates/cnvrg-app.yaml --set computeProfile=large"
         res = cls._exec_cmd(cmd)
         cls.SPEC = yaml.load(res[1], Loader=yaml.FullLoader)
         res = cls._exec_cmd("helm show values chart")
         cls.VALUES = yaml.load(res[1], Loader=yaml.FullLoader)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.log_total_test_execution_time(cls._started_at, "ComputeProfilesLargeWithHelmChartTest")
 
     def test_large_profile_webapp_cpu(self):
         self.assertEqual(
@@ -100,11 +107,16 @@ class ComputeProfilesMediumWithHelmChartTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cmd = f"helm template chart -s templates/cnvrg-app.yaml --set computeProfile={cls.PROFILE}"
         res = cls._exec_cmd(cmd)
         cls.SPEC = yaml.load(res[1], Loader=yaml.FullLoader)
         res = cls._exec_cmd("helm show values chart")
         cls.VALUES = yaml.load(res[1], Loader=yaml.FullLoader)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.log_total_test_execution_time(cls._started_at, "ComputeProfilesMediumWithHelmChartTest")
 
     def test_medium_profile_webapp_cpu(self):
         self.assertEqual(
@@ -190,11 +202,16 @@ class ComputeProfilesSmallWithHelmChartTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def setUpClass(cls):
+        cls._started_at = time.time()
         cmd = f"helm template chart -s templates/cnvrg-app.yaml --set computeProfile={cls.PROFILE}"
         res = cls._exec_cmd(cmd)
         cls.SPEC = yaml.load(res[1], Loader=yaml.FullLoader)
         res = cls._exec_cmd("helm show values chart")
         cls.VALUES = yaml.load(res[1], Loader=yaml.FullLoader)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.log_total_test_execution_time(cls._started_at, "ComputeProfilesSmallWithHelmChartTest")
 
     def test_small_profile_webapp_cpu(self):
         self.assertEqual(
@@ -271,3 +288,20 @@ class ComputeProfilesSmallWithHelmChartTest(unittest.TestCase, CommonBase):
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['memory']),
             str(self.SPEC['spec'][component]['requests']['memory']))
+
+
+class HelmChartRenderTest(unittest.TestCase, CommonBase):
+
+    @classmethod
+    def setUpClass(cls):
+        logging.info("starting -> HelmChartRenderTest")
+        cls._started_at = time.time()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.log_total_test_execution_time(cls._started_at, "ComputeProfilesSmallWithHelmChartTest")
+
+    def test_custom_node_exporter_port(self):
+        cmd = "helm template chart -s templates/cnvrg-app.yaml --set monitoring.nodeExporter.port=19100 | yq r - spec.monitoring.nodeExporter.port"
+        res = self.exec_cmd(cmd)
+        self.assertEqual("19100", res[1])

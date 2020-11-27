@@ -74,6 +74,7 @@
     - templates/minio-exporter/*
   when:
     - monitoring.enabled == "true"
+    - (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio")
     - monitoring.minio_exporter.enabled == "true"
 
 - name: Deploy Sidekiq Exporter
@@ -88,6 +89,7 @@
   when:
     - monitoring.enabled == "true"
     - monitoring.sidekiq_exporter.enabled == "true"
+    - cnvrg_app.enabled == "true"
 
 - name: Deploy DCGM Exporter
   include_role:
@@ -115,6 +117,19 @@
     - monitoring.enabled == "true"
     - monitoring.idle_metrics_exporter.enabled == "true"
 
+- name: Deploy External Dashboards
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/external-dashboards/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.grafana.enabled == "true"
+
 - name: Deploy Grafana
   include_role:
     name: common
@@ -127,3 +142,24 @@
   when:
     - monitoring.enabled == "true"
     - monitoring.grafana.enabled == "true"
+
+- name: "Get Metrics Server Deployment"
+  k8s_info:
+    kind: Deployment
+    namespace: "kube-system"
+    name: "metrics-server"
+  register: metrics_server
+
+- name: Deploy Metrics Server
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/metrics-server/*
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.metrics_server.enabled == "true"
+    - metrics_server.resources | length == 0

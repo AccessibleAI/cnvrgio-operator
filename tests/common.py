@@ -5,6 +5,8 @@ import yaml
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 import time
+import os.path
+import json
 
 log_format = "|%(asctime)s|%(levelname)-5s %(message)s"
 logging.basicConfig(level=logging.INFO, format=log_format)
@@ -17,6 +19,7 @@ NAMESPACE = "cnvrg"
 
 
 class CommonBase(object):
+
     @staticmethod
     def deploy():
         logging.info("deploying env...")
@@ -71,9 +74,24 @@ class CommonBase(object):
             logging.error("Exception when calling CustomObjectsApi->delete_namespaced_custom_object: %s\n" % e)
 
     @staticmethod
+    def waif_for_istio_cr_ready(name="cnvrg-istio"):
+        for i in range(0, 1800):
+            try:
+                res = CommonBase._exec_cmd(
+                    f"kubectl get istiooperators.install.istio.io {name} -ncnvrg | grep HEALTHY | wc -l")
+                if res[1] == "1":
+                    return True
+                logging.info("Istio CR not ready yet...")
+                time.sleep(1)
+            except Exception as ex:
+                logging.error("Exception when calling waif_for_istio_cr_ready: %s\n" % ex)
+                logging.error("Continue waif_for_istio_cr_ready loop... ")
+        return False
+
+    @staticmethod
     def wait_for_cnvrg_spec_ready(name="cnvrg-app"):
-        try:
-            for i in range(0, 1800):
+        for i in range(0, 1800):
+            try:
                 spec = CommonBase.get_cnvrg_spec(name)
                 if 'status' not in spec:
                     logging.info(f"cnvrg sepc don't have status object yet, ttl: {1800 - i} sec")
@@ -88,10 +106,28 @@ class CommonBase(object):
                             return True
                 logging.info(f"cnvrg spec not ready yet, ttl: {1800 - i} sec")
                 time.sleep(1)
-            logging.error("Cnvrg spec not ready, and timeout reached (30m)")
-        except Exception as ex:
-            logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
+            except Exception as ex:
+                logging.error("Exception when calling wait_for_cnvrg_spec_ready: %s\n" % ex)
+                logging.error("Continue wait_for_cnvrg_spec_ready loop ...")
+        logging.error("Cnvrg spec not ready, and timeout reached (30m)")
         return False
+
+    @staticmethod
+    def log_total_test_execution_time(start_time, test_name):
+        report_file = './tests-duration-execution-report.json'
+        exec_report = []
+        total_time = time.time() - start_time
+        if os.path.isfile(report_file):
+            try:
+                with open(report_file, "r") as f:
+                    exec_report = json.loads(f.read())
+            except Exception as ex:
+                logging.error(f"error during reading duration exec report, {ex}")
+        exec_report.append({"label": test_name, "y": total_time})
+        with open(report_file, "w") as f:
+            f.write(json.dumps(exec_report))
+
+        f.close()
 
     @staticmethod
     def get_spec_from_chart(cmd):
@@ -102,7 +138,7 @@ class CommonBase(object):
 
     @staticmethod
     def get_nip_nip_url(ingress_type="nginx"):
-        for i in range(0, 600):
+        for i in range(0, 1800):
             try:
                 v1 = client.CoreV1Api()
                 svc_name = "ingress-nginx-controller"
@@ -118,7 +154,7 @@ class CommonBase(object):
             except Exception as ex:
                 logging.info("error fetch service external IP, will wait... ")
                 time.sleep(1)
-        return None
+        exit(1)
 
     @staticmethod
     def _exec_cmd(cmd):
