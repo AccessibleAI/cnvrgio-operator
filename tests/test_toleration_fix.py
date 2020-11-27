@@ -43,10 +43,11 @@ spec:
       enabled: "true"
     prometheus:
       enabled: "false"
-    kibana:
-      enabled: "false"
     grafana:
       enabled: "false"
+    nodeExporter:
+      enabled: "true"
+      port: 19100
     kubeStateMetrics:
       enabled: "false"
     defaultServiceMonitors:

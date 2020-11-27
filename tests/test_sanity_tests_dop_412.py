@@ -3,6 +3,7 @@ import time
 from common import CommonBase
 from kubernetes import config
 import logging
+
 config.load_kube_config()
 
 CNVRG_SPEC_ISTIO_ONLY = """

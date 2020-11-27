@@ -3,6 +3,7 @@ import time
 from common import CommonBase
 from kubernetes import client, config
 import logging
+
 config.load_kube_config()
 
 
@@ -14,7 +15,6 @@ class TaintsOperatorDeploymentTest(unittest.TestCase, CommonBase):
         cls._exec_cmd("kubectl create ns cnvrg")
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
-
 
     @classmethod
     def tearDownClass(cls):

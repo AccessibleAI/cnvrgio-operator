@@ -3,6 +3,7 @@ from common import CommonBase
 import yaml, time
 import logging
 
+
 class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
     SPEC = ""
     VALUES = ""
@@ -287,3 +288,20 @@ class ComputeProfilesSmallWithHelmChartTest(unittest.TestCase, CommonBase):
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['memory']),
             str(self.SPEC['spec'][component]['requests']['memory']))
+
+
+class HelmChartRenderTest(unittest.TestCase, CommonBase):
+
+    @classmethod
+    def setUpClass(cls):
+        logging.info("starting -> HelmChartRenderTest")
+        cls._started_at = time.time()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.log_total_test_execution_time(cls._started_at, "ComputeProfilesSmallWithHelmChartTest")
+
+    def test_custom_node_exporter_port(self):
+        cmd = "helm template chart -s templates/cnvrg-app.yaml --set monitoring.nodeExporter.port=19100 | yq r - spec.monitoring.nodeExporter.port"
+        res = self.exec_cmd(cmd)
+        self.assertEqual("19100", res[1])
