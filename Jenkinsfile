@@ -204,7 +204,7 @@ pipeline {
 
                             docker run  -v ${workspace}:/root \
                             cnvrg/cnvrg-operator-test-runtime:latest bash -lc 'cd scripts; python dump-helm-docs.py; python dump-offline_images.py'
-                            git add README.md docs/offline_images.md; git commit -m  "update docs #skip all"; git push https://${USERNAME}:${PASSWORD}@${url}
+                            git add README.md docs/offline_images.md; git commit -m  "update docs #skip all"; git push https://${USERNAME}:${PASSWORD}@${url} HEAD:master
                             """
                         }
                     }
