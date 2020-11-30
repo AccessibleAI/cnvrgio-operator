@@ -20,7 +20,6 @@
         - ../roles/app/vars/main.yml
         - ../roles/nfs/vars/main.yml
         - ../roles/hostpath/vars/main.yml
-        - ../roles/autoscaler/vars/main.yml
         - ../roles/ingress/vars/main.yml
         - ../roles/cnvrg_router/vars/main.yml
       tags: always
@@ -102,13 +101,6 @@
         role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
       tags: fluentd
 
-    # K8S Cluster Autoscaler deployment
-    - import_role:
-        name: autoscaler
-      vars:
-        role_state: "{{'present' if autoscaler.enabled == 'true' else 'absent'}}"
-      tags: autoscaler
-
     # Istio deployment
     - import_role:
         name: istio
@@ -146,7 +138,6 @@
       when: ingress.enabled == 'true'
       tags: ingress
 
-    # Prometheus deployment
     # Monitoring
     - import_role:
         name: monitoring
@@ -160,4 +151,5 @@
         name: vpa
       vars:
         role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
+      when: vpa.enabled == "true"
       tags: vpa
