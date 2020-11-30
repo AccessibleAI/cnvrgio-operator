@@ -20,6 +20,7 @@ spec:
   {{- include "spec.nvidiadp" . | indent 2 }}
   {{- include "spec.mpi" . | indent 2 }}
   {{- include "spec.nfs" . | indent 2 }}
+  {{- include "spec.hostpath" . | indent 2 }}
   {{- include "spec.cnvrgRouter" . | indent 2 }}
   {{- include "spec.autoscaler" . | indent 2 }}
   {{- include "spec.ingress" . | indent 2 }}
