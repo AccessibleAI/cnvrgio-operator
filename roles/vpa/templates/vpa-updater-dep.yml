@@ -31,7 +31,7 @@ spec:
         runAsUser: 65534 # nobody
       containers:
         - name: updater
-          image: {{vpa.updater}}
+          image: {{vpa.images.updater_image}}
           imagePullPolicy: Always
           resources:
             limits:
