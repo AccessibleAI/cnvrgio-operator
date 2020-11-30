@@ -281,6 +281,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`monitoring.prometheus.storageSize`|100Gi|
 |`monitoring.prometheus.storageClass`|use-default|
 |`monitoring.nodeExporter.enabled`|true|
+|`monitoring.nodeExporter.port`|9100|
 |`monitoring.nodeExporter.image`|quay.io/prometheus/node-exporter:v0.18.1|
 |`monitoring.kubeStateMetrics.enabled`|true|
 |`monitoring.kubeStateMetrics.image`|quay.io/coreos/kube-state-metrics:v1.9.5|
@@ -298,6 +299,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`monitoring.dcgmExporter.image`|nvidia/dcgm-exporter:1.7.2|
 |`monitoring.dcgmExporter.port`|9400|
 |`monitoring.idleMetricsExporter.enabled`|true|
+|`monitoring.metricsServer.enabled`|true|
+|`monitoring.metricsServer.image`|k8s.gcr.io/metrics-server/metrics-server:v0.3.7|
 |`istio.enabled`|true|
 |`istio.operatorImage`|docker.io/istio/operator:1.7.3|
 |`istio.hub`|docker.io/istio|
@@ -390,4 +393,3 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`cnvrgRouter.svcName`|routing-service|
 |`cnvrgRouter.nodePort`|30081|
 |`cnvrgRouter.port`|80|
-|`status.enabled`|false|
