@@ -365,6 +365,9 @@ autoscaler:
   enabled: "false"
 ingress:
   enabled: "true"
+  timeout: 18000s
+  retriesAttempts: 5
+  perTryTimeout: 3600s
 cnvrgRouter:
   enabled: "false"
   image: nginx
