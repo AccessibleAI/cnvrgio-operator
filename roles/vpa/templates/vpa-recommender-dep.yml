@@ -31,7 +31,7 @@ spec:
         runAsUser: 65534 # nobody
       containers:
       - name: recommender
-        image: {{vpa.recommender}}
+        image: {{vpa.images.recommender_image}}
         imagePullPolicy: Always
         resources:
           limits:

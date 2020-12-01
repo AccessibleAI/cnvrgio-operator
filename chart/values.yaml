@@ -376,6 +376,7 @@ cnvrgRouter:
   port: 80
 vpa:
   enabled: "false"
-  admission: "k8s.gcr.io/autoscaling/vpa-admission-controller:0.9.0"
-  recommender: "k8s.gcr.io/autoscaling/vpa-recommender:0.9.0"
-  updater: "k8s.gcr.io/autoscaling/vpa-updater:0.9.0"
+  images:
+    admissionImage: "k8s.gcr.io/autoscaling/vpa-admission-controller:0.9.0"
+    recommenderImage: "k8s.gcr.io/autoscaling/vpa-recommender:0.9.0"
+    updaterImage: "k8s.gcr.io/autoscaling/vpa-updater:0.9.0"
