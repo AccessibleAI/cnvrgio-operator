@@ -1,0 +1,9 @@
+- name: Domain Register
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "{{ role_state }}"
+  with_fileglob:
+    - templates/*

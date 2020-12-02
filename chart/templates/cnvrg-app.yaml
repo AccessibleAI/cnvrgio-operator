@@ -25,4 +25,5 @@ spec:
   {{- include "spec.autoscaler" . | indent 2 }}
   {{- include "spec.ingress" . | indent 2 }}
   {{- include "spec.vpa" . | indent 2 }}
+  {{- include "spec.domainRegister" . | indent 2 }}
 
