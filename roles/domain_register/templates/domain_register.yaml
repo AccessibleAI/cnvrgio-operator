@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: domain-register
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: domain-register
+    spec:
+{% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+{% endif %}
+{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+{% endif %}
+      serviceAccountName: "{{rbac.service_account_name}}"
+      containers:
+      - image: "{{ domain_register.image }}"
+        imagePullPolicy: Always
+        name: domain-register
+        env:
+        - name: CNVRG_NAMESPACE
+          value: "{{ansible_operator_meta.namespace}}"
+        - name: clusterDomain
+          value: {{ cluster_domain }}
+        - name: HOSTED_ZONE_ID
+          value: {{ domain_register.hosted_zone_id }}
+        - name: AWS_ACCESS_KEY_ID
+          value: {{ domain_register.aws_access_key_id }}
+        - name: AWS_SECRET_ACCESS_KEY
+          value: {{ domain_register.aws_secret_access_key }}
+      restartPolicy: Never

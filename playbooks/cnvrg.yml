@@ -138,6 +138,14 @@
       when: ingress.enabled == 'true'
       tags: ingress
 
+    # Register Cluster Domain - Route53
+    - import_role:
+        name: domain_register
+      vars:
+        role_state: "{{'present' if domain_register.enabled == 'true' else 'absent'}}"
+      when: domain_register.enabled == 'true'
+      tags: domain
+
     # Monitoring
     - import_role:
         name: monitoring
