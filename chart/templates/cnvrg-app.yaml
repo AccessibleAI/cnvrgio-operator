@@ -12,6 +12,7 @@ spec:
   {{- include "spec.redis" . | indent 2 }}
   {{- include "spec.pg" . | indent 2 }}
   {{- include "spec.es" . | indent 2 }}
+  {{- include "spec.elastalert" . | indent 2 }}
   {{- include "spec.minio" . | indent 2 }}
   {{- include "spec.monitoring" . | indent 2 }}
   {{- include "spec.istio" . | indent 2 }}

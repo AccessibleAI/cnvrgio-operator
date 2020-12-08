@@ -219,6 +219,13 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+    def test_elastalert(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=elastalert")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
     def test_kibana(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=kibana")
@@ -675,5 +682,29 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     def test_vpa_updater(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+
+class TaintsOperatorDeploymentTest(unittest.TestCase, CommonBase):
+    @classmethod
+    def setUpClass(cls):
+        logging.info("starting -> TaintsOperatorDeploymentTest")
+        cls._started_at = time.time()
+        cls._exec_cmd("kubectl create ns cnvrg")
+        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls.undeploy()
+        cls.log_total_test_execution_time(cls._started_at, "TaintsOperatorDeploymentTest")
+
+    def test_app_ready_aks_istio(self):
+        cmd = 'helm template chart --set tenancy.enabled="true" --include-crds --no-hooks | VERSION=$TAG envsubst | kubectl create -f -'
+        self.exec_cmd(cmd)
+        cmd = "kubectl wait --for=condition=ready pod -l control-plane=cnvrg-operator -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])

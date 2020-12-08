@@ -1,0 +1,14 @@
+---
+elastalert:
+  enabled: "true"
+  image: "bitsensor/elastalert:3.0.0-beta.1"
+  port: "80"
+  node_port: 32030
+  container_port: "3030"
+  storage_size: "30Gi"
+  svc_name: "elastalert"
+  storage_class: "use-default"
+  cpu_request: 100m
+  memory_request: 200Mi
+  cpu_limit: 400m
+  memory_limit: 800Mi
