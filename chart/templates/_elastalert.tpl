@@ -18,12 +18,16 @@ elastalert:
   cpuRequest: "{{ .Values.computeProfiles.large.elastalert.cpu }}"
   memoryRequest: "{{ .Values.computeProfiles.large.elastalert.memory }}"
   storageSize: "{{ .Values.computeProfiles.large.storage }}"
+  cpuLimit: "{{ .Values.computeProfiles.large.elastalert.cpu }}"
+  memoryLimit: "{{ .Values.computeProfiles.large.elastalert.memory }}"
   {{- end }}
 
   {{- if eq .Values.computeProfile "medium"}}
   cpuRequest: "{{ .Values.computeProfiles.medium.elastalert.cpu }}"
   memoryRequest: "{{ .Values.computeProfiles.medium.elastalert.memory }}"
   storageSize: "{{ .Values.computeProfiles.medium.storage }}"
+  cpuLimit: "{{ .Values.computeProfiles.medium.elastalert.cpu }}"
+  memoryLimit: "{{ .Values.computeProfiles.medium.elastalert.memory }}"
   {{- end }}
 
   {{- if eq .Values.computeProfile "small"}}
