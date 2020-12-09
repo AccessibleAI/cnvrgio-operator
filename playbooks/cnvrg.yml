@@ -87,6 +87,13 @@
         role_state: "{{'present' if es.enabled == 'true' else 'absent'}}"
       tags: es
 
+    # ElastAlert deployment
+    - import_role:
+        name: elastalert
+      vars:
+        role_state: "{{'present' if elastalert.enabled == 'true' else 'absent'}}"
+      tags: elastalert
+
     # Minio deployment
     - import_role:
         name: minio

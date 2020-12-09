@@ -219,6 +219,13 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
+    def test_elastalert(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=elastalert")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
     def test_kibana(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=kibana")
@@ -332,6 +339,11 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
+    def test_elastalert(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
     def test_kibana(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=kibana -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
@@ -428,6 +440,11 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     def test_es(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_elastalert(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
@@ -615,6 +632,11 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     def test_es(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_elastalert(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 

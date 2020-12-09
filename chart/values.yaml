@@ -25,6 +25,9 @@ computeProfiles:
     es:
       cpu: 1
       memory: 1Gi
+    elastalert:
+      cpu: 1
+      memory: 1Gi
     prometheus:
       cpu: 1
       memory: 1Gi
@@ -51,6 +54,9 @@ computeProfiles:
     es:
       cpu: 1
       memory: 1Gi
+    elastalert:
+      cpu: 1
+      memory: 1Gi
     prometheus:
       cpu: 1
       memory: 1Gi
@@ -75,6 +81,9 @@ computeProfiles:
       cpu: 100m
       memory: 100Mi
     es:
+      cpu: 100m
+      memory: 100Mi
+    elastalert:
       cpu: 100m
       memory: 100Mi
     prometheus:
@@ -203,6 +212,20 @@ es:
   cpuLimit: 2
   memoryLimit: 4Gi
   javaOpts: ""
+elastalert:
+  enabled: "true"
+  image: "bitsensor/elastalert:3.0.0-beta.1"
+  port: "80"
+  nodePort: 32030
+  containerPort: "3030"
+  storageSize: "30Gi"
+  svcName: "elastalert"
+  storageClass: "use-default"
+  cpuRequest: 100m
+  memoryRequest: 200Mi
+  cpuLimit: 400m
+  memoryLimit: 800Mi
+
 minio:
   enabled: "true"
   replicas: 1
