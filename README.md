@@ -286,7 +286,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`monitoring.kubeStateMetrics.enabled`|true|
 |`monitoring.kubeStateMetrics.image`|quay.io/coreos/kube-state-metrics:v1.9.5|
 |`monitoring.grafana.enabled`|true|
-|`monitoring.grafana.image`|grafana/grafana:7.1.0|
+|`monitoring.grafana.image`|grafana/grafana:7.2.0|
 |`monitoring.grafana.svcName`|grafana|
 |`monitoring.grafana.port`|3000|
 |`monitoring.grafana.nodePort`|30012|
