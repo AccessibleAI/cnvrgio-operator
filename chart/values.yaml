@@ -270,7 +270,7 @@ monitoring:
     image: "quay.io/coreos/kube-state-metrics:v1.9.5"
   grafana:
     enabled: "true"
-    image: grafana/grafana:7.1.0
+    image: grafana/grafana:7.2.0
     svcName: "grafana"
     port: 3000
     nodePort: 30012
