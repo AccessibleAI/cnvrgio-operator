@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,22 +21,23 @@ spec:
       labels:
         app: sidekiq-searchkick
     spec:
-{%  if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
-{% if cnvrg_app.edition == "enterprise" %}
+      {% endif %}
+      {% if cnvrg_app.edition == "enterprise" %}
       imagePullSecrets:
         - name: {{ registry.name }}
-{% endif %}
+      {% endif %}
       serviceAccountName: "{{rbac.service_account_name}}"
+      terminationGracePeriodSeconds: {{ cnvrg_app.sidekiq_prestop_hook.kill_timeout|int }}
       containers:
       - name: sidekiq
         image: "{{cnvrg_app.image}}"
@@ -50,31 +52,35 @@ spec:
         - name: "SIDEKIQ_SEARCHKICK"
           value: "true"
         imagePullPolicy: Always
-{% if app_secrets.cnvrg_storage_type == "gcp" %}
+        {% if app_secrets.cnvrg_storage_type == "gcp" %}
         volumeMounts:
         - name: "{{ conf.gcp_storage_secret }}"
           mountPath: "{{ conf.gcp_keyfile_mount_path }}"
           readOnly: true
-{%  endif %}
+        {% endif %}
         envFrom:
         - configMapRef:
             name: env-config
         - secretRef:
             name: env-secrets
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/sh","-lc","sv -w 60 stop sidekiq"]
+        {% if cnvrg_app.resources_request_enabled == "true" %}
         resources:
           requests:
             cpu: "{{ cnvrg_app.sidekiq_searchkick_cpu }}"
             memory: "{{ cnvrg_app.sidekiq_searchkick_memory }}"
-{% if app_secrets.cnvrg_storage_type == "gcp" %}
+        {% endif %}
+        {% if cnvrg_app.sidekiq_prestop_hook.enabled == "true" %}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrg_app.sidekiq_prestop_hook.kill_timeout }}"]
+        {% endif %}
+      {% if app_secrets.cnvrg_storage_type == "gcp" %}
       volumes:
       - name: "{{ conf.gcp_storage_secret }}"
         secret:
           secretName: "{{ conf.gcp_storage_secret }}"
-{% endif %}
+      {% endif %}
       initContainers:
       - name: seeder
         image: "{{seeder.image}}"

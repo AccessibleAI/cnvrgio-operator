@@ -7,6 +7,7 @@
   vars:
     template_path: "{{ item }}"
     state: "{{ role_state }}"
+    compare_resource: yes
   with_fileglob:
     - templates/app/*
 

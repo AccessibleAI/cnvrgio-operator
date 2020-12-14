@@ -22,6 +22,13 @@ cnvrg_app:
   enable_readiness_probe: "true"
   readiness_period_seconds: 100
   readiness_timeout_seconds: 60
+  resources_request_enabled: "true"
+  sidekiq_prestop_hook:
+    enabled: "true"
+    kill_timeout: 60
+
+
+
 seeder:
   image: "docker.io/cnvrg/cnvrg-boot:v0.24"
   seed_cmd: "rails db:migrate && rails db:seed && rails libraries:update"
