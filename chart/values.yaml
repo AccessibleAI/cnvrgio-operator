@@ -374,6 +374,8 @@ nfs:
   memoryRequest: 100Mi
   cpuLimit: 200m
   memoryLimit: 200Mi
+  reclaimPolicy: "Retain"
+  defaultSc: "false"
 hostpath:
   enabled: "false"
   image: "quay.io/kubevirt/hostpath-provisioner"
