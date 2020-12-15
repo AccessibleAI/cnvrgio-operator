@@ -16,12 +16,18 @@ data:
   ROUTE_BY_NGINX_INGRESS: "{{ ('true' if ingress_type == 'k8singress' else 'false') }}"
   ROUTE_BY_NODE_PORT: "{{ ('true' if ingress_type == 'nodeport' else 'false') }}"
   CNVRG_STORAGE_USE_IAM_ROLE: "false"
-{% if nfs.enabled == "true" %}
+  {% if conf.default_jobs_storage_class == "" %}
+  {% if nfs.enabled == "true" %}
   CNVRG_JOBS_STORAGECLASS: "{{ nfs.storage_class_name }}"
-{% endif %}
-{% if hostpath.enabled == "true" %}
+  {% endif %}
+  {% if hostpath.enabled == "true" %}
   CNVRG_JOBS_STORAGECLASS: "{{ hostpath.storage_class_name }}"
-{% endif %}
+  {% endif %}
+  {% else %}
+  CNVRG_JOBS_STORAGECLASS: "{{ conf.default_jobs_storage_class }}"
+  {% endif %}
+
+
   SMTP_SERVER: "{{ app_configs.smtp.server }}"
   SMTP_PORT: "{{ app_configs.smtp.port }}"
   SMTP_USERNAME: "{{ app_configs.smtp.username }}"

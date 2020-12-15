@@ -5,6 +5,7 @@ conf:
   gcp_storage_secret: "gcp-storage-secret"
   gcp_keyfile_mount_path: "/tmp/gcp_keyfile"
   gcp_keyfile_name: "key.json"
+  default_jobs_storage_class: ""
 
 
 registry:

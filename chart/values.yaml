@@ -118,6 +118,7 @@ conf:
   gcpStorageSecret: gcp-storage-secret
   gcpKeyfileMountPath: /tmp/gcp_keyfile
   gcpKeyfileName: key.json
+  defaultJobsStorageClass: ""
 registry:
   name: cnvrg-registry
   url: "docker.io"

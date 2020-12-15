@@ -4,6 +4,7 @@ conf:
   gcpStorageSecret: "{{ .Values.conf.gcpStorageSecret }}"
   gcpKeyfileMountPath: "{{ .Values.conf.gcpKeyfileMountPath }}"
   gcpKeyfileName: "{{ .Values.conf.gcpKeyfileName }}"
+  defaultJobsStorageClass: "{{ .Values.conf.defaultJobsStorageClass}}"
 registry:
   name: "{{ .Values.registry.name }}"
   url: "{{ .Values.registry.url }}"
