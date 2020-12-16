@@ -33,7 +33,7 @@ data:
     <source>
       @type tail
       @id in_tail_container_logs
-      path /var/log/containers/*cnvrg*.log
+      path /var/log/containers/*{{ ansible_operator_meta.namespace }}*.log
       pos_file /var/log/fluentd-containers.log.pos
       tag kubernetes.*
       read_from_head true

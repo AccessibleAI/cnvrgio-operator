@@ -4,7 +4,7 @@ metadata:
   labels:
     k8s-app: prometheus
   name: prometheus
-  namespace: cnvrg
+  namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   endpoints:
   - interval: 30s
