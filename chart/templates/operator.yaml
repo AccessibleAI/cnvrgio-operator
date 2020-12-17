@@ -4,7 +4,7 @@ metadata:
   labels:
     control-plane: cnvrg-operator
   name: cnvrg-operator
-  namespace: cnvrg
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -32,7 +32,7 @@ spec:
           args:
             - --enable-leader-election
             - --leader-election-id=cnvrg-operator
-            - --leader-election-namespace=cnvrg
+            - --leader-election-namespace={{ .Release.Namespace }}
           env:
             - name: ANSIBLE_JINJA2_NATIVE
               value: "true"

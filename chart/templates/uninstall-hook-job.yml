@@ -9,7 +9,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "cnvrg-cleanup"
   annotations:
@@ -27,7 +27,7 @@ rules:
       - ""
     resources:
       - namespaces
-    resourceNames: ["cnvrg"]
+    resourceNames: ["{{ .Release.Namespace }}"]
     verbs:
       - "*"
   - apiGroups:
@@ -45,7 +45,7 @@ rules:
       - '*'
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "cnvrg-cleanup"
   annotations:
@@ -82,9 +82,8 @@ spec:
             - -c
             - |
               kubectl delete cnvrgapp cnvrg-app -n cnvrg --ignore-not-found
-              kubectl delete namespace cnvrg --ignore-not-found
-              while (( $(kubectl get namespace | grep cnvrg | wc -l ) != 0 )); do
-                echo "waiting for ns will be deleted. . . ";
+              while (( $(kubectl get cnvrgapp cnvrg-app -n {{ .Release.Namespace }} | grep cnvrgapp | wc -l ) != 0 )); do
+                echo "waiting for cnvrgapp will be deleted. . . ";
                 sleep 1
               done
       restartPolicy: Never

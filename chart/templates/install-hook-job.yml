@@ -28,7 +28,7 @@ rules:
     resources:
       - namespaces
     resourceNames:
-      - cnvrg
+      - {{ .Release.Namespace }}
     verbs:
       - delete
 ---
@@ -52,36 +52,8 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pre-install
-  namespace: default
-  annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "2"
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-spec:
-  template:
-    spec:
-      serviceAccountName: cnvrg-bootstrap
-      containers:
-        - name: cnvrgapp
-          image: {{.Values.hookImage}}
-          args:
-            - /bin/bash
-            - -c
-            - |
-              kubectl delete namespace cnvrg --ignore-not-found
-              while (( $(kubectl get namespace | grep cnvrg | wc -l ) != 0 )); do
-                echo "waiting for ns will be deleted. . . ";
-                sleep 1
-              done
-              kubectl create namespace cnvrg
-      restartPolicy: Never
----
-apiVersion: batch/v1
-kind: Job
-metadata:
   name: post-install
-  namespace: cnvrg
+  namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -102,10 +74,10 @@ spec:
                 exit
               }
               trap _term SIGTERM
-              echo "waiting for cnvrgapp will  finish installation. . . ";
-              while (( $(kubectl get cnvrgapp cnvrg-app -n cnvrg  -o yaml  | grep "Awaiting next reconciliation" | wc -l ) != 1 )); do
+              echo "waiting for cnvrgapp will finish installation. . . ";
+              while (( $(kubectl get cnvrgapp cnvrg-app -n {{ .Release.Namespace }} -o yaml | grep "Awaiting next reconciliation" | wc -l ) != 1 )); do
                 sleep 0.1
               done
               echo "installation completed. . . ";
-              kubectl delete job post-install -n cnvrg
+              kubectl delete job post-install -n {{ .Release.Namespace }}
       restartPolicy: Never
