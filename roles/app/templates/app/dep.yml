@@ -75,12 +75,10 @@ spec:
             periodSeconds: {{ cnvrg_app.readiness_period_seconds | default('100') }}
             timeoutSeconds: {{ cnvrg_app.readiness_timeout_seconds |default('60') }}
           {% endif %}
-          {% if cnvrg_app.resources_request_enabled == "true" %}
           resources:
             requests:
               cpu: "{{cnvrg_app.cpu}}"
               memory: "{{cnvrg_app.memory}}"
-          {% endif %}
           {% if app_secrets.cnvrg_storage_type == "gcp" %}
           volumeMounts:
           - name: "{{ conf.gcp_storage_secret }}"
