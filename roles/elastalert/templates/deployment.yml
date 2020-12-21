@@ -22,6 +22,24 @@ spec:
         runAsGroup: {{ elastalert.run_as_group }}
         fsGroup: {{ elastalert.fs_group }}
       {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+      {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
       containers:
       - image: "{{ elastalert.image }}"
         name: "{{elastalert.svc_name}}"
