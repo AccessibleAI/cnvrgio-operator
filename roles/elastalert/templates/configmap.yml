@@ -41,19 +41,14 @@ data:
     }
   config.yaml: |
     rules_folder: rules
-
     run_every:
       minutes: 1
-
     buffer_time:
       minutes: 15
-
     es_host: {{es.svc_name}}
     es_port: {{es.port}}
     use_ssl: False
-
     verify_certs: False
-
     writeback_index: elastalert_status
     writeback_alias: elastalert_alerts
     alert_time_limit:

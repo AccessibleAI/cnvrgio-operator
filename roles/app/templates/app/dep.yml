@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,24 +21,25 @@ spec:
       labels:
         app: {{cnvrg_app.svc_name}}
     spec:
-{%  if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
-{% if cnvrg_app.edition == "enterprise" %}
+      {% endif %}
+      {% if cnvrg_app.edition == "enterprise" %}
       imagePullSecrets:
         - name: {{ registry.name }}
-{% endif %}
+      {% endif %}
       serviceAccountName: "{{rbac.service_account_name}}"
       containers:
         - image: "{{cnvrg_app.image}}"
+          {% if security_mode == "default" %}
           command:
           - "/bin/bash"
           - "-lc"
@@ -47,6 +49,7 @@ spec:
               "s/passenger_max_request_queue_size 10000;/passenger_max_request_queue_size 10000;\n    passenger_max_pool_size $CNVRG_PASSENGER_MAX_POOL_SIZE;\n/g" \
               /etc/nginx/nginx.conf
             touch /etc/service/sidekiq/down && /sbin/my_init
+          {% endif %}
           env:
           - name: "CNVRG_RUN_MODE"
             value: "webapp"
@@ -60,7 +63,7 @@ spec:
           name: cnvrg-app
           ports:
             - containerPort: {{cnvrg_app.port}}
-{% if (cnvrg_app.enable_readiness_probe | default ('true')) == "true" %}
+          {% if (cnvrg_app.enable_readiness_probe | default ('true')) == "true" %}
           readinessProbe:
             failureThreshold: 3
             httpGet:
@@ -71,23 +74,23 @@ spec:
             successThreshold: 1
             periodSeconds: {{ cnvrg_app.readiness_period_seconds | default('100') }}
             timeoutSeconds: {{ cnvrg_app.readiness_timeout_seconds |default('60') }}
-{%  endif %}
+          {% endif %}
           resources:
             requests:
               cpu: "{{cnvrg_app.cpu}}"
               memory: "{{cnvrg_app.memory}}"
-{% if app_secrets.cnvrg_storage_type == "gcp" %}
+          {% if app_secrets.cnvrg_storage_type == "gcp" %}
           volumeMounts:
           - name: "{{ conf.gcp_storage_secret }}"
             mountPath: "{{ conf.gcp_keyfile_mount_path }}"
             readOnly: true
-{%  endif %}
-{% if app_secrets.cnvrg_storage_type == "gcp" %}
+          {% endif %}
+      {% if app_secrets.cnvrg_storage_type == "gcp" %}
       volumes:
       - name: "{{ conf.gcp_storage_secret }}"
         secret:
           secretName: "{{ conf.gcp_storage_secret }}"
-{% endif %}
+      {% endif %}
       initContainers:
       - name: services-check
         image: "{{seeder.image}}"
@@ -95,12 +98,12 @@ spec:
         imagePullPolicy: Always
         env:
         - name: "CNVRG_SERVICE_LIST"
-{% if minio.enabled == "true" and  app_secrets.cnvrg_storage_type == "minio" %}
+          {% if minio.enabled == "true" and  app_secrets.cnvrg_storage_type == "minio" %}
           value: "{{pg.svc_name}}:{{pg.port}};{{app_secrets.cnvrg_storage_endpoint}}/minio/health/ready"
-{% else %}
+          {% else %}
           value: "{{pg.svc_name}}:{{pg.port}}"
-{% endif %}
-{% if cnvrg_app.fixpg == "true" %}
+          {% endif %}
+      {% if cnvrg_app.fixpg == "true" %}
       - name: fixpg
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py fixpg"]
@@ -121,7 +124,7 @@ spec:
               name: env-secrets
               key: POSTGRES_HOST
         imagePullPolicy: Always
-{% endif %}
+      {% endif %}
       - name: seeder
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode master"]
@@ -135,15 +138,15 @@ spec:
           value: "{{ ansible_operator_meta.namespace }}"
         - name: "CNVRG_SA_NAME"
           value: "{{rbac.service_account_name}}"
-{% if cnvrg_app.edition == "enterprise" %}
+        {% if cnvrg_app.edition == "enterprise" %}
         - name: "CNVRG_IMAGE_PULL_SECRET"
           value: {{ registry.name }}
-{% endif %}
-{% if app_secrets.cnvrg_storage_type == "gcp" %}
+        {% endif %}
+        {% if app_secrets.cnvrg_storage_type == "gcp" %}
         - name: "CNVRG_GCP_KEYFILE_SECRET"
           value: "{{ conf.gcp_storage_secret }}"
         - name: "CNVRG_GCP_KEYFILE_MOUNT_PATH"
           value: "{{ conf.gcp_keyfile_mount_path }}"
-{% endif %}
+        {% endif %}
 
 

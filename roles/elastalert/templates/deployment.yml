@@ -1,6 +1,6 @@
 #jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: "{{elastalert.svc_name}}"
@@ -11,19 +11,17 @@ spec:
   selector:
     matchLabels:
       app: "{{elastalert.svc_name}}"
-  serviceName: "{{elastalert.svc_name}}"
   template:
     metadata:
       labels:
         app: "{{elastalert.svc_name}}"
     spec:
-      initContainers:
-      - name: chown-folder
-        image: cnvrg/custom:ubuntu_curl_v1
-        command: ['/bin/bash', '-c', "chown -R 1000:1000 /opt/elastalert/rules;"]
-        volumeMounts:
-        - mountPath: /opt/elastalert/rules
-          name: elastalert-storage
+      {% if security_mode == "default" %}
+      securityContext:
+        runAsUser: {{ elastalert.run_as_user }}
+        runAsGroup: {{ elastalert.run_as_group }}
+        fsGroup: {{ elastalert.fs_group }}
+      {% endif %}
       {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
@@ -42,10 +40,8 @@ spec:
         kubernetes.io/hostname: "{{ hostpath.node_name }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
-
       containers:
       - image: "{{ elastalert.image }}"
-        imagePullPolicy: IfNotPresent
         name: "{{elastalert.svc_name}}"
         ports:
         - containerPort: {{elastalert.container_port}}
@@ -65,26 +61,14 @@ spec:
           subPath: config.yaml
           name: elastalert-config
         - mountPath: /opt/elastalert/rules
-          name: elastalert-storage
+          name: "{{elastalert.svc_name}}"
       restartPolicy: Always
       serviceAccount: "{{rbac.service_account_name}}"
       serviceAccountName: "{{rbac.service_account_name}}"
       volumes:
+      - name: "{{elastalert.svc_name}}"
+        persistentVolumeClaim:
+          claimName: "{{elastalert.svc_name}}"
       - configMap:
           name: elastalert-config
         name: elastalert-config
-  volumeClaimTemplates:
-  - metadata:
-      name: elastalert-storage
-    spec:
-      accessModes: [ ReadWriteOnce ]
-      resources:
-        requests:
-          storage: "{{elastalert.storage_size}}"
-      {% if hostpath.enabled == "true" %}
-      storageClassName: "{{ hostpath.storage_class_name }}"
-      {% elif nfs.enabled == "true" %}
-      storageClassName: "{{ nfs.storage_class_name }}"
-      {% elif pg.storage_class != "use-default" %}
-      storageClassName: "{{ elastalert.storage_class }}"
-      {% endif %}
