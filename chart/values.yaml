@@ -226,6 +226,9 @@ elastalert:
   memoryRequest: 200Mi
   cpuLimit: 400m
   memoryLimit: 800Mi
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
 
 minio:
   enabled: "true"
