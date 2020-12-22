@@ -30,7 +30,7 @@ rules:
     resources:
       - namespaces
     resourceNames:
-      - {{ .Release.Namespace }}
+      - {{ template "spec.cnvrgNs" . }}
     verbs:
       - delete
 ---
@@ -55,7 +55,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: post-install
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "spec.cnvrgNs" . }}
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -77,11 +77,11 @@ spec:
               }
               trap _term SIGTERM
               echo "waiting for cnvrgapp will finish installation. . . ";
-              while (( $(kubectl get cnvrgapp cnvrg-app -n {{ .Release.Namespace }} -o yaml | grep "Awaiting next reconciliation" | wc -l ) != 1 )); do
+              while (( $(kubectl get cnvrgapp cnvrg-app -n {{ template "spec.cnvrgNs" . }} -o yaml | grep "Awaiting next reconciliation" | wc -l ) != 1 )); do
                 sleep 0.1
               done
               echo "installation completed. . . ";
-              kubectl delete job post-install -n {{ .Release.Namespace }}
+              kubectl delete job post-install -n {{ template "spec.cnvrgNs" . }}
       restartPolicy: Never
 ####################################### Uninstall hooks #######################################
 ---
@@ -114,7 +114,7 @@ rules:
       - ""
     resources:
       - namespaces
-    resourceNames: ["{{ .Release.Namespace }}"]
+    resourceNames: ["{{ template "spec.cnvrgNs" . }}"]
     verbs:
       - "*"
   - apiGroups:
@@ -168,8 +168,8 @@ spec:
             - /bin/bash
             - -c
             - |
-              kubectl delete cnvrgapp cnvrg-app -n {{ .Release.Namespace }} --ignore-not-found
-              while (( $(kubectl get cnvrgapp cnvrg-app -n {{ .Release.Namespace }} | grep cnvrg-app | wc -l ) != 0 )); do
+              kubectl delete cnvrgapp cnvrg-app -n {{ template "spec.cnvrgNs" . }} --ignore-not-found
+              while (( $(kubectl get cnvrgapp cnvrg-app -n {{ template "spec.cnvrgNs" . }} | grep cnvrg-app | wc -l ) != 0 )); do
                 echo "waiting for cnvrgapp will be deleted. . . ";
                 sleep 1
               done
