@@ -39,6 +39,7 @@ spec:
       serviceAccountName: "{{rbac.service_account_name}}"
       containers:
         - image: "{{cnvrg_app.image}}"
+          {% if security_mode == "default" %}
           command:
           - "/bin/bash"
           - "-lc"
@@ -48,6 +49,7 @@ spec:
               "s/passenger_max_request_queue_size 10000;/passenger_max_request_queue_size 10000;\n    passenger_max_pool_size $CNVRG_PASSENGER_MAX_POOL_SIZE;\n/g" \
               /etc/nginx/nginx.conf
             touch /etc/service/sidekiq/down && /sbin/my_init
+          {% endif %}
           env:
           - name: "CNVRG_RUN_MODE"
             value: "webapp"
@@ -68,7 +70,7 @@ spec:
               path: "/users/sign_in"
               port: {{cnvrg_app.port}}
               scheme: HTTP
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             successThreshold: 1
             periodSeconds: {{ cnvrg_app.readiness_period_seconds | default('100') }}
             timeoutSeconds: {{ cnvrg_app.readiness_timeout_seconds |default('60') }}

@@ -1,12 +1,9 @@
 ---
-- include_vars: ../../../playbooks/vars/globals.yml
-- include_vars: ../../app/vars/main.yml
+- name: Seeder cleanup
+  import_tasks: istio_cleanup.yml
 
-- debug:
-    msg: "Running cnvrg finalizer"
+- name: Seeder cleanup
+  import_tasks: seeder_cleanup.yml
 
-- name: Remove Istio
-  include_role:
-    name: istio
-  vars:
-    role_state: "absent"
+- name: PVC cleanup
+  import_tasks: pvc_cleanup.yml

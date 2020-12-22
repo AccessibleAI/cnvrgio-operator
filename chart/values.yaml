@@ -118,6 +118,7 @@ conf:
   gcpStorageSecret: gcp-storage-secret
   gcpKeyfileMountPath: /tmp/gcp_keyfile
   gcpKeyfileName: key.json
+  defaultJobsStorageClass: ""
 registry:
   name: cnvrg-registry
   url: "docker.io"
@@ -225,6 +226,9 @@ elastalert:
   memoryRequest: 200Mi
   cpuLimit: 400m
   memoryLimit: 800Mi
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
 
 minio:
   enabled: "true"
@@ -293,9 +297,9 @@ monitoring:
     image: "k8s.gcr.io/metrics-server/metrics-server:v0.3.7"
 istio:
   enabled: "true"
-  operatorImage: "docker.io/istio/operator:1.8.0"
+  operatorImage: "docker.io/istio/operator:1.8.1"
   hub: "docker.io/istio"
-  tag: "1.8.0"
+  tag: "1.8.1"
   proxyImage: "proxyv2"
   mixerImage: "mixer"
   pilotImage: "pilot"
@@ -374,6 +378,8 @@ nfs:
   memoryRequest: 100Mi
   cpuLimit: 200m
   memoryLimit: 200Mi
+  reclaimPolicy: "Retain"
+  defaultSc: "false"
 hostpath:
   enabled: "false"
   image: "quay.io/kubevirt/hostpath-provisioner"

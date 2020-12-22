@@ -10,4 +10,6 @@ nfs:
   memoryRequest: "{{ .Values.nfs.memoryRequest }}"
   cpuLimit: "{{ .Values.nfs.cpuLimit }}"
   memoryLimit: "{{ .Values.nfs.memoryLimit }}"
+  reclaimPolicy: "{{.Values.nfs.reclaimPolicy}}"
+  defaultSc: "{{.Values.nfs.defaultSc}}"
 {{- end }}

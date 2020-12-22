@@ -3,5 +3,7 @@ kind: StorageClass
 metadata:
   name: "{{ nfs.storage_class_name }}"
   namespace: "{{ ansible_operator_meta.namespace }}"
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "{{ nfs.default_sc }}"
 provisioner: "{{ nfs.provisioner }}"
-reclaimPolicy: Retain
+reclaimPolicy: "{{ nfs.reclaim_policy }}"

@@ -12,6 +12,9 @@ elastalert:
   memoryRequest: "{{ .Values.elastalert.memoryRequest }}"
   cpuLimit: "{{ .Values.elastalert.cpuLimit }}"
   memoryLimit: "{{ .Values.elastalert.memoryLimit }}"
+  runAsUser: "{{ .Values.elastalert.runAsUser }}"
+  runAsGroup: "{{ .Values.elastalert.runAsGroup }}"
+  fsGroup: "{{ .Values.elastalert.fsGroup }}"
 
 
   {{- if eq .Values.computeProfile "large"}}

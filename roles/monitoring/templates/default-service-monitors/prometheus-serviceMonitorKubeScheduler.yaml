@@ -4,7 +4,7 @@ metadata:
   labels:
     k8s-app: kube-scheduler
   name: kube-scheduler
-  namespace: cnvrg
+  namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

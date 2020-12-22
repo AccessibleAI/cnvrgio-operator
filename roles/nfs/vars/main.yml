@@ -10,3 +10,6 @@ nfs:
   memory_request: 100Mi
   cpu_limit: 200m
   memory_limit: 200Mi
+  reclaim_policy: "Retain"
+  default_sc: "false"
+

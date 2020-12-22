@@ -1,4 +1,4 @@
-FROM quay.io/operator-framework/ansible-operator:v1.2.0
+FROM quay.io/operator-framework/ansible-operator:v1.3.0
 
 LABEL name="cnvrg-operator" \
 	  vendor="cnvrg.io" \
