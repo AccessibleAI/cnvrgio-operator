@@ -171,9 +171,9 @@ spec:
               memory: 128Mi
           env:
             - name: WATCH_NAMESPACE
-              value: "cnvrg"
+              value: "{{ansible_operator_meta.namespace}}"
             - name: LEADER_ELECTION_NAMESPACE
-              value: "cnvrg"
+              value: "{{ansible_operator_meta.namespace}}"
             - name: POD_NAME
               valueFrom:
                 fieldRef:

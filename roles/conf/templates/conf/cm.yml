@@ -5,9 +5,9 @@ metadata:
   name: env-config
   namespace: "{{ ansible_operator_meta.namespace }}"
 data:
-{% if cnvrg_app.custom_agent_tag != "false" %}
+  {% if cnvrg_app.custom_agent_tag != "false" %}
   AGENT_CUSTOM_TAG: "{{ cnvrg_app.custom_agent_tag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
-{%  endif %}
+  {% endif %}
   ELASTICSEARCH_URL: "http://{{es.svc_name}}"
   KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
   SHOW_INTERCOM:  "{{ cnvrg_app.intercom }}"
@@ -33,11 +33,11 @@ data:
   SMTP_USERNAME: "{{ app_configs.smtp.username }}"
   SMTP_PASSWORD: "{{ app_configs.smtp.password }}"
   SMTP_DOMAIN: "{{ app_configs.smtp.domain }}"
-{% if cnvrg_router.enabled == "true" %}
+  {% if cnvrg_router.enabled == "true" %}
   DEPLOY_URL: "{{ (http_scheme + (cnvrg_router.svc_name + '.' if ingress_type != 'nodeport' else '')  + cluster_domain + (':'+cnvrg_router.node_port|string if ingress_type == 'nodeport' else ''))}}"
   NOTEBOOK_URL: "{{ (http_scheme + (cnvrg_router.svc_name + '.' if ingress_type != 'nodeport' else '')  + cluster_domain + (':'+cnvrg_router.node_port|string if ingress_type == 'nodeport' else ''))}}"
   TENSORBOARD_URL: "{{ (http_scheme + (cnvrg_router.svc_name + '.' if ingress_type != 'nodeport' else '')  + cluster_domain + (':'+cnvrg_router.node_port|string if ingress_type == 'nodeport' else ''))}}"
-{% endif %}
+  {% endif %}
 {% set feature_flags = app_configs.feature_flags.split(';') %}
 {% for feature_flag in feature_flags %}
   {% set flags_itmes = feature_flag.split("=") %}

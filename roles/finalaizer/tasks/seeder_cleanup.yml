@@ -1,0 +1,28 @@
+---
+- name: Remove cnvrg-db-init cm
+  k8s:
+    state: "absent"
+    api_version: "v1"
+    kind: "ConfigMap"
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "cnvrg-db-init"
+  when: dry_run == "false"
+
+
+- name: Get a list of all cnvrg-seeder pods
+  community.kubernetes.k8s_info:
+    kind: Pod
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    label_selectors:
+      - app = cnvrg-seeder
+  register: pod_list
+
+- name: Remove seeder job pods
+  k8s:
+    state: "absent"
+    api_version: "v1"
+    kind: "Pod"
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ item.metadata.name }}"
+  with_items: "{{pod_list.resources}}"
+  when: pod_list.resources | length > 0

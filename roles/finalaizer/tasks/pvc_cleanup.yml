@@ -1,0 +1,14 @@
+---
+- name: Remove PVCs
+  k8s:
+    state: "absent"
+    api_version: "v1"
+    kind: "PersistentVolumeClaim"
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ item }}"
+  with_items:
+   - elastalert-storage-elastalert-0
+   - es-storage-elasticsearch-0
+   - prometheus-cnvrg-db-prometheus-cnvrg-0
+
+
