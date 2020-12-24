@@ -14,20 +14,20 @@
 
 #### Deploy with defaults (Istio, Minio)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s  --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s  --wait \
     --set clusterDomain=base.domain
 ```
 
 ### Upgrade with helm upgrade
 ```
-helm upgrade cnvrg cnvrg/cnvrg --reuse-values \
+helm upgrade cnvrg cnvrg/cnvrg -n cnvrg --reuse-values \
   --set cnvrgApp.image=cnvrg/app:master-1374-encode
 ```
 
 ### Uninstall cnvrg
 ```
 # Uninstall cnvrg.io control plan
-helm uninstall cnvrg
+helm uninstall cnvrg -n cnvrg
 ```
 
 ### Install without Helm (raw k8s manifests)
