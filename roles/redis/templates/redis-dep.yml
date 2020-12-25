@@ -31,9 +31,6 @@ spec:
           ports:
             - containerPort: {{redis.port}}
           resources:
-            limits:
-              cpu: "{{redis.limits.cpu}}"
-              memory: "{{redis.limits.memory}}"
             requests:
               cpu: "{{redis.requests.cpu}}"
               memory: "{{redis.requests.memory}}"
