@@ -22,6 +22,8 @@
         - ../roles/hostpath/vars/main.yml
         - ../roles/ingress/vars/main.yml
         - ../roles/cnvrg_router/vars/main.yml
+        - ../roles/vpa/vars/main.yml
+        - ../roles/hyper/vars/main.yml
       tags: always
 
     # CnvrgApp deployment
@@ -122,6 +124,13 @@
       vars:
         role_state: "{{'present' if kibana.enabled == 'true' else 'absent'}}"
       tags: kibana
+
+    # Hyper deployment
+    - import_role:
+        name: hyper
+      vars:
+        role_state: "{{'present' if hyper.enabled == 'true' else 'absent'}}"
+      tags: hyper
 
     # Nvidia device plugin
     - import_role:

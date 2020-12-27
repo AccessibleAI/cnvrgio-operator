@@ -1,0 +1,46 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{hyper.svc_name}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{hyper.svc_name}}"
+spec:
+  replicas: {{ hyper.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: "{{hyper.svc_name}}"
+  template:
+    metadata:
+      labels:
+        app: "{{hyper.svc_name}}"
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      containers:
+        - image: "{{hyper.image}}"
+          name: "{{hyper.svc_name}}"
+          ports:
+            - containerPort: {{hyper.port}}
+          resources:
+            requests:
+              cpu: "{{hyper.cpu_request}}"
+              memory: "{{hyper.memory_request}}"
+            limits:
+              cpu: "{{ hyper.cpu_limit }}"
+              memory: "{{ hyper.memory_limit }}"

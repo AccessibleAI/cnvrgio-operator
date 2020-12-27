@@ -28,6 +28,9 @@ computeProfiles:
     elastalert:
       cpu: 1
       memory: 1Gi
+    hyper:
+      cpu: 1
+      memory: 2Gi
     prometheus:
       cpu: 1
       memory: 1Gi
@@ -54,6 +57,9 @@ computeProfiles:
     es:
       cpu: 1
       memory: 1Gi
+    hyper:
+      cpu: 1
+      memory: 2Gi
     elastalert:
       cpu: 1
       memory: 1Gi
@@ -83,6 +89,9 @@ computeProfiles:
     es:
       cpu: 100m
       memory: 100Mi
+    hyper:
+      cpu: 100m
+      memory: 200Mi
     elastalert:
       cpu: 100m
       memory: 100Mi
@@ -229,6 +238,18 @@ elastalert:
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
+
+hyper:
+  enabled: "true"
+  image: "cnvrg/hyper-server:latest"
+  port: 5050
+  nodePort: 30050
+  svcName: "hyper"
+  cpuRequest: 500m
+  memoryRequest: 500Mi
+  cpuLimit: 1
+  memoryLimit: 2000Mi
+  replicas: 1
 
 minio:
   enabled: "true"

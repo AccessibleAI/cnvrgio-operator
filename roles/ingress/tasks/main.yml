@@ -34,6 +34,7 @@
     - templates/istio-vs/minio.yml
     - templates/istio-vs/prom.yml
     - templates/istio-vs/cnvrg_router.yml
+    - templates/istio-vs/hyper.yml
   when: ingress_type == "istio"
 
 - name: Deploy K8S Ingress rules
