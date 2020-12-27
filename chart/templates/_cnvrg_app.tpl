@@ -14,7 +14,7 @@ cnvrgApp:
   enableReadinessProbe: "{{.Values.cnvrgApp.enableReadinessProbe}}"
   readinessPeriodSeconds: "{{.Values.cnvrgApp.readinessPeriodSeconds}}"
   readinessTimeoutSeconds: "{{.Values.cnvrgApp.readinessTimeoutSeconds}}"
-
+  resourcesRequestEnabled: "{{.Values.cnvrgApp.resourcesRequestEnabled}}"
   {{- if eq .Values.computeProfile "large"}}
   cpu: "{{ .Values.computeProfiles.large.cnvrgApp.webappCpu }}"
   memory: "{{ .Values.computeProfiles.large.cnvrgApp.webappMemory }}"

@@ -72,25 +72,25 @@ spec:
         - name: "ES_JAVA_OPTS"
           value: "{{ es.java_opts }}"
         ports:
-        - containerPort: {{es.port}}
+        - containerPort: {{es.port|default('9200')}}
         resources:
           limits:
-            cpu: "{{ es.cpu_limit }}"
-            memory: "{{ es.memory_limit }}"
+            cpu: "{{ es.cpu_limit|default('4Gi') }}"
+            memory: "{{ es.memory_limit|default('2') }}"
           requests:
-            cpu: "{{ es.cpu_request }}"
-            memory: "{{ es.memory_request }}"
+            cpu: "{{ es.cpu_request|default('1') }}"
+            memory: "{{ es.memory_request|default('1Gi') }}"
         readinessProbe:
           httpGet:
             path: /_cluster/health
-            port: {{es.port}}
+            port: {{es.port|default('9200')}}
           initialDelaySeconds: 30
           periodSeconds: 20
           failureThreshold: 5
         livenessProbe:
           httpGet:
             path: /_cluster/health
-            port: {{es.port}}
+            port: {{es.port|default('9200')}}
           initialDelaySeconds: 5
           periodSeconds: 20
           failureThreshold: 5

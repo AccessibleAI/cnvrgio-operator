@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{redis.svc_name}}"
+  name: "{{redis.svc_name|default('redis')}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{redis.svc_name}}"
+    app: "{{redis.svc_name|default('redis')}}"
 spec:
   selector:
     matchLabels:
-      app: "{{redis.svc_name}}"
+      app: "{{redis.svc_name|default('redis')}}"
   template:
     metadata:
       labels:
-        app: "{{redis.svc_name}}"
+        app: "{{redis.svc_name|default('redis')}}"
     spec:
 {% if tenancy.enabled == "true" %}
       nodeSelector:
@@ -26,11 +26,14 @@ spec:
         effect: "NoSchedule"
 {% endif %}
       containers:
-        - image: "{{redis.image}}"
+        - image: "{{redis.image|default('redis:3.0.5')}}"
           name: redis
           ports:
-            - containerPort: {{redis.port}}
+            - containerPort: {{redis.port|default('6379')}}
           resources:
+            limits:
+              cpu: "{{redis.limits.cpu|default('1')}}"
+              memory: "{{redis.limits.memory|default('2Gi')}}"
             requests:
-              cpu: "{{redis.requests.cpu}}"
-              memory: "{{redis.requests.memory}}"
+              cpu: "{{redis.requests.cpu|default('500m')}}"
+              memory: "{{redis.requests.memory|default('1Gi')}}"

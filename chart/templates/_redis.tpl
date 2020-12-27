@@ -4,6 +4,9 @@ redis:
   image: "{{ .Values.redis.image }}"
   svcName: "{{ .Values.redis.svcName }}"
   port: "{{ .Values.redis.port }}"
+  limits:
+    cpu: "{{.Values.redis.limits.cpu}}"
+    memory: "{{.Values.redis.limits.memory}}"
 
   {{- if eq .Values.computeProfile "large" }}
   requests:

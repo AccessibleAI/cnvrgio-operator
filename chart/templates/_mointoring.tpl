@@ -49,12 +49,10 @@ monitoring:
     port: "{{ .Values.monitoring.prometheus.port }}"
     nodePort: "{{ .Values.monitoring.prometheus.nodePort }}"
     storageClass: "{{ .Values.monitoring.prometheus.enabled }}"
-
   nodeExporter:
     enabled: "{{ .Values.monitoring.nodeExporter.enabled }}"
     image: "{{ .Values.monitoring.nodeExporter.image }}"
     port: "{{ .Values.monitoring.nodeExporter.port }}"
-
   kubeStateMetrics:
     enabled: "{{ .Values.monitoring.kubeStateMetrics.enabled }}"
     image: "{{ .Values.monitoring.kubeStateMetrics.image }}"

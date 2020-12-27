@@ -12,7 +12,8 @@ es:
   nodePort: "{{ .Values.es.nodePort }}"
   storageClass: "{{ .Values.es.storageClass }}"
   javaOpts: "{{ .Values.es.javaOpts }}"
-
+  cpuLimit: "{{.Values.es.cpuLimit}}"
+  memoryLimit: "{{.Values.es.memoryLimit}}"
 
   {{- if eq .Values.computeProfile "large"}}
   cpuRequest: "{{ .Values.computeProfiles.large.es.cpu }}"
