@@ -5,6 +5,7 @@ hyper:
   replicas: 1
   node_port: 30050
   svc_name: "hyper"
+  token: "token"
   cpu_request: 500m
   memory_request: 500Mi
   cpu_limit: 1

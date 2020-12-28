@@ -41,7 +41,7 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: "/"
+              path: "/?key={{hyper.token}}"
               port: {{hyper.port}}
               scheme: HTTP
             initialDelaySeconds: 10

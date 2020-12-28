@@ -6,6 +6,7 @@ hyper:
   nodePort: "{{ .Values.hyper.enabled }}"
   svcName: "{{ .Values.hyper.svcName }}"
   replicas: "{{ .Values.hyper.replicas }}"
+  token: "{{.Values.hyper.token}}"
   enableReadinessProbe: "{{.Values.hyper.enableReadinessProbe}}"
   readinessPeriodSeconds: "{{.Values.hyper.readinessPeriodSeconds}}"
   readinessTimeoutSeconds: "{{.Values.hyper.readinessTimeoutSeconds}}"

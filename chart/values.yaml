@@ -249,6 +249,7 @@ hyper:
   cpuLimit: 1
   memoryLimit: 2000Mi
   replicas: 1
+  token: "token"
   enableReadinessProbe: "true"
   readinessPeriodSeconds: 100
   readinessTimeoutSeconds: 60
