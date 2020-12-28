@@ -13,13 +13,13 @@ class TaintsOperatorDeploymentTest(unittest.TestCase, CommonBase):
         logging.info("starting -> TaintsOperatorDeploymentTest")
         cls._started_at = time.time()
         cls._exec_cmd("kubectl create ns cnvrg")
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+        cls._exec_cmd("kubectl label nodes cnvrg=app --all --overwrite")
+        cls._exec_cmd("kubectl taint nodes cnvrg=app:NoSchedule --all")
 
     @classmethod
     def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls._exec_cmd("kubectl label node cnvrg- --all")
+        cls._exec_cmd("kubectl taint nodes cnvrg- --all")
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "TaintsOperatorDeploymentTest")
 

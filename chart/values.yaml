@@ -105,8 +105,8 @@ tenancy:
   enabled: "false"
   dedicatedNodes: "false"
   cnvrg:
-    key: "cnvrg-taint"
-    value: "true"
+    key: "cnvrg"
+    value: "app"
 https:
   enabled: "false"
   useWildcardCertificate: "true"

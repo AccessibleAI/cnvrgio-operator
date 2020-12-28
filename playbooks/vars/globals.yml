@@ -13,8 +13,8 @@ tenancy:
   enabled: "false"
   dedicated_nodes: "false"
   cnvrg:
-    key: "cnvrg-taint"
-    value: "true"
+    key: "cnvrg"
+    value: "app"
   minio:
     key: "minio-taint"
     value: "true"

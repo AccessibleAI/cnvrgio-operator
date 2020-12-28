@@ -17,7 +17,7 @@ spec:
     spec:
       serviceAccountName: cnvrg-operator
       tolerations:
-        - key: "cnvrg-taint"
+        - key: "cnvrg"
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"

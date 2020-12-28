@@ -311,7 +311,7 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
         cls._started_at = time.time()
         cls.get_nip_nip_url()
         cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+        cls._exec_cmd("kubectl label nodes cnvrg=app --all --overwrite")
         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
         if cls.wait_for_cnvrg_spec_ready() is False:
@@ -319,7 +319,7 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+        cls._exec_cmd("kubectl label node cnvrg- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesFalseTest")
@@ -413,8 +413,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
         cls._started_at = time.time()
         cls.get_nip_nip_url()
         cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+        cls._exec_cmd("kubectl label nodes cnvrg=app --all --overwrite")
+        cls._exec_cmd("kubectl taint nodes cnvrg=app:NoSchedule --all")
         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
         cls.create_cnvrg_spec(CNVRG_SPEC_WITH_TOLERATION.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
         if cls.wait_for_cnvrg_spec_ready() is False:
@@ -422,8 +422,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls._exec_cmd("kubectl label node cnvrg- --all")
+        cls._exec_cmd("kubectl taint nodes cnvrg- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueTest")
@@ -542,8 +542,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
         logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
         cls._started_at = time.time()
         cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+        cls._exec_cmd("kubectl label nodes cnvrg=app --all --overwrite")
+        cls._exec_cmd("kubectl taint nodes cnvrg=app:NoSchedule --all")
         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
         cls.create_cnvrg_spec(
             CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
@@ -554,8 +554,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
 
     @classmethod
     def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls._exec_cmd("kubectl label node cnvrg- --all")
+        cls._exec_cmd("kubectl taint nodes cnvrg- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
@@ -604,8 +604,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
         node_name = res[1]
         cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+        cls._exec_cmd("kubectl label nodes cnvrg=app --all --overwrite")
+        cls._exec_cmd("kubectl taint nodes cnvrg=app:NoSchedule --all")
         spec = CNVRG_SPEC_WITH_TOLERATION_HOSTPATH.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url())
         spec = spec.replace("__NODE_NAME__", node_name)
         cls.create_cnvrg_spec(spec)
@@ -614,8 +614,8 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
 
     @classmethod
     def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls._exec_cmd("kubectl label node cnvrg- --all")
+        cls._exec_cmd("kubectl taint nodes cnvrg- --all")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")

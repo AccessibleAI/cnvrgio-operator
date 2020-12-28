@@ -157,7 +157,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 |`ingressType`|istio|
 |`tenancy.enabled`|false|
 |`tenancy.dedicatedNodes`|false|
-|`tenancy.cnvrg.key`|cnvrg-taint|
+|`tenancy.cnvrg.key`|cnvrg|
 |`tenancy.cnvrg.value`|true|
 |`tenancy.minio.key`|minio-taint|
 |`tenancy.minio.value`|true|
