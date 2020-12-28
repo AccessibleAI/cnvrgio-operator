@@ -5,13 +5,8 @@ elastalert:
   port: "{{ .Values.elastalert.port }}"
   nodePort: "{{ .Values.elastalert.nodePort }}"
   containerPort: "{{ .Values.elastalert.containerPort }}"
-  storageSize: "{{ .Values.elastalert.storageSize }}"
   svcName: "{{ .Values.elastalert.svcName }}"
   storageClass: "{{ .Values.elastalert.storageClass }}"
-  cpuRequest: "{{ .Values.elastalert.cpuRequest }}"
-  memoryRequest: "{{ .Values.elastalert.memoryRequest }}"
-  cpuLimit: "{{ .Values.elastalert.cpuLimit }}"
-  memoryLimit: "{{ .Values.elastalert.memoryLimit }}"
   runAsUser: "{{ .Values.elastalert.runAsUser }}"
   runAsGroup: "{{ .Values.elastalert.runAsGroup }}"
   fsGroup: "{{ .Values.elastalert.fsGroup }}"
@@ -37,6 +32,8 @@ elastalert:
   cpuRequest: "{{ .Values.computeProfiles.small.elastalert.cpu }}"
   memoryRequest: "{{ .Values.computeProfiles.small.elastalert.memory }}"
   storageSize: "{{ .Values.computeProfiles.small.storage }}"
-
+  cpuLimit: "{{ .Values.computeProfiles.small.elastalert.cpu }}"
+  memoryLimit: "{{ .Values.computeProfiles.small.elastalert.memory }}"
   {{- end }}
+
 {{- end }}

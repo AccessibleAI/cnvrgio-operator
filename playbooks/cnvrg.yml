@@ -24,139 +24,179 @@
         - ../roles/cnvrg_router/vars/main.yml
       tags: always
 
-    # CnvrgApp deployment
-    - import_role:
-        name: app
-      vars:
-        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: app
 
-    # Cnvrg Nginx Router
-    - import_role:
-        name: cnvrg_router
-      vars:
-        role_state: "{{'present' if cnvrg_router.enabled == 'true' else 'absent'}}"
-      tags: cnvrg_router
+    - name: Deploy cnvrg stack
+      block:
 
-    # NFS provisioner deployment
-    - import_role:
-        name: nfs
-      vars:
-        role_state: "{{'present' if nfs.enabled == 'true' else 'absent'}}"
-      tags: nfs
+      # CnvrgApp deployment
+      - import_role:
+          name: app
+          tasks_from: install.yml
+        vars:
+          role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
+        when:
+        - cnvrg_app.enabled == "true"
+        tags: app
 
-    # Hostpath provisioner deployment
-    - import_role:
-        name: hostpath
-      vars:
-        role_state: "{{'present' if hostpath.enabled == 'true' else 'absent'}}"
-      tags: hostpath
+      # Cnvrg Nginx Router
+      - import_role:
+          name: cnvrg_router
+        vars:
+          role_state: "{{'present' if cnvrg_router.enabled == 'true' else 'absent'}}"
+        when:
+        - cnvrg_router.enabled == "true"
+        tags: cnvrg_router
 
-    # Configuration deployment
-    - import_role:
-        name: conf
-      vars:
-        role_state: "{{'present' if conf.enabled == 'true' else 'absent'}}"
-      tags: conf
+      # NFS provisioner deployment
+      - import_role:
+          name: nfs
+        vars:
+          role_state: "{{'present' if nfs.enabled == 'true' else 'absent'}}"
+        when:
+        - nfs.enabled == "true"
+        tags: nfs
 
-    # Postgres deployment
-    - import_role:
-        name: pg
-      vars:
-        role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: pg
+      # Hostpath provisioner deployment
+      - import_role:
+          name: hostpath
+        vars:
+          role_state: "{{'present' if hostpath.enabled == 'true' else 'absent'}}"
+        when:
+        - hostpath.enabled == "true"
+        tags: hostpath
 
-    # Postgres deployment
-    - import_role:
-        name: pg_backup
-      vars:
-         role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: pg_backup
+      # Configuration deployment
+      - import_role:
+          name: conf
+        vars:
+          role_state: "{{'present' if conf.enabled == 'true' else 'absent'}}"
+        when:
+        - conf.enabled == "true"
+        tags: conf
 
-    # Redis deployment
-    - import_role:
-        name: redis
-      vars:
-        role_state: "{{'present' if redis.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: redis
+      # Postgres deployment
+      - import_role:
+          name: pg
+        vars:
+          role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+        when:
+        - pg.enabled == "true"
+        tags: pg
 
-    # ElasticSearch deployment
-    - import_role:
-        name: es
-      vars:
-        role_state: "{{'present' if es.enabled == 'true' else 'absent'}}"
-      tags: es
+      # Postgres deployment
+      - import_role:
+          name: pg_backup
+        vars:
+           role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+        when:
+        - pg_backup.enabled == "true"
+        tags: pg_backup
 
-    # ElastAlert deployment
-    - import_role:
-        name: elastalert
-      vars:
-        role_state: "{{'present' if elastalert.enabled == 'true' else 'absent'}}"
-      tags: elastalert
+      # Redis deployment
+      - import_role:
+          name: redis
+        vars:
+          role_state: "{{'present' if redis.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+        when:
+        - redis.enabled == "true"
+        tags: redis
 
-    # Minio deployment
-    - import_role:
-        name: minio
-      vars:
-        role_state: "{{'present' if minio.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: minio
+      # ElasticSearch deployment
+      - import_role:
+          name: es
+        vars:
+          role_state: "{{'present' if es.enabled == 'true' else 'absent'}}"
+        when:
+        - es.enabled == "true"
+        tags: es
 
-    # Fluentd deployment
-    - import_role:
-        name: fluentd
-      vars:
-        role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
-      tags: fluentd
+      # ElastAlert deployment
+      - import_role:
+          name: elastalert
+        vars:
+          role_state: "{{'present' if elastalert.enabled == 'true' else 'absent'}}"
+        when:
+        - elastalert.enabled == "true"
+        tags: elastalert
 
-    # Istio deployment
-    - import_role:
-        name: istio
-      vars:
-        role_state: "{{'present' if istio.enabled == 'true' else 'absent'}}"
-      when: istio.enabled == "true"
-      tags: istio
+      # Minio deployment
+      - import_role:
+          name: minio
+        vars:
+          role_state: "{{'present' if minio.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
+        when:
+        - minio.enabled == "true"
+        tags: minio
 
-    # Kibana deployment
-    - import_role:
-        name: kibana
-      vars:
-        role_state: "{{'present' if kibana.enabled == 'true' else 'absent'}}"
-      tags: kibana
+      # Fluentd deployment
+      - import_role:
+          name: fluentd
+        vars:
+          role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
+        when:
+        - fluentd.enabled == "true"
+        tags: fluentd
 
-    # Nvidia device plugin
-    - import_role:
-        name: nvidiadp
-      vars:
-        role_state: "{{'present' if nvidiadp.enabled == 'true' else 'absent'}}"
-      when: nvidiadp.enabled == "true"
-      tags: nvidiadp
+      # Istio deployment
+      - import_role:
+          name: istio
+        vars:
+          role_state: "{{'present' if istio.enabled == 'true' else 'absent'}}"
+        when:
+        - istio.enabled == "true"
+        tags: istio
 
-    # MPI deployment
-    - import_role:
-        name: mpi
-      vars:
-        role_state: "{{'present' if mpi.enabled == 'true' else 'absent'}}"
-      when: mpi.enabled == "true"
-      tags: mpi
+      # Kibana deployment
+      - import_role:
+          name: kibana
+        vars:
+          role_state: "{{'present' if kibana.enabled == 'true' else 'absent'}}"
+        when:
+        - kibana.enabled == "true"
+        tags: kibana
 
-    # Ingress rules deployment
-    - import_role:
-        name: ingress
-      when: ingress.enabled == 'true'
-      tags: ingress
+      # Nvidia device plugin
+      - import_role:
+          name: nvidiadp
+        vars:
+          role_state: "{{'present' if nvidiadp.enabled == 'true' else 'absent'}}"
+        when:
+        - nvidiadp.enabled == "true"
+        tags: nvidiadp
 
-    # Monitoring
-    - import_role:
-        name: monitoring
-      vars:
-        role_state: "{{'present' if monitoring.enabled == 'true' else 'absent'}}"
-      when: monitoring.enabled == "true"
-      tags: monitoring
+      # MPI deployment
+      - import_role:
+          name: mpi
+        vars:
+          role_state: "{{'present' if mpi.enabled == 'true' else 'absent'}}"
+        when:
+        - mpi.enabled == "true"
+        tags: mpi
 
-    # vpa deployment
-    - import_role:
-        name: vpa
-      vars:
-        role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
-      when: vpa.enabled == "true"
-      tags: vpa
+      # Ingress rules deployment
+      - import_role:
+          name: ingress
+        when:
+        - ingress.enabled == 'true'
+        tags: ingress
+
+      # Monitoring
+      - import_role:
+          name: monitoring
+        vars:
+          role_state: "{{'present' if monitoring.enabled == 'true' else 'absent'}}"
+        when:
+        - monitoring.enabled == "true"
+        tags: monitoring
+
+      # vpa deployment
+      - import_role:
+          name: vpa
+        vars:
+          role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
+        when:
+        - vpa.enabled == "true"
+        tags: vpa
+
+      when:
+      - ops_decree == "start"

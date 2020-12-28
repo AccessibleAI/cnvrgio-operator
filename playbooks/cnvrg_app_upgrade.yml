@@ -1,0 +1,22 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: "Include vars"
+      include_vars: "{{ item }}"
+      with_items:
+        - vars/globals.yml
+        - ../roles/conf/vars/main.yml
+        - ../roles/redis/vars/main.yml
+        - ../roles/pg/vars/main.yml
+        - ../roles/es/vars/main.yml
+        - ../roles/app/vars/main.yml
+      tags: always
+
+
+    # CnvrgApp upgrade
+    - import_role:
+        name: app
+        tasks_from: upgrade.yml
+      vars:
+        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
+      tags: app_upgrade

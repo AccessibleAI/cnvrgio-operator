@@ -1,0 +1,27 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{ cnvrg_app_upgrade.app_image_cache_ds }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ cnvrg_app_upgrade.app_image_cache_ds }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ cnvrg_app_upgrade.app_image_cache_ds }}"
+    spec:
+      {% if cnvrg_spec.spec.cnvrgApp.edition == "enterprise" %}
+      imagePullSecrets:
+        - name: {{ cnvrg_spec.spec.registry.name }}
+      {% endif %}
+      tolerations:
+      - key: "{{ cnvrg_spec.spec.tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ cnvrg_spec.spec.tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      containers:
+      - name: app-image-chache
+        image: "{{ cnvrg_app_upgrade.image }}"

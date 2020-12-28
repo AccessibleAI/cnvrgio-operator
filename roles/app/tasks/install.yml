@@ -9,7 +9,7 @@
     state: "{{ role_state }}"
     compare_resource: yes
   with_fileglob:
-    - templates/app/*
+    - templates/app_install/*
 
 
 

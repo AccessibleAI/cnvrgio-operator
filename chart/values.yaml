@@ -219,13 +219,8 @@ elastalert:
   port: "80"
   nodePort: 32030
   containerPort: "3030"
-  storageSize: "30Gi"
   svcName: "elastalert"
   storageClass: "use-default"
-  cpuRequest: 100m
-  memoryRequest: 200Mi
-  cpuLimit: 400m
-  memoryLimit: 800Mi
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000

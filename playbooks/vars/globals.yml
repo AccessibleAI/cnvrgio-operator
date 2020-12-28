@@ -8,6 +8,7 @@ http_scheme: "{{ 'https://' if https.enabled == 'true' else 'http://' }}"
 orchestrator: "k8s" # k8s | ocp
 security_mode: "default" # default | ocp
 ingress_type: "istio" # openshift | istio | k8singress | nodeport
+ops_decree: "start" # start | stop
 
 tenancy:
   enabled: "false"

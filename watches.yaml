@@ -12,4 +12,9 @@
   - group: autoscaling.k8s.io
     version: v1
     kind: VerticalPodAutoscaler
+- version: v1
+  group: mlops.cnvrg.io
+  kind: CnvrgAppUpgrade
+  playbook: playbooks/cnvrg_app_upgrade.yml
+  manageStatus: False
 # +kubebuilder:scaffold:watch

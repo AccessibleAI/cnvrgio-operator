@@ -1,0 +1,96 @@
+- debug:
+    msg: "{{ vars | to_nice_json  }}"
+
+- name: Set status
+  operator_sdk.util.k8s_status:
+    api_version: mlops.cnvrg.io/v1
+    kind: CnvrgAppUpgrade
+    name: cnvrg-app-upgrade
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    status:
+      status: "getting cnvrgapp"
+
+- name: Get CnvrgApp
+  community.kubernetes.k8s_info:
+    api_version: v1
+    kind: CnvrgApp
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ cnvrg_app_upgrade.cnvrg_app_name }}"
+  register: resources_cnvrg
+
+- name: set cnvrg_spec
+  set_fact:
+    cnvrg_spec: "{{ resources_cnvrg.resources[0] }}"
+  when: resources_cnvrg.resources|length > 0
+
+
+- name: run upgrade
+  block:
+
+  - name: update status
+    operator_sdk.util.k8s_status:
+      api_version: mlops.cnvrg.io/v1
+      kind: CnvrgAppUpgrade
+      name: cnvrg-app-upgrade
+      namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        status: "backup cnvrgapp"
+
+  - name: Backup CnvrgApp
+    operator_sdk.util.k8s_status:
+      api_version: mlops.cnvrg.io/v1
+      kind: CnvrgAppUpgrade
+      name: cnvrg-app-upgrade
+      namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        cnvrgBackup:
+          cnvrgAppSepc: "{{ cnvrg_spec.spec }}"
+    when:
+    - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
+
+  - name: Set status
+    operator_sdk.util.k8s_status:
+      api_version: mlops.cnvrg.io/v1
+      kind: CnvrgAppUpgrade
+      name: cnvrg-app-upgrade
+      namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        status: "caching app image"
+
+  - name: Create app image caching ds
+    k8s:
+      state: "present"
+      definition: "{{ lookup('template', 'templates/app_upgrade/cache-image-ds.yml') }}"
+
+  - name: wait for image cache ds to come up
+    shell: |
+      kubectl get daemonset "{{ cnvrg_app_upgrade.app_image_cache_ds }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
+    register: ds_status
+    until: (ds_status.stdout|from_json).desiredNumberScheduled == (ds_status.stdout|from_json).currentNumberScheduled
+    retries: 3600
+    delay: 5
+
+  - name: Set status
+    operator_sdk.util.k8s_status:
+      api_version: mlops.cnvrg.io/v1
+      kind: CnvrgAppUpgrade
+      name: cnvrg-app-upgrade
+      namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        status: "scale to 0 sedekiqs, set resourcesRequestEnabled to false"
+
+  - debug:
+      msg: "{{ cnvrg_spec | to_nice_yaml }}"
+
+  - name: scale to 0 sedekiqs and disable resources requests
+    set_fact:
+      cnvrg_spec: "{{ cnvrg_spec|combine({'spec': {'opsDecree':'pause','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+
+  - name: update CnvrgApp
+    k8s:
+      state: "present"
+      definition: "{{ cnvrg_spec }}"
+      wait: "yes"
+
+
+  when: cnvrg_spec is not undefined
