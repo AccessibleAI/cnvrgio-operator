@@ -240,7 +240,7 @@ elastalert:
   fsGroup: 1000
 
 hyper:
-  enabled: "true"
+  enabled: "false"
   image: "cnvrg/hyper-server:latest"
   port: 5050
   nodePort: 30050

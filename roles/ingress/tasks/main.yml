@@ -5,15 +5,8 @@
   vars:
     template_path: "{{ item }}"
     state: "present"
-  with_items:
-    - templates/ocp-route/app.yml
-    - templates/ocp-route/ea.yml
-    - templates/ocp-route/es.yml
-    - templates/ocp-route/grafana.yml
-    - templates/ocp-route/kibana.yml
-    - templates/ocp-route/minio.yml
-    - templates/ocp-route/prom.yml
-    - templates/ocp-route/cnvrg_router.yml
+  with_fileglob:
+    - templates/ocp-route/*
   when:
   - ingress_type == "openshift"
 
@@ -24,17 +17,8 @@
   vars:
     template_path: "{{ item }}"
     state: "present"
-  with_items:
-    - templates/istio-gw/gw.yml
-    - templates/istio-vs/app.yml
-    - templates/istio-vs/ea.yml
-    - templates/istio-vs/es.yml
-    - templates/istio-vs/grafana.yml
-    - templates/istio-vs/kibana.yml
-    - templates/istio-vs/minio.yml
-    - templates/istio-vs/prom.yml
-    - templates/istio-vs/cnvrg_router.yml
-    - templates/istio-vs/hyper.yml
+  with_fileglob:
+    - templates/istio-gw/*
   when: ingress_type == "istio"
 
 - name: Deploy K8S Ingress rules
@@ -44,13 +28,6 @@
   vars:
     template_path: "{{ item }}"
     state: "present"
-  with_items:
-    - templates/k8s-ingress/app.yml
-    - templates/k8s-ingress/ea.yml
-    - templates/k8s-ingress/es.yml
-    - templates/k8s-ingress/grafana.yml
-    - templates/k8s-ingress/kibana.yml
-    - templates/k8s-ingress/minio.yml
-    - templates/k8s-ingress/prom.yml
-    - templates/k8s-ingress/cnvrg_router.yml
+  with_fileglob:
+    - templates/k8s-ingress/*
   when: ingress_type == "k8singress"
