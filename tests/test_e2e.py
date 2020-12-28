@@ -32,6 +32,8 @@ spec:
       memoryRequest: 100Mi
   vpa:
     enabled: "true"
+  hyper:
+    enabled: "true"
 """
 
 CNVRG_SPEC_WITH_TOLERATION = """
@@ -75,6 +77,8 @@ spec:
     enabled: "true"
   vpa:
     enabled: "true"
+  hyper:
+    enabled: "true"
 """
 
 CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY = """
@@ -114,6 +118,8 @@ spec:
   fluentd:
     enabled: "false"
   nvidiadp:
+    enabled: "false"
+  hyper:
     enabled: "false"
 """
 
@@ -177,6 +183,8 @@ spec:
   nvidiadp:
     enabled: "false"
   vpa:
+    enabled: "true"
+  hyper:
     enabled: "true"
 """
 
