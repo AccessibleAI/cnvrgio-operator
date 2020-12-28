@@ -6,7 +6,9 @@ hyper:
   nodePort: "{{ .Values.hyper.enabled }}"
   svcName: "{{ .Values.hyper.svcName }}"
   replicas: "{{ .Values.hyper.replicas }}"
-
+  enableReadinessProbe: "{{.Values.hyper.enableReadinessProbe}}"
+  readinessPeriodSeconds: "{{.Values.hyper.readinessPeriodSeconds}}"
+  readinessTimeoutSeconds: "{{.Values.hyper.readinessTimeoutSeconds}}"
 
   {{- if eq .Values.computeProfile "large"}}
   cpuRequest: "{{ .Values.computeProfiles.large.hyper.cpu }}"

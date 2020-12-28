@@ -18,6 +18,17 @@
     template_path: "{{ item }}"
     state: "present"
   with_fileglob:
+    - templates/istio-vs/*
+  when: ingress_type == "istio"
+
+- name: Deploy GW
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    template_path: "{{ item }}"
+    state: "present"
+  with_fileglob:
     - templates/istio-gw/*
   when: ingress_type == "istio"
 

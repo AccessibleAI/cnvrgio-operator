@@ -238,7 +238,6 @@ elastalert:
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
-
 hyper:
   enabled: "false"
   image: "cnvrg/hyper-server:latest"
@@ -250,7 +249,9 @@ hyper:
   cpuLimit: 1
   memoryLimit: 2000Mi
   replicas: 1
-
+  enableReadinessProbe: "true"
+  readinessPeriodSeconds: 100
+  readinessTimeoutSeconds: 60
 minio:
   enabled: "true"
   replicas: 1

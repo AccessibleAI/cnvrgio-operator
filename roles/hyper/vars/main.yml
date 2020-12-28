@@ -9,3 +9,6 @@ hyper:
   memory_request: 500Mi
   cpu_limit: 1
   memory_limit: 2000Mi
+  enable_readiness_probe: "true"
+  readiness_period_seconds: 100
+  readiness_timeout_seconds: 60
