@@ -35,6 +35,9 @@ spec:
       containers:
         - image: "{{hyper.image}}"
           name: "{{hyper.svc_name}}"
+          envFrom:
+            - configMapRef:
+                name: env-config
           ports:
             - containerPort: {{hyper.port}}
           {% if (cnvrg_app.enable_readiness_probe | default ('true')) == "true" %}

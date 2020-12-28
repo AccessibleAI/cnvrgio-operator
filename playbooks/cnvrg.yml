@@ -129,7 +129,7 @@
     - import_role:
         name: hyper
       vars:
-        role_state: "{{'present' if hyper.enabled == 'true' else 'absent'}}"
+        role_state: "{{'present' if hyper.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
       tags: hyper
 
     # Nvidia device plugin
