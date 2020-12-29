@@ -200,7 +200,7 @@ pipeline {
                             echo "next version gonna be: ${nextRC}-rc0"
                             sh """
                             git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+                            git push https://${USERNAME}:${PASSWORD}@${url} --tags -f
                             """
                             // docker run  -v ${workspace}:/root \
                             // cnvrg/cnvrg-operator-test-runtime:latest bash -lc 'cd scripts; python dump-helm-docs.py; python dump-offline_images.py'
