@@ -192,7 +192,7 @@ pipeline {
                         def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
                         sh """
                             git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+                            git push https://${USERNAME}:${PASSWORD}@${url} --tags -f
                         """
                         if (env.BRANCH_NAME == "master") {
                             url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
