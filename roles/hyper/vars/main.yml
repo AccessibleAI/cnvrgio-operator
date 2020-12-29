@@ -1,0 +1,15 @@
+hyper:
+  enabled: "false"
+  image: "cnvrg/hyper-server:latest"
+  port: 5050
+  replicas: 1
+  node_port: 30050
+  svc_name: "hyper"
+  token: "token"
+  cpu_request: 500m
+  memory_request: 500Mi
+  cpu_limit: 1
+  memory_limit: 2000Mi
+  enable_readiness_probe: "true"
+  readiness_period_seconds: 100
+  readiness_timeout_seconds: 60
