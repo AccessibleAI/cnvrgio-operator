@@ -10,6 +10,7 @@ data:
   {% endif %}
   ELASTICSEARCH_URL: "http://{{es.svc_name}}"
   HYPER_SERVER_URL: "http://{{hyper.svc_name}}"
+  HYPER_SERVER_PORT: "{{hyper.port}}"
   HYPER_SERVER_TOKEN: "{{hyper.token}}"
   KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
   SHOW_INTERCOM:  "{{ cnvrg_app.intercom }}"
