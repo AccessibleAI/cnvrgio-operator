@@ -1,5 +1,5 @@
 hyper:
-  enabled: "false"
+  enabled: "true"
   image: "cnvrg/hyper-server:latest"
   port: 5050
   replicas: 1
