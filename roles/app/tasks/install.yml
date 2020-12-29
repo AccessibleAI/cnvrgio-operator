@@ -5,8 +5,8 @@
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "present"
     compare_resource: yes
   with_fileglob:
     - templates/app_install/*

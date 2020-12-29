@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{redis.svc_name|default('redis')}}"
+  name: "{{redis.svcName|default('redis')}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{redis.svc_name|default('redis')}}"
+    app: "{{redis.svcName|default('redis')}}"
 spec:
   selector:
     matchLabels:
-      app: "{{redis.svc_name|default('redis')}}"
+      app: "{{redis.svcName|default('redis')}}"
   template:
     metadata:
       labels:
-        app: "{{redis.svc_name|default('redis')}}"
+        app: "{{redis.svcName|default('redis')}}"
     spec:
 {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {% endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"

@@ -1,11 +1,11 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name:  "{{minio.svc_name}}"
+  name:  "{{minio.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
-  host: "{{ minio.svc_name }}.{{ ansible_operator_meta.namespace }}.svc.cluster.local"
+  host: "{{ minio.svcName }}.{{ ansible_operator_meta.namespace }}.svc.cluster.local"
   trafficPolicy:
     loadBalancer:
       consistentHash:
-        {{ minio.shared_storage.consistent_hash.key }}: {{ minio.shared_storage.consistent_hash.value }}
+        {{ minio.sharedStorage.consistentHash.key }}: {{ minio.sharedStorage.consistentHash.value }}

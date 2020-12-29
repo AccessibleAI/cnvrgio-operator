@@ -2,8 +2,8 @@
 ingress:
   enabled: "true" #
   timeout: 18000s #  15min = retries_attempts * per_try_timeout
-  retries_attempts: 5
-  per_try_timeout: 3600s
+  retriesAttempts: 5
+  perTryTimeout: 3600s
   descriptions:
     ingress:
       enabled: |

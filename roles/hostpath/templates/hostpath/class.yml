@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: "{{ hostpath.storage_class_name }}"
+  name: "{{ hostpath.storageClassName }}"
 provisioner: kubevirt.io/hostpath-provisioner
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete

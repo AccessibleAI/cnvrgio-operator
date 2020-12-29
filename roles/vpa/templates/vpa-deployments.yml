@@ -2,13 +2,13 @@
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: {{cnvrg_app.svc_name}}
+  name: {{cnvrgApp.svcName}}
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       Deployment
-    name:       {{cnvrg_app.svc_name}}
+    name:       {{cnvrgApp.svcName}}
   updatePolicy:
     updateMode: "Off"
 ---
@@ -42,26 +42,26 @@ spec:
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: {{pg.svc_name}}
+  name: {{pg.svcName}}
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       Deployment
-    name:       {{pg.svc_name}}
+    name:       {{pg.svcName}}
   updatePolicy:
     updateMode: "Off"
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: {{redis.svc_name}}
+  name: {{redis.svcName}}
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       Deployment
-    name:       {{redis.svc_name}}
+    name:       {{redis.svcName}}
   updatePolicy:
     updateMode: "Off"
 {%  if minio.enabled == "true" %}
@@ -69,13 +69,13 @@ spec:
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: {{minio.svc_name}}
+  name: {{minio.svcName}}
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       Deployment
-    name:       {{minio.svc_name}}
+    name:       {{minio.svcName}}
   updatePolicy:
     updateMode: "Off"
 {% endif %}
@@ -83,25 +83,25 @@ spec:
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: {{es.svc_name}}
+  name: {{es.svcName}}
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       StatefulSet
-    name:       {{es.svc_name}}
+    name:       {{es.svcName}}
   updatePolicy:
     updateMode: "Off"
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: "{{monitoring.prometheus.svc_name}}-cnvrg"
+  name: "{{monitoring.prometheus.svcName}}-cnvrg"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       StatefulSet
-    name:       "{{monitoring.prometheus.svc_name}}-cnvrg"
+    name:       "{{monitoring.prometheus.svcName}}-cnvrg"
   updatePolicy:
     updateMode: "Off"

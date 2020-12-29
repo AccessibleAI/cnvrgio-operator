@@ -1,9 +1,9 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: "{{ nfs.storage_class_name }}"
+  name: "{{ nfs.storageClassName }}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   annotations:
-    storageclass.kubernetes.io/is-default-class: "{{ nfs.default_sc }}"
+    storageclass.kubernetes.io/is-default-class: "{{ nfs.defaultSc }}"
 provisioner: "{{ nfs.provisioner }}"
 reclaimPolicy: "{{ nfs.reclaim_policy }}"

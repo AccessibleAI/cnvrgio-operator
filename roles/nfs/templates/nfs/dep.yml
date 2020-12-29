@@ -19,7 +19,7 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
@@ -36,17 +36,17 @@ spec:
           env:
             - name: PROVISIONER_NAME
               value: "{{ nfs.provisioner }}"
-            - name: NFS_SERVER
+            - name: nfsServer
               value: "{{ nfs.server }}"
             - name: NFS_PATH
               value: "{{ nfs.path }}"
           resources:
             limits:
-              cpu: "{{ nfs.cpu_limit }}"
-              memory: "{{ nfs.memory_limit }}"
+              cpu: "{{ nfs.cpuLimit }}"
+              memory: "{{ nfs.memoryLimit }}"
             requests:
-              cpu: "{{ nfs.cpu_request }}"
-              memory: "{{ nfs.memory_request }}"
+              cpu: "{{ nfs.cpuRequest }}"
+              memory: "{{ nfs.memoryRequest }}"
       volumes:
         - name: nfs-client-root
           nfs:

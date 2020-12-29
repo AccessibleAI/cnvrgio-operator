@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -14,24 +15,24 @@ spec:
       labels:
         k8s-app: hostpath-provisioner
     spec:
-{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
-{% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
+      {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% endif %}
+      {%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
+      {% endif %}
       serviceAccountName: hostpath-provisioner-admin
       containers:
         - name: hostpath-provisioner
@@ -40,25 +41,25 @@ spec:
           env:
             - name: USE_NAMING_PREFIX
               value: "true" # change to true, to have the name of the pvc be part of the directory
-            - name: NODE_NAME
+            - name: nodeName
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: PV_DIR
-              value: "{{ hostpath.host_path }}"
+              value: "{{ hostpath.hostPath }}"
           volumeMounts:
             - name: pv-volume # root dir where your bind mounts will be on the node
-              mountPath: "{{ hostpath.host_path }}"
+              mountPath: "{{ hostpath.hostPath }}"
               nodeSelector:
-              - name: "{{ hostpath.node_name }}"
+              - name: "{{ hostpath.nodeName }}"
           resources:
             limits:
-              cpu: "{{ hostpath.cpu_limit }}"
-              memory: "{{ hostpath.memory_limit }}"
+              cpu: "{{ hostpath.cpuLimit }}"
+              memory: "{{ hostpath.memoryLimit }}"
             requests:
-              cpu: "{{ hostpath.cpu_request }}"
-              memory: "{{ hostpath.memory_request }}"
+              cpu: "{{ hostpath.cpuRequest }}"
+              memory: "{{ hostpath.memoryRequest }}"
       volumes:
         - name: pv-volume
           hostPath:
-            path: "{{ hostpath.host_path }}"
+            path: "{{ hostpath.hostPath }}"

@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: "{{minio.svc_name}}"
+  name: "{{minio.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   rules:
-    - host: "{{(minio.svc_name + '.' + cluster_domain).split(':')[0] }}"
+    - host: "{{(minio.svcName + '.' + clusterDomain).split(':')[0] }}"
       http:
         paths:
           - path: /
             backend:
-              serviceName: "{{minio.svc_name}}"
+              serviceName: "{{minio.svcName}}"
               servicePort: {{minio.port}}

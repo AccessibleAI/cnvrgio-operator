@@ -8,11 +8,11 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: "{{ pg_backup.storage_size }}"
+      storage: "{{ pg_backup.storageSize }}"
 {% if hostpath.enabled == "true" %}
-  storageClassName: "{{ hostpath.storage_class_name }}"
+  storageClassName: "{{ hostpath.storageClassName }}"
 {% elif nfs.enabled == "true" %}
-  storageClassName: "{{ nfs.storage_class_name }}"
-{% elif pg_backup.storage_class != "use-default" %}
-  storageClassName: "{{ pg_backup.storage_class }}"
+  storageClassName: "{{ nfs.storageClassName }}"
+{% elif pg_backup.storageClass != "use-default" %}
+  storageClassName: "{{ pg_backup.storageClass }}"
 {% endif %}

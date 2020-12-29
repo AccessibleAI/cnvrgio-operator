@@ -9,4 +9,4 @@
   include_role:
     name: istio
   vars:
-    role_state: "absent"
+    roleState: "absent"

@@ -25,7 +25,7 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
@@ -36,9 +36,9 @@ spec:
       - args:
         - --kubelet-service=kube-system/kubelet
         - --logtostderr=true
-        - --config-reloader-image={{monitoring.prometheus_operator.images.config_reloader_image}}
-        - --prometheus-config-reloader={{monitoring.prometheus_operator.images.prometheus_config_reloader_image}}
-        image: "{{ monitoring.prometheus_operator.images.operator_image }}"
+        - --config-reloader-image={{monitoring.prometheusOperator.images.configReloaderImage}}
+        - --prometheus-config-reloader={{monitoring.prometheusOperator.images.prometheusConfigReloaderImage}}
+        image: "{{ monitoring.prometheusOperator.images.operatorImage }}"
         name: prometheus-operator
         ports:
         - containerPort: 8080
@@ -57,7 +57,7 @@ spec:
         - --secure-listen-address=:8443
         - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
         - --upstream=http://127.0.0.1:8080/
-        image: "{{ monitoring.prometheus_operator.images.kube_rbac_proxy_image }}"
+        image: "{{ monitoring.prometheusOperator.images.kubeRbacProxyImage }}"
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443

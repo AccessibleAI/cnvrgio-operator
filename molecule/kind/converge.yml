@@ -10,14 +10,14 @@
         build:
           path: '{{ project_dir }}'
           pull: no
-        name: '{{ operator_image }}'
+        name: '{{ operatorImage }}'
         tag: latest
         push: no
         source: build
         force_source: yes
 
     - name: Load image into kind cluster
-      command: kind load docker-image --name osdk-test '{{ operator_image }}'
+      command: kind load docker-image --name osdk-test '{{ operatorImage }}'
       register: result
       changed_when: '"not yet present" in result.stdout'
 

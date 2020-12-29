@@ -32,26 +32,20 @@
       - import_role:
           name: app
           tasks_from: install.yml
-        vars:
-          role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
         when:
-        - cnvrg_app.enabled == "true"
+        - cnvrgApp.enabled == "true"
         tags: app
 
       # Cnvrg Nginx Router
       - import_role:
           name: cnvrg_router
-        vars:
-          role_state: "{{'present' if cnvrg_router.enabled == 'true' else 'absent'}}"
         when:
-        - cnvrg_router.enabled == "true"
-        tags: cnvrg_router
+        - cnvrgRouter.enabled == "true"
+        tags: cnvrgRouter
 
       # NFS provisioner deployment
       - import_role:
           name: nfs
-        vars:
-          role_state: "{{'present' if nfs.enabled == 'true' else 'absent'}}"
         when:
         - nfs.enabled == "true"
         tags: nfs
@@ -59,8 +53,6 @@
       # Hostpath provisioner deployment
       - import_role:
           name: hostpath
-        vars:
-          role_state: "{{'present' if hostpath.enabled == 'true' else 'absent'}}"
         when:
         - hostpath.enabled == "true"
         tags: hostpath
@@ -68,8 +60,6 @@
       # Configuration deployment
       - import_role:
           name: conf
-        vars:
-          role_state: "{{'present' if conf.enabled == 'true' else 'absent'}}"
         when:
         - conf.enabled == "true"
         tags: conf
@@ -77,8 +67,6 @@
       # Postgres deployment
       - import_role:
           name: pg
-        vars:
-          role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
         when:
         - pg.enabled == "true"
         tags: pg
@@ -86,8 +74,6 @@
       # Postgres deployment
       - import_role:
           name: pg_backup
-        vars:
-           role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
         when:
         - pg_backup.enabled == "true"
         tags: pg_backup
@@ -95,8 +81,6 @@
       # Redis deployment
       - import_role:
           name: redis
-        vars:
-          role_state: "{{'present' if redis.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
         when:
         - redis.enabled == "true"
         tags: redis
@@ -104,8 +88,6 @@
       # ElasticSearch deployment
       - import_role:
           name: es
-        vars:
-          role_state: "{{'present' if es.enabled == 'true' else 'absent'}}"
         when:
         - es.enabled == "true"
         tags: es
@@ -113,8 +95,6 @@
       # ElastAlert deployment
       - import_role:
           name: elastalert
-        vars:
-          role_state: "{{'present' if elastalert.enabled == 'true' else 'absent'}}"
         when:
         - elastalert.enabled == "true"
         tags: elastalert
@@ -122,8 +102,6 @@
       # Minio deployment
       - import_role:
           name: minio
-        vars:
-          role_state: "{{'present' if minio.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
         when:
         - minio.enabled == "true"
         tags: minio
@@ -131,8 +109,6 @@
       # Fluentd deployment
       - import_role:
           name: fluentd
-        vars:
-          role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
         when:
         - fluentd.enabled == "true"
         tags: fluentd
@@ -141,7 +117,7 @@
       - import_role:
           name: istio
         vars:
-          role_state: "{{'present' if istio.enabled == 'true' else 'absent'}}"
+          roleState: "present"
         when:
         - istio.enabled == "true"
         tags: istio
@@ -149,8 +125,6 @@
       # Kibana deployment
       - import_role:
           name: kibana
-        vars:
-          role_state: "{{'present' if kibana.enabled == 'true' else 'absent'}}"
         when:
         - kibana.enabled == "true"
         tags: kibana
@@ -158,8 +132,6 @@
       # Nvidia device plugin
       - import_role:
           name: nvidiadp
-        vars:
-          role_state: "{{'present' if nvidiadp.enabled == 'true' else 'absent'}}"
         when:
         - nvidiadp.enabled == "true"
         tags: nvidiadp
@@ -167,8 +139,6 @@
       # MPI deployment
       - import_role:
           name: mpi
-        vars:
-          role_state: "{{'present' if mpi.enabled == 'true' else 'absent'}}"
         when:
         - mpi.enabled == "true"
         tags: mpi
@@ -183,8 +153,6 @@
       # Monitoring
       - import_role:
           name: monitoring
-        vars:
-          role_state: "{{'present' if monitoring.enabled == 'true' else 'absent'}}"
         when:
         - monitoring.enabled == "true"
         tags: monitoring
@@ -192,11 +160,9 @@
       # vpa deployment
       - import_role:
           name: vpa
-        vars:
-          role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
         when:
         - vpa.enabled == "true"
         tags: vpa
 
       when:
-      - ops_decree == "start"
+      - opsDecree == "start"

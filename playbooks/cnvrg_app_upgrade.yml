@@ -18,5 +18,5 @@
         name: app
         tasks_from: upgrade.yml
       vars:
-        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
+        roleState: "{{'present' if cnvrgApp.enabled == 'true' else 'absent'}}"
       tags: app_upgrade

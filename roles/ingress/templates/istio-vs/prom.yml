@@ -1,20 +1,20 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: "{{monitoring.prometheus.svc_name}}"
+  name: "{{monitoring.prometheus.svcName}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   hosts:
-  - "{{ (monitoring.prometheus.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  - "{{ (monitoring.prometheus.svcName + '.' + clusterDomain).split(':')[0] }}"
   gateways:
-  - "{{istio.gw_name}}"
+  - "{{istio.gwName}}"
   http:
   - retries:
-      attempts: {{ istio.retries_attempts | default ('5') }}
-      perTryTimeout: {{ istio.per_try_timeout | default ('180s') }}
+      attempts: {{ istio.retriesAttempts | default ('5') }}
+      perTryTimeout: {{ istio.perTryTimeout | default ('180s') }}
     timeout: {{ ingress.timeout | default ('900s') }}
     route:
     - destination:
         port:
           number: {{monitoring.prometheus.port}}
-        host: "{{monitoring.prometheus.svc_name +'.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
+        host: "{{monitoring.prometheus.svcName +'.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"

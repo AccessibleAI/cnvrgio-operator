@@ -3,8 +3,8 @@
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "present"
   with_items:
     - templates/hostpath/rbac.yml
     - templates/hostpath/provisioner.yml

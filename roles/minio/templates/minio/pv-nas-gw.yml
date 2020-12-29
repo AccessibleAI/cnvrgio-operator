@@ -4,12 +4,12 @@ metadata:
   name: minio-shared-backend
 spec:
   capacity:
-    storage: "{{minio.storage_size}}"
+    storage: "{{minio.storageSize}}"
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: "{{ minio.shared_storage.storage_class_name }}"
+  storageClassName: "{{ minio.sharedStorage.storageClassName }}"
   nfs:
-    path: "{{ minio.shared_storage.path }}"
-    server: "{{ minio.shared_storage.nfs_server }}"
+    path: "{{ minio.sharedStorage.path }}"
+    server: "{{ minio.sharedStorage.nfsServer }}"

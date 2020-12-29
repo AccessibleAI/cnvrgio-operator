@@ -14,16 +14,16 @@ spec:
       spec:
         resources:
           requests:
-            storage: "{{ monitoring.prometheus.storage_size }}"
+            storage: "{{ monitoring.prometheus.storageSize }}"
         {% if hostpath.enabled == "true" %}
-        storageClassName: {{ hostpath.storage_class_name }}
+        storageClassName: {{ hostpath.storageClassName }}
         {% elif nfs.enabled == "true" %}
-        storageClassName: "{{ nfs.storage_class_name }}"
-        {% elif pg.storage_class != "use-default" %}
-        storageClassName: "{{ monitoring.prometheus.storage_class }}"
+        storageClassName: "{{ nfs.storageClassName }}"
+        {% elif pg.storageClass != "use-default" %}
+        storageClassName: "{{ monitoring.prometheus.storageClass }}"
         {% endif %}
   image: "{{ monitoring.prometheus.image }}"
-  {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+  {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
   tolerations:
     - key: "{{ tenancy.cnvrg.key }}"
       operator: "Equal"
@@ -32,25 +32,25 @@ spec:
   {% endif %}
   {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
   nodeSelector:
-    kubernetes.io/hostname: "{{ hostpath.node_name }}"
+    kubernetes.io/hostname: "{{ hostpath.nodeName }}"
   {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
   nodeSelector:
     {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
   {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
   nodeSelector:
-    kubernetes.io/hostname: "{{ hostpath.node_name }}"
+    kubernetes.io/hostname: "{{ hostpath.nodeName }}"
     {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
   {% endif %}
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   replicas: 1
-  retentionSize: "{{ monitoring.prometheus.storage_size|regex_replace('[a-zA-Z]', '')|int - 2 }}GiB" # https://www.robustperception.io/configuring-prometheus-storage-retention
+  retentionSize: "{{ monitoring.prometheus.storageSize|regex_replace('[a-zA-Z]', '')|int - 2 }}GiB" # https://www.robustperception.io/configuring-prometheus-storage-retention
   resources:
     requests:
-      cpu: "{{ monitoring.prometheus.cpu_request | default('1') }}"
-      memory: "{{ monitoring.prometheus.memory_request | default('1Gi') }}"
+      cpu: "{{ monitoring.prometheus.cpuRequest | default('1') }}"
+      memory: "{{ monitoring.prometheus.memoryRequest | default('1Gi') }}"
   externalLabels:
-    cnvrg_cluster: "{{ cluster_domain }}"
+    cnvrg_cluster: "{{ clusterDomain }}"
   ruleSelector:
     matchLabels:
       prometheus: k8s

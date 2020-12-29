@@ -20,4 +20,4 @@
     - "{{ root_dir }}/roles/hostpath/vars/main.yml"
     - "{{ root_dir }}/roles/autoscaler/vars/main.yml"
     - "{{ root_dir }}/roles/ingress/vars/main.yml"
-    - "{{ root_dir }}/roles/cnvrg_router/vars/main.yml"
+    - "{{ root_dir }}/roles/cnvrgRouter/vars/main.yml"

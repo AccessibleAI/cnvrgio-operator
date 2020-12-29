@@ -2,10 +2,10 @@
 hostpath:
   enabled: "false"
   image: "quay.io/kubevirt/hostpath-provisioner"
-  host_path: "/cnvrg-storage"
-  storage_class_name: "cnvrg-hostpath-provisioner"
-  node_name: ""
-  cpu_request: 100m
-  memory_request: 100Mi
-  cpu_limit: 200m
-  memory_limit: 200Mi
+  hostPath: "/cnvrg-storage"
+  storageClassName: "cnvrg-hostpath-provisioner"
+  nodeName: ""
+  cpuRequest: 100m
+  memoryRequest: 100Mi
+  cpuLimit: 200m
+  memoryLimit: 200Mi

@@ -1,7 +1,7 @@
 ---
-cnvrg_router:
+cnvrgRouter:
   enabled: "false"
   image: "nginx"
-  svc_name: "routing-service"
-  node_port: 30081
+  svcName: "routing-service"
+  nodePort: 30081
   port: 80

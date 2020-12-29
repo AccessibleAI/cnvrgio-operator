@@ -58,9 +58,9 @@ spec:
         volumeMounts:
           - name: device-plugin
             mountPath: /var/lib/kubelet/device-plugins
-{% if nvidiadp.node_selector.enabled == "true" %}
+{% if nvidiadp.nodeSelector.enabled == "true" %}
       nodeSelector:
-        {{ nvidiadp.node_selector.key }}: "{{ nvidiadp.node_selector.value }}"
+        {{ nvidiadp.nodeSelector.key }}: "{{ nvidiadp.nodeSelector.value }}"
 {% endif %}
       volumes:
         - name: device-plugin

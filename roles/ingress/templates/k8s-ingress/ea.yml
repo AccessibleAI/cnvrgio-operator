@@ -5,7 +5,7 @@ metadata:
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   rules:
-    - host: "{{('elasticalerts.' + cluster_domain).split(':')[0] }}"
+    - host: "{{('elasticalerts.' + clusterDomain).split(':')[0] }}"
       http:
         paths:
           - path: /

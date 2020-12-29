@@ -1,11 +1,11 @@
 ---
 kibana:
   enabled: "true"
-  svc_name: kibana
+  svcName: kibana
   port: 5601
   image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
-  node_port: 30601
-  cpu_request: 500m
-  memory_request: 500Mi
-  cpu_limit: 1
-  memory_limit: 2000Mi
+  nodePort: 30601
+  cpuRequest: 500m
+  memoryRequest: 500Mi
+  cpuLimit: 1
+  memoryLimit: 2000Mi

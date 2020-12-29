@@ -3318,7 +3318,7 @@ items:
                               {
                                   "targetBlank": true,
                                   "title": "Why monitor SYN retransmits?",
-                                  "url": "https://github.com/prometheus/node_exporter/issues/1023#issuecomment-408128365"
+                                  "url": "https://github.com/prometheus/nodeExporter/issues/1023#issuecomment-408128365"
                               }
                           ],
                           "minSpan": 24,

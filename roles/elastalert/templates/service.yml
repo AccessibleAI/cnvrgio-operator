@@ -1,20 +1,21 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{elastalert.svc_name}}
+  name: {{elastalert.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{elastalert.svc_name}}
+    app: {{elastalert.svcName}}
 spec:
-{% if ingress_type == "nodeport" %}
+  {% if ingressType == "nodeport" %}
   type: NodePort
-{% endif %}
+  {% endif %}
   ports:
     - port: {{elastalert.port}}
       protocol: TCP
-      targetPort: {{elastalert.container_port}}
-{% if ingress_type == "nodeport" %}
-      nodePort: {{ elastalert.node_port }}
-{% endif %}
+      targetPort: {{elastalert.containerPort}}
+      {% if ingressType == "nodeport" %}
+      nodePort: {{ elastalert.nodePort }}
+      {% endif %}
   selector:
-    app: {{elastalert.svc_name}}
+    app: {{elastalert.svcName}}

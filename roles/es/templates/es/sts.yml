@@ -2,51 +2,51 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: "{{es.svc_name}}"
+  name: "{{es.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
-  serviceName: "{{es.svc_name}}"
+  serviceName: "{{es.svcName}}"
   selector:
     matchLabels:
-      app: "{{es.svc_name}}"
+      app: "{{es.svcName}}"
   replicas: 1
   template:
     metadata:
       labels:
-        app: "{{es.svc_name}}"
+        app: "{{es.svcName}}"
     spec:
-      {% if es.patch_es_nodes == "true" %}
+      {% if es.patchEsNodes == "true" %}
       initContainers:
       - name: "maxmap"
-        image: {{ es.max_map_image }}
+        image: {{ es.maxMapImage }}
         imagePullPolicy: "Always"
         command: [ "/bin/bash","-c","sysctl -w vm.max_map_count=262144"]
         securityContext:
           privileged: true
           runAsUser: 0
       {% endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if security_mode == "default" %}
+      {% if securityMode == "default" %}
       securityContext:
-        runAsUser: {{ es.run_as_user }}
-        runAsGroup: {{ es.run_as_group }}
-        fsGroup: {{ es.fs_group }}
+        runAsUser: {{ es.runAsUser }}
+        runAsGroup: {{ es.runAsGroup }}
+        fsGroup: {{ es.fsGroup }}
       {% endif %}
       {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
       {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
       containers:
@@ -70,16 +70,16 @@ spec:
         - name: "ES_PATH_LOGS"
           value: "/usr/share/elasticsearch/data/logs"
         - name: "ES_JAVA_OPTS"
-          value: "{{ es.java_opts }}"
+          value: "{{ es.javaOpts }}"
         ports:
         - containerPort: {{es.port|default('9200')}}
         resources:
           limits:
-            cpu: "{{ es.cpu_limit|default('4Gi') }}"
-            memory: "{{ es.memory_limit|default('2') }}"
+            cpu: "{{ es.cpuLimit|default('4Gi') }}"
+            memory: "{{ es.memoryLimit|default('2') }}"
           requests:
-            cpu: "{{ es.cpu_request|default('1') }}"
-            memory: "{{ es.memory_request|default('1Gi') }}"
+            cpu: "{{ es.cpuRequest|default('1') }}"
+            memory: "{{ es.memoryRequest|default('1Gi') }}"
         readinessProbe:
           httpGet:
             path: /_cluster/health
@@ -104,11 +104,11 @@ spec:
       accessModes: [ ReadWriteOnce ]
       resources:
         requests:
-          storage: "{{es.storage_size}}"
+          storage: "{{es.storageSize}}"
       {% if hostpath.enabled == "true" %}
-      storageClassName: {{ hostpath.storage_class_name }}
+      storageClassName: {{ hostpath.storageClassName }}
       {% elif nfs.enabled == "true" %}
-      storageClassName: "{{ nfs.storage_class_name }}"
-      {% elif pg.storage_class != "use-default" %}
-      storageClassName: "{{ es.storage_class }}"
+      storageClassName: "{{ nfs.storageClassName }}"
+      {% elif pg.storageClass != "use-default" %}
+      storageClassName: "{{ es.storageClass }}"
       {% endif %}

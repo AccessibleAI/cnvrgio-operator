@@ -1,17 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{monitoring.prometheus.svc_name}}
+  name: {{monitoring.prometheus.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{monitoring.prometheus.svc_name}}
+    app: {{monitoring.prometheus.svcName}}
 spec:
-  host: "{{(monitoring.prometheus.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  host: "{{(monitoring.prometheus.svcName + '.' + clusterDomain).split(':')[0] }}"
   port:
     targetPort: {{monitoring.prometheus.port}}
   to:
     kind: Service
-    name: {{monitoring.prometheus.svc_name}}
+    name: {{monitoring.prometheus.svcName}}
     weight: 100
 {% if https.enabled == "true" %}
   tls:

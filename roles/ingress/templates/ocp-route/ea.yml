@@ -6,7 +6,7 @@ metadata:
   labels:
     app: ea-route
 spec:
-  host: "{{('ea-route.' + cluster_domain).split(':')[0] }}"
+  host: "{{('ea-route.' + clusterDomain).split(':')[0] }}"
   port:
     targetPort: 80
   to:

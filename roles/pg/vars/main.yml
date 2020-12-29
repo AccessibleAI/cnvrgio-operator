@@ -2,14 +2,14 @@ pg:
   enabled: "true"
   image: "centos/postgresql-12-centos7" # registry.redhat.io/rhscl/postgresql-10-rhel7:latest https://github.com/sclorg/postgresql-container
   port: 5432
-  storage_size: "80Gi"
-  svc_name: "postgres"
+  storageSize: "80Gi"
+  svcName: "postgres"
   dbname: "cnvrg_production"
   pass: "pg_pass"
   user: "cnvrg"
-  run_as_user: 26
-  run_as_group: 26
-  fs_group: 26
-  storage_class: "use-default"
-  cpu_request: 2
-  memory_request: 4Gi
+  runAsUser: 26
+  runAsGroup: 26
+  fsGroup: 26
+  storageClass: "use-default"
+  cpuRequest: 2
+  memoryRequest: 4Gi

@@ -1,17 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{es.svc_name}}
+  name: {{es.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{es.svc_name}}
+    app: {{es.svcName}}
 spec:
-  host: "{{(es.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  host: "{{(es.svcName + '.' + clusterDomain).split(':')[0] }}"
   port:
     targetPort: {{es.port}}
   to:
     kind: Service
-    name: {{es.svc_name}}
+    name: {{es.svcName}}
     weight: 100
 {% if https.enabled == "true" %}
   tls:

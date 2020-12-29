@@ -7,7 +7,7 @@ data:
   config.json: |
     {
       "appName": "elastalert-server",
-      "port": {{elastalert.container_port}},
+      "port": {{elastalert.containerPort}},
       "wsport": 3333,
       "elastalertPath": "/opt/elastalert",
       "verbose": true,
@@ -35,7 +35,7 @@ data:
         "relative": true,
         "path": "/server_data"
       },
-      "es_host": "{{es.svc_name}}",
+      "es_host": "{{es.svcName}}",
       "es_port": {{es.port}},
       "writeback_index": "elastalert_status"
     }
@@ -45,7 +45,7 @@ data:
       minutes: 1
     buffer_time:
       minutes: 15
-    es_host: {{es.svc_name}}
+    es_host: {{es.svcName}}
     es_port: {{es.port}}
     use_ssl: False
     verify_certs: False

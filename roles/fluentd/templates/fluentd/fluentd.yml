@@ -39,7 +39,7 @@ spec:
             privileged: true
           env:
             - name:  FLUENT_ELASTICSEARCH_HOST
-              value: "{{ (fluentd.es_svc_name + '.' + ansible_operator_meta.namespace + '.svc.cluster.local') }}"
+              value: "{{ (fluentd.esSvcName + '.' + ansible_operator_meta.namespace + '.svc.cluster.local') }}"
             - name:  FLUENT_ELASTICSEARCH_PORT
               value: "9200"
             - name: FLUENT_ELASTICSEARCH_SCHEME
@@ -52,10 +52,10 @@ spec:
               value: "cnvrg"
           resources:
             limits:
-              memory: "{{ fluentd.memory_limit }}"
+              memory: "{{ fluentd.memoryLimit }}"
             requests:
-              cpu: "{{ fluentd.cpu_request }}"
-              memory: "{{ fluentd.memory_request }}"
+              cpu: "{{ fluentd.cpuRequest }}"
+              memory: "{{ fluentd.memoryRequest }}"
           volumeMounts:
             - name: config-volume
               mountPath: /fluentd/etc/fluent.conf
@@ -78,7 +78,7 @@ spec:
             path: /var/log
         - name: varlibdockercontainers
           hostPath:
-            path: "{{ fluentd.containers_path }}"
+            path: "{{ fluentd.containersPath }}"
         - name: journal
           hostPath:
-            path: "{{ fluentd.journal_path }}"
+            path: "{{ fluentd.journalPath }}"

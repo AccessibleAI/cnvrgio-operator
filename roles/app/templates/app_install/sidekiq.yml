@@ -12,7 +12,7 @@ spec:
     rollingUpdate:
       maxUnavailable: 25%
       maxSurge: 1
-  replicas: {{ cnvrg_app.sidekiq_replicas }}
+  replicas: {{ cnvrgApp.sidekiqReplicas }}
   selector:
     matchLabels:
       app: sidekiq
@@ -25,22 +25,22 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if cnvrg_app.edition == "enterprise" %}
+      {% if cnvrgApp.edition == "enterprise" %}
       imagePullSecrets:
         - name: {{ registry.name }}
       {% endif %}
-      serviceAccountName: "{{rbac.service_account_name}}"
-      terminationGracePeriodSeconds: {{ cnvrg_app.sidekiq_prestop_hook.kill_timeout|int }}
+      serviceAccountName: "{{rbac.serviceAccountName}}"
+      terminationGracePeriodSeconds: {{ cnvrgApp.sidekiqPrestopHook.killTimeout|int }}
       containers:
       - name: sidekiq
-        image: "{{cnvrg_app.image}}"
+        image: "{{cnvrgApp.image}}"
         command:
         - "/bin/bash"
         - "-lc"
@@ -50,10 +50,10 @@ spec:
         - name: "CNVRG_RUN_MODE"
           value: "sidekiq"
         imagePullPolicy: Always
-        {% if app_secrets.cnvrg_storage_type == "gcp" %}
+        {% if appSecrets.cnvrgStorageType == "gcp" %}
         volumeMounts:
-        - name: "{{ conf.gcp_storage_secret }}"
-          mountPath: "{{ conf.gcp_keyfile_mount_path }}"
+        - name: "{{ conf.gcpStorageSecret }}"
+          mountPath: "{{ conf.gcpKeyfileMountPath }}"
           readOnly: true
         {% endif %}
         envFrom:
@@ -61,23 +61,23 @@ spec:
             name: env-config
         - secretRef:
             name: env-secrets
-        {% if cnvrg_app.resources_request_enabled == "true" %}
+        {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:
           requests:
-            cpu: "{{ cnvrg_app.sidekiq_cpu }}"
-            memory: "{{ cnvrg_app.sidekiq_memory }}"
+            cpu: "{{ cnvrgApp.sidekiqCpu }}"
+            memory: "{{ cnvrgApp.sidekiqMemory }}"
         {% endif %}
-        {% if cnvrg_app.sidekiq_prestop_hook.enabled == "true" %}
+        {% if cnvrgApp.sidekiqPrestopHook.enabled == "true" %}
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrg_app.sidekiq_prestop_hook.kill_timeout }}"]
+              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.sidekiqPrestopHook.killTimeout }}"]
         {% endif %}
-      {% if app_secrets.cnvrg_storage_type == "gcp" %}
+      {% if appSecrets.cnvrgStorageType == "gcp" %}
       volumes:
-      - name: "{{ conf.gcp_storage_secret }}"
+      - name: "{{ conf.gcpStorageSecret }}"
         secret:
-          secretName: "{{ conf.gcp_storage_secret }}"
+          secretName: "{{ conf.gcpStorageSecret }}"
       {% endif %}
       initContainers:
       - name: seeder

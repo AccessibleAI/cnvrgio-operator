@@ -2,18 +2,18 @@
 es:
   enabled: "true"
   image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
-  max_map_image: "docker.io/cnvrg/cnvrg-tools:v0.3"
+  maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
   port: "9200"
-  storage_size: "30Gi"
-  svc_name: "elasticsearch"
-  run_as_user: 1000
-  run_as_group: 1000
-  fs_group: 1000
-  patch_es_nodes: "true"
-  node_port: 32200
-  storage_class: "use-default"
-  cpu_request: 1
-  memory_request: 1Gi
-  cpu_limit: 2
-  memory_limit: 4Gi
-  java_opts: ""
+  storageSize: "30Gi"
+  svcName: "elasticsearch"
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  patchEsNodes: "true"
+  nodePort: 32200
+  storageClass: "use-default"
+  cpuRequest: 1
+  memoryRequest: 1Gi
+  cpuLimit: 2
+  memoryLimit: 4Gi
+  javaOpts: ""

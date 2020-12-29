@@ -1,34 +1,35 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{cnvrg_router.svc_name}}
+  name: {{cnvrgRouter.svcName}}
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   selector:
     matchLabels:
-      app: {{cnvrg_router.svc_name}}
+      app: {{cnvrgRouter.svcName}}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{cnvrg_router.svc_name}}
+        app: {{cnvrgRouter.svcName}}
     spec:
-{%  if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
+      {% endif %}
       containers:
         - name: nginx
-          image: {{ cnvrg_router.image }}
+          image: {{ cnvrgRouter.image }}
           ports:
-            - containerPort: {{cnvrg_router.port}}
+            - containerPort: {{cnvrgRouter.port}}
           volumeMounts:
             - mountPath: /etc/nginx
               readOnly: true

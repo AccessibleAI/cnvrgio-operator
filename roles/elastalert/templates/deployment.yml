@@ -3,26 +3,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: "{{elastalert.svc_name}}"
-  name: "{{elastalert.svc_name}}"
+    app: "{{elastalert.svcName}}"
+  name: "{{elastalert.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{elastalert.svc_name}}"
+      app: "{{elastalert.svcName}}"
   template:
     metadata:
       labels:
-        app: "{{elastalert.svc_name}}"
+        app: "{{elastalert.svcName}}"
     spec:
-      {% if security_mode == "default" %}
+      {% if securityMode == "default" %}
       securityContext:
-        runAsUser: {{ elastalert.run_as_user }}
-        runAsGroup: {{ elastalert.run_as_group }}
-        fsGroup: {{ elastalert.fs_group }}
+        runAsUser: {{ elastalert.runAsUser }}
+        runAsGroup: {{ elastalert.runAsGroup }}
+        fsGroup: {{ elastalert.fsGroup }}
       {% endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
@@ -31,28 +31,28 @@ spec:
       {% endif %}
       {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
       {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
       containers:
       - image: "{{ elastalert.image }}"
-        name: "{{elastalert.svc_name}}"
+        name: "{{elastalert.svcName}}"
         ports:
-        - containerPort: {{elastalert.container_port}}
+        - containerPort: {{elastalert.containerPort}}
           protocol: TCP
         resources:
           requests:
-            cpu: "{{elastalert.cpu_request}}"
-            memory: "{{elastalert.memory_request}}"
+            cpu: "{{elastalert.cpuRequest}}"
+            memory: "{{elastalert.memoryRequest}}"
           limits:
-            cpu: "{{ elastalert.cpu_limit }}"
-            memory: "{{ elastalert.memory_limit }}"
+            cpu: "{{ elastalert.cpuLimit }}"
+            memory: "{{ elastalert.memoryLimit }}"
         volumeMounts:
         - mountPath: /opt/elastalert-server/config/config.json
           subPath: config.json
@@ -61,14 +61,14 @@ spec:
           subPath: config.yaml
           name: elastalert-config
         - mountPath: /opt/elastalert/rules
-          name: "{{elastalert.svc_name}}"
+          name: "{{elastalert.svcName}}"
       restartPolicy: Always
-      serviceAccount: "{{rbac.service_account_name}}"
-      serviceAccountName: "{{rbac.service_account_name}}"
+      serviceAccount: "{{rbac.serviceAccountName}}"
+      serviceAccountName: "{{rbac.serviceAccountName}}"
       volumes:
-      - name: "{{elastalert.svc_name}}"
+      - name: "{{elastalert.svcName}}"
         persistentVolumeClaim:
-          claimName: "{{elastalert.svc_name}}"
+          claimName: "{{elastalert.svcName}}"
       - configMap:
           name: elastalert-config
         name: elastalert-config

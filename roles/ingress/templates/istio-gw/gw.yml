@@ -1,7 +1,8 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: "{{istio.gw_name}}"
+  name: "{{istio.gwName}}"
   namespace: {{ ansible_operator_meta.namespace }}
 spec:
   selector:
@@ -12,17 +13,17 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - "{{('*.' + cluster_domain).split(':')[0] }}"
-{% if https.enabled == "true" and https.cert_secret != "" %}
+        - "{{('*.' + clusterDomain).split(':')[0] }}"
+    {% if https.enabled == "true" and https.certSecret != "" %}
       tls:
         httpsRedirect: true
     - hosts:
-        - "{{('*.' + cluster_domain).split(':')[0] }}"
+        - "{{('*.' + clusterDomain).split(':')[0] }}"
       port:
         name: https
         number: 443
         protocol: HTTPS
       tls:
         mode: SIMPLE
-        credentialName: "{{ https.cert_secret }}"
-{% endif %}
+        credentialName: "{{ https.certSecret }}"
+    {% endif %}

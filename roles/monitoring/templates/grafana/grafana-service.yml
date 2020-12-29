@@ -4,12 +4,12 @@ kind: Service
 metadata:
   labels:
     app: grafana
-  name: "{{monitoring.grafana.svc_name}}"
+  name: "{{monitoring.grafana.svcName}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
-  {% if ingress_type == "nodeport" %}
+  {% if ingressType == "nodeport" %}
   type: NodePort
-  nodePort: {{ monitoring.grafana.node_port }}
+  nodePort: {{ monitoring.grafana.nodePort }}
   {% endif %}
   ports:
     - name: http

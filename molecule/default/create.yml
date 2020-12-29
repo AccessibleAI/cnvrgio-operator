@@ -4,7 +4,7 @@
   connection: local
   gather_facts: false
   environment:
-    IMG: "{{ operator_image }}"
+    IMG: "{{ operatorImage }}"
 
   tasks:
 
@@ -19,18 +19,18 @@
           make:
             chdir: "{{ root_dir }}"
             target: docker-push
-      when: operator_image == "docker.io/cnvrg/cnvrg-operator:molecule-testing"
+      when: operatorImage == "docker.io/cnvrg/cnvrg-operator:molecule-testing"
 
 
     - name: Ensure operator image is set
       fail:
         msg: |
-          You must specify the OPERATOR_IMAGE environment variable in order to run the
+          You must specify the operatorImage environment variable in order to run the
           'default' scenario
-      when: not operator_image
+      when: not operatorImage
 
     - name: Set testing image
-      command: '{{ kustomize }} edit set image testing={{ operator_image }}'
+      command: '{{ kustomize }} edit set image testing={{ operatorImage }}'
       args:
         chdir: '{{ config_dir }}/testing'
 

@@ -138,7 +138,7 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
@@ -147,7 +147,7 @@ spec:
 {% endif %}
       containers:
         - name: istio-operator
-          image: "{{ istio.operator_image }}"
+          image: "{{ istio.operatorImage }}"
           command:
             - operator
             - server

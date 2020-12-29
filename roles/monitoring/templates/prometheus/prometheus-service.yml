@@ -4,18 +4,18 @@ kind: Service
 metadata:
   labels:
     prometheus: cnvrg
-  name: "{{monitoring.prometheus.svc_name}}"
+  name: "{{monitoring.prometheus.svcName}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
-  {% if ingress_type == "nodeport" %}
+  {% if ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
     - name: web
       port: {{monitoring.prometheus.port}}
       targetPort: web
-  {% if ingress_type == "nodeport" %}
-  nodePort: {{ monitoring.prometheus.node_port }}
+  {% if ingressType == "nodeport" %}
+  nodePort: {{ monitoring.prometheus.nodePort }}
   {% endif %}
   selector:
     app: prometheus

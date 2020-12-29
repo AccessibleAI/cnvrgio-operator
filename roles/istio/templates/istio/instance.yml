@@ -24,7 +24,7 @@ spec:
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
         {% endif %}
-        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+        {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
@@ -38,16 +38,16 @@ spec:
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
         {% endif %}
-        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+        {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
         {% endif %}
-        {% if istio.ingress_svc_annotations != "" %}
+        {% if istio.ingressSvcAnnotations != "" %}
         serviceAnnotations:
-          {% set annotations = istio.ingress_svc_annotations.split(";") %}
+          {% set annotations = istio.ingressSvcAnnotations.split(";") %}
             {% for annotation in annotations %}
               {% set annotation_itmes = annotation.split(":") %}
                 {% if annotation_itmes|length == 2 %}
@@ -78,12 +78,12 @@ spec:
             cpu: 100m
             memory: 128Mi
         service:
-          {% if istio.external_ip != "" %}
+          {% if istio.externalIp != "" %}
           type: ClusterIP
           externalIPs:
-          {% set external_ips = istio.external_ip.split(';') %}
-            {% for external_ip in external_ips %}
-            - "{{ external_ip }}"
+          {% set externalIps = istio.externalIp.split(';') %}
+            {% for externalIp in externalIps %}
+            - "{{ externalIp }}"
             {% endfor %}
           {% endif %}
           ports:

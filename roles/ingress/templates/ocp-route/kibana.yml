@@ -1,17 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{kibana.svc_name}}
+  name: {{kibana.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{kibana.svc_name}}
+    app: {{kibana.svcName}}
 spec:
-  host: "{{ (kibana.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  host: "{{ (kibana.svcName + '.' + clusterDomain).split(':')[0] }}"
   port:
     targetPort: {{kibana.port}}
   to:
     kind: Service
-    name: {{kibana.svc_name}}
+    name: {{kibana.svcName}}
     weight: 100
 {% if https.enabled == "true" %}
   tls:

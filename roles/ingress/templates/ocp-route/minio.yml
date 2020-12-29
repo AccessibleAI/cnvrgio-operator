@@ -1,17 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{minio.svc_name}}
+  name: {{minio.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{minio.svc_name}}
+    app: {{minio.svcName}}
 spec:
-  host: "{{ (minio.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  host: "{{ (minio.svcName + '.' + clusterDomain).split(':')[0] }}"
   port:
     targetPort: {{minio.port}}
   to:
     kind: Service
-    name: {{minio.svc_name}}
+    name: {{minio.svcName}}
     weight: 100
 {% if https.enabled == "true" %}
   tls:

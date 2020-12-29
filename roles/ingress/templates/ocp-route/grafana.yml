@@ -1,17 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{monitoring.grafana.svc_name}}
+  name: {{monitoring.grafana.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{monitoring.grafana.svc_name}}
+    app: {{monitoring.grafana.svcName}}
 spec:
-  host: "{{(monitoring.grafana.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  host: "{{(monitoring.grafana.svcName + '.' + clusterDomain).split(':')[0] }}"
   port:
     targetPort: {{monitoring.grafana.port}}
   to:
     kind: Service
-    name: {{monitoring.grafana.svc_name}}
+    name: {{monitoring.grafana.svcName}}
     weight: 100
 {% if https.enabled == "true" %}
   tls:

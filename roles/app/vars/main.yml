@@ -1,5 +1,5 @@
 ---
-cnvrg_app:
+cnvrgApp:
   replicas: 1
   edition: "core"
   enabled: "true"
@@ -7,32 +7,32 @@ cnvrg_app:
   port: 80
   cpu: 2
   memory: 4Gi
-  svc_name: "app"
-  custom_agent_tag: "false"
+  svcName: "app"
+  customAgentTag: "false"
   fixpg: "true"
   intercom: "true"
-  node_port: 30080
-  sidekiq_cpu: 2
-  sidekiq_memory: 4Gi
-  sidekiq_replicas: 2
-  sidekiq_searchkick_cpu: 1
-  sidekiq_searchkick_memory: 1Gi
-  sidekiq_searchkick_replicas: 1
-  passenger_max_pool_size: 20  # the calculation of max pool size based on this max_app_processes = (total_memory * 0.75) / 150 (memroy for each process in mb) = 20
-  enable_readiness_probe: "true"
-  readiness_period_seconds: 100
-  readiness_timeout_seconds: 60
-  resources_request_enabled: "true"
-  sidekiq_prestop_hook:
+  nodePort: 30080
+  sidekiqCpu: 2
+  sidekiqMemory: 4Gi
+  sidekiqReplicas: 2
+  sidekiqSearchkickCpu: 1
+  sidekiqSearchkickMemory: 1Gi
+  sidekiqSearchkickReplicas: 1
+  passengerMaxPoolSize: 20  # the calculation of max pool size based on this max_app_processes = (total_memory * 0.75) / 150 (memroy for each process in mb) = 20
+  enableReadinessProbe: "true"
+  readinessPeriodSeconds: 100
+  readinessTimeoutSeconds: 60
+  resourcesRequestEnabled: "true"
+  sidekiqPrestopHook:
     enabled: "true"
-    kill_timeout: 60
+    killTimeout: 60
 
 seeder:
   image: "docker.io/cnvrg/cnvrg-boot:v0.24"
-  seed_cmd: "rails db:migrate && rails db:seed && rails libraries:update"
+  seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
 
-cnvrg_app_upgrade:
-  app_image_cache_ds: "app-image-chache"
-  cnvrg_app_name: "cnvrg-app"
+cnvrgAppUpgrade:
+  appImageCacheDs: "app-image-chache"
+  cnvrgAppName: "cnvrg-app"
   image: ""
-  cache_image: "true"
+  cacheImage: "true"

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{redis.svc_name}}"
+  name: "{{redis.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{redis.svc_name}}"
+    app: "{{redis.svcName}}"
 spec:
   ports:
   - port: {{redis.port}}
   selector:
-    app: "{{redis.svc_name}}"
+    app: "{{redis.svcName}}"

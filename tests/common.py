@@ -137,16 +137,16 @@ class CommonBase(object):
         return spec
 
     @staticmethod
-    def get_nip_nip_url(ingress_type="nginx"):
+    def get_nip_nip_url(ingressType="nginx"):
         for i in range(0, 1800):
             try:
                 v1 = client.CoreV1Api()
-                svc_name = "ingress-nginx-controller"
+                svcName = "ingress-nginx-controller"
                 namespace = "ingress-nginx"
-                if ingress_type == "istio":
-                    svc_name = "istio-ingressgateway"
+                if ingressType == "istio":
+                    svcName = "istio-ingressgateway"
                     namespace = "cnvrg"
-                service = v1.read_namespaced_service(svc_name, namespace=namespace)
+                service = v1.read_namespaced_service(svcName, namespace=namespace)
                 ip = service.status.load_balancer.ingress[0].ip
                 nip_io_url = f"cnvrg.{ip}.nip.io"
                 logging.info(nip_io_url)

@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{minio.svc_name}}"
+  name: "{{minio.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{minio.svc_name}}"
+    app: "{{minio.svcName}}"
 spec:
   selector:
     matchLabels:
-      app: "{{minio.svc_name}}"
+      app: "{{minio.svcName}}"
   replicas: {{ minio.replicas |int }}
   template:
     metadata:
       labels:
-        app: "{{minio.svc_name}}"
+        app: "{{minio.svcName}}"
     spec:
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
 {% endif %}
-{% if security_mode == "default" %}
+{% if securityMode == "default" %}
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
@@ -30,13 +30,13 @@ spec:
 {% endif %}
 {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
 {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {% endif %}
       containers:
@@ -81,9 +81,9 @@ spec:
             periodSeconds: 20
           resources:
             requests:
-              cpu: "{{ minio.cpu_request | default('2') }}"
-              memory: "{{ minio.memory_request }}"
+              cpu: "{{ minio.cpuRequest | default('2') }}"
+              memory: "{{ minio.memoryRequest }}"
       volumes:
         - name: minio-storage
           persistentVolumeClaim:
-            claimName: "{{minio.svc_name}}"
+            claimName: "{{minio.svcName}}"

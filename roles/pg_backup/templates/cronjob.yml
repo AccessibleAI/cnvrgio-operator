@@ -6,36 +6,36 @@ metadata:
   labels:
     app: "{{ pg_backup.name }}"
 spec:
-  schedule: "{{ pg_backup.cron_time }}"
+  schedule: "{{ pg_backup.cronTime }}"
   jobTemplate:
     spec:
       template:
         spec:
-{% if security_mode == "default" %}
+{% if securityMode == "default" %}
           securityContext:
-            runAsUser: {{ pg.run_as_user }}
-            runAsGroup: {{ pg.run_as_group }}
-            fsGroup: {{ pg.fs_group }}
+            runAsUser: {{ pg.runAsUser }}
+            runAsGroup: {{ pg.runAsGroup }}
+            fsGroup: {{ pg.fsGroup }}
 {% endif %}
 {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
           nodeSelector:
-            kubernetes.io/hostname: "{{ hostpath.node_name }}"
+            kubernetes.io/hostname: "{{ hostpath.nodeName }}"
 {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
           nodeSelector:
             {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
           nodeSelector:
-            kubernetes.io/hostname: "{{ hostpath.node_name }}"
+            kubernetes.io/hostname: "{{ hostpath.nodeName }}"
             {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {% endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
           tolerations:
           - key: "{{ tenancy.cnvrg.key }}"
             operator: "Equal"
             value: "{{ tenancy.cnvrg.value }}"
             effect: "NoSchedule"
 {% endif %}
-          serviceAccountName: "{{rbac.service_account_name}}"
+          serviceAccountName: "{{rbac.serviceAccountName}}"
           containers:
             - name: "{{ pg_backup.name }}"
               image: "{{ pg.image }}"

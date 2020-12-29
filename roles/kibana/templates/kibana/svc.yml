@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{kibana.svc_name}}"
+  name: "{{kibana.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{kibana.svc_name}}"
+    app: "{{kibana.svcName}}"
 spec:
-{% if ingress_type == "nodeport" %}
+{% if ingressType == "nodeport" %}
   type: NodePort
 {% endif %}
   selector:
-    app: "{{kibana.svc_name}}"
+    app: "{{kibana.svcName}}"
   ports:
     - port: {{kibana.port}}
       protocol: TCP
-{% if ingress_type == "nodeport" %}
-      nodePort: {{ kibana.node_port }}
+{% if ingressType == "nodeport" %}
+      nodePort: {{ kibana.nodePort }}
 {% endif %}

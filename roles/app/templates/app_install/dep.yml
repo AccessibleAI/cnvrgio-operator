@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{cnvrg_app.svc_name}}
+  name: {{cnvrgApp.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{cnvrg_app.svc_name}}
+    app: {{cnvrgApp.svcName}}
 spec:
-  replicas: {{ cnvrg_app.replicas }}
+  replicas: {{ cnvrgApp.replicas }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,31 +15,31 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      app: {{cnvrg_app.svc_name}}
+      app: {{cnvrgApp.svcName}}
   template:
     metadata:
       labels:
-        app: {{cnvrg_app.svc_name}}
+        app: {{cnvrgApp.svcName}}
     spec:
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if cnvrg_app.edition == "enterprise" %}
+      {% if cnvrgApp.edition == "enterprise" %}
       imagePullSecrets:
         - name: {{ registry.name }}
       {% endif %}
-      serviceAccountName: "{{rbac.service_account_name}}"
+      serviceAccountName: "{{rbac.serviceAccountName}}"
       containers:
-        - image: "{{cnvrg_app.image}}"
-          {% if security_mode == "default" %}
+        - image: "{{cnvrgApp.image}}"
+          {% if securityMode == "default" %}
           command:
           - "/bin/bash"
           - "-lc"
@@ -54,7 +54,7 @@ spec:
           - name: "CNVRG_RUN_MODE"
             value: "webapp"
           - name: "CNVRG_PASSENGER_MAX_POOL_SIZE"
-            value: "{{ cnvrg_app.passenger_max_pool_size | default('20') }}"
+            value: "{{ cnvrgApp.passengerMaxPoolSize | default('20') }}"
           envFrom:
             - configMapRef:
                 name: env-config
@@ -62,36 +62,36 @@ spec:
                 name: env-secrets
           name: cnvrg-app
           ports:
-            - containerPort: {{cnvrg_app.port}}
-          {% if (cnvrg_app.enable_readiness_probe | default ('true')) == "true" %}
+            - containerPort: {{cnvrgApp.port}}
+          {% if (cnvrgApp.enableReadinessProbe | default ('true')) == "true" %}
           readinessProbe:
             failureThreshold: 3
             httpGet:
               path: "/users/sign_in"
-              port: {{cnvrg_app.port}}
+              port: {{cnvrgApp.port}}
               scheme: HTTP
             initialDelaySeconds: 10
             successThreshold: 1
-            periodSeconds: {{ cnvrg_app.readiness_period_seconds | default('100') }}
-            timeoutSeconds: {{ cnvrg_app.readiness_timeout_seconds |default('60') }}
+            periodSeconds: {{ cnvrgApp.readinessPeriodSeconds | default('100') }}
+            timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds |default('60') }}
           {% endif %}
-          {% if cnvrg_app.resources_request_enabled == "true" %}
+          {% if cnvrgApp.resourcesRequestEnabled == "true" %}
           resources:
             requests:
-              cpu: "{{cnvrg_app.cpu}}"
-              memory: "{{cnvrg_app.memory}}"
+              cpu: "{{cnvrgApp.cpu}}"
+              memory: "{{cnvrgApp.memory}}"
           {% endif %}
-          {% if app_secrets.cnvrg_storage_type == "gcp" %}
+          {% if appSecrets.cnvrgStorageType == "gcp" %}
           volumeMounts:
-          - name: "{{ conf.gcp_storage_secret }}"
-            mountPath: "{{ conf.gcp_keyfile_mount_path }}"
+          - name: "{{ conf.gcpStorageSecret }}"
+            mountPath: "{{ conf.gcpKeyfileMountPath }}"
             readOnly: true
           {% endif %}
-      {% if app_secrets.cnvrg_storage_type == "gcp" %}
+      {% if appSecrets.cnvrgStorageType == "gcp" %}
       volumes:
-      - name: "{{ conf.gcp_storage_secret }}"
+      - name: "{{ conf.gcpStorageSecret }}"
         secret:
-          secretName: "{{ conf.gcp_storage_secret }}"
+          secretName: "{{ conf.gcpStorageSecret }}"
       {% endif %}
       initContainers:
       - name: services-check
@@ -100,12 +100,12 @@ spec:
         imagePullPolicy: Always
         env:
         - name: "CNVRG_SERVICE_LIST"
-          {% if minio.enabled == "true" and  app_secrets.cnvrg_storage_type == "minio" %}
-          value: "{{pg.svc_name}}:{{pg.port}};{{app_secrets.cnvrg_storage_endpoint}}/minio/health/ready"
+          {% if minio.enabled == "true" and  appSecrets.cnvrgStorageType == "minio" %}
+          value: "{{pg.svcName}}:{{pg.port}};{{appSecrets.cnvrgStorageEndpoint}}/minio/health/ready"
           {% else %}
-          value: "{{pg.svc_name}}:{{pg.port}}"
+          value: "{{pg.svcName}}:{{pg.port}}"
           {% endif %}
-      {% if cnvrg_app.fixpg == "true" %}
+      {% if cnvrgApp.fixpg == "true" %}
       - name: fixpg
         image: "{{seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py fixpg"]
@@ -133,22 +133,22 @@ spec:
         imagePullPolicy: Always
         env:
         - name: "CNVRG_SEEDER_IMAGE"
-          value: "{{cnvrg_app.image}}"
+          value: "{{cnvrgApp.image}}"
         - name: "CNVRG_SEED_CMD"
-          value: "{{ seeder.seed_cmd }}"
+          value: "{{ seeder.seedCmd }}"
         - name: "CNVRG_NS"
           value: "{{ ansible_operator_meta.namespace }}"
         - name: "CNVRG_SA_NAME"
-          value: "{{rbac.service_account_name}}"
-        {% if cnvrg_app.edition == "enterprise" %}
+          value: "{{rbac.serviceAccountName}}"
+        {% if cnvrgApp.edition == "enterprise" %}
         - name: "CNVRG_IMAGE_PULL_SECRET"
           value: {{ registry.name }}
         {% endif %}
-        {% if app_secrets.cnvrg_storage_type == "gcp" %}
+        {% if appSecrets.cnvrgStorageType == "gcp" %}
         - name: "CNVRG_GCP_KEYFILE_SECRET"
-          value: "{{ conf.gcp_storage_secret }}"
+          value: "{{ conf.gcpStorageSecret }}"
         - name: "CNVRG_GCP_KEYFILE_MOUNT_PATH"
-          value: "{{ conf.gcp_keyfile_mount_path }}"
+          value: "{{ conf.gcpKeyfileMountPath }}"
         {% endif %}
 
 

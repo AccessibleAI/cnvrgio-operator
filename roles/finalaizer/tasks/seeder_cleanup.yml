@@ -6,7 +6,7 @@
     kind: "ConfigMap"
     namespace: "{{ ansible_operator_meta.namespace }}"
     name: "cnvrg-db-init"
-  when: dry_run == "false"
+  when: dryRun == "false"
 
 
 - name: Get a list of all cnvrg-seeder pods
@@ -15,7 +15,7 @@
     namespace: "{{ ansible_operator_meta.namespace }}"
     label_selectors:
       - app = cnvrg-seeder
-  register: pod_list
+  register: podList
 
 - name: Remove seeder job pods
   k8s:
@@ -24,5 +24,5 @@
     kind: "Pod"
     namespace: "{{ ansible_operator_meta.namespace }}"
     name: "{{ item.metadata.name }}"
-  with_items: "{{pod_list.resources}}"
-  when: pod_list.resources | length > 0
+  with_items: "{{podList.resources}}"
+  when: podList.resources | length > 0

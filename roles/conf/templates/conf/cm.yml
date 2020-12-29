@@ -5,44 +5,44 @@ metadata:
   name: env-config
   namespace: "{{ ansible_operator_meta.namespace }}"
 data:
-  {% if cnvrg_app.custom_agent_tag != "false" %}
-  AGENT_CUSTOM_TAG: "{{ cnvrg_app.custom_agent_tag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
+  {% if cnvrgApp.customAgentTag != "false" %}
+  AGENT_CUSTOM_TAG: "{{ cnvrgApp.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
   {% endif %}
-  ELASTICSEARCH_URL: "http://{{es.svc_name}}"
+  ELASTICSEARCH_URL: "http://{{es.svcName}}"
   KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
-  SHOW_INTERCOM:  "{{ cnvrg_app.intercom }}"
-  ROUTE_BY_ISTIO: "{{ ('true' if ingress_type == 'istio' else 'false') }}"
-  ROUTE_BY_OPENSHIFT: "{{ ('true' if ingress_type == 'openshift' else 'false') }}"
-  ROUTE_BY_NGINX_INGRESS: "{{ ('true' if ingress_type == 'k8singress' else 'false') }}"
-  ROUTE_BY_NODE_PORT: "{{ ('true' if ingress_type == 'nodeport' else 'false') }}"
+  SHOW_INTERCOM:  "{{ cnvrgApp.intercom }}"
+  ROUTE_BY_ISTIO: "{{ ('true' if ingressType == 'istio' else 'false') }}"
+  ROUTE_BY_OPENSHIFT: "{{ ('true' if ingressType == 'openshift' else 'false') }}"
+  ROUTE_BY_NGINX_INGRESS: "{{ ('true' if ingressType == 'k8singress' else 'false') }}"
+  ROUTE_BY_NODE_PORT: "{{ ('true' if ingressType == 'nodeport' else 'false') }}"
   CNVRG_STORAGE_USE_IAM_ROLE: "false"
-  {% if conf.default_jobs_storage_class == "" %}
+  {% if conf.defaultJobsStorageClass == "" %}
   {% if nfs.enabled == "true" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ nfs.storage_class_name }}"
+  CNVRG_JOBS_STORAGECLASS: "{{ nfs.storageClassName }}"
   {% endif %}
   {% if hostpath.enabled == "true" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ hostpath.storage_class_name }}"
+  CNVRG_JOBS_STORAGECLASS: "{{ hostpath.storageClassName }}"
   {% endif %}
   {% else %}
-  CNVRG_JOBS_STORAGECLASS: "{{ conf.default_jobs_storage_class }}"
+  CNVRG_JOBS_STORAGECLASS: "{{ conf.defaultJobsStorageClass }}"
   {% endif %}
 
 
-  SMTP_SERVER: "{{ app_configs.smtp.server }}"
-  SMTP_PORT: "{{ app_configs.smtp.port }}"
-  SMTP_USERNAME: "{{ app_configs.smtp.username }}"
-  SMTP_PASSWORD: "{{ app_configs.smtp.password }}"
-  SMTP_DOMAIN: "{{ app_configs.smtp.domain }}"
-  {% if cnvrg_router.enabled == "true" %}
-  DEPLOY_URL: "{{ (http_scheme + (cnvrg_router.svc_name + '.' if ingress_type != 'nodeport' else '')  + cluster_domain + (':'+cnvrg_router.node_port|string if ingress_type == 'nodeport' else ''))}}"
-  NOTEBOOK_URL: "{{ (http_scheme + (cnvrg_router.svc_name + '.' if ingress_type != 'nodeport' else '')  + cluster_domain + (':'+cnvrg_router.node_port|string if ingress_type == 'nodeport' else ''))}}"
-  TENSORBOARD_URL: "{{ (http_scheme + (cnvrg_router.svc_name + '.' if ingress_type != 'nodeport' else '')  + cluster_domain + (':'+cnvrg_router.node_port|string if ingress_type == 'nodeport' else ''))}}"
+  SMTP_SERVER: "{{ appConfigs.smtp.server }}"
+  SMTP_PORT: "{{ appConfigs.smtp.port }}"
+  SMTP_USERNAME: "{{ appConfigs.smtp.username }}"
+  SMTP_PASSWORD: "{{ appConfigs.smtp.password }}"
+  SMTP_DOMAIN: "{{ appConfigs.smtp.domain }}"
+  {% if cnvrgRouter.enabled == "true" %}
+  DEPLOY_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if ingressType == 'nodeport' else ''))}}"
+  NOTEBOOK_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if ingressType == 'nodeport' else ''))}}"
+  TENSORBOARD_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if ingressType == 'nodeport' else ''))}}"
   {% endif %}
-{% set feature_flags = app_configs.feature_flags.split(';') %}
-{% for feature_flag in feature_flags %}
-  {% set flags_itmes = feature_flag.split("=") %}
-    {% if flags_itmes|length >= 2 %}
-  {{ flags_itmes[0] }}: "{{ flags_itmes[1:]|join("=") }}"
+{% set featureFlags = appConfigs.featureFlags.split(';') %}
+{% for featureFlag in featureFlags %}
+  {% set flagsItmes = featureFlag.split("=") %}
+    {% if flagsItmes|length >= 2 %}
+  {{ flagsItmes[0] }}: "{{ flagsItmes[1:]|join("=") }}"
     {% endif %}
 {% endfor %}
 

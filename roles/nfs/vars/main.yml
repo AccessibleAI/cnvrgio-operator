@@ -3,13 +3,13 @@ nfs:
   enabled: "false"
   image: "quay.io/external_storage/nfs-client-provisioner:latest"
   provisioner: "cnvrg.io/ifs"
-  storage_class_name: "cnvrg-nfs-storage"
+  storageClassName: "cnvrg-nfs-storage"
   server: ""
   path: ""
-  cpu_request: 100m
-  memory_request: 100Mi
-  cpu_limit: 200m
-  memory_limit: 200Mi
+  cpuRequest: 100m
+  memoryRequest: 100Mi
+  cpuLimit: 200m
+  memoryLimit: 200Mi
   reclaim_policy: "Retain"
-  default_sc: "false"
+  defaultSc: "false"
 

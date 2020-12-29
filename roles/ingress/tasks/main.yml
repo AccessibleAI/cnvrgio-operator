@@ -3,7 +3,7 @@
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
+    templatePath: "{{ item }}"
     state: "present"
   with_items:
     - templates/ocp-route/app.yml
@@ -15,14 +15,14 @@
     - templates/ocp-route/prom.yml
     - templates/ocp-route/cnvrg_router.yml
   when:
-  - ingress_type == "openshift"
+  - ingressType == "openshift"
 
 - name: Deploy VirtualServices
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
+    templatePath: "{{ item }}"
     state: "present"
   with_items:
     - templates/istio-gw/gw.yml
@@ -34,14 +34,14 @@
     - templates/istio-vs/minio.yml
     - templates/istio-vs/prom.yml
     - templates/istio-vs/cnvrg_router.yml
-  when: ingress_type == "istio"
+  when: ingressType == "istio"
 
 - name: Deploy K8S Ingress rules
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
+    templatePath: "{{ item }}"
     state: "present"
   with_items:
     - templates/k8s-ingress/app.yml
@@ -52,4 +52,4 @@
     - templates/k8s-ingress/minio.yml
     - templates/k8s-ingress/prom.yml
     - templates/k8s-ingress/cnvrg_router.yml
-  when: ingress_type == "k8singress"
+  when: ingressType == "k8singress"

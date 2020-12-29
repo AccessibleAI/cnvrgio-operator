@@ -40,7 +40,7 @@ spec:
         emptyDir: {}
       containers:
       - name: metrics-server
-        image: {{ monitoring.metrics_server.image }}
+        image: {{ monitoring.metricsServer.image }}
         imagePullPolicy: IfNotPresent
         args:
           - --cert-dir=/tmp

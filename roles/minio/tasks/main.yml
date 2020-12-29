@@ -6,52 +6,52 @@
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "present"
   with_items:
     - templates/minio/pv-nas-gw.yml
   when:
-  - app_secrets.cnvrg_storage_type == "minio"
-  - minio.shared_storage.enabled == "true"
+  - appSecrets.cnvrgStorageType == "minio"
+  - minio.sharedStorage.enabled == "true"
 
 - name: Install Minio prerequisite
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "present"
   with_items:
     - templates/minio/svc.yml
     - templates/minio/pvc.yml
-  when: app_secrets.cnvrg_storage_type == "minio"
+  when: appSecrets.cnvrgStorageType == "minio"
 
 - name: Install Minio - single instance
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "present"
   with_items:
     - templates/minio/dep.yml
   when:
-  - app_secrets.cnvrg_storage_type == "minio"
-  - minio.shared_storage.enabled == "false"
+  - appSecrets.cnvrgStorageType == "minio"
+  - minio.sharedStorage.enabled == "false"
 
 - name: Install Minio - shared backend
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "present"
   with_items:
     - templates/minio/shared-minio.yml
     - templates/minio/destination-rule.yml
   when:
-  - app_secrets.cnvrg_storage_type == "minio"
-  - minio.shared_storage.enabled == "true"
+  - appSecrets.cnvrgStorageType == "minio"
+  - minio.sharedStorage.enabled == "true"
 
 
 

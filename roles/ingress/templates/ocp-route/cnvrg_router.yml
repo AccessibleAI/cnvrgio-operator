@@ -1,17 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{cnvrg_router.svc_name}}
+  name: {{cnvrgRouter.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
-    app: {{cnvrg_router.svc_name}}
+    app: {{cnvrgRouter.svcName}}
 spec:
-  host: "{{(cnvrg_router.svc_name + '.' + cluster_domain).split(':')[0] }}"
+  host: "{{(cnvrgRouter.svcName + '.' + clusterDomain).split(':')[0] }}"
   port:
-    targetPort: {{cnvrg_router.port}}
+    targetPort: {{cnvrgRouter.port}}
   to:
     kind: Service
-    name: {{cnvrg_router.svc_name}}
+    name: {{cnvrgRouter.svcName}}
     weight: 100
 {% if https.enabled == "true" %}
   tls:

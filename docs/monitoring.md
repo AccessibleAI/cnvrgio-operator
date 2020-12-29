@@ -124,7 +124,7 @@ curl -sG --data-urlencode 'match[]={job=~"kube-state-metrics|node-exporter|dcgm-
  
 #### Prometheus exporters 
 * [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)
-* [node-exporter](https://github.com/prometheus/node_exporter)
+* [node-exporter](https://github.com/prometheus/nodeExporter)
 * [dcgm-exporter](https://github.com/NVIDIA/gpu-monitoring-tools)
 * [sidekiq-exporter](../roles/monitoring/templates/sidekiq-exporter)
 
