@@ -42,14 +42,14 @@ computeProfiles:
     cnvrgApp:
       webappCpu: 2
       webappMemory: 4Gi
-      sidekiqCpu: 2
+      sidekiqCpu: 1.5
       sidekiqMemory: 4Gi
       searchkiqCpu: 1
       searchkiqMemory: 1Gi
       sidekiqReplicas: 2
       searchkiqReplicas: 1
     pg:
-      cpu: 2
+      cpu: 1.5
       memory: 4Gi
     minio:
       cpu: 1
