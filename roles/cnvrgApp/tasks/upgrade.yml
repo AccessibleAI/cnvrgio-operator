@@ -1,12 +1,8 @@
-- name: Set status
-  operator_sdk.util.k8s_status:
-    api_version: mlops.cnvrg.io/v1
-    kind: CnvrgAppUpgrade
-    name: cnvrg-app-upgrade
-    namespace: "{{ ansible_operator_meta.namespace }}"
-    status:
-      status: "running"
-      message: "getting cnvrgapp"
+- include_role:
+    name: common
+    tasks_from: cr_status
+  vars:
+    message: "getting cnvrgapp"
 
 - name: Get CnvrgApp
   community.kubernetes.k8s_info:
@@ -23,15 +19,11 @@
 
 - name: fail if spec not found
   block:
-  - name: Set status
-    operator_sdk.util.k8s_status:
-      api_version: mlops.cnvrg.io/v1
-      kind: CnvrgAppUpgrade
-      name: cnvrg-app-upgrade
-      namespace: "{{ ansible_operator_meta.namespace }}"
-      status:
-        status: "error"
-        message: "cnvrgapp not found can't upgrade"
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "error,cnvrgapp not found can't upgrade"
   - fail:
       msg: "cnvrgapp not found can't upgrade"
   when: cnvrgAppObject is undefined
@@ -48,14 +40,11 @@
       value: "{{ item.value }}"
     with_dict: "{{ cnvrgAppObject.spec }}"
 
-  - name: update status
-    operator_sdk.util.k8s_status:
-      api_version: mlops.cnvrg.io/v1
-      kind: CnvrgAppUpgrade
-      name: cnvrg-app-upgrade
-      namespace: "{{ ansible_operator_meta.namespace }}"
-      status:
-        status: "backup cnvrgapp"
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "backup cnvrgapp"
 
   - name: Backup CnvrgApp
     operator_sdk.util.k8s_status:
@@ -69,15 +58,11 @@
     when:
     - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
 
-
-  - name: Set status
-    operator_sdk.util.k8s_status:
-      api_version: mlops.cnvrg.io/v1
-      kind: CnvrgAppUpgrade
-      name: cnvrg-app-upgrade
-      namespace: "{{ ansible_operator_meta.namespace }}"
-      status:
-        status: "caching app image"
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "caching app image"
 
   - name: Create app image caching ds
     include_role:
@@ -97,14 +82,11 @@
     retries: 3600
     delay: 5
 
-  - name: Set status
-    operator_sdk.util.k8s_status:
-      api_version: mlops.cnvrg.io/v1
-      kind: CnvrgAppUpgrade
-      name: cnvrg-app-upgrade
-      namespace: "{{ ansible_operator_meta.namespace }}"
-      status:
-        status: "scale to 0 sedekiqs, set resourcesRequestEnabled to false"
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "scale to 0 sedekiqs, set resourcesRequestEnabled to false"
 
   - name: scale to 0 sedekiqs and disable resources requests
     set_fact:
@@ -116,4 +98,4 @@
       definition: "{{ cnvrgAppObject }}"
       wait: "yes"
 
-  when: cnvrgAppObject is not undefined
+  when: cnvrgAppObject is defined
