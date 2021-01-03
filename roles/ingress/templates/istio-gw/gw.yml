@@ -26,4 +26,13 @@ spec:
       tls:
         mode: SIMPLE
         credentialName: "{{ https.certSecret }}"
+    {% elif https.enabled == "true" %}
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - "{{('*.' + clusterDomain).split(':')[0] }}"
+      port:
+        name: https
+        number: 443
+        protocol: HTTP
     {% endif %}

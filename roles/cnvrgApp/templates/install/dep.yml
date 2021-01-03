@@ -70,7 +70,7 @@ spec:
               path: "/users/sign_in"
               port: {{cnvrgApp.port}}
               scheme: HTTP
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             successThreshold: 1
             periodSeconds: {{ cnvrgApp.readinessPeriodSeconds | default('100') }}
             timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds |default('60') }}
