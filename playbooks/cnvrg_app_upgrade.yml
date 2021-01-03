@@ -9,7 +9,18 @@
         - ../roles/redis/vars/main.yml
         - ../roles/pg/vars/main.yml
         - ../roles/es/vars/main.yml
-        - ../roles/app/vars/main.yml
+        - ../roles/minio/vars/main.yml
+        - ../roles/monitoring/vars/main.yml
+        - ../roles/istio/vars/main.yml
+        - ../roles/kibana/vars/main.yml
+        - ../roles/fluentd/vars/main.yml
+        - ../roles/nvidiadp/vars/main.yml
+        - ../roles/mpi/vars/main.yml
+        - ../roles/cnvrgApp/vars/main.yml
+        - ../roles/nfs/vars/main.yml
+        - ../roles/hostpath/vars/main.yml
+        - ../roles/ingress/vars/main.yml
+        - ../roles/cnvrgRouter/vars/main.yml
       tags: always
 
 

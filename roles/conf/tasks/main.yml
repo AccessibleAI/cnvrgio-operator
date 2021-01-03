@@ -2,7 +2,7 @@
 - include_vars: ../../pg/vars/main.yml
 - include_vars: ../../es/vars/main.yml
 - include_vars: ../../redis/vars/main.yml
-- include_vars: ../../app/vars/main.yml
+- include_vars: ../../cnvrgApp/vars/main.yml
 
 - name: Deploy app configs
   include_role:

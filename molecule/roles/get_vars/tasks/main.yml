@@ -15,7 +15,7 @@
     - "{{ root_dir }}/roles/fluentd/vars/main.yml"
     - "{{ root_dir }}/roles/nvidiadp/vars/main.yml"
     - "{{ root_dir }}/roles/mpi/vars/main.yml"
-    - "{{ root_dir }}/roles/app/vars/main.yml"
+    - "{{ root_dir }}/roles/cnvrgApp/vars/main.yml"
     - "{{ root_dir }}/roles/nfs/vars/main.yml"
     - "{{ root_dir }}/roles/hostpath/vars/main.yml"
     - "{{ root_dir }}/roles/autoscaler/vars/main.yml"

@@ -32,7 +32,7 @@ seeder:
   seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
 
 cnvrgAppUpgrade:
-  appImageCacheDs: "app-image-chache"
+  cacheDsName: "app-image-chache"
   cnvrgAppName: "cnvrg-app"
   image: ""
   cacheImage: "true"

@@ -1,6 +1,3 @@
-- debug:
-    msg: "{{ vars | to_nice_json  }}"
-
 - name: Set status
   operator_sdk.util.k8s_status:
     api_version: mlops.cnvrg.io/v1
@@ -8,24 +5,48 @@
     name: cnvrg-app-upgrade
     namespace: "{{ ansible_operator_meta.namespace }}"
     status:
-      status: "getting cnvrgapp"
+      status: "running"
+      message: "getting cnvrgapp"
 
 - name: Get CnvrgApp
   community.kubernetes.k8s_info:
     api_version: v1
     kind: CnvrgApp
     namespace: "{{ ansible_operator_meta.namespace }}"
-    name: "{{ cnvrg_app_upgrade.cnvrg_app_name }}"
+    name: "{{ cnvrgAppUpgrade.cnvrgAppName }}"
   register: resourcesCnvrg
 
-- name: set cnvrg_spec
+- name: set cnvrgAppObject
   set_fact:
-    cnvrgSpec: "{{ resourcesCnvrg.resources[0] }}"
+    cnvrgAppObject: "{{ resourcesCnvrg.resources[0] }}"
   when: resourcesCnvrg.resources|length > 0
 
+- name: fail if spec not found
+  block:
+  - name: Set status
+    operator_sdk.util.k8s_status:
+      api_version: mlops.cnvrg.io/v1
+      kind: CnvrgAppUpgrade
+      name: cnvrg-app-upgrade
+      namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        status: "error"
+        message: "cnvrgapp not found can't upgrade"
+  - fail:
+      msg: "cnvrgapp not found can't upgrade"
+  when: cnvrgAppObject is undefined
 
 - name: run upgrade
   block:
+
+  - name: bind cnvrg spec vars to global scope
+    include_role:
+      name: common
+      tasks_from: bind_vars
+    vars:
+      key: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict: "{{ cnvrgAppObject.spec }}"
 
   - name: update status
     operator_sdk.util.k8s_status:
@@ -44,9 +65,10 @@
       namespace: "{{ ansible_operator_meta.namespace }}"
       status:
         cnvrgBackup:
-          cnvrgAppSepc: "{{ cnvrgSpec.spec }}"
+          cnvrgAppSepc: "{{ cnvrgAppObject.spec }}"
     when:
     - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
+
 
   - name: Set status
     operator_sdk.util.k8s_status:
@@ -58,15 +80,18 @@
         status: "caching app image"
 
   - name: Create app image caching ds
-    k8s:
+    include_role:
+      name: common
+      tasks_from: install
+    vars:
+      templatePath: "templates/app_upgrade/cache-image-ds.yml"
       state: "present"
-      definition: "{{ lookup('template', 'templates/app_upgrade/cache-image-ds.yml') }}"
 
   - name: wait for image cache ds to come up
     shell: |
-      kubectl get daemonset "{{ cnvrg_app_upgrade.app_image_cache_ds }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
+      kubectl get daemonset "{{ cnvrgAppUpgrade.cacheDsName }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
     register: dsStatus
-    until: (dsStatus.stdout|from_json).desiredNumberScheduled == (ds_status.stdout|from_json).currentNumberScheduled
+    until: (dsStatus.stdout|from_json).desiredNumberScheduled == (dsStatus.stdout|from_json).currentNumberScheduled
     retries: 3600
     delay: 5
 
@@ -79,25 +104,21 @@
       status:
         status: "scale to 0 sedekiqs, set resourcesRequestEnabled to false"
 
-  - debug:
-      msg: "{{ cnvrgSpec | to_nice_yaml }}"
-
   - name: scale to 0 sedekiqs and disable resources requests
     set_fact:
-      cnvrg_spec: "{{ cnvrgSpec|combine({'spec': {'opsDecree':'pause','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+      cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'opsDecree':'pause','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
 
   - name: update CnvrgApp
     k8s:
       state: "present"
-      definition: "{{ cnvrgSpec }}"
+      definition: "{{ cnvrgAppObject }}"
       wait: "yes"
 
-  - import_role:
+  - name: reconcile app role
+    import_role:
       name: app
-      tasks_from: install.yml
+      tasks_from: install
     vars:
       roleState: "present"
-      cnvrgApp: "{{cnvrgSpec.cnvrgApp}}"
 
-
-  when: cnvrg_spec is not undefined
+  when: cnvrgAppObject is not undefined

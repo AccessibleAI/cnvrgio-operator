@@ -12,8 +12,14 @@
     - include_vars: ../../pg/vars/main.yml
     - include_vars: ../../es/vars/main.yml
     - include_vars: ../../redis/vars/main.yml
-    - include_vars: ../../app/vars/main.yml
+    - include_vars: ../../cnvrgApp/vars/main.yml
 
+
+    - name: Set roleState if not set
+      set_fact:
+        roleState: "present"
+      when: roleState is not defined
+      tags: always
 
     # is state present, create crds in first step
     - name: Install Istio CRDs

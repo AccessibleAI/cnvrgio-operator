@@ -9,7 +9,7 @@
     state: "present"
     compare_resource: yes
   with_fileglob:
-    - templates/app_install/*
+    - templates/install/*
 
 
 

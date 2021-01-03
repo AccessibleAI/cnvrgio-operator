@@ -9,7 +9,7 @@ orchestrator: "k8s" # k8s | ocp
 securityMode: "default" # default | ocp
 ingressType: "istio" # openshift | istio | k8singress | nodeport
 opsDecree: "start" # start | stop
-
+tags: "all" # all | none | specifc role name
 tenancy:
   enabled: "false"
   dedicatedNodes: "false"
@@ -25,3 +25,5 @@ https:
   cert: ""
   key: ""
   certSecret: "" #istio
+
+roles: {}

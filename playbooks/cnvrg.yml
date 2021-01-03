@@ -17,152 +17,68 @@
         - ../roles/fluentd/vars/main.yml
         - ../roles/nvidiadp/vars/main.yml
         - ../roles/mpi/vars/main.yml
-        - ../roles/app/vars/main.yml
+        - ../roles/cnvrgApp/vars/main.yml
         - ../roles/nfs/vars/main.yml
         - ../roles/hostpath/vars/main.yml
         - ../roles/ingress/vars/main.yml
-        - ../roles/cnvrg_router/vars/main.yml
+        - ../roles/cnvrgRouter/vars/main.yml
+        - ../roles/elastalert/vars/main.yml
+        - ../roles/vpa/vars/main.yml
       tags: always
 
+    - name: Set empty operatorRoles
+      set_fact:
+        operatorRoles: []
+
+    - name: Add default operator roles list
+      set_fact:
+        defaultOperatorRoles: "{{ defaultOperatorRoles | default([]) + [role] }}"
+      loop_control:
+        loop_var: role
+      loop:
+        - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
+        - { name: 'cnvrgRouter', enabled: "{{cnvrgRouter.enabled}}" }
+        - { name: 'nfs', enabled: "{{nfs.enabled}}" }
+        - { name: 'hostpath', enabled: "{{hostpath.enabled}}" }
+        - { name: 'conf', enabled: "{{conf.enabled}}" }
+        - { name: 'pg', enabled: "{{pg.enabled}}" }
+        - { name: 'redis', enabled: "{{redis.enabled}}" }
+        - { name: 'es', enabled: "{{es.enabled}}" }
+        - { name: 'elastalert', enabled: "{{elastalert.enabled}}" }
+        - { name: 'minio', enabled: "{{minio.enabled}}" }
+        - { name: 'fluentd', enabled: "{{fluentd.enabled}}" }
+        - { name: 'istio', enabled: "{{istio.enabled}}" }
+        - { name: 'kibana', enabled: "{{kibana.enabled}}" }
+        - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
+        - { name: 'mpi', enabled: "{{mpi.enabled}}" }
+        - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
+        - { name: 'vpa', enabled: "{{vpa.enabled}}" }
+        - { name: 'ingress', enabled: "{{ingress.enabled}}" }
+
+    - name: Set operatorRoles if tags are `all` or not defined
+      set_fact:
+        operatorRoles: "{{ operatorRoles + [role] }}"
+      loop_control:
+        loop_var: role
+      loop: "{{defaultOperatorRoles}}"
+      when: (tags == "all") or (tags is not defined)
+
+    - name: Set operatorRoles if tags are set for sepcifc roles
+      set_fact:
+        operatorRoles: "{{ operatorRoles + [role] }}"
+      when:
+      - tags != "all"
+      - role.name in "{{tags.split(",")}}"
+      loop_control:
+        loop_var: role
+      loop: "{{defaultOperatorRoles}}"
 
     - name: Deploy cnvrg stack
-      block:
+      include_role:
+        name: "{{ role.name }}"
+      when: role.enabled == "true"
+      loop_control:
+        loop_var: role
+      loop: "{{operatorRoles}}"
 
-      # CnvrgApp deployment
-      - import_role:
-          name: app
-          tasks_from: install.yml
-        when:
-        - cnvrgApp.enabled == "true"
-        tags: app
 
-      # Cnvrg Nginx Router
-      - import_role:
-          name: cnvrg_router
-        when:
-        - cnvrgRouter.enabled == "true"
-        tags: cnvrgRouter
-
-      # NFS provisioner deployment
-      - import_role:
-          name: nfs
-        when:
-        - nfs.enabled == "true"
-        tags: nfs
-
-      # Hostpath provisioner deployment
-      - import_role:
-          name: hostpath
-        when:
-        - hostpath.enabled == "true"
-        tags: hostpath
-
-      # Configuration deployment
-      - import_role:
-          name: conf
-        when:
-        - conf.enabled == "true"
-        tags: conf
-
-      # Postgres deployment
-      - import_role:
-          name: pg
-        when:
-        - pg.enabled == "true"
-        tags: pg
-
-      # Postgres deployment
-      - import_role:
-          name: pg_backup
-        when:
-        - pg_backup.enabled == "true"
-        tags: pg_backup
-
-      # Redis deployment
-      - import_role:
-          name: redis
-        when:
-        - redis.enabled == "true"
-        tags: redis
-
-      # ElasticSearch deployment
-      - import_role:
-          name: es
-        when:
-        - es.enabled == "true"
-        tags: es
-
-      # ElastAlert deployment
-      - import_role:
-          name: elastalert
-        when:
-        - elastalert.enabled == "true"
-        tags: elastalert
-
-      # Minio deployment
-      - import_role:
-          name: minio
-        when:
-        - minio.enabled == "true"
-        tags: minio
-
-      # Fluentd deployment
-      - import_role:
-          name: fluentd
-        when:
-        - fluentd.enabled == "true"
-        tags: fluentd
-
-      # Istio deployment
-      - import_role:
-          name: istio
-        vars:
-          roleState: "present"
-        when:
-        - istio.enabled == "true"
-        tags: istio
-
-      # Kibana deployment
-      - import_role:
-          name: kibana
-        when:
-        - kibana.enabled == "true"
-        tags: kibana
-
-      # Nvidia device plugin
-      - import_role:
-          name: nvidiadp
-        when:
-        - nvidiadp.enabled == "true"
-        tags: nvidiadp
-
-      # MPI deployment
-      - import_role:
-          name: mpi
-        when:
-        - mpi.enabled == "true"
-        tags: mpi
-
-      # Ingress rules deployment
-      - import_role:
-          name: ingress
-        when:
-        - ingress.enabled == 'true'
-        tags: ingress
-
-      # Monitoring
-      - import_role:
-          name: monitoring
-        when:
-        - monitoring.enabled == "true"
-        tags: monitoring
-
-      # vpa deployment
-      - import_role:
-          name: vpa
-        when:
-        - vpa.enabled == "true"
-        tags: vpa
-
-      when:
-      - opsDecree == "start"
