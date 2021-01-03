@@ -234,7 +234,7 @@ elastalert:
   cpuRequest: 100m
   memoryRequest: 200Mi
   cpuLimit: 1
-  memoryLimit: 2000Gi
+  memoryLimit: 2Gi
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
