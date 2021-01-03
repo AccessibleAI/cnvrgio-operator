@@ -4,7 +4,7 @@
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "{{ item }}"
+    state: "{{ roleState }}"
   with_fileglob:
     - templates/*

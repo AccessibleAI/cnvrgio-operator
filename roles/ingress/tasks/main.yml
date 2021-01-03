@@ -19,18 +19,18 @@
     state: "present"
   with_fileglob:
     - templates/istio-vs/*
-  when: ingress_type == "istio"
+  when: ingressType == "istio"
 
 - name: Deploy GW
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
+    templatePath: "{{ item }}"
     state: "present"
   with_fileglob:
     - templates/istio-gw/*
-  when: ingress_type == "istio"
+  when: ingressType == "istio"
 
 - name: Deploy K8S Ingress rules
   include_role:
@@ -41,4 +41,4 @@
     state: "present"
   with_fileglob:
     - templates/k8s-ingress/*
-  when: ingress_type == "k8singress"
+  when: ingressType == "k8singress"

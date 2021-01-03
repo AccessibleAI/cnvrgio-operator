@@ -84,8 +84,10 @@
       name: common
       tasks_from: install
     vars:
-      templatePath: "templates/app_upgrade/cache-image-ds.yml"
+      templatePath: "templates/upgrade/cache-image-ds.yml"
       state: "present"
+      waitToComplete: yes
+
 
   - name: wait for image cache ds to come up
     shell: |
@@ -106,19 +108,12 @@
 
   - name: scale to 0 sedekiqs and disable resources requests
     set_fact:
-      cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'opsDecree':'pause','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+      cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'tags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
 
   - name: update CnvrgApp
     k8s:
       state: "present"
       definition: "{{ cnvrgAppObject }}"
       wait: "yes"
-
-  - name: reconcile app role
-    import_role:
-      name: app
-      tasks_from: install
-    vars:
-      roleState: "present"
 
   when: cnvrgAppObject is not undefined

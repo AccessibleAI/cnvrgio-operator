@@ -21,15 +21,10 @@
         - ../roles/nfs/vars/main.yml
         - ../roles/hostpath/vars/main.yml
         - ../roles/ingress/vars/main.yml
-<<<<<<< HEAD
         - ../roles/cnvrgRouter/vars/main.yml
         - ../roles/elastalert/vars/main.yml
         - ../roles/vpa/vars/main.yml
-=======
-        - ../roles/cnvrg_router/vars/main.yml
-        - ../roles/vpa/vars/main.yml
         - ../roles/hyper/vars/main.yml
->>>>>>> 60d037e561c2d73b9a318d4247dcf4cbbb40254f
       tags: always
 
     - name: Set empty operatorRoles

@@ -25,3 +25,4 @@ spec:
       containers:
       - name: app-image-chache
         image: "{{ cnvrgAppUpgrade.image }}"
+        command: ["/bin/bash","-c","sleep inf"]

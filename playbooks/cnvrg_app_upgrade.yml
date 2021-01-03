@@ -23,11 +23,7 @@
         - ../roles/cnvrgRouter/vars/main.yml
       tags: always
 
-
     # CnvrgApp upgrade
     - import_role:
-        name: app
+        name: cnvrgApp
         tasks_from: upgrade.yml
-      vars:
-        roleState: "{{'present' if cnvrgApp.enabled == 'true' else 'absent'}}"
-      tags: app_upgrade
