@@ -47,7 +47,7 @@ spec:
               path: "/?key={{hyper.token}}"
               port: {{hyper.port}}
               scheme: HTTP
-            initialDelaySeconds: 10
+            initialDelaySeconds: 20
             successThreshold: 1
             periodSeconds: {{ hyper.readiness_period_seconds | default('100') }}
             timeoutSeconds: {{ hyper.readiness_timeout_seconds |default('60') }}
