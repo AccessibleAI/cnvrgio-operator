@@ -42,14 +42,14 @@ computeProfiles:
     cnvrgApp:
       webappCpu: 2
       webappMemory: 4Gi
-      sidekiqCpu: 1.5
+      sidekiqCpu: 2
       sidekiqMemory: 4Gi
       searchkiqCpu: 1
       searchkiqMemory: 1Gi
       sidekiqReplicas: 2
       searchkiqReplicas: 1
     pg:
-      cpu: 1.5
+      cpu: 2
       memory: 4Gi
     minio:
       cpu: 1
@@ -58,11 +58,11 @@ computeProfiles:
       cpu: 1
       memory: 1Gi
     hyper:
-      cpu: 1
-      memory: 2Gi
+      cpu: 100m
+      memory: 200Mi
     elastalert:
-      cpu: 1
-      memory: 1Gi
+      cpu: 100m
+      memory: 200Mi
     prometheus:
       cpu: 1
       memory: 1Gi
@@ -233,8 +233,8 @@ elastalert:
   storageClass: "use-default"
   cpuRequest: 100m
   memoryRequest: 200Mi
-  cpuLimit: 400m
-  memoryLimit: 800Mi
+  cpuLimit: 1
+  memoryLimit: 2000Gi
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
@@ -244,10 +244,10 @@ hyper:
   port: 5050
   nodePort: 30050
   svcName: "hyper"
-  cpuRequest: 500m
-  memoryRequest: 500Mi
-  cpuLimit: 1
-  memoryLimit: 2000Mi
+  cpuRequest: 100m
+  memoryRequest: 200Mi
+  cpuLimit: 2
+  memoryLimit: 4Gi
   replicas: 1
   token: "token"
   enableReadinessProbe: "true"

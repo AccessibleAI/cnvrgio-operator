@@ -6,10 +6,10 @@ hyper:
   node_port: 30050
   svc_name: "hyper"
   token: "token"
-  cpu_request: 500m
-  memory_request: 500Mi
-  cpu_limit: 1
-  memory_limit: 2000Mi
+  cpu_request: 100m
+  memory_request: 200Mi
+  cpu_limit: 2
+  memory_limit: 4Gi
   enable_readiness_probe: "true"
   readiness_period_seconds: 100
   readiness_timeout_seconds: 60
