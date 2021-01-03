@@ -24,4 +24,5 @@ dotted = "*"
 op = "ansible-operator run"
 test  = "python tests/run_tests.py"
 #  pipenv run ansible-playbook playbooks/cnvrg.yml --extra-vars='{"debug":"true","dryRun":"true","ansible_operator_meta":{"namespace":"cnvrg"}}'
-#
+
+# pipenv run ansible-playbook playbooks/cnvrg_app_upgrade.yml --extra-vars='{"debug":"true","dryRun":"true","ansible_operator_meta":{"namespace":"cnvrg","name":"cnvrg-app-upgrade"},"cnvrgAppUpgrade":{"image":"cnvrg/app:master-3657","rollback":"true"}}'

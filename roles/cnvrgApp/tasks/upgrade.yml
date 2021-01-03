@@ -1,96 +1,20 @@
-- include_role:
-    name: common
-    tasks_from: cr_status
-  vars:
-    message: "getting cnvrgapp"
-
-- name: Get CnvrgApp
-  community.kubernetes.k8s_info:
-    api_version: v1
-    kind: CnvrgApp
-    namespace: "{{ ansible_operator_meta.namespace }}"
-    name: "{{ cnvrgAppUpgrade.cnvrgAppName }}"
-  register: resourcesCnvrg
-
-- name: set cnvrgAppObject
-  set_fact:
-    cnvrgAppObject: "{{ resourcesCnvrg.resources[0] }}"
-  when: resourcesCnvrg.resources|length > 0
-
-- name: fail if spec not found
+- name: run rollback
   block:
   - include_role:
       name: common
       tasks_from: cr_status
     vars:
-      message: "error,cnvrgapp not found can't upgrade"
-  - fail:
-      msg: "cnvrgapp not found can't upgrade"
-  when: cnvrgAppObject is undefined
+      message: "running rollback"
 
-- name: run upgrade
-  block:
+  - set_fact:
+      backupSpec: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup.cnvrgAppSepc| from_yaml }}"
 
-  - name: bind cnvrg spec vars to global scope
-    include_role:
-      name: common
-      tasks_from: bind_vars
-    vars:
-      key: "{{ item.key }}"
-      value: "{{ item.value }}"
-    with_dict: "{{ cnvrgAppObject.spec }}"
-
-  - include_role:
-      name: common
-      tasks_from: cr_status
-    vars:
-      message: "backup cnvrgapp"
-
-  - name: Backup CnvrgApp
-    operator_sdk.util.k8s_status:
-      api_version: mlops.cnvrg.io/v1
-      kind: CnvrgAppUpgrade
-      name: cnvrg-app-upgrade
-      namespace: "{{ ansible_operator_meta.namespace }}"
-      status:
-        cnvrgBackup:
-          cnvrgAppSepc: "{{ cnvrgAppObject.spec }}"
-    when:
-    - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
-
-  - include_role:
-      name: common
-      tasks_from: cr_status
-    vars:
-      message: "caching app image"
-
-  - name: Create app image caching ds
-    include_role:
-      name: common
-      tasks_from: install
-    vars:
-      templatePath: "templates/upgrade/cache-image-ds.yml"
-      state: "present"
-      waitToComplete: yes
-
-
-  - name: wait for image cache ds to come up
-    shell: |
-      kubectl get daemonset "{{ cnvrgAppUpgrade.cacheDsName }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
-    register: dsStatus
-    until: (dsStatus.stdout|from_json).desiredNumberScheduled == (dsStatus.stdout|from_json).currentNumberScheduled
-    retries: 3600
-    delay: 5
-
-  - include_role:
-      name: common
-      tasks_from: cr_status
-    vars:
-      message: "scale to 0 sedekiqs, set resourcesRequestEnabled to false"
-
-  - name: scale to 0 sedekiqs and disable resources requests
+  - name: restoring cnvrgapp from backup
     set_fact:
-      cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'tags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec }}"}
+
+  - debug:
+      msg: "{{ cnvrgAppObject | to_nice_yaml }}"
 
   - name: update CnvrgApp
     k8s:
@@ -98,4 +22,145 @@
       definition: "{{ cnvrgAppObject }}"
       wait: "yes"
 
-  when: cnvrgAppObject is defined
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "rollback done"
+  when:
+  - cnvrgAppUpgrade.rollback == "true"
+  - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
+
+
+
+- name: run upgrade
+  block:
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "getting cnvrgapp"
+
+  - name: Get CnvrgApp
+    community.kubernetes.k8s_info:
+      api_version: v1
+      kind: CnvrgApp
+      namespace: "{{ ansible_operator_meta.namespace }}"
+      name: "{{ cnvrgAppUpgrade.cnvrgAppName }}"
+    register: resourcesCnvrg
+
+  - name: set cnvrgAppObject
+    set_fact:
+      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ resourcesCnvrg.resources[0] }}"}
+    when: resourcesCnvrg.resources|length > 0
+
+  - name: fail if spec not found
+    block:
+    - include_role:
+        name: common
+        tasks_from: cr_status
+      vars:
+        message: "error,cnvrgapp not found can't upgrade"
+    - fail:
+        msg: "cnvrgapp not found can't upgrade"
+    when: cnvrgAppObject is undefined
+
+  - name: run upgrade
+    block:
+
+    - name: bind cnvrg spec vars to global scope
+      include_role:
+        name: common
+        tasks_from: bind_vars
+      vars:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+      with_dict: "{{ cnvrgAppObject.spec }}"
+
+    - include_role:
+        name: common
+        tasks_from: cr_status
+      vars:
+        message: "backup cnvrgapp"
+
+    - name: Backup CnvrgApp
+      operator_sdk.util.k8s_status:
+        api_version: mlops.cnvrg.io/v1
+        kind: CnvrgAppUpgrade
+        name: cnvrg-app-upgrade
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        status:
+          cnvrgBackup:
+            cnvrgAppSepc: "{{ cnvrgAppObject.spec }}"
+      when:
+      - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
+
+    - include_role:
+        name: common
+        tasks_from: cr_status
+      vars:
+        message: "caching app image"
+
+    - name: Create app image caching ds
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        templatePath: "templates/upgrade/cache-image-ds.yml"
+        state: "present"
+        waitToComplete: yes
+
+    - name: wait for image cache ds to come up
+      shell: |
+        kubectl get daemonset "{{ cnvrgAppUpgrade.cacheDsName }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
+      register: dsStatus
+      until: (dsStatus.stdout|from_json).desiredNumberScheduled == (dsStatus.stdout|from_json).currentNumberScheduled
+      retries: 3600
+      delay: 5
+
+    - include_role:
+        name: common
+        tasks_from: cr_status
+      vars:
+        message: "scaling sedekiqs to 0"
+
+    - name: scale to 0 sedekiqs and disable resources requests
+      set_fact:
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'tags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+
+    - name: update CnvrgApp
+      k8s:
+        state: "present"
+        definition: "{{ cnvrgAppObject }}"
+        wait: "yes"
+
+    - name: wait for sidekiq scale to 0
+      shell: |
+        kubectl get pods -l "app={{item}}" -n"{{ ansible_operator_meta.namespace }}" --no-headers | wc -l
+      loop:
+        - sidekiq
+        - sidekiq-searchkick
+      register: replicas
+      until: replicas.stdout|int == 0
+      retries: 3600
+      delay: 2
+
+    - include_role:
+        name: common
+        tasks_from: cr_status
+      vars:
+        message: "upgrading app image"
+
+    - name: upgrading app image
+      set_fact:
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'cnvrgApp': {'image':  cnvrgAppUpgrade.image }}}, recursive=True) }}"
+
+    - name: update CnvrgApp
+      k8s:
+        state: "present"
+        definition: "{{ cnvrgAppObject }}"
+        wait: "yes"
+
+    when: cnvrgAppObject is defined
+
+  when: cnvrgAppUpgrade.rollback == "false"

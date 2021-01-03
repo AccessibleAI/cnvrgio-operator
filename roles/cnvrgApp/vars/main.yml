@@ -36,3 +36,4 @@ cnvrgAppUpgrade:
   cnvrgAppName: "cnvrg-app"
   image: ""
   cacheImage: "true"
+  rollback: "false"
