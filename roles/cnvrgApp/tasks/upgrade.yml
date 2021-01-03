@@ -7,20 +7,21 @@
       message: "running rollback"
 
   - set_fact:
-      backupSpec: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup.cnvrgAppSepc| from_yaml }}"
+      backupSpec: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
+
+  - set_fact:
+      backupSpec: "{{ backupSpec|combine({'spec':{'tags': 'all'}}, recursive=True) }}"
+    when: tags not in backupSpec.spec.keys()
 
   - name: restoring cnvrgapp from backup
     set_fact:
-      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec }}"}
-
-  - debug:
-      msg: "{{ cnvrgAppObject | to_nice_yaml }}"
+      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec.spec }}"}
 
   - name: update CnvrgApp
     k8s:
       state: "present"
       definition: "{{ cnvrgAppObject }}"
-      wait: "yes"
+      wait: yes
 
   - include_role:
       name: common
@@ -30,7 +31,6 @@
   when:
   - cnvrgAppUpgrade.rollback == "true"
   - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
-
 
 
 - name: run upgrade
@@ -91,7 +91,7 @@
         namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           cnvrgBackup:
-            cnvrgAppSepc: "{{ cnvrgAppObject.spec }}"
+            cnvrgAppSpec: "{{ cnvrgAppObject.spec }}"
       when:
       - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
 
