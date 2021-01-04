@@ -11,3 +11,4 @@
     namespace: "{{ ansible_operator_meta.namespace }}"
     status:
       status: "{{ message  }}"
+  when: dryRun == "false"

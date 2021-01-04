@@ -18,9 +18,9 @@ spec:
       jsonPath: .spec.cnvrgApp.image
       name: Version
       type: string
-    - description: ops decree
-      jsonPath: .spec.opsDecree
-      name: OpsDecree
+    - description: tags
+      jsonPath: .spec.tags
+      name: Tags
       type: string
     - description: cnvrg status
       jsonPath: .status.conditions[0].message

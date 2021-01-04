@@ -6,4 +6,4 @@ metadata:
   annotations:
     storageclass.kubernetes.io/is-default-class: "{{ nfs.defaultSc }}"
 provisioner: "{{ nfs.provisioner }}"
-reclaimPolicy: "{{ nfs.reclaim_policy }}"
+reclaimPolicy: "{{ nfs.reclaimPolicy }}"
