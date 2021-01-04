@@ -78,6 +78,10 @@ spec:
           jsonPath: .spec.cnvrgAppUpgrade.image
           name: Version
           type: string
+        - description: state
+          jsonPath: .spec.cnvrgAppUpgrade.state
+          name: State
+          type: string
         - description: cnvrg status
           jsonPath: .status.status
           name: Status

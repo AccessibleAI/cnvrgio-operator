@@ -1,3 +1,32 @@
+- name: check for single cnvrgappupgrade CR
+  block:
+  - name: get all running upgrades
+    shell: |
+      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATE:.spec.cnvrgAppUpgrade.state --no-headers | grep upgrade | wc -l
+    register: runningUpgrades
+
+  - name: get all running rollbacks
+    shell: |
+      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATE:.spec.cnvrgAppUpgrade.state --no-headers | grep rollback | wc -l
+    register: runningRollbacks
+
+  - name: fail if more than one upgrade exists
+    fail:
+        msg: "more than one upgrades exists: current active upgrades {{ runningUpgrades.stdout|int }}"
+    when: runningUpgrades.stdout|int > 1
+
+  - name: fail if more than one rollback exists
+    fail:
+        msg: "more than one rollback exists: current active rollback {{ runningRollbacks.stdout|int }}"
+    when: runningRollbacks.stdout|int > 1
+
+  - name: fail if both rollback and upgrade exists
+    fail:
+        msg: "both rollback and upgrade are active"
+    when:
+    - runningRollbacks.stdout|int == 1
+    - runningUpgrades.stdout|int == 1
+
 - name: run rollback
   block:
   - include_role:
@@ -28,8 +57,13 @@
       tasks_from: cr_status
     vars:
       message: "rollback done"
+
+  - include_role:
+      name: common
+      tasks_from: set_upgrade_inactive
+
   when:
-  - cnvrgAppUpgrade.rollback == "true"
+  - cnvrgAppUpgrade.state == "rollback"
   - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
 
 - name: run upgrade
@@ -213,10 +247,7 @@
       when: cnvrgAppUpgradeSpec.resources|length < 1
 
     - set_fact:
-        cnvrgAppUpgradeSpec: "{{ cnvrgAppUpgradeSpec.resources[0]}}"
-
-    - set_fact:
-        backupSpec: "{{ cnvrgAppUpgradeSpec.status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
+        backupSpec: "{{ cnvrgAppUpgradeSpec.resources[0].status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
 
     - name: restore sidekiqs and resources requests
       set_fact:
@@ -261,19 +292,9 @@
         definition: "{{ cnvrgAppObject }}"
         wait: "yes"
 
-    - name: set CnvrgAppUpgrade CR inactive
-      set_fact:
-        cnvrgAppUpgradeSpec: "{{ cnvrgAppUpgradeSpec|combine({'spec': {'cnvrgAppUpgrade': {'state':'inactive'}}}, recursive=True) }}"
-
-    - name: update CnvrgAppUpgrade
-      k8s:
-        state: "present"
-        wait: "yes"
-        definition: "{{ {'apiVersion': 'mlops.cnvrg.io/v1',
-                         'kind':'CnvrgAppUpgrade',
-                         'metadata': {'name':ansible_operator_meta.name, 'namespace':ansible_operator_meta.namespace},
-                         'spec': cnvrgAppUpgradeSpec.spec,
-                         'status': cnvrgAppUpgradeSpec.status} }}"
+    - include_role:
+        name: common
+        tasks_from: set_upgrade_inactive
 
     - include_role:
         name: common
@@ -284,5 +305,5 @@
     when:
       - cnvrgAppObject is defined
 
-  when: cnvrgAppUpgrade.rollback == "false"
+  when: cnvrgAppUpgrade.state == "upgrade"
 
