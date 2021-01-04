@@ -10,12 +10,12 @@
       backupSpec: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
 
   - set_fact:
-      backupSpec: "{{ backupSpec|combine({'spec':{'tags': 'all'}}, recursive=True) }}"
-    when: tags not in backupSpec.spec.keys()
+      backupSpec: "{{ backupSpec|combine({'tags': 'all'}, recursive=True) }}"
+    when: tags not in backupSpec.keys()
 
   - name: restoring cnvrgapp from backup
     set_fact:
-      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec.spec }}"}
+      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec }}"}
 
   - name: update CnvrgApp
     k8s:
@@ -51,7 +51,7 @@
 
   - name: set cnvrgAppObject
     set_fact:
-      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ resourcesCnvrg.resources[0] }}"}
+      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ resourcesCnvrg.resources[0].spec }}"}
     when: resourcesCnvrg.resources|length > 0
 
   - name: fail if spec not found
@@ -65,8 +65,23 @@
         msg: "cnvrgapp not found can't upgrade"
     when: cnvrgAppObject is undefined
 
+  - name: set current image
+    set_fact:
+      currentImage: "{{cnvrgAppObject.spec.cnvrgApp.image}}"
+
+  - include_role:
+      name: common
+      tasks_from: cr_status
+    vars:
+      message: "nothing to upgrade current image equals to new image"
+    when: currentImage == cnvrgAppUpgrade.image
+
   - name: run upgrade
     block:
+
+    - name: "print cnvrgAppObject.spec"
+      debug:
+        msg: "{{ cnvrgAppObject.spec | to_nice_yaml }}"
 
     - name: bind cnvrg spec vars to global scope
       include_role:
@@ -87,7 +102,7 @@
       operator_sdk.util.k8s_status:
         api_version: mlops.cnvrg.io/v1
         kind: CnvrgAppUpgrade
-        name: cnvrg-app-upgrade
+        name: "{{ ansible_operator_meta.name }}"
         namespace: "{{ ansible_operator_meta.namespace }}"
         status:
           cnvrgBackup:
@@ -109,6 +124,7 @@
         templatePath: "templates/upgrade/cache-image-ds.yml"
         state: "present"
         waitToComplete: yes
+      when: cnvrgAppUpgrade.cacheImage == "true"
 
     - name: wait for image cache ds to come up
       shell: |
@@ -161,6 +177,9 @@
         definition: "{{ cnvrgAppObject }}"
         wait: "yes"
 
-    when: cnvrgAppObject is defined
+    when:
+      - cnvrgAppObject is defined
+      - currentImage != cnvrgAppUpgrade.image
 
   when: cnvrgAppUpgrade.rollback == "false"
+
