@@ -7,12 +7,12 @@ metadata:
   labels:
     app: "{{logging.es.svcName}}"
 spec:
-  {% if ingressType == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
   - port: {{logging.es.port}}
-    {% if ingressType == "nodeport" %}
+    {% if networking.ingressType == "nodeport" %}
     nodePort: {{ logging.es.nodePort }}
     {% endif %}
   selector:

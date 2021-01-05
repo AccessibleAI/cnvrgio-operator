@@ -7,12 +7,12 @@ metadata:
   labels:
     app: {{cnvrgApp.svcName}}
 spec:
-  {% if ingressType == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
     - port: {{cnvrgApp.port}}
-      {% if ingressType == "nodeport" %}
+      {% if networking.ingressType == "nodeport" %}
       nodePort: {{ cnvrgApp.nodePort }}
       {% endif %}
   selector:

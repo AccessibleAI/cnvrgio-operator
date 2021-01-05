@@ -1,0 +1,22 @@
+apiVersion: networking.networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "{{cnvrgApp.svcName}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  hosts:
+    - "{{ (cnvrgApp.svcName + '.' + clusterDomain).split(':')[0] }}"
+  gateways:
+    - "{{networking.istio.gwName}}"
+  http:
+  - retries:
+      attempts: {{ networking.ingress.retriesAttempts | default ('5') }}
+      perTryTimeout: {{ networking.ingress.perTryTimeout | default ('180s') }}
+    timeout: {{ networking.ingress.timeout | default ('900s') }}
+    route:
+      - destination:
+          host: "{{cnvrgApp.svcName + '.' + ansible_operator_meta.namespace + ".svc.cluster.local" }}"
+    headers:
+      request:
+        set:
+          x-forwarded-proto: "{{ 'https' if networking.https.enabled == 'true' else 'http' }}"

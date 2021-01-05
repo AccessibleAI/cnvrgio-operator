@@ -13,7 +13,7 @@ metadata:
           "spec": {
             "clusterDomain": "change.me.to.your.ocp.domain",
             "securityMode": "ocp",
-            "ingressType": "openshift",
+            "networking.ingressType": "openshift",
             "cnvrgApp": {
               "image": "registry.connect.redhat.com/cnvrg-core/cnvrg-app:3.4.1",
               "port": "3000",
@@ -279,7 +279,7 @@ spec:
             verbs:
               - "*"
           - apiGroups:
-              - "authentication.istio.io"
+              - "authentication.networking.istio.io"
             resources:
               - "*"
             verbs:
@@ -291,7 +291,7 @@ spec:
             verbs:
               - "*"
           - apiGroups:
-              - "config.istio.io"
+              - "config.networking.istio.io"
             resources:
               - "*"
             verbs:
@@ -308,7 +308,7 @@ spec:
             verbs:
               - "*"
           - apiGroups:
-              - "install.istio.io"
+              - "install.networking.istio.io"
             resources:
               - "*"
             verbs:
@@ -322,7 +322,7 @@ spec:
               - "create"
               -  "patch"
           - apiGroups:
-              - "networking.istio.io"
+              - "networking.networking.istio.io"
             resources:
               - "*"
             verbs:
@@ -334,13 +334,13 @@ spec:
             verbs:
               - "*"
           - apiGroups:
-              - "rbac.istio.io"
+              - "rbac.networking.istio.io"
             resources:
               - "*"
             verbs:
               - "*"
           - apiGroups:
-              - "security.istio.io"
+              - "security.networking.istio.io"
             resources:
               - "*"
             verbs:

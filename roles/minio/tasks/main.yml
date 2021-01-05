@@ -1,5 +1,5 @@
 - include_vars: ../../conf/vars/main.yml
-- include_vars: ../../istio/vars/main.yml
+- include_vars: ../../networking/vars/main.yml
 
 - name: Create Minio NAS GW Shared Storage
   include_role:

@@ -4,11 +4,11 @@ dumpDir: ""
 dryRun: "false"
 privilegedSa: "cnvrg-privileged"
 clusterDomain: ""
-httpScheme: "{{ 'https://' if https.enabled == 'true' else 'http://' }}"
+httpScheme: "{{ 'https://' if networking.https.enabled == 'true' else 'http://' }}"
 orchestrator: "k8s" # k8s | ocp
 securityMode: "default" # default | ocp
-ingressType: "istio" # openshift | istio | k8singress | nodeport
 tags: "all" # all | none | specifc role name
+
 tenancy:
   enabled: "false"
   dedicatedNodes: "false"
@@ -18,11 +18,3 @@ tenancy:
   minio:
     key: "minio-taint"
     value: "true"
-
-https:
-  enabled: "false"
-  cert: ""
-  key: ""
-  certSecret: "" #istio
-
-roles: {}

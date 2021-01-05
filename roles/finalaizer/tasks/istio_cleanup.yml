@@ -2,9 +2,6 @@
 - include_vars: ../../../playbooks/vars/globals.yml
 - include_vars: ../../cnvrgApp/vars/main.yml
 
-- debug:
-    msg: "Running cnvrg finalizer"
-
 - name: Remove Istio
   include_role:
     name: istio

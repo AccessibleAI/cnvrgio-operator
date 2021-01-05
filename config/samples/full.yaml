@@ -11,7 +11,7 @@ spec:
   useHttps: "false"
   orchestrator: "k8s"
   securityMode: "default"
-  ingressType: "istio"
+  networking.ingressType: "istio"
   https:
     enabled: "false"
     useWildcardCertificate: "true"

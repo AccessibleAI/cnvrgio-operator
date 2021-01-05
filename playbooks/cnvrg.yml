@@ -1,26 +1,14 @@
 - hosts: localhost
   gather_facts: no
   tasks:
-    - name: "Include vars"
+
+    - name: Construct vars files list
+      shell: printf "vars/globals.yml\n" && find -f ./roles/*/vars -name main.yml -type file
+      register: roleVars
+
+    - name: Include vars
       include_vars: "{{ item }}"
-      with_items:
-        - vars/globals.yml
-        - ../roles/conf/vars/main.yml
-        - ../roles/redis/vars/main.yml
-        - ../roles/pg/vars/main.yml
-        - ../roles/pg_backup/vars/main.yml
-        - ../roles/storage/vars/main.yml
-        - ../roles/logging/vars/main.yml
-        - ../roles/monitoring/vars/main.yml
-        - ../roles/minio/vars/main.yml
-        - ../roles/istio/vars/main.yml
-        - ../roles/nvidiadp/vars/main.yml
-        - ../roles/mpi/vars/main.yml
-        - ../roles/cnvrgApp/vars/main.yml
-        - ../roles/ingress/vars/main.yml
-        - ../roles/cnvrgRouter/vars/main.yml
-        - ../roles/vpa/vars/main.yml
-        - ../roles/hyper/vars/main.yml
+      with_items: "{{ roleVars.stdout_lines }}"
       tags: always
 
     - name: Set empty operatorRoles
@@ -41,12 +29,11 @@
         - { name: 'redis', enabled: "{{redis.enabled}}" }
         - { name: 'logging', enabled: "{{logging.enabled}}" }
         - { name: 'minio', enabled: "{{minio.enabled}}" }
-        - { name: 'istio', enabled: "{{istio.enabled}}" }
+        - { name: 'networking', enabled: "{{networking.enabled}}" }
         - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
         - { name: 'mpi', enabled: "{{mpi.enabled}}" }
         - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
         - { name: 'vpa', enabled: "{{vpa.enabled}}" }
-        - { name: 'ingress', enabled: "{{ingress.enabled}}" }
         - { name: 'hyper', enabled: "{{hyper.enabled}}" }
 
     - name: Set operatorRoles if tags are `all` or not defined

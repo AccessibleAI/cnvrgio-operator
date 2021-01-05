@@ -12,7 +12,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+  networking.ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -43,7 +43,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+  networking.ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -88,7 +88,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "istio"
+  networking.ingressType: "istio"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -130,7 +130,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+  networking.ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"

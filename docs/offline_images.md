@@ -63,10 +63,10 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 --set monitoring.minioExporter.image offline_repo/cnvrg/cnvrg-boot:v0.24 \
 --set monitoring.dcgmExporter.image offline_repo/nvidia/dcgm-exporter:1.7.2 \
 --set monitoring.metricsServer.image offline_repo/metrics-server/metrics-server:v0.3.7 \
---set istio.operatorImage offline_repo/istio/operator:1.7.3 \
---set istio.proxyImage offline_repo/istio/proxyv2 \
---set istio.mixerImage offline_repo/istio/mixer \
---set istio.pilotImage offline_repo/istio/pilot \
+--set networking.istio.operatorImage offline_repo/istio/operator:1.7.3 \
+--set networking.istio.proxyImage offline_repo/istio/proxyv2 \
+--set networking.istio.mixerImage offline_repo/istio/mixer \
+--set networking.istio.pilotImage offline_repo/istio/pilot \
 --set logging.kibana.image offline_repo/kibana/kibana-oss:7.8.1 \
 --set logging.fluentd.image offline_repo/fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1 \
 --set nvidiadp.image offline_repo/nvidia/k8s-device-plugin:v0.7.0 \

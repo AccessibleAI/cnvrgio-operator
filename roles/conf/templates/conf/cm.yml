@@ -15,10 +15,10 @@ data:
   HYPER_SERVER_TOKEN: "{{hyper.token}}"
   KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
   SHOW_INTERCOM:  "{{ cnvrgApp.intercom }}"
-  ROUTE_BY_ISTIO: "{{ ('true' if ingressType == 'istio' else 'false') }}"
-  ROUTE_BY_OPENSHIFT: "{{ ('true' if ingressType == 'openshift' else 'false') }}"
-  ROUTE_BY_NGINX_INGRESS: "{{ ('true' if ingressType == 'k8singress' else 'false') }}"
-  ROUTE_BY_NODE_PORT: "{{ ('true' if ingressType == 'nodeport' else 'false') }}"
+  ROUTE_BY_ISTIO: "{{ ('true' if networking.ingressType == 'istio' else 'false') }}"
+  ROUTE_BY_OPENSHIFT: "{{ ('true' if networking.ingressType == 'openshift' else 'false') }}"
+  ROUTE_BY_NGINX_INGRESS: "{{ ('true' if networking.ingressType == 'k8singress' else 'false') }}"
+  ROUTE_BY_NODE_PORT: "{{ ('true' if networking.ingressType == 'nodeport' else 'false') }}"
   CNVRG_STORAGE_USE_IAM_ROLE: "false"
   {% if conf.defaultJobsStorageClass == "" %}
   {% if storage.nfs.enabled == "true" %}
@@ -38,9 +38,9 @@ data:
   SMTP_PASSWORD: "{{ appConfigs.smtp.password }}"
   SMTP_DOMAIN: "{{ appConfigs.smtp.domain }}"
   {% if cnvrgRouter.enabled == "true" %}
-  DEPLOY_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if ingressType == 'nodeport' else ''))}}"
-  NOTEBOOK_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if ingressType == 'nodeport' else ''))}}"
-  TENSORBOARD_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if ingressType == 'nodeport' else ''))}}"
+  DEPLOY_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  NOTEBOOK_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  TENSORBOARD_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
   {% endif %}
 {% set featureFlags = appConfigs.featureFlags.split(';') %}
 {% for featureFlag in featureFlags %}

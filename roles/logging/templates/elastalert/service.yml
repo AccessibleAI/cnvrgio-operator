@@ -7,14 +7,14 @@ metadata:
   labels:
     app: {{logging.elastalert.svcName}}
 spec:
-  {% if ingressType == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
     - port: {{logging.elastalert.port}}
       protocol: TCP
       targetPort: {{logging.elastalert.containerPort}}
-      {% if ingressType == "nodeport" %}
+      {% if networking.ingressType == "nodeport" %}
       nodePort: {{ logging.elastalert.nodePort }}
       {% endif %}
   selector:

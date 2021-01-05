@@ -1,26 +1,14 @@
 - hosts: localhost
   gather_facts: no
   tasks:
-    - name: "Include vars"
+
+    - name: Construct vars files list
+      shell: printf "vars/globals.yml\n" && find -f ./roles/*/vars -name main.yml -type file
+      register: roleVars
+
+    - name: Include vars
       include_vars: "{{ item }}"
-      with_items:
-        - vars/globals.yml
-        - ../roles/conf/vars/main.yml
-        - ../roles/redis/vars/main.yml
-        - ../roles/pg/vars/main.yml
-        - ../roles/logging/vars/main.yml
-        - ../roles/minio/vars/main.yml
-        - ../roles/monitoring/vars/main.yml
-        - ../roles/istio/vars/main.yml
-        - ../roles/kibana/vars/main.yml
-        - ../roles/fluentd/vars/main.yml
-        - ../roles/nvidiadp/vars/main.yml
-        - ../roles/mpi/vars/main.yml
-        - ../roles/cnvrgApp/vars/main.yml
-        - ../roles/nfs/vars/main.yml
-        - ../roles/hostpath/vars/main.yml
-        - ../roles/ingress/vars/main.yml
-        - ../roles/cnvrgRouter/vars/main.yml
+      with_items: "{{ roleVars.stdout_lines }}"
       tags: always
 
     # CnvrgApp upgrade

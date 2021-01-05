@@ -7,14 +7,14 @@ metadata:
   name: "{{monitoring.prometheus.svcName}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
-  {% if ingressType == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
     - name: web
       port: {{monitoring.prometheus.port}}
       targetPort: web
-  {% if ingressType == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   nodePort: {{ monitoring.prometheus.nodePort }}
   {% endif %}
   selector:

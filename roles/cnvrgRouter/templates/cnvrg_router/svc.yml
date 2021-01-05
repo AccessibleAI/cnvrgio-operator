@@ -7,12 +7,12 @@ metadata:
   labels:
     app: "{{cnvrgRouter.svcName}}"
 spec:
-  {% if ingressType == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
   - port: {{cnvrgRouter.port}}
-    {% if ingressType == "nodeport" %}
+    {% if networking.ingressType == "nodeport" %}
     nodePort: {{ cnvrgRouter.nodePort }}
     {% endif %}
   selector:

@@ -7,5 +7,5 @@ clusterDomain: "{{ .Values.clusterDomain }}"
 useHttps: "{{ .Values.useHttps }}"
 orchestrator: "{{ .Values.orchestrator }}"
 securityMode: "{{ .Values.securityMode }}"
-ingressType: "{{ .Values.ingressType }}"
+networking.ingressType: "{{ .Values.networking.ingressType }}"
 {{- end }}

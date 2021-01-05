@@ -65,7 +65,7 @@ appSecrets:
   cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
   cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
-  cnvrgStorageEndpoint: "{{ (httpScheme + (minio.svcName + '.' if ingressType != 'nodeport' else '')  + clusterDomain + (':'+minio.nodePort|string if ingressType == 'nodeport' else ''))}}"
+  cnvrgStorageEndpoint: "{{ (httpScheme + (minio.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+minio.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
 
   ################## minio  ###########################
   minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"

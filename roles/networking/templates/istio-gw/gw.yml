@@ -1,0 +1,38 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: networking.networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: "{{networking.istio.gwName}}"
+  namespace: {{ ansible_operator_meta.namespace }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "{{('*.' + clusterDomain).split(':')[0] }}"
+    {% if networking.https.enabled == "true" and networking.https.certSecret != "" %}
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - "{{('*.' + clusterDomain).split(':')[0] }}"
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: "{{ networking.https.certSecret }}"
+    {% elif networking.https.enabled == "true" %}
+      tls:
+        httpsRedirect: true
+    - hosts:
+        - "{{('*.' + clusterDomain).split(':')[0] }}"
+      port:
+        name: https
+        number: 443
+        protocol: HTTP
+    {% endif %}

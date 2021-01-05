@@ -102,7 +102,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 ```bash
 helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
-    --set ingressType="nodeport" \
+    --set networking.ingressType="nodeport" \
     --set storage.nfs.enabled="true" \
     --set storage.nfs.server="storage.nfs.SERVER.IP" \
     --set storage.nfs.path="/shared/nfs/directory"
@@ -112,7 +112,7 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 ```bash
 helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
-    --set ingressType="nodeport" \
+    --set networking.ingressType="nodeport" \
     --set storage.hostpath.enabled="true" \
     --set storage.hostpath.nodeName="<k8s-node>"
 ```
@@ -127,8 +127,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set logging.es.enabled="false" \
     --set logging.fluentd.enabled="false" \
     --set storage.hostpath.enabled="false" \
-    --set ingress.enabled="false" \
-    --set istio.enabled="false" \
+    --set networking.ingress.enabled="false" \
+    --set networking.istio.enabled="false" \
     --set logging.kibana.enabled="false" \
     --set prometheus.enabled="false" \
     --set minio.enabled="false" \

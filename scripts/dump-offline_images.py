@@ -10,7 +10,7 @@ def parse_roles_vars():
         flat = nested_to_record(nested_vars, sep='.')
         for key, value in flat.items():
             if isinstance(value, str) and ('image' in key.lower()):
-                if 'istio.proxyImage' in key or 'istio.mixerImage' in key or 'istio.pilotImage' in key:
+                if 'networking.istio.proxyImage' in key or 'networking.istio.mixerImage' in key or 'networking.istio.pilotImage' in key:
                     value = 'docker.io/istio/' + value
                 if 'docker' not in value:
                     value = 'docker.io/' + value

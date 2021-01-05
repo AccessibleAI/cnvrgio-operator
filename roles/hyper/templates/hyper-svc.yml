@@ -6,12 +6,12 @@ metadata:
   labels:
     app: "{{ hyper.svcName }}"
 spec:
-{% if ingressType == "nodeport" %}
+{% if networking.ingressType == "nodeport" %}
   type: NodePort
 {% endif %}
   ports:
     - port: {{hyper.port}}
-{% if ingressType == "nodeport" %}
+{% if networking.ingressType == "nodeport" %}
       nodePort: {{ hyper.nodePort }}
 {% endif %}
   selector:

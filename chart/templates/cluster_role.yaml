@@ -61,7 +61,7 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "authentication.istio.io"
+      - "authentication.networking.istio.io"
     resources:
       - "*"
     verbs:
@@ -80,7 +80,7 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "config.istio.io"
+      - "config.networking.istio.io"
     resources:
       - "*"
     verbs:
@@ -97,7 +97,7 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "install.istio.io"
+      - "install.networking.istio.io"
     resources:
       - "*"
     verbs:
@@ -111,7 +111,7 @@ rules:
       - "create"
       -  "patch"
   - apiGroups:
-      - "networking.istio.io"
+      - "networking.networking.istio.io"
     resources:
       - "*"
     verbs:
@@ -123,13 +123,13 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "rbac.istio.io"
+      - "rbac.networking.istio.io"
     resources:
       - "*"
     verbs:
       - "*"
   - apiGroups:
-      - "security.istio.io"
+      - "security.networking.istio.io"
     resources:
       - "*"
     verbs:

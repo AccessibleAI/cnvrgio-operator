@@ -23,8 +23,8 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
             --set logging.es.enabled="false" \
             --set logging.fluentd.enabled="false" \
             --set storage.hostpath.enabled="false" \
-            --set ingress.enabled="false" \
-            --set istio.enabled="false" \
+            --set networking.ingress.enabled="false" \
+            --set networking.istio.enabled="false" \
             --set logging.kibana.enabled="false" \
             --set monitoring.enabled="false" \
             --set minio.enabled="false" \
