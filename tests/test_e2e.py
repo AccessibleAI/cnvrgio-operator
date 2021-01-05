@@ -32,6 +32,8 @@ spec:
       memoryRequest: 100Mi
   vpa:
     enabled: "true"
+  hyper:
+    enabled: "true"
 """
 
 CNVRG_SPEC_WITH_TOLERATION = """
@@ -75,6 +77,8 @@ spec:
     enabled: "true"
   vpa:
     enabled: "true"
+  hyper:
+    enabled: "true"
 """
 
 CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY = """
@@ -114,6 +118,8 @@ spec:
   fluentd:
     enabled: "false"
   nvidiadp:
+    enabled: "false"
+  hyper:
     enabled: "false"
 """
 
@@ -178,6 +184,8 @@ spec:
     enabled: "false"
   vpa:
     enabled: "true"
+  hyper:
+    enabled: "true"
 """
 
 
@@ -229,6 +237,13 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
     def test_kibana(self):
         v1 = client.CoreV1Api()
         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=kibana")
+        self.assertEqual(1, len(pod.items))
+        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+
+    def test_hyper(self):
+        v1 = client.CoreV1Api()
+        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=hyper")
         self.assertEqual(1, len(pod.items))
         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
@@ -349,6 +364,11 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
+    def test_hyper(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=hyper -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
     def test_prom_operator(self):
         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
@@ -450,6 +470,11 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
 
     def test_kibana(self):
         cmd = "kubectl wait --for=condition=ready pod -l app=kibana -ncnvrg --timeout=300s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
+
+    def test_hyper(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=hyper -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 

@@ -166,7 +166,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "max_over_time(sum(rate(container_cpu_usage_seconds_total{container=\"slave\", name=~\".*$pod.*\"}[1m])) by (instance)[${idle_timeout}:]) * 100",
+              "expr": "avg_over_time(sum(rate(container_cpu_usage_seconds_total{container=\"slave\", name=~\".*$pod.*\"}[5m])) by (instance)[${idle_timeout}:]) * 100",
               "hide": false,
               "interval": "",
               "legendFormat": "",
@@ -271,7 +271,7 @@ data:
           "pluginVersion": "6.7.4",
           "targets": [
             {
-              "expr": "(max_over_time(container_memory_usage_bytes{container=\"slave\", name=~\".*$pod.*\"}[$idle_timeout]) / on (instanse) kube_pod_container_resource_limits_memory_bytes{pod=~\".*$pod.*\"}) * 100",
+              "expr": "(avg_over_time(container_memory_working_set_bytes{container=\"slave\", name=~\".*$pod.*\"}[$idle_timeout]) / on (instanse) kube_pod_container_resource_limits_memory_bytes{pod=~\".*$pod.*\"}) * 100",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -326,7 +326,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "max_over_time(DCGM_FI_DEV_MEM_COPY_UTIL{container=\"slave\", exported_pod=~\".*$pod.*\"}[${idle_timeout}])",
+              "expr": "avg_over_time(DCGM_FI_DEV_MEM_COPY_UTIL{container=\"slave\", exported_pod=~\".*$pod.*\"}[${idle_timeout}])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
@@ -419,7 +419,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "max_over_time(DCGM_FI_DEV_GPU_UTIL{container=\"slave\", exported_pod=~\".*$pod.*\"}[${idle_timeout}])",
+              "expr": "avg_over_time(DCGM_FI_DEV_GPU_UTIL{container=\"slave\", exported_pod=~\".*$pod.*\"}[${idle_timeout}])",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ hyper.svc_name }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{ hyper.svc_name }}"
+spec:
+{% if ingress_type == "nodeport" %}
+  type: NodePort
+{% endif %}
+  ports:
+    - port: {{hyper.port}}
+{% if ingress_type == "nodeport" %}
+      nodePort: {{ hyper.node_port }}
+{% endif %}
+  selector:
+    app: {{hyper.svc_name}}

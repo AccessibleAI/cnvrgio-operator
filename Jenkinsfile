@@ -192,7 +192,7 @@ pipeline {
                         def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
                         sh """
                             git tag -a ${NEXT_VERSION} -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+                            git push https://${USERNAME}:${PASSWORD}@${url} --tags -f
                         """
                         if (env.BRANCH_NAME == "master") {
                             url = sh(returnStdout: true, script: 'git config remote.origin.url').trim().replaceAll("https://", "")
@@ -200,7 +200,7 @@ pipeline {
                             echo "next version gonna be: ${nextRC}-rc0"
                             sh """
                             git tag -a ${nextRC}-rc0 -m "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-                            git push https://${USERNAME}:${PASSWORD}@${url} --tags
+                            git push https://${USERNAME}:${PASSWORD}@${url} --tags -f
                             """
                             // docker run  -v ${workspace}:/root \
                             // cnvrg/cnvrg-operator-test-runtime:latest bash -lc 'cd scripts; python dump-helm-docs.py; python dump-offline_images.py'

@@ -9,6 +9,9 @@ data:
   AGENT_CUSTOM_TAG: "{{ cnvrg_app.custom_agent_tag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
   {% endif %}
   ELASTICSEARCH_URL: "http://{{es.svc_name}}"
+  HYPER_SERVER_URL: "http://{{hyper.svc_name}}"
+  HYPER_SERVER_PORT: "{{hyper.port}}"
+  HYPER_SERVER_TOKEN: "{{hyper.token}}"
   KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
   SHOW_INTERCOM:  "{{ cnvrg_app.intercom }}"
   ROUTE_BY_ISTIO: "{{ ('true' if ingress_type == 'istio' else 'false') }}"
