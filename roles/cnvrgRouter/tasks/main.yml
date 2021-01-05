@@ -6,6 +6,6 @@
     templatePath: "{{ item }}"
     state: "present"
   with_items:
-    - templates/cnvrgRouter/cm.yml
-    - templates/cnvrgRouter/svc.yml
-    - templates/cnvrgRouter/dep.yml
+    - templates/cnvrg_router/cm.yml
+    - templates/cnvrg_router/svc.yml
+    - templates/cnvrg_router/dep.yml

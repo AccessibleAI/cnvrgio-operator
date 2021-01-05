@@ -35,20 +35,20 @@
         - { name: 'vpa', enabled: "{{vpa.enabled}}" }
         - { name: 'hyper', enabled: "{{hyper.enabled}}" }
 
-    - name: Set operatorRoles if tags are `all` or not defined
+    - name: Set operatorRoles if otags are `all` or not defined
       set_fact:
         operatorRoles: "{{ operatorRoles + [role] }}"
       loop_control:
         loop_var: role
       loop: "{{defaultOperatorRoles}}"
-      when: (tags == "all") or (tags is not defined)
+      when: (otags == "all") or (otags is not defined)
 
-    - name: Set operatorRoles if tags are set for sepcifc roles
+    - name: Set operatorRoles if otags are set for sepcifc roles
       set_fact:
         operatorRoles: "{{ operatorRoles + [role] }}"
       when:
-      - tags != "all"
-      - role.name in tags.split(",")
+      - otags != "all"
+      - role.name in otags.split(",")
       loop_control:
         loop_var: role
       loop: "{{defaultOperatorRoles}}"

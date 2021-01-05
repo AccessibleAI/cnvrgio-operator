@@ -7,7 +7,7 @@ clusterDomain: ""
 httpScheme: "{{ 'https://' if networking.https.enabled == 'true' else 'http://' }}"
 orchestrator: "k8s" # k8s | ocp
 securityMode: "default" # default | ocp
-tags: "all" # all | none | specifc role name
+otags: "all" # all | none | specifc role name
 
 tenancy:
   enabled: "false"

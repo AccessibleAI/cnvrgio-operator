@@ -39,8 +39,8 @@
       backupSpec: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
 
   - set_fact:
-      backupSpec: "{{ backupSpec|combine({'tags': 'all'}, recursive=True) }}"
-    when: tags not in backupSpec.keys()
+      backupSpec: "{{ backupSpec|combine({'otags': 'all'}, recursive=True) }}"
+    when: otags not in backupSpec.keys()
 
   - name: restoring cnvrgapp from backup
     set_fact:
@@ -175,7 +175,7 @@
 
     - name: scale to 0 sedekiqs and disable resources requests
       set_fact:
-        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'tags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
 
     - name: update CnvrgApp
       k8s:
@@ -251,7 +251,7 @@
 
     - name: restore sidekiqs and resources requests
       set_fact:
-        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'tags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': backupSpec.cnvrgApp.sidekiqReplicas, 'sidekiqSearchkickReplicas': backupSpec.cnvrgApp.sidekiqSearchkickReplicas, 'resourcesRequestEnabled':backupSpec.cnvrgApp.resourcesRequestEnabled}}}, recursive=True) }}"
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': backupSpec.cnvrgApp.sidekiqReplicas, 'sidekiqSearchkickReplicas': backupSpec.cnvrgApp.sidekiqSearchkickReplicas, 'resourcesRequestEnabled':backupSpec.cnvrgApp.resourcesRequestEnabled}}}, recursive=True) }}"
 
     - name: update CnvrgApp
       k8s:
@@ -277,14 +277,14 @@
         name: common
         tasks_from: cr_status
       vars:
-        message: "restoring tags"
+        message: "restoring otags"
 
     - set_fact:
-        restoreTags: "{% if 'tags' in backupSpec.keys() %}{{backupSpec.tags}}{% else %}all{% endif %}"
+        restoreTags: "{% if 'otags' in backupSpec.keys() %}{{backupSpec.otags}}{% else %}all{% endif %}"
 
-    - name: restore tags
+    - name: restore otags
       set_fact:
-        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'tags': restoreTags }}, recursive=True) }}"
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags': restoreTags }}, recursive=True) }}"
 
     - name: update CnvrgApp
       k8s:
