@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -15,40 +16,40 @@ spec:
       labels:
         app: nfs-client-provisioner
     spec:
-{%  if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
+      {% endif %}
       serviceAccountName: nfs-client-provisioner
       containers:
         - name: nfs-client-provisioner
-          image: "{{ nfs.image }}"
+          image: "{{ storage.nfs.image }}"
           volumeMounts:
             - name: nfs-client-root
               mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
-              value: "{{ nfs.provisioner }}"
+              value: "{{ storage.nfs.provisioner }}"
             - name: nfsServer
-              value: "{{ nfs.server }}"
+              value: "{{ storage.nfs.server }}"
             - name: NFS_PATH
-              value: "{{ nfs.path }}"
+              value: "{{ storage.nfs.path }}"
           resources:
             limits:
-              cpu: "{{ nfs.cpuLimit }}"
-              memory: "{{ nfs.memoryLimit }}"
+              cpu: "{{ storage.nfs.cpuLimit }}"
+              memory: "{{ storage.nfs.memoryLimit }}"
             requests:
-              cpu: "{{ nfs.cpuRequest }}"
-              memory: "{{ nfs.memoryRequest }}"
+              cpu: "{{ storage.nfs.cpuRequest }}"
+              memory: "{{ storage.nfs.memoryRequest }}"
       volumes:
         - name: nfs-client-root
           nfs:
-            server: "{{ nfs.server }}"
-            path: "{{ nfs.path }}"
+            server: "{{ storage.nfs.server }}"
+            path: "{{ storage.nfs.path }}"

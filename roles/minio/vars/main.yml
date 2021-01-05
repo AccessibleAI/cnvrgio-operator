@@ -12,9 +12,6 @@ minio:
   memoryRequest: 2Gi
   sharedStorage:
     enabled: "false"
-    storageClassName: "minio-shared-backend"
-    nfsServer: ""
-    path: ""
     consistentHash:
       key: httpQueryParameterName
       value: uploadId

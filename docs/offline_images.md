@@ -74,8 +74,8 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 --set mpi.kubectlDeliveryImage offline_repo/mpioperator/kubectl-delivery:v0.2.3 \
 --set cnvrgApp.image offline_repo/cnvrg/core:3.1.2 \
 --set seeder.image offline_repo/cnvrg/cnvrg-boot:v0.23 \
---set nfs.image offline_repo/external_storage/nfs-client-provisioner:latest \
---set hostpath.image offline_repo/kubevirt/hostpath-provisioner \
+--set storage.nfs.image offline_repo/external_storage/nfs-client-provisioner:latest \
+--set storage.hostpath.image offline_repo/kubevirt/hostpath-provisioner \
 --set cnvrgRouter.image offline_repo/nginx \
 
 ```

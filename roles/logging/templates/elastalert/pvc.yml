@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,10 +10,8 @@ spec:
   resources:
     requests:
       storage: "{{logging.elastalert.storageSize}}"
-{% if hostpath.enabled == "true" %}
-  storageClassName: {{ hostpath.storageClassName }}
-{% elif nfs.enabled == "true" %}
-  storageClassName: "{{ nfs.storageClassName }}"
-{% elif pg.storageClass != "use-default" %}
-  storageClassName: "{{ pg.storageClass }}"
-{% endif %}
+  {% if logging.elastalert.storageClass != "use-default" %}
+  storageClassName: "{{ logging.elastalert.storageClass }}"
+  {% elif storage.ccpStorageClass != "" %}
+  storageClassName: "{{ storage.ccpStorageClass }}"
+  {% endif %}

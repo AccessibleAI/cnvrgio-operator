@@ -38,15 +38,15 @@ spec:
         runAsGroup: {{ logging.es.runAsGroup }}
         fsGroup: {{ logging.es.fsGroup }}
       {% endif %}
-      {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
-      {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-      {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
       containers:
@@ -105,10 +105,8 @@ spec:
       resources:
         requests:
           storage: "{{logging.es.storageSize}}"
-      {% if hostpath.enabled == "true" %}
-      storageClassName: {{ hostpath.storageClassName }}
-      {% elif nfs.enabled == "true" %}
-      storageClassName: "{{ nfs.storageClassName }}"
-      {% elif pg.storageClass != "use-default" %}
+      {% if logging.es.storageClass != "use-default" %}
       storageClassName: "{{ logging.es.storageClass }}"
+      {% elif storage.ccpStorageClass != "" %}
+      storageClassName: "{{ storage.ccpStorageClass }}"
       {% endif %}

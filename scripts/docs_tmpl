@@ -89,8 +89,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=apps.1.2.3.4.nip.io \
     --set storageProfile=micro \
-    --set hostpath.enabled="true" \
-    --set hostpath.nodeName="k8s-node-name" \
+    --set storage.hostpath.enabled="true" \
+    --set storage.hostpath.nodeName="k8s-node-name" \
     --set appConfigs.smtp.server="smtp-server" \
     --set appConfigs.smtp.port="smtp-port" \
     --set appConfigs.smtp.username="smtp-user" \
@@ -103,9 +103,9 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
     --set ingressType="nodeport" \
-    --set nfs.enabled="true" \
-    --set nfs.server="NFS.SERVER.IP" \
-    --set nfs.path="/shared/nfs/directory"
+    --set storage.nfs.enabled="true" \
+    --set storage.nfs.server="storage.nfs.SERVER.IP" \
+    --set storage.nfs.path="/shared/nfs/directory"
 ```
 
 #### Deploy OnPrem  (NodePort, Minio, Hostpath)
@@ -113,8 +113,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
 helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
     --set ingressType="nodeport" \
-    --set hostpath.enabled="true" \
-    --set hostpath.nodeName="<k8s-node>"
+    --set storage.hostpath.enabled="true" \
+    --set storage.hostpath.nodeName="<k8s-node>"
 ```
 
 #### Turn On/Off components
@@ -126,14 +126,14 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set conf.enabled="false" \
     --set logging.es.enabled="false" \
     --set logging.fluentd.enabled="false" \
-    --set hostpath.enabled="false" \
+    --set storage.hostpath.enabled="false" \
     --set ingress.enabled="false" \
     --set istio.enabled="false" \
     --set logging.kibana.enabled="false" \
     --set prometheus.enabled="false" \
     --set minio.enabled="false" \
     --set mpi.enabled="false" \
-    --set nfs.enabled="false" \
+    --set storage.nfs.enabled="false" \
     --set nvidiadp.enabled="false" \
     --set pg.enabled="false" \
     --set redis.enabled="false"

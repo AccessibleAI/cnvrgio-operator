@@ -15,15 +15,15 @@ spec:
       labels:
         k8s-app: hostpath-provisioner
     spec:
-      {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
-      {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-      {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
       {%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
@@ -36,7 +36,7 @@ spec:
       serviceAccountName: hostpath-provisioner-admin
       containers:
         - name: hostpath-provisioner
-          image: "{{ hostpath.image }}"
+          image: "{{ storage.hostpath.image }}"
           imagePullPolicy: Always
           env:
             - name: USE_NAMING_PREFIX
@@ -46,20 +46,20 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: PV_DIR
-              value: "{{ hostpath.hostPath }}"
+              value: "{{ storage.hostpath.hostPath }}"
           volumeMounts:
             - name: pv-volume # root dir where your bind mounts will be on the node
-              mountPath: "{{ hostpath.hostPath }}"
+              mountPath: "{{ storage.hostpath.hostPath }}"
               nodeSelector:
-              - name: "{{ hostpath.nodeName }}"
+              - name: "{{ storage.hostpath.nodeName }}"
           resources:
             limits:
-              cpu: "{{ hostpath.cpuLimit }}"
-              memory: "{{ hostpath.memoryLimit }}"
+              cpu: "{{ storage.hostpath.cpuLimit }}"
+              memory: "{{ storage.hostpath.memoryLimit }}"
             requests:
-              cpu: "{{ hostpath.cpuRequest }}"
-              memory: "{{ hostpath.memoryRequest }}"
+              cpu: "{{ storage.hostpath.cpuRequest }}"
+              memory: "{{ storage.hostpath.memoryRequest }}"
       volumes:
         - name: pv-volume
           hostPath:
-            path: "{{ hostpath.hostPath }}"
+            path: "{{ storage.hostpath.hostPath }}"

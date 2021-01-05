@@ -9,10 +9,10 @@ spec:
   resources:
     requests:
       storage: "{{ pg_backup.storageSize }}"
-{% if hostpath.enabled == "true" %}
-  storageClassName: "{{ hostpath.storageClassName }}"
-{% elif nfs.enabled == "true" %}
-  storageClassName: "{{ nfs.storageClassName }}"
+{% if storage.hostpath.enabled == "true" %}
+  storageClassName: "{{ storage.hostpath.storageClassName }}"
+{% elif storage.nfs.enabled == "true" %}
+  storageClassName: "{{ storage.nfs.storageClassName }}"
 {% elif pg_backup.storageClass != "use-default" %}
   storageClassName: "{{ pg_backup.storageClass }}"
 {% endif %}

@@ -22,14 +22,14 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
             --set cnvrgRouter.enabled="false" \
             --set logging.es.enabled="false" \
             --set logging.fluentd.enabled="false" \
-            --set hostpath.enabled="false" \
+            --set storage.hostpath.enabled="false" \
             --set ingress.enabled="false" \
             --set istio.enabled="false" \
             --set logging.kibana.enabled="false" \
             --set monitoring.enabled="false" \
             --set minio.enabled="false" \
             --set mpi.enabled="false" \
-            --set nfs.enabled="false" \
+            --set storage.nfs.enabled="false" \
             --set nvidiadp.enabled="false" \
             --set pg.enabled="false" \
             --set redis.enabled="false" \

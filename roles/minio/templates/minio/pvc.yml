@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -5,20 +6,16 @@ metadata:
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   accessModes:
-{% if minio.sharedStorage.enabled == "true" %}
+    {% if minio.sharedStorage.enabled == "true" %}
     - ReadWriteMany
-{% else %}
+    {% else %}
     - ReadWriteOnce
-{% endif %}
+    {% endif %}
   resources:
     requests:
       storage: "{{minio.storageSize}}"
-{% if minio.sharedStorage.enabled == "true" %}
-  storageClassName: "{{ minio.sharedStorage.storageClassName }}"
-{% elif hostpath.enabled == "true" %}
-  storageClassName: "{{ hostpath.storageClassName }}"
-{% elif nfs.enabled == "true" %}
-  storageClassName: "{{ nfs.storageClassName }}"
-{% elif minio.storageClass != "use-default" %}
+  {% if minio.storageClass != "use-default" %}
   storageClassName: "{{ minio.storageClass }}"
-{% endif %}
+  {% elif storage.ccpStorageClass != "" %}
+  storageClassName: "{{ storage.ccpStorageClass }}"
+  {% endif %}

@@ -233,9 +233,35 @@ minio:
   memoryRequest: 4Gi
   sharedStorage:
     enabled: "false"
-    storageClassName: "minio-shared-backend"
-    nfsServer: ""
+
+storage:
+  enabled: "true"
+  nfs:
+    enabled: "false"
+    image: "quay.io/external_storage/nfs-client-provisioner:latest"
+    provisioner: cnvrg.io/ifs
+    storageClassName: cnvrg-nfs-storage
+    server: ""
     path: ""
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 200m
+    memoryLimit: 200Mi
+    reclaimPolicy: "Retain"
+    defaultSc: "false"
+  hostpath:
+    enabled: "false"
+    image: "quay.io/kubevirt/hostpath-provisioner"
+    hostPath: /cnvrg-storage
+    storageClassName: cnvrg-hostpath-provisioner
+    nodeName: ""
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 200m
+    memoryLimit: 200Mi
+    reclaimPolicy: "Retain"
+    defaultSc: "false"
+
 logging:
   enabled: "true"
   es:
@@ -393,29 +419,7 @@ cnvrgApp:
 seeder:
   image: docker.io/cnvrg/cnvrg-boot:v0.23
   seedCmd: rails db:migrate && rails db:seed && rails libraries:update
-nfs:
-  enabled: "false"
-  image: "quay.io/external_storage/nfs-client-provisioner:latest"
-  provisioner: cnvrg.io/ifs
-  storageClassName: cnvrg-nfs-storage
-  server: ""
-  path: ""
-  cpuRequest: 100m
-  memoryRequest: 100Mi
-  cpuLimit: 200m
-  memoryLimit: 200Mi
-  reclaimPolicy: "Retain"
-  defaultSc: "false"
-hostpath:
-  enabled: "false"
-  image: "quay.io/kubevirt/hostpath-provisioner"
-  hostPath: /cnvrg-storage
-  storageClassName: cnvrg-hostpath-provisioner
-  nodeName: ""
-  cpuRequest: 100m
-  memoryRequest: 100Mi
-  cpuLimit: 200m
-  memoryLimit: 200Mi
+
 autoscaler:
   enabled: "false"
 ingress:

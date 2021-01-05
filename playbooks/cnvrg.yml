@@ -9,6 +9,7 @@
         - ../roles/redis/vars/main.yml
         - ../roles/pg/vars/main.yml
         - ../roles/pg_backup/vars/main.yml
+        - ../roles/storage/vars/main.yml
         - ../roles/logging/vars/main.yml
         - ../roles/monitoring/vars/main.yml
         - ../roles/minio/vars/main.yml
@@ -16,8 +17,6 @@
         - ../roles/nvidiadp/vars/main.yml
         - ../roles/mpi/vars/main.yml
         - ../roles/cnvrgApp/vars/main.yml
-        - ../roles/nfs/vars/main.yml
-        - ../roles/hostpath/vars/main.yml
         - ../roles/ingress/vars/main.yml
         - ../roles/cnvrgRouter/vars/main.yml
         - ../roles/vpa/vars/main.yml
@@ -36,8 +35,7 @@
       loop:
         - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
         - { name: 'cnvrgRouter', enabled: "{{cnvrgRouter.enabled}}" }
-        - { name: 'nfs', enabled: "{{nfs.enabled}}" }
-        - { name: 'hostpath', enabled: "{{hostpath.enabled}}" }
+        - { name: 'storage', enabled: "{{storage.enabled}}" }
         - { name: 'conf', enabled: "{{conf.enabled}}" }
         - { name: 'pg', enabled: "{{pg.enabled}}" }
         - { name: 'redis', enabled: "{{redis.enabled}}" }

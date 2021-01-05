@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,30 +18,30 @@ spec:
       labels:
         app: "{{pg.svcName}}"
     spec:
-{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
-{% if securityMode == "default" %}
+      {% endif %}
+      {% if securityMode == "default" %}
       securityContext:
         runAsUser: {{ pg.runAsUser }}
         runAsGroup: {{ pg.runAsGroup }}
         fsGroup: {{ pg.fsGroup }}
-{% endif %}
-{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      {% endif %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
-{% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
+      {% endif %}
       containers:
         - name: postgresql
           env:

@@ -21,11 +21,11 @@ data:
   ROUTE_BY_NODE_PORT: "{{ ('true' if ingressType == 'nodeport' else 'false') }}"
   CNVRG_STORAGE_USE_IAM_ROLE: "false"
   {% if conf.defaultJobsStorageClass == "" %}
-  {% if nfs.enabled == "true" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ nfs.storageClassName }}"
+  {% if storage.nfs.enabled == "true" %}
+  CNVRG_JOBS_STORAGECLASS: "{{ storage.nfs.storageClassName }}"
   {% endif %}
-  {% if hostpath.enabled == "true" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ hostpath.storageClassName }}"
+  {% if storage.hostpath.enabled == "true" %}
+  CNVRG_JOBS_STORAGECLASS: "{{ storage.hostpath.storageClassName }}"
   {% endif %}
   {% else %}
   CNVRG_JOBS_STORAGECLASS: "{{ conf.defaultJobsStorageClass }}"
