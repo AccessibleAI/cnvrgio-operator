@@ -7,8 +7,8 @@ metadata:
 spec:
   profile: minimal
   namespace: "{{ansible_operator_meta.namespace}}"
-  hub: "{{ istio.hub }}"
-  tag: "{{ istio.tag }}"
+  hub: "{{ networking.istio.hub }}"
+  tag: "{{ networking.istio.tag }}"
   values:
     global:
       istioNamespace: "{{ansible_operator_meta.namespace}}"
@@ -45,9 +45,9 @@ spec:
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
         {% endif %}
-        {% if istio.ingress_svc_annotations != "" %}
+        {% if networking.istio.ingress_svc_annotations != "" %}
         serviceAnnotations:
-          {% set annotations = istio.ingress_svc_annotations.split(";") %}
+          {% set annotations = networking.istio.ingress_svc_annotations.split(";") %}
             {% for annotation in annotations %}
               {% set annotation_itmes = annotation.split(":") %}
                 {% if annotation_itmes|length == 2 %}
@@ -78,10 +78,10 @@ spec:
             cpu: 100m
             memory: 128Mi
         service:
-          {% if istio.external_ip != "" %}
+          {% if networking.istio.external_ip != "" %}
           type: ClusterIP
           externalIPs:
-          {% set external_ips = istio.external_ip.split(';') %}
+          {% set external_ips = networking.istio.external_ip.split(';') %}
             {% for external_ip in external_ips %}
             - "{{ external_ip }}"
             {% endfor %}
