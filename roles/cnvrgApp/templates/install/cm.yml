@@ -8,19 +8,19 @@ data:
   APP_DOMAIN: {{ ((cnvrgApp.svcName + '.' if networking.ingressType != 'nodeport' else '') + clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else '')) }}
   DEFAULT_URL: {{(httpScheme + (cnvrgApp.svcName + '.' if networking.ingressType != 'nodeport' else '') + clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else ''))}}
   DEFAULT_COMPUTE_CLUSTER_DOMAIN: {{ (clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else '')) }}
-  DEFAULT_COMPUTE_CLUSTER_HTTPS: {{ networking.https.enabled  }}
+  DEFAULT_COMPUTE_CLUSTER_HTTPS: "{{ networking.https.enabled  }}"
   {% if cnvrgApp.conf.customAgentTag != "false" %}
   AGENT_CUSTOM_TAG: "{{ cnvrgApp.conf.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
   {% endif %}
-  REDIS_URL: {{ ('redis://'+redis.svcName) }}
-  PASSENGER_APP_ENV: {{ cnvrgApp.conf.passengerAppEnv  }}
-  RAILS_ENV: {{ cnvrgApp.conf.railsEnv  }}
-  RUN_JOBS_ON_SELF_CLUSTER: {{ cnvrgApp.conf.runJobsOnSelfCluster }}
-  DEFAULT_COMPUTE_CONFIG: {{ cnvrgApp.conf.defaultComputeConfig }}
-  DEFAULT_COMPUTE_NAME: {{ cnvrgApp.conf.defaultComputeName }}
-  CHECK_JOB_EXPIRATION: {{ cnvrgApp.conf.checkJobExpiration  }}
-  USE_STDOUT: {{ cnvrgApp.conf.useStdout  }}
-  EXTRACT_TAGS_FROM_CMD: {{ cnvrgApp.conf.extractTagsFromCmd  }}
+  REDIS_URL: "{{ ('redis://'+redis.svcName) }}"
+  PASSENGER_APP_ENV: "{{ cnvrgApp.conf.passengerAppEnv  }}"
+  RAILS_ENV: "{{ cnvrgApp.conf.railsEnv  }}"
+  RUN_JOBS_ON_SELF_CLUSTER: "{{ cnvrgApp.conf.runJobsOnSelfCluster }}"
+  DEFAULT_COMPUTE_CONFIG: "{{ cnvrgApp.conf.defaultComputeConfig }}"
+  DEFAULT_COMPUTE_NAME: "{{ cnvrgApp.conf.defaultComputeName }}"
+  CHECK_JOB_EXPIRATION: "{{ cnvrgApp.conf.checkJobExpiration  }}"
+  USE_STDOUT: "{{ cnvrgApp.conf.useStdout  }}"
+  EXTRACT_TAGS_FROM_CMD: "{{ cnvrgApp.conf.extractTagsFromCmd  }}"
   ELASTICSEARCH_URL: "http://{{logging.es.svcName}}"
   HYPER_SERVER_URL: "http://{{hyper.svcName}}"
   HYPER_SERVER_PORT: "{{hyper.port}}"

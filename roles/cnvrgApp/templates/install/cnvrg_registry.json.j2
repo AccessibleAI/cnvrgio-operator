@@ -2,7 +2,7 @@
   "auths": {
     "{{cnvrgApp.conf.registry.url}}": {
       "username": "{{cnvrgApp.conf.registry.user}}",
-      "password": "{{ cnvrgApp.conf.registry.password }}",
+      "password": "{{cnvrgApp.conf.registry.password}}",
       "auth": "{{(cnvrgApp.conf.registry.user +':'+ cnvrgApp.conf.registry.password) | b64encode}}"
     }
   }

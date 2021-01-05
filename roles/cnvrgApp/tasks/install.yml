@@ -13,4 +13,4 @@
     state: "present"
     compare_resource: yes
   with_fileglob:
-    - templates/install/*
+    - templates/install/*.yml

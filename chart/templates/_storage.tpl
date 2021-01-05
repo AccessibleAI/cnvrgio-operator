@@ -1,7 +1,6 @@
 {{- define "spec.storage"  }}
 storage:
   enabled: "{{.Values.storage.enabled}}"
-
   hostpath:
     enabled: "{{ .Values.storage.hostpath.enabled }}"
     image: "{{.Values.storage.hostpath.image}}"
@@ -14,7 +13,6 @@ storage:
     memoryLimit: "{{ .Values.storage.hostpath.memoryLimit }}"
     reclaimPolicy: "{{.Values.storage.hostpath.reclaimPolicy}}"
     defaultSc: "{{.Values.storage.hostpath.defaultSc}}"
-
   nfs:
     enabled: "{{ .Values.storage.nfs.enabled }}"
     image: "{{.Values.storage.nfs.image}}"

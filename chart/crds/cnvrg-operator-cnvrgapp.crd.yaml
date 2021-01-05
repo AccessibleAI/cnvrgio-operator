@@ -18,9 +18,9 @@ spec:
           jsonPath: .spec.cnvrgApp.image
           name: Version
           type: string
-        - description: tags
-          jsonPath: .spec.tags
-          name: Tags
+        - description: otags
+          jsonPath: .spec.otags
+          name: Otag
           type: string
         - description: cnvrg status
           jsonPath: .status.conditions[0].message

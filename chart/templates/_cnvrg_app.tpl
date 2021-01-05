@@ -48,7 +48,6 @@ cnvrgApp:
   seeder:
     image: "{{ .Values.cnvrgApp.seeder.image }}"
     seedCmd: "{{ .Values.cnvrgApp.seeder.seedCmd }}"
-
   conf:
     gcpStorageSecret: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
     gcpKeyfileMountPath: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
@@ -83,18 +82,15 @@ cnvrgApp:
     cnvrgStorageProject: "{{ .Values.cnvrgApp.conf.cnvrgStorageProject }}"
     customAgentTag: "{{ .Values.cnvrgApp.conf.customAgentTag }}"
     intercom: "{{ .Values.cnvrgApp.conf.intercom }}"
-
     registry:
       name: "{{ .Values.cnvrgApp.conf.registry.name}}"
       url: "{{ .Values.cnvrgApp.conf.registry.url}}"
       user: "{{ .Values.cnvrgApp.conf.registry.user}}"
       password: "{{ .Values.cnvrgApp.conf.registry.password}}"
-
     rbac:
       role: "{{ .Values.cnvrgApp.conf.rbac.role}}"
       serviceAccountName: "{{ .Values.cnvrgApp.conf.rbac.serviceAccountName}}"
       roleBindingName: "{{ .Values.cnvrgApp.conf.rbac.roleBindingName}}"
-
     smtp:
       server: "{{ .Values.cnvrgApp.conf.smtp.server}}"
       port: "{{ .Values.cnvrgApp.conf.smtp.port}}"

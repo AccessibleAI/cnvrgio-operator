@@ -1,22 +1,6 @@
 {{- define "spec.monitoring" }}
 monitoring:
-{{- /*
-    The prometheus.enabled is depricated, and will be removed in the future.
-    instaed, use --set monitoring.enabled=<"true"|"false">
-*/ -}}
-  {{- if .Values.prometheus }}
-    {{- if .Values.prometheus.enabled }}
-        {{- if eq (.Values.prometheus.enabled | toString) "true" }}
-  enabled: "true"
-        {{- else }}
-  enabled: "false"
-        {{- end }}
-    {{- else }}
-  enabled: "false"
-    {{- end }}
-  {{- else }}
   enabled: "{{ .Values.monitoring.enabled}}"
-  {{- end }}
   prometheusOperator:
     enabled: "{{ .Values.monitoring.prometheusOperator.enabled }}"
     images:
@@ -27,19 +11,16 @@ monitoring:
   prometheus:
     enabled: "{{ .Values.monitoring.prometheus.enabled }}"
     image: "{{ .Values.monitoring.prometheus.image }}"
-
     {{- if eq .Values.computeProfile "large"}}
     cpuRequest: "{{.Values.computeProfiles.large.prometheus.cpu}}"
     memoryRequest: "{{.Values.computeProfiles.large.prometheus.memory}}"
     storageSize: "{{.Values.computeProfiles.large.storage}}"
     {{- end }}
-
     {{- if eq .Values.computeProfile "medium"}}
     cpuRequest: "{{.Values.computeProfiles.medium.prometheus.cpu}}"
     memoryRequest: "{{.Values.computeProfiles.medium.prometheus.memory}}"
     storageSize: "{{.Values.computeProfiles.medium.storage}}"
     {{- end }}
-
     {{- if eq .Values.computeProfile "small"}}
     cpuRequest: "{{.Values.computeProfiles.small.prometheus.cpu}}"
     memoryRequest: "{{.Values.computeProfiles.small.prometheus.memory}}"

@@ -2,7 +2,6 @@
 networking:
   enabled: "{{ .Values.networking.enabled}}"
   ingressType: "{{.Values.networking.ingressType}}"
-
   istio:
     enabled: "{{ .Values.networking.istio.enabled }}"
     operatorImage: "{{ .Values.networking.istio.operatorImage }}"
@@ -19,7 +18,6 @@ networking:
     timeout: "{{ .Values.networking.ingress.timeout }}"
     retriesAttempts: "{{ .Values.networking.ingress.retriesAttempts }}"
     perTryTimeout: "{{ .Values.networking.ingress.perTryTimeout }}"
-
   https:
     enabled: "{{ .Values.networking.https.enabled }}"
     cert: "{{ .Values.networking.https.cert }}"

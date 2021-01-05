@@ -1,5 +1,5 @@
 {{- define "spec.logging" }}
-  logging:
+logging:
   enabled: "{{ .Values.logging.enabled }}"
   es:
     enabled: "{{ .Values.logging.es.enabled }}"
@@ -16,25 +16,21 @@
     javaOpts: "{{ .Values.logging.es.javaOpts }}"
     cpuLimit: "{{.Values.logging.es.cpuLimit}}"
     memoryLimit: "{{.Values.logging.es.memoryLimit}}"
-
     {{- if eq .Values.computeProfile "large"}}
     cpuRequest: "{{ .Values.computeProfiles.large.es.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.large.es.memory }}"
     storageSize: "{{ .Values.computeProfiles.large.storage }}"
     {{- end }}
-
     {{- if eq .Values.computeProfile "medium"}}
     cpuRequest: "{{ .Values.computeProfiles.medium.es.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.medium.es.memory }}"
     storageSize: "{{ .Values.computeProfiles.medium.storage }}"
     {{- end }}
-
     {{- if eq .Values.computeProfile "small"}}
     cpuRequest: "{{ .Values.computeProfiles.small.es.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.small.es.memory }}"
     storageSize: "{{ .Values.computeProfiles.small.storage }}"
     {{- end }}
-
   elastalert:
     enabled: "{{ .Values.logging.elastalert.enabled }}"
     image: "{{ .Values.logging.elastalert.image }}"
@@ -46,20 +42,16 @@
     runAsUser: "{{ .Values.logging.elastalert.runAsUser }}"
     runAsGroup: "{{ .Values.logging.elastalert.runAsGroup }}"
     fsGroup: "{{ .Values.logging.elastalert.fsGroup }}"
-
-
     {{- if eq .Values.computeProfile "large"}}
     cpuRequest: "{{ .Values.computeProfiles.large.elastalert.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.large.elastalert.memory }}"
     storageSize: "{{ .Values.computeProfiles.large.storage }}"
     {{- end }}
-
     {{- if eq .Values.computeProfile "medium"}}
     cpuRequest: "{{ .Values.computeProfiles.medium.elastalert.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.medium.elastalert.memory }}"
     storageSize: "{{ .Values.computeProfiles.medium.storage }}"
     {{- end }}
-
     {{- if eq .Values.computeProfile "small"}}
     cpuRequest: "{{ .Values.computeProfiles.small.elastalert.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.small.elastalert.memory }}"
@@ -67,7 +59,6 @@
     cpuLimit: "{{ .Values.computeProfiles.small.elastalert.cpu }}"
     memoryLimit: "{{ .Values.computeProfiles.small.elastalert.memory }}"
     {{- end }}
-
   fluentd:
     enabled: "{{ .Values.logging.fluentd.enabled }}"
     image: "{{.Values.logging.fluentd.image}}"
@@ -77,7 +68,6 @@
     cpuRequest: "{{ .Values.logging.fluentd.cpuRequest }}"
     memoryRequest: "{{ .Values.logging.fluentd.memoryRequest }}"
     memoryLimit: "{{ .Values.logging.fluentd.memoryLimit }}"
-
   kibana:
     enabled: "{{ .Values.logging.kibana.enabled }}"
     svcName: "{{ .Values.logging.kibana.svcName }}"
@@ -88,5 +78,4 @@
     cpuLimit: "{{ .Values.logging.kibana.cpuLimit }}"
     memoryLimit: "{{ .Values.logging.kibana.memoryLimit }}"
     port: "{{ .Values.logging.kibana.port }}"
-
 {{- end }}

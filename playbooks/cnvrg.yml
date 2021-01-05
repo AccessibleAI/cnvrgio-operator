@@ -3,7 +3,7 @@
   tasks:
 
     - name: Construct vars files list
-      shell: printf "vars/globals.yml\n" && find -f ./roles/*/vars -name main.yml -type file
+      shell: printf "vars/globals.yml\n" && find ./roles/*/vars -name main.yml -type f
       register: roleVars
 
     - name: Include vars
