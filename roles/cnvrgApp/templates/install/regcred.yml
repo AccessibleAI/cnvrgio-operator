@@ -5,4 +5,4 @@ metadata:
   name: "cnvrg-registry"
   namespace: {{ ansible_operator_meta.namespace }}
 data:
-  .dockerconfigjson: {{ _creds | b64encode }}
+  .dockerconfigjson: "{{ lookup('template', 'templates/install/cnvrg_registry.json.j2') | b64encode }}"

@@ -1,4 +1,8 @@
-- include_vars: ../../conf/vars/main.yml
+- include_vars: ../../minio/vars/main.yml
+- include_vars: ../../pg/vars/main.yml
+- include_vars: ../../logging/vars/main.yml
+- include_vars: ../../redis/vars/main.yml
+- include_vars: ../../cnvrgApp/vars/main.yml
 
 - name: Deploy CnvrgApp
   include_role:
@@ -10,6 +14,3 @@
     compare_resource: yes
   with_fileglob:
     - templates/install/*
-
-
-

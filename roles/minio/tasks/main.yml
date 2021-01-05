@@ -1,4 +1,4 @@
-- include_vars: ../../conf/vars/main.yml
+- include_vars: ../../cnvrgApp/vars/main.yml
 - include_vars: ../../networking/vars/main.yml
 
 - name: Create Minio NAS GW Shared Storage
@@ -11,7 +11,7 @@
   with_items:
     - templates/minio/pv-nas-gw.yml
   when:
-  - appSecrets.cnvrgStorageType == "minio"
+  - cnvrgApp.conf.cnvrgStorageType == "minio"
   - minio.sharedStorage.enabled == "true"
 
 - name: Install Minio prerequisite
@@ -24,7 +24,7 @@
   with_items:
     - templates/minio/svc.yml
     - templates/minio/pvc.yml
-  when: appSecrets.cnvrgStorageType == "minio"
+  when: cnvrgApp.conf.cnvrgStorageType == "minio"
 
 - name: Install Minio - single instance
   include_role:
@@ -36,7 +36,7 @@
   with_items:
     - templates/minio/dep.yml
   when:
-  - appSecrets.cnvrgStorageType == "minio"
+  - cnvrgApp.conf.cnvrgStorageType == "minio"
   - minio.sharedStorage.enabled == "false"
 
 - name: Install Minio - shared backend
@@ -50,7 +50,7 @@
     - templates/minio/shared-minio.yml
     - templates/minio/destination-rule.yml
   when:
-  - appSecrets.cnvrgStorageType == "minio"
+  - cnvrgApp.conf.cnvrgStorageType == "minio"
   - minio.sharedStorage.enabled == "true"
 
 

@@ -74,7 +74,7 @@
     - templates/minio-exporter/*
   when:
     - monitoring.enabled == "true"
-    - (minio.enabled == "true") and (appSecrets.cnvrgStorageType == "minio")
+    - (minio.enabled == "true") and (cnvrgApp.conf.cnvrgStorageType == "minio")
     - monitoring.minioExporter.enabled == "true"
 
 - name: Deploy Sidekiq Exporter

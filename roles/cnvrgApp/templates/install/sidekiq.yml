@@ -34,9 +34,9 @@ spec:
       {% endif %}
       {% if cnvrgApp.edition == "enterprise" %}
       imagePullSecrets:
-        - name: {{ registry.name }}
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% endif %}
-      serviceAccountName: "{{rbac.serviceAccountName}}"
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       terminationGracePeriodSeconds: {{ cnvrgApp.sidekiqPrestopHook.killTimeout|int }}
       containers:
       - name: sidekiq
@@ -50,7 +50,7 @@ spec:
         - name: "CNVRG_RUN_MODE"
           value: "sidekiq"
         imagePullPolicy: Always
-        {% if appSecrets.cnvrgStorageType == "gcp" %}
+        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
         volumeMounts:
         - name: "{{ conf.gcpStorageSecret }}"
           mountPath: "{{ conf.gcpKeyfileMountPath }}"
@@ -73,7 +73,7 @@ spec:
             exec:
               command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.sidekiqPrestopHook.killTimeout }}"]
         {% endif %}
-      {% if appSecrets.cnvrgStorageType == "gcp" %}
+      {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
       volumes:
       - name: "{{ conf.gcpStorageSecret }}"
         secret:
@@ -81,7 +81,7 @@ spec:
       {% endif %}
       initContainers:
       - name: seeder
-        image: "{{seeder.image}}"
+        image: "{{cnvrgApp.seeder.image}}"
         command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode worker"]
         env:
         - name: "CNVRG_NS"

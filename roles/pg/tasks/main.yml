@@ -6,7 +6,5 @@
   vars:
     templatePath: "{{ item }}"
     state: "present"
-  with_items:
-    - templates/pg-pvc.yml
-    - templates/pg-svc.yml
-    - templates/pg-dep.yml
+  with_fileglob:
+    - templates/*

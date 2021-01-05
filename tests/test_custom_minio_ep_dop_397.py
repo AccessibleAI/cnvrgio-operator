@@ -16,7 +16,7 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
         cls.deploy()
         helm_cmd = """
             helm template chart \
-            --set appSecrets.cnvrgStorageEndpoint='http://custom-minio-ep' \
+            --set cnvrgApp.conf.cnvrgStorageEndpoint='http://custom-minio-ep' \
             --set cnvrgApp.enabled="false" \
             --set autoscaler.enabled="false" \
             --set cnvrgRouter.enabled="false" \

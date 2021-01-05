@@ -24,7 +24,6 @@
         - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
         - { name: 'cnvrgRouter', enabled: "{{cnvrgRouter.enabled}}" }
         - { name: 'storage', enabled: "{{storage.enabled}}" }
-        - { name: 'conf', enabled: "{{conf.enabled}}" }
         - { name: 'pg', enabled: "{{pg.enabled}}" }
         - { name: 'redis', enabled: "{{redis.enabled}}" }
         - { name: 'logging', enabled: "{{logging.enabled}}" }

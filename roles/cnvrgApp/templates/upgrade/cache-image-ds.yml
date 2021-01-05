@@ -15,7 +15,7 @@ spec:
     spec:
       {% if cnvrgApp.edition == "enterprise" %}
       imagePullSecrets:
-        - name: {{ registry.name }}
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% endif %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"

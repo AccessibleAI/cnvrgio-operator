@@ -54,11 +54,11 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set cnvrgApp.edition=enterprise \
         --set registry.user=cnvrg-license-username \
         --set registry.password=cnvrg-license-password \
-        --set appSecrets.cnvrgStorageType=aws \
-        --set appSecrets.cnvrgStorageBucket=s3bucket-name \
-        --set appSecrets.cnvrgStorageAccessKey=ACCESSKEY \
-        --set appSecrets.cnvrgStorageSecretKey=SECRETKEY \
-        --set appSecrets.cnvrgStorageRegion=aws-region
+        --set cnvrgApp.conf.cnvrgStorageType=aws \
+        --set cnvrgApp.conf.cnvrgStorageBucket=s3bucket-name \
+        --set cnvrgApp.conf.cnvrgStorageAccessKey=ACCESSKEY \
+        --set cnvrgApp.conf.cnvrgStorageSecretKey=SECRETKEY \
+        --set cnvrgApp.conf.cnvrgStorageRegion=aws-region
 
 
 # Azure - AKS
@@ -68,10 +68,10 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set registry.user=cnvrg-license-username \
         --set registry.password=cnvrg-license-password \
         --set clusterDomain=base.domain \
-        --set appSecrets.cnvrgStorageType=azure \
-        --set appSecrets.cnvrgStorageAzureAccessKey=azure-storage-account-access-key \
-        --set appSecrets.cnvrgStorageAzureAccountName=azure-storage-account-name \
-        --set appSecrets.cnvrgStorageAzureContainer=azure-storage-container-name
+        --set cnvrgApp.conf.cnvrgStorageType=azure \
+        --set cnvrgApp.conf.cnvrgStorageAzureAccessKey=azure-storage-account-access-key \
+        --set cnvrgApp.conf.cnvrgStorageAzureAccountName=azure-storage-account-name \
+        --set cnvrgApp.conf.cnvrgStorageAzureContainer=azure-storage-container-name
 
 # GCP - GKE
 helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
@@ -80,8 +80,8 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
         --set registry.user=cnvrg-license-username \
         --set registry.password=cnvrg-license-password \
         --set clusterDomain=base.domain \
-        --set appSecrets.cnvrgStorageType=gcp \
-        --set appSecrets.cnvrgStorageProject=gcp-storage-project
+        --set cnvrgApp.conf.cnvrgStorageType=gcp \
+        --set cnvrgApp.conf.cnvrgStorageProject=gcp-storage-project
 ```
 
 #### Deploy OnPrem  (Istio, Minio, HostPath, SMTP, micro storage profile)
@@ -91,11 +91,11 @@ helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
     --set storageProfile=micro \
     --set storage.hostpath.enabled="true" \
     --set storage.hostpath.nodeName="k8s-node-name" \
-    --set appConfigs.smtp.server="smtp-server" \
-    --set appConfigs.smtp.port="smtp-port" \
-    --set appConfigs.smtp.username="smtp-user" \
-    --set appConfigs.smtp.password="smtp-pass" \
-    --set appConfigs.smtp.domain="domain"
+    --set cnvrgApp.conf.smtp.server="smtp-server" \
+    --set cnvrgApp.conf.smtp.port="smtp-port" \
+    --set cnvrgApp.conf.smtp.username="smtp-user" \
+    --set cnvrgApp.conf.smtp.password="smtp-pass" \
+    --set cnvrgApp.conf.smtp.domain="domain"
 ```
 
 #### Deploy OnPrem  (NodePort, Minio, NFS)

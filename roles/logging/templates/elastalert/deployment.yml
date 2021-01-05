@@ -63,8 +63,7 @@ spec:
         - mountPath: /opt/elastalert/rules
           name: "{{logging.elastalert.svcName}}"
       restartPolicy: Always
-      serviceAccount: "{{rbac.serviceAccountName}}"
-      serviceAccountName: "{{rbac.serviceAccountName}}"
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       volumes:
       - name: "{{logging.elastalert.svcName}}"
         persistentVolumeClaim:

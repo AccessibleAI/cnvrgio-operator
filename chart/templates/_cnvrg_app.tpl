@@ -48,6 +48,6 @@ cnvrgApp:
   sidekiqReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqReplicas }}"
   {{- end }}
 seeder:
-  image: "{{ .Values.seeder.image }}"
-  seedCmd: "{{ .Values.seeder.seedCmd }}"
+  image: "{{ .Values.cnvrgApp.seeder.image }}"
+  seedCmd: "{{ .Values.cnvrgApp.seeder.seedCmd }}"
 {{- end }}

@@ -44,29 +44,9 @@ spec:
       {% endif %}
       containers:
         - name: postgresql
-          env:
-          - name: POSTGRESQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_USER
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_PASSWORD
-          - name: POSTGRESQL_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_PASSWORD
-          - name: POSTGRESQL_DATABASE
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_DB
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: "500"
+          envFrom:
+          - secretRef:
+              name: "pg-secret"
           image: "{{pg.image}}"
           imagePullPolicy: IfNotPresent
           ports:
