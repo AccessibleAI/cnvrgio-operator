@@ -143,22 +143,24 @@ networking:
     retriesAttempts: 5
     perTryTimeout: 3600s
 
-
 conf:
   enabled: "true"
   gcpStorageSecret: gcp-storage-secret
   gcpKeyfileMountPath: /tmp/gcp_keyfile
   gcpKeyfileName: key.json
   defaultJobsStorageClass: ""
+
 registry:
   name: cnvrg-registry
   url: "docker.io"
   user: ""
   password: ""
+
 rbac:
   role: cnvrg-role
   serviceAccountName: cnvrg
   roleBindingName: cnvrg-role-binding
+
 appConfigs:
   cnvrgStorageUseIamRole: "false"
   featureFlags: ""
@@ -168,6 +170,7 @@ appConfigs:
     username: ""
     password: ""
     domain: ""
+
 appSecrets:
   sentryUrl: https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32
   secretKeyBase: 0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5
@@ -192,6 +195,7 @@ appSecrets:
   cnvrgStorageAzureContainer: ""
   cnvrgStorageRegion: eastus
   cnvrgStorageProject: ""
+
 redis:
   enabled: "true"
   image: redis:3.0.5
@@ -203,6 +207,7 @@ redis:
   requests:
     cpu: 500m
     memory: 1Gi
+
 pg:
   enabled: "true"
   image: centos/postgresql-12-centos7
@@ -218,6 +223,7 @@ pg:
   storageClass: use-default
   cpuRequest: 4
   memoryRequest: 8Gi
+
 pgBackup:
   storageSize: 30Gi
   enabled: "false"
@@ -242,6 +248,7 @@ hyper:
   enableReadinessProbe: "true"
   readinessPeriodSeconds: 100
   readinessTimeoutSeconds: 60
+
 minio:
   enabled: "true"
   replicas: 1
@@ -258,6 +265,7 @@ minio:
     storageClassName: "minio-shared-backend"
     nfsServer: ""
     path: ""
+
 logging:
   enabled: "true"
   es:
@@ -312,6 +320,7 @@ logging:
     cpuRequest: 100m
     memoryRequest: 200Mi
     memoryLimit: 200Mi
+
 monitoring:
   enabled: "true"
   prometheusOperator:
@@ -369,6 +378,7 @@ nvidiadp:
     enabled: "true"
     key: accelerator
     value: nvidia
+
 mpi:
   enabled: "true"
   image: "mpioperator/mpi-operator:v0.2.3"
@@ -378,6 +388,7 @@ mpi:
     url: "docker.io"
     user: ""
     password: ""
+
 cnvrgApp:
   replicas: 1
   sidekiqReplicas: 2
@@ -402,9 +413,11 @@ cnvrgApp:
   readinessPeriodSeconds: 100
   readinessTimeoutSeconds: 60
   resourcesRequestEnabled: "true"
+
 seeder:
   image: docker.io/cnvrg/cnvrg-boot:v0.23
   seedCmd: rails db:migrate && rails db:seed && rails libraries:update
+
 nfs:
   enabled: "false"
   image: "quay.io/external_storage/nfs-client-provisioner:latest"
@@ -418,6 +431,7 @@ nfs:
   memoryLimit: 200Mi
   reclaimPolicy: "Retain"
   defaultSc: "false"
+
 hostpath:
   enabled: "false"
   image: "quay.io/kubevirt/hostpath-provisioner"
@@ -428,14 +442,17 @@ hostpath:
   memoryRequest: 100Mi
   cpuLimit: 200m
   memoryLimit: 200Mi
+
 autoscaler:
   enabled: "false"
+
 cnvrgRouter:
   enabled: "false"
   image: nginx
   svcName: routing-service
   nodePort: 30081
   port: 80
+
 vpa:
   enabled: "false"
   images:
