@@ -61,7 +61,7 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "authentication.networking.istio.io"
+      - "authentication.istio.io"
     resources:
       - "*"
     verbs:
@@ -74,13 +74,13 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-    - autoscaling.k8s.io
+      - autoscaling.k8s.io
     resources:
-    - verticalpodautoscalers
+      - verticalpodautoscalers
     verbs:
       - "*"
   - apiGroups:
-      - "config.networking.istio.io"
+      - "config.istio.io"
     resources:
       - "*"
     verbs:
@@ -97,7 +97,7 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "install.networking.istio.io"
+      - "install.istio.io"
     resources:
       - "*"
     verbs:
@@ -111,7 +111,7 @@ rules:
       - "create"
       -  "patch"
   - apiGroups:
-      - "networking.networking.istio.io"
+      - "networking.istio.io"
     resources:
       - "*"
     verbs:
@@ -123,13 +123,13 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - "rbac.networking.istio.io"
+      - "rbac.istio.io"
     resources:
       - "*"
     verbs:
       - "*"
   - apiGroups:
-      - "security.networking.istio.io"
+      - "security.istio.io"
     resources:
       - "*"
     verbs:

@@ -24,7 +24,7 @@ spec:
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
         {% endif %}
-        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+        {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
@@ -38,20 +38,20 @@ spec:
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
         {% endif %}
-        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+        {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
         {% endif %}
-        {% if networking.istio.ingress_svc_annotations != "" %}
+        {% if networking.istio.ingressSvcAnnotations != "" %}
         serviceAnnotations:
-          {% set annotations = networking.istio.ingress_svc_annotations.split(";") %}
+          {% set annotations = networking.istio.ingressSvcAnnotations.split(";") %}
             {% for annotation in annotations %}
-              {% set annotation_itmes = annotation.split(":") %}
-                {% if annotation_itmes|length == 2 %}
-          "{{annotation_itmes[0].strip()}}": "{{annotation_itmes[1].strip()}}"
+              {% set annotationItmes = annotation.split(":") %}
+                {% if annotationItmes|length == 2 %}
+          "{{annotationItmes[0].strip()}}": "{{annotationItmes[1].strip()}}"
               {% endif %}
           {% endfor %}
         {% endif %}
@@ -78,12 +78,12 @@ spec:
             cpu: 100m
             memory: 128Mi
         service:
-          {% if networking.istio.external_ip != "" %}
+          {% if networking.istio.externalIp != "" %}
           type: ClusterIP
           externalIPs:
-          {% set external_ips = networking.istio.external_ip.split(';') %}
-            {% for external_ip in external_ips %}
-            - "{{ external_ip }}"
+          {% set externalIps = networking.istio.externalIp.split(';') %}
+            {% for externalIp in externalIps %}
+            - "{{ externalIp }}"
             {% endfor %}
           {% endif %}
           ports:

@@ -322,7 +322,7 @@ spec:
               - "create"
               -  "patch"
           - apiGroups:
-              - "networking.networking.istio.io"
+              - "networking.istio.io"
             resources:
               - "*"
             verbs:

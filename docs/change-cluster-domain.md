@@ -77,7 +77,7 @@ Perform the following actions to change cluster domain name
     ```bash
     # export NEW_CLUSTER_DOMAIN=cnvrg.new.cluster.domain.example.com
     cat <<EOF | kubectl apply -ncnvrg -f -
-    apiVersion: networking.networking.istio.io/v1beta1
+    apiVersion: networking.istio.io/v1beta1
     kind: Gateway
     metadata:
       name: cnvrg-gateway
