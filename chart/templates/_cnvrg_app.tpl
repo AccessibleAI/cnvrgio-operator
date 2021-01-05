@@ -7,8 +7,6 @@ cnvrgApp:
   image: "{{ .Values.cnvrgApp.image }}"
   port: "{{ .Values.cnvrgApp.port }}"
   svcName: "{{ .Values.cnvrgApp.svcName }}"
-  customAgentTag: "{{ .Values.cnvrgApp.customAgentTag }}"
-  intercom: "{{ .Values.cnvrgApp.intercom }}"
   nodePort: "{{ .Values.cnvrgApp.nodePort }}"
   passengerMaxPoolSize: {{ .Values.cnvrgApp.passengerMaxPoolSize }}
   enableReadinessProbe: "{{.Values.cnvrgApp.enableReadinessProbe}}"
@@ -47,7 +45,60 @@ cnvrgApp:
   sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqReplicas }}"
   sidekiqReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqReplicas }}"
   {{- end }}
-seeder:
-  image: "{{ .Values.cnvrgApp.seeder.image }}"
-  seedCmd: "{{ .Values.cnvrgApp.seeder.seedCmd }}"
+  seeder:
+    image: "{{ .Values.cnvrgApp.seeder.image }}"
+    seedCmd: "{{ .Values.cnvrgApp.seeder.seedCmd }}"
+
+  conf:
+    gcpStorageSecret: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
+    gcpKeyfileMountPath: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
+    gcpKeyfileName: "{{ .Values.cnvrgApp.conf.gcpKeyfileName }}"
+    jobsStorageClass: "{{ .Values.cnvrgApp.conf.jobsStorageClass }}"
+    cnvrgStorageUseIamRole: "{{ .Values.cnvrgApp.conf.cnvrgStorageUseIamRole }}"
+    featureFlags: "{{ .Values.cnvrgApp.conf.featureFlags }}"
+    sentryUrl: "{{ .Values.cnvrgApp.conf.sentryUrl }}"
+    secretKeyBase: "{{ .Values.cnvrgApp.conf.secretKeyBase }}"
+    stsIv: "{{ .Values.cnvrgApp.conf.stsIv }}"
+    stsKey: "{{ .Values.cnvrgApp.conf.stsKey }}"
+    passengerAppEnv: "{{ .Values.cnvrgApp.conf.passengerAppEnv }}"
+    railsEnv: "{{ .Values.cnvrgApp.conf.railsEnv }}"
+    runJobsOnSelfCluster: "{{ .Values.cnvrgApp.conf.runJobsOnSelfCluster }}"
+    defaultComputeConfig: "{{ .Values.cnvrgApp.conf.defaultComputeConfig }}"
+    defaultComputeName: "{{ .Values.cnvrgApp.conf.defaultComputeName }}"
+    useStdout: "{{ .Values.cnvrgApp.conf.useStdout }}"
+    extractTagsFromCmd: "{{ .Values.cnvrgApp.conf.extractTagsFromCmd }}"
+    checkJobExpiration: "{{ .Values.cnvrgApp.conf.checkJobExpiration }}"
+    cnvrgStorageType: "{{ .Values.cnvrgApp.conf.cnvrgStorageType }}"
+    cnvrgStorageBucket: "{{ .Values.cnvrgApp.conf.cnvrgStorageBucket }}"
+    cnvrgStorageAccessKey: "{{ .Values.cnvrgApp.conf.cnvrgStorageAccessKey }}"
+    cnvrgStorageSecretKey: "{{ .Values.cnvrgApp.conf.cnvrgStorageSecretKey }}"
+    {{- if ne .Values.cnvrgApp.conf.cnvrgStorageEndpoint "default" }}
+    cnvrgStorageEndpoint: {{ .Values.cnvrgApp.conf.cnvrgStorageEndpoint }}
+    {{- end}}
+    minioSseMasterKey: "{{ .Values.cnvrgApp.conf.minioSseMasterKey }}"
+    cnvrgStorageAzureAccessKey: "{{ .Values.cnvrgApp.conf.cnvrgStorageAzureAccessKey }}"
+    cnvrgStorageAzureAccountName: "{{ .Values.cnvrgApp.conf.cnvrgStorageAzureAccountName }}"
+    cnvrgStorageAzureContainer: "{{ .Values.cnvrgApp.conf.cnvrgStorageAzureContainer }}"
+    cnvrgStorageRegion: "{{ .Values.cnvrgApp.conf.cnvrgStorageRegion }}"
+    cnvrgStorageProject: "{{ .Values.cnvrgApp.conf.cnvrgStorageProject }}"
+    customAgentTag: "{{ .Values.cnvrgApp.conf.customAgentTag }}"
+    intercom: "{{ .Values.cnvrgApp.conf.intercom }}"
+
+    registry:
+      name: "{{ .Values.cnvrgApp.conf.registry.name}}"
+      url: "{{ .Values.cnvrgApp.conf.registry.url}}"
+      user: "{{ .Values.cnvrgApp.conf.registry.user}}"
+      password: "{{ .Values.cnvrgApp.conf.registry.password}}"
+
+    rbac:
+      role: "{{ .Values.cnvrgApp.conf.rbac.role}}"
+      serviceAccountName: "{{ .Values.cnvrgApp.conf.rbac.serviceAccountName}}"
+      roleBindingName: "{{ .Values.cnvrgApp.conf.rbac.roleBindingName}}"
+
+    smtp:
+      server: "{{ .Values.cnvrgApp.conf.smtp.server}}"
+      port: "{{ .Values.cnvrgApp.conf.smtp.port}}"
+      username: "{{ .Values.cnvrgApp.conf.smtp.username}}"
+      password: "{{ .Values.cnvrgApp.conf.smtp.password}}"
+      domain: "{{ .Values.cnvrgApp.conf.smtp.domain}}"
 {{- end }}

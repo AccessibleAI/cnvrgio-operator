@@ -104,7 +104,6 @@ computeProfiles:
 debug: "false"
 dumpDir: ""
 dryRun: "false"
-privilegedSa: cnvrg-privileged
 clusterDomain: ""
 orchestrator: k8s
 securityMode: default
@@ -142,59 +141,6 @@ networking:
     timeout: 18000s #  15min = retries_attempts * per_try_timeout
     retriesAttempts: 5
     perTryTimeout: 3600s
-
-conf:
-  enabled: "true"
-  gcpStorageSecret: gcp-storage-secret
-  gcpKeyfileMountPath: /tmp/gcp_keyfile
-  gcpKeyfileName: key.json
-  defaultJobsStorageClass: ""
-
-registry:
-  name: cnvrg-registry
-  url: "docker.io"
-  user: ""
-  password: ""
-
-rbac:
-  role: cnvrg-role
-  serviceAccountName: cnvrg
-  roleBindingName: cnvrg-role-binding
-
-appConfigs:
-  cnvrgStorageUseIamRole: "false"
-  featureFlags: ""
-  smtp:
-    server: ""
-    port: ""
-    username: ""
-    password: ""
-    domain: ""
-
-appSecrets:
-  sentryUrl: https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32
-  secretKeyBase: 0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5
-  stsIv: DeJ/CGz/Hkb/IbRe4t1xLg==
-  stsKey: 05646d3cbf8baa5be7150b4283eda07d
-  passengerAppEnv: app
-  railsEnv: app
-  runJobsOnSelfCluster: "true"
-  defaultComputeConfig: /opt/kube
-  defaultComputeName: default
-  useStdout: "true"
-  extractTagsFromCmd: "false"
-  checkJobExpiration: "true"
-  cnvrgStorageType: minio
-  cnvrgStorageEndpoint: "default"
-  cnvrgStorageBucket: cnvrg-storage
-  cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
-  cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-  minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"
-  cnvrgStorageAzureAccessKey: ""
-  cnvrgStorageAzureAccountName: ""
-  cnvrgStorageAzureContainer: ""
-  cnvrgStorageRegion: eastus
-  cnvrgStorageProject: ""
 
 redis:
   enabled: "true"
@@ -262,9 +208,6 @@ minio:
   memoryRequest: 4Gi
   sharedStorage:
     enabled: "false"
-    storageClassName: "minio-shared-backend"
-    nfsServer: ""
-    path: ""
 
 logging:
   enabled: "true"
@@ -400,8 +343,6 @@ cnvrgApp:
   cpu: 4
   memory: 4Gi
   svcName: app
-  customAgentTag: "false"
-  intercom: "true"
   nodePort: 30080
   sidekiqCpu: 2
   sidekiqMemory: 4Gi
@@ -413,35 +354,91 @@ cnvrgApp:
   readinessPeriodSeconds: 100
   readinessTimeoutSeconds: 60
   resourcesRequestEnabled: "true"
+  seeder:
+    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+    seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
 
-seeder:
-  image: docker.io/cnvrg/cnvrg-boot:v0.23
-  seedCmd: rails db:migrate && rails db:seed && rails libraries:update
+  conf:
+    enabled: "true"
+    gcpStorageSecret: "gcp-storage-secret"
+    gcpKeyfileMountPath: "/tmp/gcp_keyfile"
+    gcpKeyfileName: "key.json"
+    jobsStorageClass: ""
+    cnvrgStorageUseIamRole: "false"
+    featureFlags: ""
+    sentryUrl: "https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32"
+    secretKeyBase: "0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5"
+    stsIv: "DeJ/CGz/Hkb/IbRe4t1xLg=="
+    stsKey: "05646d3cbf8baa5be7150b4283eda07d"
+    passengerAppEnv: "app"
+    railsEnv: "app"
+    runJobsOnSelfCluster: "true"
+    defaultComputeConfig: "/opt/kube"
+    defaultComputeName: "default"
+    useStdout: "true"
+    extractTagsFromCmd: "false"
+    checkJobExpiration: "true"
+    cnvrgStorageType: "minio"
+    cnvrgStorageBucket: "cnvrg-storage"
+    cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
+    cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    cnvrgStorageEndpoint: "default"
+    minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"
+    cnvrgStorageAzureAccessKey: ""
+    cnvrgStorageAzureAccountName: ""
+    cnvrgStorageAzureContainer: ""
+    cnvrgStorageRegion: "eastus"
+    cnvrgStorageProject: ""
+    customAgentTag: "false"
+    intercom: "true"
 
-nfs:
+    registry:
+      name: cnvrg-registry
+      url: "docker.io"
+      user: ""
+      password: ""
+
+    rbac:
+      role: "cnvrg-role"
+      serviceAccountName: "cnvrg"
+      roleBindingName: "cnvrg-role-binding"
+
+    smtp:
+      server: ""
+      port: ""
+      username: ""
+      password: ""
+      domain: ""
+
+
+storage:
   enabled: "false"
-  image: "quay.io/external_storage/nfs-client-provisioner:latest"
-  provisioner: cnvrg.io/ifs
-  storageClassName: cnvrg-nfs-storage
-  server: ""
-  path: ""
-  cpuRequest: 100m
-  memoryRequest: 100Mi
-  cpuLimit: 200m
-  memoryLimit: 200Mi
-  reclaimPolicy: "Retain"
-  defaultSc: "false"
+  nfs:
+    enabled: "false"
+    image: "quay.io/external_storage/nfs-client-provisioner:latest"
+    provisioner: cnvrg.io/ifs
+    storageClassName: cnvrg-nfs-storage
+    server: ""
+    path: ""
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 200m
+    memoryLimit: 200Mi
+    reclaimPolicy: "Retain"
+    defaultSc: "false"
 
-hostpath:
-  enabled: "false"
-  image: "quay.io/kubevirt/hostpath-provisioner"
-  hostPath: /cnvrg-storage
-  storageClassName: cnvrg-hostpath-provisioner
-  nodeName: ""
-  cpuRequest: 100m
-  memoryRequest: 100Mi
-  cpuLimit: 200m
-  memoryLimit: 200Mi
+  hostpath:
+    enabled: "false"
+    image: "quay.io/kubevirt/hostpath-provisioner"
+    hostPath: /cnvrg-storage
+    storageClassName: cnvrg-hostpath-provisioner
+    nodeName: ""
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 200m
+    memoryLimit: 200Mi
+    reclaimPolicy: "Retain"
+    defaultSc: "false"
 
 autoscaler:
   enabled: "false"
