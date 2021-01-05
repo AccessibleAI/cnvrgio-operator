@@ -1,5 +1,5 @@
 #jinja2: trim_blocks: "true", lstrip_blocks: "false"
-apiVersion: install.networking.istio.io/v1alpha1
+apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
   name: cnvrg-istio
@@ -7,8 +7,8 @@ metadata:
 spec:
   profile: minimal
   namespace: "{{ansible_operator_meta.namespace}}"
-  hub: "{{ networking.istio.hub }}"
-  tag: "{{ networking.istio.tag }}"
+  hub: "{{ istio.hub }}"
+  tag: "{{ istio.tag }}"
   values:
     global:
       istioNamespace: "{{ansible_operator_meta.namespace}}"
@@ -24,7 +24,7 @@ spec:
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
         {% endif %}
-        {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
@@ -38,16 +38,16 @@ spec:
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"
         {% endif %}
-        {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+        {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
         tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
         {% endif %}
-        {% if networking.istio.ingressSvcAnnotations != "" %}
+        {% if istio.ingress_svc_annotations != "" %}
         serviceAnnotations:
-          {% set annotations = networking.istio.ingressSvcAnnotations.split(";") %}
+          {% set annotations = istio.ingress_svc_annotations.split(";") %}
             {% for annotation in annotations %}
               {% set annotation_itmes = annotation.split(":") %}
                 {% if annotation_itmes|length == 2 %}
@@ -78,12 +78,12 @@ spec:
             cpu: 100m
             memory: 128Mi
         service:
-          {% if networking.istio.externalIp != "" %}
+          {% if istio.external_ip != "" %}
           type: ClusterIP
           externalIPs:
-          {% set externalIps = networking.istio.externalIp.split(';') %}
-            {% for externalIp in externalIps %}
-            - "{{ externalIp }}"
+          {% set external_ips = istio.external_ip.split(';') %}
+            {% for external_ip in external_ips %}
+            - "{{ external_ip }}"
             {% endfor %}
           {% endif %}
           ports:
