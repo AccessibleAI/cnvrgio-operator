@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: "{{es.svcName}}"
+  name: "{{logging.es.svcName}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   rules:
-    - host: "{{(es.svcName + '.' + clusterDomain).split(':')[0] }}"
+    - host: "{{(logging.es.svcName + '.' + clusterDomain).split(':')[0] }}"
       http:
         paths:
           - path: /
             backend:
-              serviceName: "{{es.svcName}}"
-              servicePort: {{es.port}}
+              serviceName: "{{logging.es.svcName}}"
+              servicePort: {{logging.es.port}}

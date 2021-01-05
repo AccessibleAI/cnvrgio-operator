@@ -8,7 +8,7 @@
         - ../roles/conf/vars/main.yml
         - ../roles/redis/vars/main.yml
         - ../roles/pg/vars/main.yml
-        - ../roles/es/vars/main.yml
+        - ../roles/logging/vars/main.yml
         - ../roles/minio/vars/main.yml
         - ../roles/monitoring/vars/main.yml
         - ../roles/istio/vars/main.yml

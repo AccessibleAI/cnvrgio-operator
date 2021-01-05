@@ -9,12 +9,10 @@
         - ../roles/redis/vars/main.yml
         - ../roles/pg/vars/main.yml
         - ../roles/pg_backup/vars/main.yml
-        - ../roles/es/vars/main.yml
-        - ../roles/minio/vars/main.yml
+        - ../roles/logging/vars/main.yml
         - ../roles/monitoring/vars/main.yml
+        - ../roles/minio/vars/main.yml
         - ../roles/istio/vars/main.yml
-        - ../roles/kibana/vars/main.yml
-        - ../roles/fluentd/vars/main.yml
         - ../roles/nvidiadp/vars/main.yml
         - ../roles/mpi/vars/main.yml
         - ../roles/cnvrgApp/vars/main.yml
@@ -22,7 +20,6 @@
         - ../roles/hostpath/vars/main.yml
         - ../roles/ingress/vars/main.yml
         - ../roles/cnvrgRouter/vars/main.yml
-        - ../roles/elastalert/vars/main.yml
         - ../roles/vpa/vars/main.yml
         - ../roles/hyper/vars/main.yml
       tags: always
@@ -44,12 +41,9 @@
         - { name: 'conf', enabled: "{{conf.enabled}}" }
         - { name: 'pg', enabled: "{{pg.enabled}}" }
         - { name: 'redis', enabled: "{{redis.enabled}}" }
-        - { name: 'es', enabled: "{{es.enabled}}" }
-        - { name: 'elastalert', enabled: "{{elastalert.enabled}}" }
+        - { name: 'logging', enabled: "{{logging.enabled}}" }
         - { name: 'minio', enabled: "{{minio.enabled}}" }
-        - { name: 'fluentd', enabled: "{{fluentd.enabled}}" }
         - { name: 'istio', enabled: "{{istio.enabled}}" }
-        - { name: 'kibana', enabled: "{{kibana.enabled}}" }
         - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
         - { name: 'mpi', enabled: "{{mpi.enabled}}" }
         - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
@@ -70,7 +64,7 @@
         operatorRoles: "{{ operatorRoles + [role] }}"
       when:
       - tags != "all"
-      - role.name in "{{tags.split(",")}}"
+      - role.name in tags.split(",")
       loop_control:
         loop_var: role
       loop: "{{defaultOperatorRoles}}"

@@ -1,6 +1,6 @@
 - include_vars: ../../minio/vars/main.yml
 - include_vars: ../../pg/vars/main.yml
-- include_vars: ../../es/vars/main.yml
+- include_vars: ../../logging/vars/main.yml
 - include_vars: ../../redis/vars/main.yml
 - include_vars: ../../cnvrgApp/vars/main.yml
 
@@ -26,7 +26,7 @@
     state: "present"
   with_items:
     - templates/conf/privileged_sa.yml
-  when: es.patchEsNodes == "true"
+  when: logging.es.patchEsNodes == "true"
     
 
 

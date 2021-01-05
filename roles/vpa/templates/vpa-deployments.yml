@@ -83,13 +83,13 @@ spec:
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: {{es.svcName}}
+  name: {{logging.es.svcName}}
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       StatefulSet
-    name:       {{es.svcName}}
+    name:       {{logging.es.svcName}}
   updatePolicy:
     updateMode: "Off"
 ---

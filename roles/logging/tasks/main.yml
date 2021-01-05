@@ -1,0 +1,44 @@
+# Install ElasticSearch
+- name: Install ElasticSearch
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/es/*
+  when: logging.es.enabled == "true"
+
+- name: Install Elastalert
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/elastalert/*
+  when: logging.elastalert.enabled == "true"
+
+- name: Install Fluentd
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/fluentd/*
+  when: logging.fluentd.enabled == "true"
+
+- name: Install Kibana
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/kibana/*
+  when: logging.kibana.enabled == "true"

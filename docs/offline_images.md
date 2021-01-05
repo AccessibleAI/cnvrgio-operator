@@ -48,8 +48,8 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 --set hookImage offline_repo/cnvrg/cnvrg-tools:v0.3 \
 --set redis.image offline_repo/redis:3.0.5 \
 --set pg.image offline_repo/centos/postgresql-12-centos7 \
---set es.image offline_repo/cnvrg/cnvrg-es:v7.8.1 \
---set es.maxMapImage offline_repo/cnvrg/cnvrg-tools:v0.3 \
+--set logging.es.image offline_repo/cnvrg/cnvrg-es:v7.8.1 \
+--set logging.es.maxMapImage offline_repo/cnvrg/cnvrg-tools:v0.3 \
 --set minio.image offline_repo/minio/minio:RELEASE.2020-09-17T04-49-20Z \
 --set monitoring.prometheusOperator.images.operatorImage offline_repo/coreos/prometheus-operator:v0.40.0 \
 --set monitoring.prometheusOperator.images.configReloaderImage offline_repo/jimmidyson/configmap-reload:v0.3.0 \
@@ -67,8 +67,8 @@ helm install cnvrg cnvrg/cnvrgio --timeout 1500s --wait \
 --set istio.proxyImage offline_repo/istio/proxyv2 \
 --set istio.mixerImage offline_repo/istio/mixer \
 --set istio.pilotImage offline_repo/istio/pilot \
---set kibana.image offline_repo/kibana/kibana-oss:7.8.1 \
---set fluentd.image offline_repo/fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1 \
+--set logging.kibana.image offline_repo/kibana/kibana-oss:7.8.1 \
+--set logging.fluentd.image offline_repo/fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1 \
 --set nvidiadp.image offline_repo/nvidia/k8s-device-plugin:v0.7.0 \
 --set mpi.image offline_repo/mpioperator/mpi-operator:v0.2.3 \
 --set mpi.kubectlDeliveryImage offline_repo/mpioperator/kubectl-delivery:v0.2.3 \

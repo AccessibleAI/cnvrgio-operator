@@ -1,0 +1,19 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{logging.es.svcName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{logging.es.svcName}}"
+spec:
+  {% if ingressType == "nodeport" %}
+  type: NodePort
+  {% endif %}
+  ports:
+  - port: {{logging.es.port}}
+    {% if ingressType == "nodeport" %}
+    nodePort: {{ logging.es.nodePort }}
+    {% endif %}
+  selector:
+    app: "{{logging.es.svcName}}"

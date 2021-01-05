@@ -1,0 +1,114 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{logging.es.svcName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  serviceName: "{{logging.es.svcName}}"
+  selector:
+    matchLabels:
+      app: "{{logging.es.svcName}}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{logging.es.svcName}}"
+    spec:
+      {% if logging.es.patchEsNodes == "true" %}
+      initContainers:
+      - name: "maxmap"
+        image: {{ logging.es.maxMapImage }}
+        imagePullPolicy: "Always"
+        command: [ "/bin/bash","-c","sysctl -w vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+          runAsUser: 0
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      {% if securityMode == "default" %}
+      securityContext:
+        runAsUser: {{ logging.es.runAsUser }}
+        runAsGroup: {{ logging.es.runAsGroup }}
+        fsGroup: {{ logging.es.fsGroup }}
+      {% endif %}
+      {% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
+      {% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ hostpath.nodeName }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      containers:
+      - name: elastic
+        image: "{{logging.es.image}}"
+        env:
+        - name: "ES_CLUSTER_NAME"
+          value: "cnvrg-es"
+        - name: "ES_NODE_NAME"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "ES_NETWORK_HOST"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "ES_DISCOVERY_TYPE"
+          value: "single-node"
+        - name: "ES_PATH_DATA"
+          value: "/usr/share/elasticsearch/data/data"
+        - name: "ES_PATH_LOGS"
+          value: "/usr/share/elasticsearch/data/logs"
+        - name: "ES_JAVA_OPTS"
+          value: "{{ logging.es.javaOpts }}"
+        ports:
+        - containerPort: {{logging.es.port|default('9200')}}
+        resources:
+          limits:
+            cpu: "{{ logging.es.cpuLimit|default('4Gi') }}"
+            memory: "{{ logging.es.memoryLimit|default('2') }}"
+          requests:
+            cpu: "{{ logging.es.cpuRequest|default('1') }}"
+            memory: "{{ logging.es.memoryRequest|default('1Gi') }}"
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: {{logging.es.port|default('9200')}}
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: {{logging.es.port|default('9200')}}
+          initialDelaySeconds: 5
+          periodSeconds: 20
+          failureThreshold: 5
+        volumeMounts:
+        - name: es-storage
+          mountPath: "/usr/share/elasticsearch/data"
+  volumeClaimTemplates:
+  - metadata:
+      name: es-storage
+    spec:
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: "{{logging.es.storageSize}}"
+      {% if hostpath.enabled == "true" %}
+      storageClassName: {{ hostpath.storageClassName }}
+      {% elif nfs.enabled == "true" %}
+      storageClassName: "{{ nfs.storageClassName }}"
+      {% elif pg.storageClass != "use-default" %}
+      storageClassName: "{{ logging.es.storageClass }}"
+      {% endif %}

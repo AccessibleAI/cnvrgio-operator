@@ -8,8 +8,8 @@ data:
   {% if cnvrgApp.customAgentTag != "false" %}
   AGENT_CUSTOM_TAG: "{{ cnvrgApp.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
   {% endif %}
-  ELASTICSEARCH_URL: "http://{{es.svcName}}"
-  ELASTICSEARCH_URL: "http://{{es.svcName}}"
+  ELASTICSEARCH_URL: "http://{{logging.es.svcName}}"
+  ELASTICSEARCH_URL: "http://{{logging.es.svcName}}"
   HYPER_SERVER_URL: "http://{{hyper.svcName}}"
   HYPER_SERVER_PORT: "{{hyper.port}}"
   HYPER_SERVER_TOKEN: "{{hyper.token}}"

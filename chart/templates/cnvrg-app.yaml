@@ -11,13 +11,10 @@ spec:
   {{- include "spec.cnvrgApp" . | indent 2 }}
   {{- include "spec.redis" . | indent 2 }}
   {{- include "spec.pg" . | indent 2 }}
-  {{- include "spec.es" . | indent 2 }}
-  {{- include "spec.elastalert" . | indent 2 }}
+  {{- include "spec.logging" . | indent 2 }}
   {{- include "spec.minio" . | indent 2 }}
   {{- include "spec.monitoring" . | indent 2 }}
   {{- include "spec.istio" . | indent 2 }}
-  {{- include "spec.kibana" . | indent 2 }}
-  {{- include "spec.fluentd" . | indent 2 }}
   {{- include "spec.nvidiadp" . | indent 2 }}
   {{- include "spec.mpi" . | indent 2 }}
   {{- include "spec.nfs" . | indent 2 }}
