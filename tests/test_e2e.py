@@ -12,7 +12,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  networking.ingressType: "k8singress"
+  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -43,7 +43,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  networking.ingressType: "k8singress"
+  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -88,7 +88,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  networking.ingressType: "istio"
+  ingressType: "istio"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -130,7 +130,7 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  networking.ingressType: "k8singress"
+  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -627,12 +627,12 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
         cls._started_at = time.time()
         res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
-        nodeName = res[1]
+        node_name = res[1]
         cls.deploy()
         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
         spec = CNVRG_SPEC_WITH_TOLERATION_HOSTPATH.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url())
-        spec = spec.replace("__NODE_NAME__", nodeName)
+        spec = spec.replace("__NODE_NAME__", node_name)
         cls.create_cnvrg_spec(spec)
         if cls.wait_for_cnvrg_spec_ready() is False:
             assert False, 'CnvrgApp Spec was not ready in 30 min!'

@@ -78,7 +78,7 @@ class CommonBase(object):
         for i in range(0, 1800):
             try:
                 res = CommonBase._exec_cmd(
-                    f"kubectl get istiooperators.install.networking.istio.io {name} -ncnvrg | grep HEALTHY | wc -l")
+                    f"kubectl get istiooperators.install.istio.io {name} -ncnvrg | grep HEALTHY | wc -l")
                 if res[1] == "1":
                     return True
                 logging.info("Istio CR not ready yet...")
@@ -137,16 +137,16 @@ class CommonBase(object):
         return spec
 
     @staticmethod
-    def get_nip_nip_url(networking.ingressType="nginx"):
+    def get_nip_nip_url(ingress_type="nginx"):
         for i in range(0, 1800):
             try:
                 v1 = client.CoreV1Api()
-                svcName = "ingress-nginx-controller"
+                svc_name = "ingress-nginx-controller"
                 namespace = "ingress-nginx"
-                if networking.ingressType == "istio":
-                    svcName = "istio-ingressgateway"
+                if ingress_type == "istio":
+                    svc_name = "istio-ingressgateway"
                     namespace = "cnvrg"
-                service = v1.read_namespaced_service(svcName, namespace=namespace)
+                service = v1.read_namespaced_service(svc_name, namespace=namespace)
                 ip = service.status.load_balancer.ingress[0].ip
                 nip_io_url = f"cnvrg.{ip}.nip.io"
                 logging.info(nip_io_url)
