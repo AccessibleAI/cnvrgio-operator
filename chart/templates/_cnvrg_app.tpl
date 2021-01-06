@@ -97,7 +97,6 @@ cnvrgApp:
       username: "{{ .Values.cnvrgApp.conf.smtp.username}}"
       password: "{{ .Values.cnvrgApp.conf.smtp.password}}"
       domain: "{{ .Values.cnvrgApp.conf.smtp.domain}}"
-
   hyper:
     enabled: "{{ .Values.cnvrgApp.hyper.enabled }}"
     image: "{{ .Values.cnvrgApp.hyper.image }}"
@@ -123,6 +122,12 @@ cnvrgApp:
     {{- if eq .Values.computeProfile "small"}}
     cpuRequest: "{{ .Values.computeProfiles.small.hyper.cpu }}"
     memoryRequest: "{{ .Values.computeProfiles.small.hyper.memory }}"
-
     {{- end }}
+  cnvrgRouter:
+    enabled: "{{ .Values.cnvrgApp.cnvrgRouter.enabled }}"
+    image: "{{.Values.cnvrgApp.cnvrgRouter.image}}"
+    svcName: "{{ .Values.cnvrgApp.cnvrgRouter.svcName }}"
+    nodePort: "{{ .Values.cnvrgApp.cnvrgRouter.nodePort }}"
+    port: "{{ .Values.cnvrgApp.cnvrgRouter.port}}"
+
 {{- end }}

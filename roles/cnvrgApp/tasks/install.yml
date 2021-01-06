@@ -4,16 +4,40 @@
 - include_vars: ../../redis/vars/main.yml
 - include_vars: ../../cnvrgApp/vars/main.yml
 
-- name: Deploy CnvrgApp
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    templatePath: "{{ item }}"
-    state: "present"
-    compare_resource: yes
+
+- name: Construct CnvrgApp
+  set_fact:
+   roleBundle: "{{ roleBundle | default([]) + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/install/app/*.yml
     - templates/install/sidekiqs/*.yml
     - templates/install/conf/*.yml
+
+- name: add hyper
+  set_fact:
+   roleBundle: "{{ roleBundle | default([]) + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
     - templates/install/hyper/*.yml
+  when: cnvrgApp.hyper.enabled  == "true"
+
+- name: add cnvrgRouter
+  set_fact:
+   roleBundle: "{{ roleBundle | default([]) + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/cnvrgRouter/*.yml
+  when: cnvrgApp.cnvrgRouter.enabled  == "true"
+
+- name: Deploy CnvrgApp role
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "templates/bundle.yml"
+    state: "present"
+    compare_resource: yes

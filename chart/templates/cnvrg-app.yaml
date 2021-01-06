@@ -16,7 +16,5 @@ spec:
   {{- include "spec.nvidiadp" . | indent 2 }}
   {{- include "spec.mpi" . | indent 2 }}
   {{- include "spec.storage" . | indent 2 }}
-  {{- include "spec.cnvrgRouter" . | indent 2 }}
   {{- include "spec.vpa" . | indent 2 }}
-  {{- include "spec.hyper" . | indent 2 }}
 

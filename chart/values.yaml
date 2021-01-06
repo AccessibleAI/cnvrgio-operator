@@ -408,6 +408,13 @@ cnvrgApp:
       password: ""
       domain: ""
 
+  cnvrgRouter:
+    enabled: "false"
+    image: nginx
+    svcName: routing-service
+    nodePort: 30081
+    port: 80
+
 
 storage:
   enabled: "false"
@@ -440,13 +447,6 @@ storage:
 
 autoscaler:
   enabled: "false"
-
-cnvrgRouter:
-  enabled: "false"
-  image: nginx
-  svcName: routing-service
-  nodePort: 30081
-  port: 80
 
 vpa:
   enabled: "false"

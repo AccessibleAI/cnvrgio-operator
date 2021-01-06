@@ -1,19 +1,18 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{cnvrgRouter.svcName}}"
+  name: "{{cnvrgApp.cnvrgRouter.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{cnvrgRouter.svcName}}"
+    app: "{{cnvrgApp.cnvrgRouter.svcName}}"
 spec:
   {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
-  - port: {{cnvrgRouter.port}}
+  - port: {{cnvrgApp.cnvrgRouter.port}}
     {% if networking.ingressType == "nodeport" %}
-    nodePort: {{ cnvrgRouter.nodePort }}
+    nodePort: {{ cnvrgApp.cnvrgRouter.nodePort }}
     {% endif %}
   selector:
-    app: "{{cnvrgRouter.svcName}}"
+    app: "{{cnvrgApp.cnvrgRouter.svcName}}"

@@ -1,4 +1,3 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -39,10 +38,10 @@ data:
   SMTP_USERNAME: "{{ cnvrgApp.conf.smtp.username }}"
   SMTP_PASSWORD: "{{ cnvrgApp.conf.smtp.password }}"
   SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
-  {% if cnvrgRouter.enabled == "true" %}
-  DEPLOY_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
-  NOTEBOOK_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
-  TENSORBOARD_URL: "{{ (httpScheme + (cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  {% if cnvrgApp.cnvrgRouter.enabled == "true" %}
+  DEPLOY_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  NOTEBOOK_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  TENSORBOARD_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
   {% endif %}
 {% set featureFlags = cnvrgApp.conf.featureFlags.split(';') %}
 {% for featureFlag in featureFlags %}

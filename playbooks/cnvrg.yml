@@ -22,7 +22,6 @@
         loop_var: role
       loop:
         - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
-        - { name: 'cnvrgRouter', enabled: "{{cnvrgRouter.enabled}}" }
         - { name: 'storage', enabled: "{{storage.enabled}}" }
         - { name: 'pg', enabled: "{{pg.enabled}}" }
         - { name: 'redis', enabled: "{{redis.enabled}}" }
