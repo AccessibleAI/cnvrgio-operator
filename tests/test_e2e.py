@@ -20,8 +20,9 @@ spec:
   cnvrgApp:
     image: "cnvrg/core:3.1.3"
     intercom: "false"
-  cnvrgRouter:
-    enabled: "true"
+    cnvrgRouter:
+      enabled: "true"
+
   monitoring:
     enabled: "true"
     prometheus:
