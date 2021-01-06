@@ -1,44 +1,48 @@
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
 # Install ElasticSearch
-- name: Install ElasticSearch
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    templatePath: "{{ item }}"
-    state: "present"
+- name: add ElasticSearch
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/es/*
   when: logging.es.enabled == "true"
 
-- name: Install Elastalert
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    templatePath: "{{ item }}"
-    state: "present"
+- name: add Elastalert
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/elastalert/*
   when: logging.elastalert.enabled == "true"
 
-- name: Install Fluentd
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    templatePath: "{{ item }}"
-    state: "present"
+- name: add Fluentd
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/fluentd/*
   when: logging.fluentd.enabled == "true"
 
-- name: Install Kibana
+- name: add Kibana
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/kibana/*
+  when: logging.kibana.enabled == "true"
+
+- name: Deploy Logging
   include_role:
     name: common
     tasks_from: install
   vars:
-    templatePath: "{{ item }}"
+    templatePath: "templates/loggingBundle.yml"
     state: "present"
-  with_fileglob:
-    - templates/kibana/*
-  when: logging.kibana.enabled == "true"

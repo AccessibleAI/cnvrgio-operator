@@ -4,10 +4,13 @@
 - include_vars: ../../redis/vars/main.yml
 - include_vars: ../../cnvrgApp/vars/main.yml
 
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
 
 - name: Construct CnvrgApp
   set_fact:
-   roleBundle: "{{ roleBundle | default([]) + [templatePath] }}"
+   roleBundle: "{{ roleBundle + [templatePath] }}"
   loop_control:
     loop_var: templatePath
   with_fileglob:
@@ -17,7 +20,7 @@
 
 - name: add hyper
   set_fact:
-   roleBundle: "{{ roleBundle | default([]) + [templatePath] }}"
+   roleBundle: "{{ roleBundle + [templatePath] }}"
   loop_control:
     loop_var: templatePath
   with_fileglob:
@@ -26,7 +29,7 @@
 
 - name: add cnvrgRouter
   set_fact:
-   roleBundle: "{{ roleBundle | default([]) + [templatePath] }}"
+   roleBundle: "{{ roleBundle + [templatePath] }}"
   loop_control:
     loop_var: templatePath
   with_fileglob:
@@ -38,6 +41,6 @@
     name: common
     tasks_from: install
   vars:
-    templatePath: "templates/bundle.yml"
+    templatePath: "templates/cnvrgAppBundle.yml"
     state: "present"
     compare_resource: yes
