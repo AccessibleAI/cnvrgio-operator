@@ -1,3 +1,4 @@
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -5,19 +6,19 @@ metadata:
 rules:
   # istio groups
   - apiGroups:
-      - authentication.networking.istio.io
+      - authentication.istio.io
     resources:
       - '*'
     verbs:
       - '*'
   - apiGroups:
-      - config.networking.istio.io
+      - config.istio.io
     resources:
       - '*'
     verbs:
       - '*'
   - apiGroups:
-      - install.networking.istio.io
+      - install.istio.io
     resources:
       - '*'
     verbs:
@@ -29,7 +30,7 @@ rules:
     verbs:
       - '*'
   - apiGroups:
-      - security.networking.istio.io
+      - security.istio.io
     resources:
       - '*'
     verbs:
@@ -134,17 +135,17 @@ spec:
         name: istio-operator
     spec:
       serviceAccountName: istio-operator
-{%  if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
+      {% endif %}
       containers:
         - name: istio-operator
           image: "{{ networking.istio.operatorImage }}"

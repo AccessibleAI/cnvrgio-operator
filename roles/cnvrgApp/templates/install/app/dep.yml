@@ -72,7 +72,7 @@ spec:
           initialDelaySeconds: 30
           successThreshold: 1
           periodSeconds: {{ cnvrgApp.readinessPeriodSeconds | default('100') }}
-          timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds |default('60') }}
+          timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds | default('60') }}
         {% endif %}
         {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:

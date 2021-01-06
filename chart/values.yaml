@@ -103,6 +103,7 @@ computeProfiles:
       memory: 100Mi
 debug: "false"
 dumpDir: ""
+otags: "all"
 dryRun: "false"
 clusterDomain: ""
 orchestrator: k8s

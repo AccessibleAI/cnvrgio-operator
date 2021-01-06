@@ -16,23 +16,8 @@ class MinioCustomEPDop397Test(unittest.TestCase, CommonBase):
         cls.deploy()
         helm_cmd = """
             helm template chart \
-            --set appSecrets.cnvrgStorageEndpoint='http://custom-minio-ep' \
-            --set cnvrgApp.enabled="false" \
-            --set autoscaler.enabled="false" \
-            --set cnvrgRouter.enabled="false" \
-            --set es.enabled="false" \
-            --set fluentd.enabled="false" \
-            --set hostpath.enabled="false" \
-            --set ingress.enabled="false" \
-            --set istio.enabled="false" \
-            --set kibana.enabled="false" \
-            --set monitoring.enabled="false" \
-            --set minio.enabled="false" \
-            --set mpi.enabled="false" \
-            --set nfs.enabled="false" \
-            --set nvidiadp.enabled="false" \
-            --set pg.enabled="false" \
-            --set redis.enabled="false" \
+            --set otags="cnvrgApp" \
+            --set cnvrgApp.conf.cnvrgStorageEndpoint='http://custom-minio-ep' \
             -s templates/cnvrg-app.yaml
         """
         cls.create_cnvrg_spec(cls.get_spec_from_chart(helm_cmd))

@@ -4,6 +4,7 @@ metadata:
   name: istiooperators.install.istio.io
   labels:
     release: istio
+    owner: cnvrg
 spec:
   group: install.istio.io
   names:

@@ -1,0 +1,78 @@
+- name: remove deployment
+  vars:
+    ownerLabel: "owner"
+  block:
+    - include_vars: ../../../playbooks/vars/globals.yml
+    - include_vars: ../../minio/vars/main.yml
+    - include_vars: ../../pg/vars/main.yml
+    - include_vars: ../../logging/vars/main.yml
+    - include_vars: ../../redis/vars/main.yml
+    - include_vars: ../../cnvrgApp/vars/main.yml
+
+    - name: Get istiooperators.install.istio.io
+      k8s_info:
+        api_version: install.istio.io/v1alpha1
+        kind: IstioOperator
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        name: "cnvrg-istio"
+      register: istioInstance
+      when: dryRun == "false"
+
+    - name: Get istio crd
+      k8s_info:
+        api_version: apiextensions.k8s.io/v1
+        kind: CustomResourceDefinition
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        name: "istiooperators.install.istio.io"
+      register: istioCrd
+      when: dryRun == "false"
+
+    - name: reset bundle roles
+      set_fact:
+        roleBundle: []
+
+    - name: remove istio instance
+      set_fact:
+       roleBundle: "{{ roleBundle + ['templates/istio/instance.yml'] }}"
+      when:
+       - dryRun == "false"
+       - istioInstance.resources | length > 0
+
+    - name: remove istio instance - bundle
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        templatePath: "templates/ingressBundle.yml"
+        wait_to_complete: yes
+        state: "absent"
+
+    - name: reset bundle roles
+      set_fact:
+        roleBundle: []
+
+
+    - name: remove Istio CRDs
+      set_fact:
+       roleBundle: "{{ roleBundle + [templatePath] }}"
+      loop_control:
+        loop_var: templatePath
+      loop:
+        - templates/istio/operator.yml
+        - templates/istio/crds.yaml
+      when:
+        - dryRun == "false"
+        - istioCrd.resources | length > 0
+        - ownerLabel in istioCrd.resources[0].metadata.labels.keys()
+        - istioCrd.resources[0].metadata.labels.owner == "cnvrg"
+
+    - name: remove istio crds and operator - bundle
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        templatePath: "templates/ingressBundle.yml"
+        state: "absent"
+
+  when:
+  - networking.ingressType == "istio"

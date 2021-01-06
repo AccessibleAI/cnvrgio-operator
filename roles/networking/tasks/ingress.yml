@@ -1,0 +1,77 @@
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
+- name: Isito deployment
+  block:
+    # Includgin all variables - they are require for composing Istio VirtualService
+    - include_vars: ../../../playbooks/vars/globals.yml
+    - include_vars: ../../minio/vars/main.yml
+    - include_vars: ../../pg/vars/main.yml
+    - include_vars: ../../logging/vars/main.yml
+    - include_vars: ../../redis/vars/main.yml
+    - include_vars: ../../cnvrgApp/vars/main.yml
+
+    - name: add Istio CRDs
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        templatePath: "templates/istio/crds.yaml"
+        state: "present"
+
+    # Install istio
+    - name: add Istio operator and instance
+      set_fact:
+       roleBundle: "{{ roleBundle + [templatePath] }}"
+      loop_control:
+        loop_var: templatePath
+      loop:
+        - templates/istio/operator.yml
+        - templates/istio/instance.yml
+
+    # Install virtual services
+    - name: add VirtualServices
+      set_fact:
+       roleBundle: "{{ roleBundle + [templatePath] }}"
+      loop_control:
+        loop_var: templatePath
+      with_fileglob:
+        - templates/istio-vs/*
+
+    # Install gateway
+    - name: add GW
+      set_fact:
+       roleBundle: "{{ roleBundle + [templatePath] }}"
+      loop_control:
+        loop_var: templatePath
+      with_fileglob:
+        - templates/istio-gw/*
+  when: networking.ingressType == "istio"
+
+- name: add OpenShift Route
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/ocp-route/*
+  when:
+  - networking.ingressType == "openshift"
+
+- name: add K8S Ingress rules
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/k8s-ingress/*
+  when: networking.ingressType == "k8singress"
+
+- name: add CnvrgApp role
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "templates/ingressBundle.yml"
+    state: "present"

@@ -13,6 +13,18 @@
     - monitoring.enabled == "true"
     - monitoring.prometheusOperator.enabled == "true"
 
+- name: Deploy Monitoring Operator
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "templates/monitoringBundle.yml"
+    state: "present"
+
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
 - name: add Default Service Monitors
   set_fact:
    roleBundle: "{{ roleBundle + [templatePath] }}"

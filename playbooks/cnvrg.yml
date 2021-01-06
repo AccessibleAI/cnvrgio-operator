@@ -58,5 +58,3 @@
       loop_control:
         loop_var: role
       loop: "{{operatorRoles}}"
-
-
