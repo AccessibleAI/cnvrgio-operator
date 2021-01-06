@@ -97,4 +97,32 @@ cnvrgApp:
       username: "{{ .Values.cnvrgApp.conf.smtp.username}}"
       password: "{{ .Values.cnvrgApp.conf.smtp.password}}"
       domain: "{{ .Values.cnvrgApp.conf.smtp.domain}}"
+
+  hyper:
+    enabled: "{{ .Values.cnvrgApp.hyper.enabled }}"
+    image: "{{ .Values.cnvrgApp.hyper.image }}"
+    port: "{{ .Values.cnvrgApp.hyper.port }}"
+    nodePort: "{{ .Values.cnvrgApp.hyper.enabled }}"
+    svcName: "{{ .Values.cnvrgApp.hyper.svcName }}"
+    replicas: "{{ .Values.cnvrgApp.hyper.replicas }}"
+    token: "{{.Values.cnvrgApp.hyper.token}}"
+    enableReadinessProbe: "{{.Values.cnvrgApp.hyper.enableReadinessProbe}}"
+    readinessPeriodSeconds: "{{.Values.cnvrgApp.hyper.readinessPeriodSeconds}}"
+    readinessTimeoutSeconds: "{{.Values.cnvrgApp.hyper.readinessTimeoutSeconds}}"
+
+    {{- if eq .Values.computeProfile "large"}}
+    cpuRequest: "{{ .Values.computeProfiles.large.hyper.cpu }}"
+    memoryRequest: "{{ .Values.computeProfiles.large.hyper.memory }}"
+    {{- end }}
+
+    {{- if eq .Values.computeProfile "medium"}}
+    cpuRequest: "{{ .Values.computeProfiles.medium.hyper.cpu }}"
+    memoryRequest: "{{ .Values.computeProfiles.medium.hyper.memory }}"
+    {{- end }}
+
+    {{- if eq .Values.computeProfile "small"}}
+    cpuRequest: "{{ .Values.computeProfiles.small.hyper.cpu }}"
+    memoryRequest: "{{ .Values.computeProfiles.small.hyper.memory }}"
+
+    {{- end }}
 {{- end }}

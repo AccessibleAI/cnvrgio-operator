@@ -33,7 +33,6 @@
         - { name: 'mpi', enabled: "{{mpi.enabled}}" }
         - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
         - { name: 'vpa', enabled: "{{vpa.enabled}}" }
-        - { name: 'hyper', enabled: "{{hyper.enabled}}" }
 
     - name: Set operatorRoles if otags are `all` or not defined
       set_fact:

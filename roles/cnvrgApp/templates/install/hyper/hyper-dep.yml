@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{hyper.svcName}}"
+  name: "{{cnvrgApp.hyper.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{hyper.svcName}}"
+    app: "{{cnvrgApp.hyper.svcName}}"
 spec:
-  replicas: {{ hyper.replicas }}
+  replicas: {{ cnvrgApp.hyper.replicas }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,11 +15,11 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      app: "{{hyper.svcName}}"
+      app: "{{cnvrgApp.hyper.svcName}}"
   template:
     metadata:
       labels:
-        app: "{{hyper.svcName}}"
+        app: "{{cnvrgApp.hyper.svcName}}"
     spec:
       {% if tenancy.enabled == "true" %}
       nodeSelector:
@@ -33,29 +33,31 @@ spec:
         effect: "NoSchedule"
       {% endif %}
       containers:
-        - image: "{{hyper.image}}"
-          name: "{{hyper.svcName}}"
+        - image: "{{cnvrgApp.hyper.image}}"
+          name: "{{cnvrgApp.hyper.svcName}}"
           envFrom:
             - configMapRef:
                 name: env-config
+            - secretRef:
+                name: env-secrets
           ports:
-            - containerPort: {{hyper.port}}
-          {% if (cnvrg_app.enableReadinessProbe | default ('true')) == "true" %}
+            - containerPort: {{cnvrgApp.hyper.port}}
+          {% if (cnvrgApp.enableReadinessProbe | default ('true')) == "true" %}
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: "/?key={{hyper.token}}"
-              port: {{hyper.port}}
+              path: "/?key={{cnvrgApp.hyper.token}}"
+              port: {{cnvrgApp.hyper.port}}
               scheme: HTTP
             initialDelaySeconds: 20
             successThreshold: 1
-            periodSeconds: {{ hyper.readinessPeriodSeconds | default('100') }}
-            timeoutSeconds: {{ hyper.readinessTimeoutSeconds |default('60') }}
+            periodSeconds: {{ cnvrgApp.hyper.readinessPeriodSeconds | default('100') }}
+            timeoutSeconds: {{ cnvrgApp.hyper.readinessTimeoutSeconds |default('60') }}
           {% endif %}
           resources:
             requests:
-              cpu: "{{hyper.cpuRequest}}"
-              memory: "{{hyper.memoryRequest}}"
+              cpu: "{{cnvrgApp.hyper.cpuRequest}}"
+              memory: "{{cnvrgApp.hyper.memoryRequest}}"
             limits:
-              cpu: "{{ hyper.cpuLimit }}"
-              memory: "{{ hyper.memoryLimit }}"
+              cpu: "{{ cnvrgApp.hyper.cpuLimit }}"
+              memory: "{{ cnvrgApp.hyper.memoryLimit }}"

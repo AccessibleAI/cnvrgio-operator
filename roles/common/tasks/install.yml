@@ -1,41 +1,47 @@
-- name: Debug - {{ templatePath }}
-  debug:
-    msg: "State for {{ templatePath }} : {{ state }}"
-  tags: always
+- name: apply k8s manifest
+  block:
+  - name: Debug - {{ templatePath }}
+    debug:
+      msg: "State for {{ templatePath }} : {{ state }}"
+    tags: always
 
-- name: Debug - {{ templatePath }}
-  debug:
-    msg: "{{ lookup('template', '{{ templatePath }}') }}"
-  when: debug == "true"
-  tags: always
+  - name: Debug - {{ templatePath }}
+    debug:
+      msg: "{{ lookup('template', '{{ templatePath }}') }}"
+    when: debug == "true"
+    tags: always
 
-- name: Template a file to /tmp
-  template:
-    src: "{{ templatePath }}"
-    dest: "{{ dumpDir }}/{{ templatePath.replace('/','_') }}"
-  when: dumpDir != ""
+  - name: Template a file to /tmp
+    template:
+      src: "{{ templatePath }}"
+      dest: "{{ dumpDir }}/{{ templatePath.replace('/','_') }}"
+    when: dumpDir != ""
 
-# Set default value of "no" for K8S wait moduel,when wait_to_complete is not defined
-# https://docs.ansible.com/ansible/latest/collections/community/kubernetes/k8s_module.html#parameter-wait
-- name: Set wait flag
-  set_fact:
-    waitToComplete: no
-  when: waitToComplete is not defined
-  tags: always
+  # Set default value of "no" for K8S wait moduel,when wait_to_complete is not defined
+  # https://docs.ansible.com/ansible/latest/collections/community/kubernetes/k8s_module.html#parameter-wait
+  - name: Set wait flag
+    set_fact:
+      waitToComplete: no
+    when: waitToComplete is not defined
+    tags: always
 
-# Set default value of "no" for compare_resource , when compare_resource is not defined
-# https://docs.ansible.com/ansible/latest/collections/community/kubernetes/k8s_module.html#parameter-apply
-- name: Set apply flag
-  set_fact:
-    compareResource: no
-  when: compareResource is not defined
-  tags: always
+  # Set default value of "no" for compare_resource , when compare_resource is not defined
+  # https://docs.ansible.com/ansible/latest/collections/community/kubernetes/k8s_module.html#parameter-apply
+  - name: Set apply flag
+    set_fact:
+      compareResource: no
+    when: compareResource is not defined
+    tags: always
 
-- name: Create - {{ templatePath }}
-  k8s:
-    state: "{{state}}"
-    definition: "{{ lookup('template', '{{ templatePath }}') }}"
-    wait: "{{waitToComplete|bool}}"
-    apply: "{{compareResource|bool}}"
-  when: dryRun == "false"
-  tags: always
+  - name: Create - {{ templatePath }}
+    k8s:
+      state: "{{state}}"
+      definition: "{{ lookup('template', '{{ templatePath }}') }}"
+      wait: "{{waitToComplete|bool}}"
+      apply: "{{compareResource|bool}}"
+    when: dryRun == "false"
+    tags: always
+
+  rescue:
+  - fail:
+      msg: 'cnvrg operator error! in: {{ templatePath }}'

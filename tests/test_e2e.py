@@ -12,16 +12,15 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
+  networking:
+    ingressType: "k8singress"  
   tenancy:
     enabled: "true"
   cnvrgApp:
     image: "cnvrg/core:3.1.3"
     intercom: "false"
   cnvrgRouter:
-    enabled: "true"
-  pgBackup:
     enabled: "true"
   monitoring:
     enabled: "true"
@@ -43,7 +42,8 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+  networking:
+    ingressType: "k8singress"  
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -88,15 +88,19 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "istio"
+  otags: "istio"
   clusterDomain: "__CLUSTER_DOMAIN__"
+  networking:
+    ingressType: "istio"
+    istio:
+      enabled: "true"
+      externalIp: "1.1.1.1;2.2.2.2;3.3.3.3"
+      ingressSvcAnnotations: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp; service.beta.kubernetes.io/aws-load-balancer-internal: true"
+
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
-  istio:
-    enabled: "true"
-    externalIp: "1.1.1.1;2.2.2.2;3.3.3.3"
-    ingressSvcAnnotations: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp; service.beta.kubernetes.io/aws-load-balancer-internal: true"
+
   mpi:
     enabled: "false"
   conf:
@@ -130,8 +134,10 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+
   clusterDomain: "__CLUSTER_DOMAIN__"
+  networking:
+    ingressType: "k8singress"
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
@@ -202,6 +208,7 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
 
     @classmethod
     def tearDownClass(cls):
+        return
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsNoTaintsSetTest")
@@ -318,409 +325,409 @@ class CnvrgTaintsNoTaintsSetTest(unittest.TestCase, CommonBase):
         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
 
 
-class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
-
-    @classmethod
-    def setUpClass(cls):
-        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesFalseTest")
-        cls._started_at = time.time()
-        cls.get_nip_nip_url()
-        cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
-        cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        if cls.wait_for_cnvrg_spec_ready() is False:
-            assert False, 'CnvrgApp Spec was not ready in 30 min!'
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls.delete_cnvrg_spec()
-        cls.undeploy()
-        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesFalseTest")
-
-    def test_app(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_pg(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_es(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_elastalert(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_kibana(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=kibana -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_hyper(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=hyper -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_prom_operator(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_minio(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_mpi_operator(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=mpi-operator -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_redis(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_grafana(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_kube_state_metrics(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_cnvrg_routing(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=routing-service -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_custom_nginx_deploy(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=test-nginx -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_recommender(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_admission_controller(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_updater(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-
-class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
-
-    @classmethod
-    def setUpClass(cls):
-        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueTest")
-        cls._started_at = time.time()
-        cls.get_nip_nip_url()
-        cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
-        cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
-        cls.create_cnvrg_spec(CNVRG_SPEC_WITH_TOLERATION.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        if cls.wait_for_cnvrg_spec_ready() is False:
-            assert False, 'CnvrgApp Spec was not ready in 30 min!'
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
-        cls.delete_cnvrg_spec()
-        cls.undeploy()
-        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueTest")
-
-    def test_app(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_pg(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_es(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_elastalert(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_kibana(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=kibana -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_hyper(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=hyper -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_prom_operator(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_minio(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_mpi_operator(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=mpi-operator -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_redis(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_grafana(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_kube_state_metrics(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_cnvrg_routing(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=routing-service -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_recommender(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_admission_controller(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_updater(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_custom_nginx_deploy(self):
-        v1 = client.CoreV1Api()
-        pod = v1.list_namespaced_pod("cnvrg", label_selector="app=test-nginx")
-        self.assertEqual(1, len(pod.items))
-        self.assertIsNotNone(pod.items[0].status.conditions[0].message)
-        self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
-
-    def test_updater_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-updater  --timeout=120s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_recommender_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-recommender  --timeout=120s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_admission_ready(self):
-        cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-admission-controller --timeout=120s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_deployments_ready(self):
-        for i in range(60):
-            cmd = "kubectl -n cnvrg get vpa |  grep -v NAME | wc -l"
-            res = self.exec_cmd(cmd)
-            time.sleep(2)
-            if res[1] > '4':
-                break
-        self.assertTrue(res[1] > '4')
-
-
-class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
-
-    @classmethod
-    def setUpClass(cls):
-        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
-        cls._started_at = time.time()
-        cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
-        cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
-        cls.create_cnvrg_spec(
-            CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
-        if cls.wait_for_cnvrg_spec_ready() is False:
-            assert False, 'CnvrgApp Spec was not ready in 30 min!'
-        if cls.waif_for_istio_cr_ready() is False:
-            assert False, 'Istio CR was not ready in 30 min!'
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
-        cls.delete_cnvrg_spec()
-        cls.undeploy()
-        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
-
-    def test_istiod_deployment(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=istiod -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_istio_ingress_deployment(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_istio_ingress_service_annotations1(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-        cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -r '.metadata.annotations.\"service.beta.kubernetes.io/aws-load-balancer-backend-protocol\"'"
-        res = self.exec_cmd(cmd)
-        self.assertEqual("tcp", res[1])
-
-    def test_istio_ingress_service_annotations2(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-        cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -r '.metadata.annotations.\"service.beta.kubernetes.io/aws-load-balancer-internal\"'"
-        res = self.exec_cmd(cmd)
-        self.assertEqual("true", res[1])
-
-    def test_istio_ingress_service_external_ips(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-        cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -rc .spec.externalIPs"
-        res = self.exec_cmd(cmd)
-        self.assertEqual('["1.1.1.1","2.2.2.2","3.3.3.3"]', res[1])
-
-
-class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonBase):
-
-    @classmethod
-    def setUpClass(cls):
-        logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
-        cls._started_at = time.time()
-        res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
-        node_name = res[1]
-        cls.deploy()
-        cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
-        spec = CNVRG_SPEC_WITH_TOLERATION_HOSTPATH.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url())
-        spec = spec.replace("__NODE_NAME__", node_name)
-        cls.create_cnvrg_spec(spec)
-        if cls.wait_for_cnvrg_spec_ready() is False:
-            assert False, 'CnvrgApp Spec was not ready in 30 min!'
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._exec_cmd("kubectl label node cnvrg-taint- --all")
-        cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
-        cls.delete_cnvrg_spec()
-        cls.undeploy()
-        cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
-
-    def test_pg_deployment(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_app(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_es(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_elastalert(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_grafana(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_kube_state_metrics(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_hostpath_provisioner(self):
-        cmd = "kubectl wait --for=condition=ready pod -l k8s-app=hostpath-provisioner -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_minio(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_prom_instance(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_prom_operator(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_redis(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_sidekiq(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_sidekiq_searchkick(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq-searchkick -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_recommender(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_admission_controller(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
-
-    def test_vpa_updater(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
-        res = self.exec_cmd(cmd)
-        self.assertEqual(0, res[0])
+# class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
+#
+#     @classmethod
+#     def setUpClass(cls):
+#         logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesFalseTest")
+#         cls._started_at = time.time()
+#         cls.get_nip_nip_url()
+#         cls.deploy()
+#         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+#         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
+#         cls.create_cnvrg_spec(CNVRG_SPEC.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
+#         if cls.wait_for_cnvrg_spec_ready() is False:
+#             assert False, 'CnvrgApp Spec was not ready in 30 min!'
+#
+#     @classmethod
+#     def tearDownClass(cls):
+#         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+#         cls.delete_cnvrg_spec()
+#         cls.undeploy()
+#         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesFalseTest")
+#
+#     def test_app(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_pg(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_es(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_elastalert(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_kibana(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=kibana -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_hyper(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=hyper -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_prom_operator(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_minio(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_mpi_operator(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=mpi-operator -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_redis(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_grafana(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_kube_state_metrics(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_cnvrg_routing(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=routing-service -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_custom_nginx_deploy(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=test-nginx -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_recommender(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_admission_controller(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_updater(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#
+# class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
+#
+#     @classmethod
+#     def setUpClass(cls):
+#         logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueTest")
+#         cls._started_at = time.time()
+#         cls.get_nip_nip_url()
+#         cls.deploy()
+#         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+#         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+#         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
+#         cls.create_cnvrg_spec(CNVRG_SPEC_WITH_TOLERATION.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
+#         if cls.wait_for_cnvrg_spec_ready() is False:
+#             assert False, 'CnvrgApp Spec was not ready in 30 min!'
+#
+#     @classmethod
+#     def tearDownClass(cls):
+#         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+#         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+#         cls.delete_cnvrg_spec()
+#         cls.undeploy()
+#         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueTest")
+#
+#     def test_app(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_pg(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_es(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_elastalert(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_kibana(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=kibana -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_hyper(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=hyper -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_prom_operator(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_minio(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_mpi_operator(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=mpi-operator -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_redis(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_grafana(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_kube_state_metrics(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_cnvrg_routing(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=routing-service -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_recommender(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_admission_controller(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_updater(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_custom_nginx_deploy(self):
+#         v1 = client.CoreV1Api()
+#         pod = v1.list_namespaced_pod("cnvrg", label_selector="app=test-nginx")
+#         self.assertEqual(1, len(pod.items))
+#         self.assertIsNotNone(pod.items[0].status.conditions[0].message)
+#         self.assertIn("nodes are available", pod.items[0].status.conditions[0].message)
+#
+#     def test_updater_ready(self):
+#         cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-updater  --timeout=120s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_recommender_ready(self):
+#         cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-recommender  --timeout=120s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_admission_ready(self):
+#         cmd = "kubectl -n cnvrg wait --for=condition=ready pod -l app=vpa-admission-controller --timeout=120s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_deployments_ready(self):
+#         for i in range(60):
+#             cmd = "kubectl -n cnvrg get vpa |  grep -v NAME | wc -l"
+#             res = self.exec_cmd(cmd)
+#             time.sleep(2)
+#             if res[1] > '4':
+#                 break
+#         self.assertTrue(res[1] > '4')
+#
+#
+# class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, CommonBase):
+#
+#     @classmethod
+#     def setUpClass(cls):
+#         logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
+#         cls._started_at = time.time()
+#         cls.deploy()
+#         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+#         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+#         cls._exec_cmd("kubectl create deployment --image=nginx -ncnvrg test-nginx")
+#         cls.create_cnvrg_spec(
+#             CNVRG_SPEC_WITH_TOLERATION_ISTIO_ONLY.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url()))
+#         if cls.wait_for_cnvrg_spec_ready() is False:
+#             assert False, 'CnvrgApp Spec was not ready in 30 min!'
+#         if cls.waif_for_istio_cr_ready() is False:
+#             assert False, 'Istio CR was not ready in 30 min!'
+#
+#     @classmethod
+#     def tearDownClass(cls):
+#         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+#         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+#         cls.delete_cnvrg_spec()
+#         cls.undeploy()
+#         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
+#
+#     def test_istiod_deployment(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=istiod -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_istio_ingress_deployment(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_istio_ingress_service_annotations1(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#         cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -r '.metadata.annotations.\"service.beta.kubernetes.io/aws-load-balancer-backend-protocol\"'"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual("tcp", res[1])
+#
+#     def test_istio_ingress_service_annotations2(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#         cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -r '.metadata.annotations.\"service.beta.kubernetes.io/aws-load-balancer-internal\"'"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual("true", res[1])
+#
+#     def test_istio_ingress_service_external_ips(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=istio-ingressgateway -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#         cmd = "kubectl get svc istio-ingressgateway -ncnvrg  -ojson | jq -rc .spec.externalIPs"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual('["1.1.1.1","2.2.2.2","3.3.3.3"]', res[1])
+#
+#
+# class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonBase):
+#
+#     @classmethod
+#     def setUpClass(cls):
+#         logging.info("starting -> CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
+#         cls._started_at = time.time()
+#         res = cls._exec_cmd("kubectl get nodes -ojson | jq -r .items[0].metadata.name")
+#         node_name = res[1]
+#         cls.deploy()
+#         cls._exec_cmd("kubectl label nodes cnvrg-taint=true --all --overwrite")
+#         cls._exec_cmd("kubectl taint nodes cnvrg-taint=true:NoSchedule --all")
+#         spec = CNVRG_SPEC_WITH_TOLERATION_HOSTPATH.replace("__CLUSTER_DOMAIN__", cls.get_nip_nip_url())
+#         spec = spec.replace("__NODE_NAME__", node_name)
+#         cls.create_cnvrg_spec(spec)
+#         if cls.wait_for_cnvrg_spec_ready() is False:
+#             assert False, 'CnvrgApp Spec was not ready in 30 min!'
+#
+#     @classmethod
+#     def tearDownClass(cls):
+#         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+#         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+#         cls.delete_cnvrg_spec()
+#         cls.undeploy()
+#         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest")
+#
+#     def test_pg_deployment(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=postgres -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_app(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=app -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_es(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=elasticsearch -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_elastalert(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=elastalert -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_grafana(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=grafana -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_kube_state_metrics(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kube-state-metrics -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_hostpath_provisioner(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l k8s-app=hostpath-provisioner -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_minio(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=minio -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_prom_instance(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_prom_operator(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_redis(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=redis -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_sidekiq(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_sidekiq_searchkick(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq-searchkick -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_recommender(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-recommender -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_admission_controller(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-admission-controller -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])
+#
+#     def test_vpa_updater(self):
+#         cmd = "kubectl wait --for=condition=ready pod -l app=vpa-updater -ncnvrg --timeout=300s"
+#         res = self.exec_cmd(cmd)
+#         self.assertEqual(0, res[0])

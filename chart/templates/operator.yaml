@@ -33,8 +33,9 @@ spec:
             - --enable-leader-election
             - --leader-election-id=cnvrg-operator
             - --leader-election-namespace={{ template "spec.cnvrgNs" . }}
-            - --max-concurrent-reconciles
-            - "4"
+            - --max-concurrent-reconciles=8
+            - --zap-encoder=console
+            - --zap-log-level=info
           env:
             - name: ANSIBLE_JINJA2_NATIVE
               value: "true"

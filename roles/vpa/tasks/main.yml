@@ -20,7 +20,6 @@
       templatePath: "templates/certificate.yml"
       state: "present"
   when:
-  - roleState == "present"
   - dryRun == "false"
   - vpa_tls_certs.resources | length == 0
 
@@ -48,5 +47,3 @@
     state: "present"
   with_items:
       - templates/vpa-deployments.yml
-  when:
-  - roleState == "present"

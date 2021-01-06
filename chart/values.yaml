@@ -179,22 +179,6 @@ pgBackup:
   storageClass: use-default
   cronTime: "1 1 * * *"
 
-hyper:
-  enabled: "true"
-  image: "cnvrg/hyper-server:latest"
-  port: 5050
-  nodePort: 30050
-  svcName: "hyper"
-  cpuRequest: 100m
-  memoryRequest: 200Mi
-  cpuLimit: 2
-  memoryLimit: 4Gi
-  replicas: 1
-  token: "token"
-  enableReadinessProbe: "true"
-  readinessPeriodSeconds: 100
-  readinessTimeoutSeconds: 60
-
 minio:
   enabled: "true"
   replicas: 1
@@ -357,7 +341,21 @@ cnvrgApp:
   seeder:
     image: "docker.io/cnvrg/cnvrg-boot:v0.24"
     seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
-
+  hyper:
+    enabled: "true"
+    image: "cnvrg/hyper-server:latest"
+    port: 5050
+    nodePort: 30050
+    svcName: "hyper"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    cpuLimit: 2
+    memoryLimit: 4Gi
+    replicas: 1
+    token: "token"
+    enableReadinessProbe: "true"
+    readinessPeriodSeconds: 100
+    readinessTimeoutSeconds: 60
   conf:
     enabled: "true"
     gcpStorageSecret: "gcp-storage-secret"

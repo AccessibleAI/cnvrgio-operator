@@ -13,4 +13,7 @@
     state: "present"
     compare_resource: yes
   with_fileglob:
-    - templates/install/*.yml
+    - templates/install/app/*.yml
+    - templates/install/sidekiqs/*.yml
+    - templates/install/conf/*.yml
+    - templates/install/hyper/*.yml
