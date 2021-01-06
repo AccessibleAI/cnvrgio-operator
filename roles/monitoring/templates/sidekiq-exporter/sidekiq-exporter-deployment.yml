@@ -52,6 +52,6 @@ spec:
             successThreshold: 1
             timeoutSeconds: 5
           envFrom:
-            - secretRef:
-                name: env-secrets
+            - configMapRef:
+                name: env-config
       serviceAccountName: sidekiq-prometheus-exporter
