@@ -21,16 +21,16 @@
       loop_control:
         loop_var: role
       loop:
-        - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
         - { name: 'storage', enabled: "{{storage.enabled}}" }
+        - { name: 'networking', enabled: "{{networking.enabled}}" }
         - { name: 'pg', enabled: "{{pg.enabled}}" }
+        - { name: 'minio', enabled: "{{minio.enabled}}" }
         - { name: 'redis', enabled: "{{redis.enabled}}" }
         - { name: 'logging', enabled: "{{logging.enabled}}" }
-        - { name: 'minio', enabled: "{{minio.enabled}}" }
-        - { name: 'networking', enabled: "{{networking.enabled}}" }
+        - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
+        - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
         - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
         - { name: 'mpi', enabled: "{{mpi.enabled}}" }
-        - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
         - { name: 'vpa', enabled: "{{vpa.enabled}}" }
 
     - name: Set operatorRoles if otags are `all` or not defined

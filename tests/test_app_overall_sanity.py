@@ -13,33 +13,8 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
+  otags: "networking"
   clusterDomain: "sample-domain"
-  istio:
-    enabled: "true"
-  mpi:
-    enabled: "false"
-  conf:
-    enabled: "false"
-  conf:
-    enabled: "false"
-  cnvrgApp:
-    enabled: "false"
-  pgBackup:
-    enabled: "false"
-  redis:
-    enabled: "false"
-  es:
-    enabled: "false"
-  minio:
-    enabled: "false"
-  monitoring:
-    enabled: "false"
-  kibana:
-    enabled: "false"
-  fluentd:
-    enabled: "false"
-  nvidiadp:
-    enabled: "false"
 """
 CNVRG_SPEC_AKS_ISTIO_DEFAULT = """
 apiVersion: mlops.cnvrg.io/v1
@@ -48,20 +23,10 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
+  otags: "all"
   clusterDomain: "__CLUSTER_DOMAIN__"
   cnvrgApp:
-    enabled: "true"
     image: "cnvrg/core:3.1.3"
-  pg:
-    enabled: "true"
-  conf:
-    enabled: "true"
-  redis:
-    enabled: "true"
-  es:
-    enabled: "true"
-  minio:
-    enabled: "true"
 """
 
 

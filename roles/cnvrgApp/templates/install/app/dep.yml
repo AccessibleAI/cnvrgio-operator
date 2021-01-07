@@ -64,15 +64,15 @@ spec:
           - containerPort: {{cnvrgApp.port}}
         {% if (cnvrgApp.enableReadinessProbe | default ('true')) == "true" %}
         readinessProbe:
-          failureThreshold: 3
           httpGet:
-            path: "/users/sign_in"
+            path: "/users/sign_up"
             port: {{cnvrgApp.port}}
             scheme: HTTP
-          initialDelaySeconds: 30
           successThreshold: 1
-          periodSeconds: {{ cnvrgApp.readinessPeriodSeconds | default('100') }}
-          timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds | default('60') }}
+          failureThreshold: {{ cnvrgApp.failureThreshold | default('4') }}
+          initialDelaySeconds: {{ cnvrgApp.initialDelaySeconds | default('10') }}
+          periodSeconds: {{ cnvrgApp.readinessPeriodSeconds | default('25') }}
+          timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds | default('20') }}
         {% endif %}
         {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:
