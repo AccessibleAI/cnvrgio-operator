@@ -47,6 +47,9 @@ cnvrgApp:
   sidekiqSearchkickReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiqReplicas }}"
   sidekiqReplicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiqReplicas }}"
   {{- end }}
+  sidekiqSystemCpu: "{{.Values.cnvrgApp.sidekiqSystemCpu}}"
+  sidekiqSystemMemory: "{{.Values.cnvrgApp.sidekiqSystemMemory}}"
+  sidekiqSystemReplicas: "{{.Values.cnvrgApp.sidekiqSystemReplicas}}"
   seeder:
     image: "{{ .Values.cnvrgApp.seeder.image }}"
     seedCmd: "{{ .Values.cnvrgApp.seeder.seedCmd }}"

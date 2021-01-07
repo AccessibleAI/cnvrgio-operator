@@ -33,12 +33,20 @@
     when: compareResource is not defined
     tags: always
 
+  # https://docs.ansible.com/ansible/latest/collections/community/kubernetes/k8s_module.html#parameter-wait_timeout
+  - name: Set timeout flag
+    set_fact:
+      timeout: 120
+    when: timeout is not defined
+    tags: always
+
   - name: Create - {{ templatePath }}
     k8s:
       state: "{{state}}"
       definition: "{{ lookup('template', '{{ templatePath }}') }}"
       wait: "{{waitToComplete|bool}}"
       apply: "{{compareResource|bool}}"
+      wait_timeout: "{{ timeout }}"
     when: dryRun == "false"
     tags: always
 

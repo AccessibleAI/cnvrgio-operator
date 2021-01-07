@@ -331,6 +331,9 @@ cnvrgApp:
   sidekiqSearchkickCpu: 1
   sidekiqSearchkickMemory: 2Gi
   sidekiqSearchkickReplicas: 1
+  sidekiqSystemCpu: 500m
+  sidekiqSystemMemory: 500Mi
+  sidekiqSystemReplicas: 1
   passengerMaxPoolSize: 20
   enableReadinessProbe: "true"
   initialDelaySeconds: 10
