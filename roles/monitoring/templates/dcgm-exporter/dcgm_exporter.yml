@@ -1,4 +1,4 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -22,16 +22,16 @@ spec:
       name: "dcgm-exporter"
     spec:
       containers:
-      - image: "{{ monitoring.dcgm_exporter.image }}"
+      - image: "{{ monitoring.dcgmExporter.image }}"
         env:
         - name: "DCGM_EXPORTER_LISTEN"
-          value: ":{{ monitoring.dcgm_exporter.port }}"
+          value: ":{{ monitoring.dcgmExporter.port }}"
         - name: "DCGM_EXPORTER_KUBERNETES"
           value: "true"
         name: "dcgm-exporter"
         ports:
         - name: "metrics"
-          containerPort: {{ monitoring.dcgm_exporter.port }}
+          containerPort: {{ monitoring.dcgmExporter.port }}
         securityContext:
           runAsNonRoot: false
           runAsUser: 0
@@ -55,7 +55,7 @@ spec:
           operator: "Equal"
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
-      {% if nvidiadp.node_selector.enabled == "true" %}
+      {% if nvidiadp.nodeSelector.enabled == "true" %}
       nodeSelector:
-        {{ nvidiadp.node_selector.key }}: "{{ nvidiadp.node_selector.value }}"
+        {{ nvidiadp.nodeSelector.key }}: "{{ nvidiadp.nodeSelector.value }}"
       {% endif %}

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sidekiq
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: sidekiq
+spec:
+  replicas: {{ cnvrgApp.sidekiqReplicas }}
+  selector:
+    matchLabels:
+      app: sidekiq
+  template:
+    metadata:
+      labels:
+        app: sidekiq
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      {% if cnvrgApp.edition == "enterprise" %}
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
+      {% endif %}
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      terminationGracePeriodSeconds: {{ cnvrgApp.sidekiqPrestopHook.killTimeout|int }}
+      containers:
+      - name: sidekiq
+        image: "{{cnvrgApp.image}}"
+        command:
+        - "/bin/bash"
+        - "-lc"
+        args:
+        - "touch /etc/service/nginx/down && /sbin/my_init"
+        env:
+        - name: "CNVRG_RUN_MODE"
+          value: "sidekiq"
+        imagePullPolicy: Always
+        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+        volumeMounts:
+        - name: "{{ conf.gcpStorageSecret }}"
+          mountPath: "{{ conf.gcpKeyfileMountPath }}"
+          readOnly: true
+        {% endif %}
+        envFrom:
+        - configMapRef:
+            name: env-config
+        - secretRef:
+            name: env-secrets
+        {% if cnvrgApp.resourcesRequestEnabled == "true" %}
+        resources:
+          requests:
+            cpu: "{{ cnvrgApp.sidekiqCpu }}"
+            memory: "{{ cnvrgApp.sidekiqMemory }}"
+        {% endif %}
+        {% if cnvrgApp.sidekiqPrestopHook.enabled == "true" %}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.sidekiqPrestopHook.killTimeout }}"]
+        {% endif %}
+      {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+      volumes:
+      - name: "{{ conf.gcpStorageSecret }}"
+        secret:
+          secretName: "{{ conf.gcpStorageSecret }}"
+      {% endif %}
+      initContainers:
+      - name: seeder
+        image: "{{cnvrgApp.seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode worker"]
+        env:
+        - name: "CNVRG_NS"
+          value: "{{ ansible_operator_meta.namespace }}"

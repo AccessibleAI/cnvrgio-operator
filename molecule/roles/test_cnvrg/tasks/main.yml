@@ -1,5 +1,0 @@
----
-- import_tasks: assert_pvc.yaml
-- import_tasks: assert_pods.yaml
-- import_tasks: assert_pg_backup.yaml
-- import_tasks: assert_cnvrgapp.yaml

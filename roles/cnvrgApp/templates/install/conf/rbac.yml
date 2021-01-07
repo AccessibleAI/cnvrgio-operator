@@ -1,0 +1,62 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: "{{cnvrgApp.conf.rbac.role}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: "{{ cnvrgApp.conf.rbac.roleBindingName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: "{{cnvrgApp.conf.rbac.role}}"
+subjects:
+- kind: ServiceAccount
+  name: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: "{{cnvrgApp.conf.rbac.role}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - persistentvolumes
+    verbs:
+      - "list"
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumes
+    verbs:
+      - "*"
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{cnvrgApp.conf.rbac.role}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+subjects:
+  - kind: ServiceAccount
+    name:  "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+    namespace: "{{ ansible_operator_meta.namespace }}"
+roleRef:
+  kind: ClusterRole
+  name: "{{cnvrgApp.conf.rbac.role}}"
+  apiGroup: rbac.authorization.k8s.io

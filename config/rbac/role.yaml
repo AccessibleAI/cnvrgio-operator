@@ -88,6 +88,7 @@ rules:
       - get
       - create
       - patch
+      - watch
   - apiGroups:
       - apps
     resourceNames:

@@ -1,0 +1,21 @@
+- name: Deploy NFS Provisioner
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/hostpath/*
+  when: storage.hostpath.enabled == "true"
+
+- name: Deploy NFS Provisioner
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/nfs/*
+  when: storage.nfs.enabled == "true"

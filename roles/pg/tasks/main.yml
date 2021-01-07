@@ -4,9 +4,7 @@
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
-  with_items:
-    - templates/pg-pvc.yml
-    - templates/pg-svc.yml
-    - templates/pg-dep.yml
+    templatePath: "{{ item }}"
+    state: "present"
+  with_fileglob:
+    - templates/*

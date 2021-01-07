@@ -7,7 +7,7 @@ data:
   backup.sh: |
     set -x
     echo "script started"
-    storage_size="{{ pg_backup.storage_size.split('Gi')[0] }}"
+    storageSize="{{ pg_backup.storageSize.split('Gi')[0] }}"
     backuppath={{ pg_backup.path }}
     filename=$(date +%F)_cnvrg_pg_dump.sql
 

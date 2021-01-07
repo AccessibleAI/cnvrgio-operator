@@ -12,17 +12,16 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
+  networking:
+    ingressType: "k8singress"  
   tenancy:
     enabled: "true"
   cnvrgApp:
     image: "cnvrg/core:3.1.3"
     intercom: "false"
-  cnvrgRouter:
-    enabled: "true"
-  pgBackup:
-    enabled: "true"
+    cnvrgRouter:
+      enabled: "true"
   monitoring:
     enabled: "true"
     prometheus:
@@ -31,8 +30,6 @@ spec:
       cpuRequest: 100m
       memoryRequest: 100Mi
   vpa:
-    enabled: "true"
-  hyper:
     enabled: "true"
 """
 
@@ -43,7 +40,8 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
+  networking:
+    ingressType: "k8singress"  
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
@@ -51,33 +49,22 @@ spec:
   cnvrgApp:
     enabled: "true"
     image: "cnvrg/core:3.1.2"
-    customAgentTag: "false"
     intercom: "false"
-  cnvrgRouter:
-    enabled: "true"
+    cnvrgRouter: 
+      enabled: "true"
   redis:
     enabled: "true"
   pg:
     enabled: "true"
-  es:
-    enabled: "true"
   minio:
     enabled: "true"
   monitoring:
-    enabled: "true"
-  istio:
-    enabled: "true"
-  kibana:
-    enabled: "true"
-  fluentd:
     enabled: "true"
   nvidiadp:
     enabled: "false"
   mpi:
     enabled: "true"
   vpa:
-    enabled: "true"
-  hyper:
     enabled: "true"
 """
 
@@ -88,39 +75,15 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "istio"
+  otags: "networking"
   clusterDomain: "__CLUSTER_DOMAIN__"
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
-  istio:
-    enabled: "true"
-    externalIp: "1.1.1.1;2.2.2.2;3.3.3.3"
-    ingressSvcAnnotations: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp; service.beta.kubernetes.io/aws-load-balancer-internal: true"
-  mpi:
-    enabled: "false"
-  conf:
-    enabled: "false"
-  cnvrgApp:
-    enabled: "false"
-  pgBackup:
-    enabled: "false"
-  redis:
-    enabled: "false"
-  es:
-    enabled: "false"
-  minio:
-    enabled: "false"
-  monitoring:
-    enabled: "false"
-  kibana:
-    enabled: "false"
-  fluentd:
-    enabled: "false"
-  nvidiadp:
-    enabled: "false"
-  hyper:
-    enabled: "false"
+  networking:
+    istio:
+      externalIp: "1.1.1.1;2.2.2.2;3.3.3.3"
+      ingressSvcAnnotations: "service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp; service.beta.kubernetes.io/aws-load-balancer-internal: true"
 """
 
 CNVRG_SPEC_WITH_TOLERATION_HOSTPATH = """
@@ -130,61 +93,48 @@ metadata:
   name: cnvrg-app
   namespace: cnvrg
 spec:
-  ingressType: "k8singress"
   clusterDomain: "__CLUSTER_DOMAIN__"
+  cnvrgApp:
+    image: "cnvrg/core:core-3.4.1-10-300"
+  networking:
+    ingressType: "k8singress"
   tenancy:
     enabled: "true"
     dedicatedNodes: "true"
-
   minio:
     enabled: "true"
     storageSize: "1Gi"
     cpuRequest: 100m
     memoryRequest: 100Mi
-
   monitoring:
-    enabled: "true"
     prometheus:
       enabled: "true"
       storageSize: "1Gi"
       cpuRequest: 100m
       memoryRequest: 100Mi
-
-  es:
-    enabled: "true"
-    storageSize: "1Gi"
-    cpuRequest: 100m
-    memoryRequest: 100Mi
-
+  logging:
+    es:
+      storageSize: "1Gi"
+      cpuRequest: 100m
+      memoryRequest: 100Mi
+    kibana:
+      enabled: "false"
+    fluentd:
+      enabled: "false"
   pg:
-    enabled: "true"
     storageSize: "1Gi"
     cpuRequest: 100m
     memoryRequest: 100Mi
-
-  hostpath:
+  storage:
     enabled: "true"
-    nodeName: "__NODE_NAME__"
-  conf:
-    enabled: "true"
-  cnvrgApp:
-    enabled: "true"
-    image: "cnvrg/core:core-3.4.1-10-300"
-    customAgentTag: "false"
-    intercom: "false"
+    hostpath:
+      enabled: "true"
+      nodeName: "__NODE_NAME__"
   mpi:
-    enabled: "false"
-  pgBackup:
-    enabled: "true"
-  kibana:
-    enabled: "false"
-  fluentd:
     enabled: "false"
   nvidiadp:
     enabled: "false"
   vpa:
-    enabled: "true"
-  hyper:
     enabled: "true"
 """
 

@@ -3,10 +3,6 @@
 
 Your installation of cnvrg.io is now in progress.
 Wait until all the pods in the cnvrg namespace will be ready (kubectl get pods -n cnvrg)
-{{- if eq .Values.specProfile "microk8s" }}
-and access to the app via: http://{{.Values.clusterDomain}}{{- if eq .Values.ingressType "nodeport"}}:30080{{- end}}
-{{- else }}
-and access to the app via: http://{{- if ne .Values.ingressType "nodeport"}}app.{{- end}}{{.Values.clusterDomain}}{{- if eq .Values.ingressType "nodeport"}}:30080{{- end}}
-{{- end }}
+and access to the app via: http://{{- if ne .Values.networking.ingressType "nodeport"}}app.{{- end}}{{.Values.clusterDomain}}{{- if eq .Values.networking.ingressType "nodeport"}}:30080{{- end}}
 Join our community at https://community.cnvrg.io
 Talk to our team via email at hi@cnvrg.io

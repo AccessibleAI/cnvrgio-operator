@@ -1,0 +1,125 @@
+---
+cnvrgApp:
+  replicas: 1
+  edition: "core"
+  enabled: "true"
+  image: ""
+  port: 80
+  cpu: 2
+  memory: 4Gi
+  svcName: "app"
+  fixpg: "true"
+  nodePort: 30080
+  sidekiqCpu: 1750m
+  sidekiqMemory: 3750Mi
+  sidekiqReplicas: 2
+  sidekiqSearchkickCpu: 750m
+  sidekiqSearchkickMemory: 750Mi
+  sidekiqSearchkickReplicas: 1
+  sidekiqSystemCpu: 500m
+  sidekiqSystemMemory: 500Mi
+  sidekiqSystemReplicas: 1
+  passengerMaxPoolSize: 20  # the calculation of max pool size based on this max_app_processes = (total_memory * 0.75) / 150 (memroy for each process in mb) = 20
+  enableReadinessProbe: "true"
+  initialDelaySeconds: 10
+  readinessPeriodSeconds: 25
+  readinessTimeoutSeconds: 20
+  failureThreshold: 4 # (readinessPeriodSeconds * failureThreshold) sec for make the app not healty
+  resourcesRequestEnabled: "true"
+
+  sidekiqPrestopHook:
+    enabled: "true"
+    killTimeout: 60
+
+  hyper:
+    enabled: "true"
+    image: "cnvrg/hyper-server:latest"
+    port: 5050
+    replicas: 1
+    nodePort: 30050
+    svcName: "hyper"
+    token: "token"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    cpuLimit: 2
+    memoryLimit: 4Gi
+    enableReadinessProbe: "true"
+    readinessPeriodSeconds: 100
+    readinessTimeoutSeconds: 60
+
+  seeder:
+    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+    seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
+
+  conf:
+    splitSidekiq: "true"
+    gcpStorageSecret: "gcp-storage-secret"
+    gcpKeyfileMountPath: "/tmp/gcp_keyfile"
+    gcpKeyfileName: "key.json"
+    jobsStorageClass: ""
+    cnvrgStorageUseIamRole: "false"
+    featureFlags: ""
+    sentryUrl: "https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32"
+    secretKeyBase: "0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5"
+    stsIv: "DeJ/CGz/Hkb/IbRe4t1xLg=="
+    stsKey: "05646d3cbf8baa5be7150b4283eda07d"
+    redisUrl: "{{'redis://'+redis.svcName}}"
+    passengerAppEnv: "app"
+    railsEnv: "app"
+    runJobsOnSelfCluster: "true"
+    defaultComputeConfig: "/opt/kube"
+    defaultComputeName: "default"
+    useStdout: "true"
+    extractTagsFromCmd: "false"
+    checkJobExpiration: "true"
+    ################## shared storage configs  ###########################
+    cnvrgStorageType: "minio" # minio | aws | gcp | aks
+    cnvrgStorageBucket: "cnvrg-storage"
+    cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
+    cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    cnvrgStorageEndpoint: "{{ (httpScheme + (minio.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+minio.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+    ################## minio  ###########################
+    minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"
+    ################## azure #########################
+    cnvrgStorageAzureAccessKey: ""
+    cnvrgStorageAzureAccountName: ""
+    cnvrgStorageAzureContainer: ""
+    ################## aws ###########################
+    cnvrgStorageRegion: "eastus"
+    ################## gcp ###########################
+    cnvrgStorageProject: ""
+    customAgentTag: "false"
+    intercom: "true"
+
+    registry:
+      name: cnvrg-registry
+      url: "docker.io"
+      user: ""
+      password: ""
+
+    rbac:
+      role: "cnvrg-role"
+      serviceAccountName: "cnvrg"
+      roleBindingName: "cnvrg-role-binding"
+
+    smtp:
+      server: ""
+      port: ""
+      username: ""
+      password: ""
+      domain: ""
+
+  cnvrgRouter:
+    enabled: "false"
+    image: "nginx"
+    svcName: "routing-service"
+    nodePort: 30081
+    port: 80
+
+
+cnvrgAppUpgrade:
+  state: "upgrade" # rollback | upgrade | inactive (should be set when upgrade/rollback is finished
+  cacheDsName: "app-image-chache"
+  cnvrgAppName: "cnvrg-app"
+  image: ""
+  cacheImage: "true"

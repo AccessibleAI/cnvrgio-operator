@@ -30,14 +30,14 @@ spec:
           effect: "NoSchedule"
       containers:
       - args:
-        - --web.listen-address=127.0.0.1:{{ monitoring.node_exporter.port }}
+        - --web.listen-address=127.0.0.1:{{ monitoring.nodeExporter.port }}
         - --path.procfs=/host/proc
         - --path.sysfs=/host/sys
         - --path.rootfs=/host/root
         - --no-collector.wifi
         - --no-collector.hwmon
         - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)
-        image: "{{ monitoring.node_exporter.image }}"
+        image: "{{ monitoring.nodeExporter.image }}"
         name: node-exporter
         resources:
           limits:
@@ -59,19 +59,19 @@ spec:
           readOnly: true
       - args:
         - --logtostderr
-        - --secure-listen-address=[$(IP)]:{{ monitoring.node_exporter.port }}
+        - --secure-listen-address=[$(IP)]:{{ monitoring.nodeExporter.port }}
         - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-        - --upstream=http://127.0.0.1:{{ monitoring.node_exporter.port }}/
+        - --upstream=http://127.0.0.1:{{ monitoring.nodeExporter.port }}/
         env:
         - name: IP
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        image: {{ monitoring.prometheus_operator.images.kube_rbac_proxy_image }}
+        image: {{ monitoring.prometheusOperator.images.kubeRbacProxyImage }}
         name: kube-rbac-proxy
         ports:
-        - containerPort: {{ monitoring.node_exporter.port }}
-          hostPort: {{ monitoring.node_exporter.port }}
+        - containerPort: {{ monitoring.nodeExporter.port }}
+          hostPort: {{ monitoring.nodeExporter.port }}
           name: https
         resources:
           limits:

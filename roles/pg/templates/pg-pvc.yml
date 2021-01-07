@@ -1,18 +1,17 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "{{pg.svc_name}}"
+  name: "{{pg.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: "{{pg.storage_size}}"
-{% if hostpath.enabled == "true" %}
-  storageClassName: {{ hostpath.storage_class_name }}
-{% elif nfs.enabled == "true" %}
-  storageClassName: "{{ nfs.storage_class_name }}"
-{% elif pg.storage_class != "use-default" %}
-  storageClassName: "{{ pg.storage_class }}"
-{% endif %}
+      storage: "{{pg.storageSize}}"
+  {% if pg.storageClass != "use-default" %}
+  storageClassName: "{{ pg.storageClass }}"
+  {% elif storage.ccpStorageClass != "" %}
+  storageClassName: "{{ storage.ccpStorageClass }}"
+  {% endif %}

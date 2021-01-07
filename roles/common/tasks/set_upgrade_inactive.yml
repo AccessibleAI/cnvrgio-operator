@@ -1,0 +1,28 @@
+- name: get status of CnvrgAppUpgrade
+  community.kubernetes.k8s_info:
+    api_version: v1
+    kind: CnvrgAppUpgrade
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ ansible_operator_meta.name }}"
+  register: cnvrgAppUpgradeSpec
+
+- fail:
+    msg: "cnvrgAppUpgradeSpec not found"
+  when: cnvrgAppUpgradeSpec.resources|length < 1
+
+- set_fact:
+    cnvrgAppUpgradeSpec: "{{ cnvrgAppUpgradeSpec.resources[0]}}"
+
+- name: set CnvrgAppUpgrade CR inactive
+  set_fact:
+    cnvrgAppUpgradeSpec: "{{ cnvrgAppUpgradeSpec|combine({'spec': {'cnvrgAppUpgrade': {'state':'inactive'}}}, recursive=True) }}"
+
+- name: update CnvrgAppUpgrade
+  k8s:
+    state: "present"
+    wait: "yes"
+    definition: "{{ {'apiVersion': 'mlops.cnvrg.io/v1',
+                     'kind':'CnvrgAppUpgrade',
+                     'metadata': {'name':ansible_operator_meta.name, 'namespace':ansible_operator_meta.namespace},
+                     'spec': cnvrgAppUpgradeSpec.spec,
+                     'status': cnvrgAppUpgradeSpec.status} }}"

@@ -1,4 +1,4 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +20,7 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {%  endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
@@ -29,7 +29,7 @@ spec:
       {% endif %}
       containers:
         - name: sidekiq-prometheus-exporter
-          image: {{ monitoring.sidekiq_exporter.image }}
+          image: {{ monitoring.sidekiqExporter.image }}
           imagePullPolicy: IfNotPresent
           ports:
             - name: metrics
@@ -52,6 +52,6 @@ spec:
             successThreshold: 1
             timeoutSeconds: 5
           envFrom:
-            - secretRef:
-                name: env-secrets
+            - configMapRef:
+                name: env-config
       serviceAccountName: sidekiq-prometheus-exporter

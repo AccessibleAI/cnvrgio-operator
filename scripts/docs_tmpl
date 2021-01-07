@@ -4,7 +4,7 @@
 ### Quick start
 
 #### Prerequisite
-1. Install helm3
+1. Install [helm3](https://helm.sh/docs/intro/install/#from-script)
 2. Add cnvrg helm repo
    ```bash
    helm repo add cnvrg https://charts.cnvrg.io
@@ -14,20 +14,20 @@
 
 #### Deploy with defaults (Istio, Minio)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s  --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s  --wait \
     --set clusterDomain=base.domain
 ```
 
 ### Upgrade with helm upgrade
 ```
-helm upgrade cnvrg cnvrg/cnvrg --reuse-values \
+helm upgrade cnvrg cnvrg/cnvrg -n cnvrg --reuse-values \
   --set cnvrgApp.image=cnvrg/app:master-1374-encode
 ```
 
 ### Uninstall cnvrg
 ```
 # Uninstall cnvrg.io control plan
-helm uninstall cnvrg
+helm uninstall cnvrg -n cnvrg
 ```
 
 ### Install without Helm (raw k8s manifests)
@@ -48,92 +48,84 @@ helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
 #### Deploy on EKS | AKS | GKE with  (Istio, Cloud Object Storage)
 ```bash
 # AWS - EKS
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
-        --set registry.user=cnvrg-license-username \
-        --set registry.password=cnvrg-license-password \
-        --set appSecrets.cnvrgStorageType=aws \
-        --set appSecrets.cnvrgStorageBucket=s3bucket-name \
-        --set appSecrets.cnvrgStorageAccessKey=ACCESSKEY \
-        --set appSecrets.cnvrgStorageSecretKey=SECRETKEY \
-        --set appSecrets.cnvrgStorageRegion=aws-region
+        --set cnvrgApp.conf.registry.user=cnvrg-license-username \
+        --set cnvrgApp.conf.registry.password=cnvrg-license-password \
+        --set cnvrgApp.conf.cnvrgStorageType=aws \
+        --set cnvrgApp.conf.cnvrgStorageBucket=s3bucket-name \
+        --set cnvrgApp.conf.cnvrgStorageAccessKey=ACCESSKEY \
+        --set cnvrgApp.conf.cnvrgStorageSecretKey=SECRETKEY \
+        --set cnvrgApp.conf.cnvrgStorageRegion=aws-region
 
 
 # Azure - AKS
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
+        --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
-        --set registry.user=cnvrg-license-username \
-        --set registry.password=cnvrg-license-password \
-        --set clusterDomain=base.domain \
-        --set appSecrets.cnvrgStorageType=azure \
-        --set appSecrets.cnvrgStorageAzureAccessKey=azure-storage-account-access-key \
-        --set appSecrets.cnvrgStorageAzureAccountName=azure-storage-account-name \
-        --set appSecrets.cnvrgStorageAzureContainer=azure-storage-container-name
+        --set cnvrgApp.conf.registry.user=cnvrg-license-username \
+        --set cnvrgApp.conf.registry.password=cnvrg-license-password \
+        --set cnvrgApp.conf.cnvrgStorageType=azure \
+        --set cnvrgApp.conf.cnvrgStorageAzureAccessKey=azure-storage-account-access-key \
+        --set cnvrgApp.conf.cnvrgStorageAzureAccountName=azure-storage-account-name \
+        --set cnvrgApp.conf.cnvrgStorageAzureContainer=azure-storage-container-name
 
 # GCP - GKE
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
+        --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
-        --set registry.user=cnvrg-license-username \
-        --set registry.password=cnvrg-license-password \
-        --set clusterDomain=base.domain \
-        --set appSecrets.cnvrgStorageType=gcp \
-        --set appSecrets.cnvrgStorageProject=gcp-storage-project
+        --set cnvrgApp.conf.registry.user=cnvrg-license-username \
+        --set cnvrgApp.conf.registry.password=cnvrg-license-password \
+        --set cnvrgApp.conf.cnvrgStorageType=gcp \
+        --set cnvrgApp.conf.cnvrgStorageProject=gcp-storage-project
 ```
 
 #### Deploy OnPrem  (Istio, Minio, HostPath, SMTP, micro storage profile)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=apps.1.2.3.4.nip.io \
-    --set storageProfile=micro \
-    --set hostpath.enabled="true" \
-    --set hostpath.nodeName="k8s-node-name" \
-    --set appConfigs.smtp.server="smtp-server" \
-    --set appConfigs.smtp.port="smtp-port" \
-    --set appConfigs.smtp.username="smtp-user" \
-    --set appConfigs.smtp.password="smtp-pass" \
-    --set appConfigs.smtp.domain="domain"
+    --set storage.enabled="true" \
+    --set storage.hostpath.enabled="true" \
+    --set storage.hostpath.nodeName="k8s-node-name" \
+    --set cnvrgApp.conf.smtp.server="smtp-server" \
+    --set cnvrgApp.conf.smtp.port="smtp-port" \
+    --set cnvrgApp.conf.smtp.username="smtp-user" \
+    --set cnvrgApp.conf.smtp.password="smtp-pass" \
+    --set cnvrgApp.conf.smtp.domain="domain"
 ```
 
 #### Deploy OnPrem  (NodePort, Minio, NFS)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
-    --set ingressType="nodeport" \
-    --set nfs.enabled="true" \
-    --set nfs.server="NFS.SERVER.IP" \
-    --set nfs.path="/shared/nfs/directory"
+    --set networking.ingressType="nodeport" \
+    --set storage.nfs.enabled="true" \
+    --set storage.nfs.server="storage.nfs.SERVER.IP" \
+    --set storage.nfs.path="/shared/nfs/directory"
 ```
 
 #### Deploy OnPrem  (NodePort, Minio, Hostpath)
 ```bash
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
-    --set ingressType="nodeport" \
-    --set hostpath.enabled="true" \
-    --set hostpath.nodeName="<k8s-node>"
+    --set networking.ingressType="nodeport" \
+    --set storage.hostpath.enabled="true" \
+    --set storage.hostpath.nodeName="<k8s-node>"
 ```
 
 #### Turn On/Off components
 ```
-helm install cnvrg cnvrg/cnvrg --timeout 1500s --wait \
+helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set cnvrgApp.enabled="false" \
-    --set autoscaler.enabled="false" \
-    --set cnvrgRouter.enabled="false" \
-    --set conf.enabled="false" \
-    --set es.enabled="false" \
-    --set fluentd.enabled="false" \
-    --set hostpath.enabled="false" \
-    --set ingress.enabled="false" \
-    --set istio.enabled="false" \
-    --set kibana.enabled="false" \
-    --set prometheus.enabled="false" \
+    --set logging.enabled="false" \
+    --set storage.enabled="false" \
+    --set networking.enabled="false" \
     --set minio.enabled="false" \
     --set mpi.enabled="false" \
-    --set nfs.enabled="false" \
     --set nvidiadp.enabled="false" \
     --set pg.enabled="false" \
     --set redis.enabled="false"

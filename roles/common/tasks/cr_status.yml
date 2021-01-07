@@ -1,0 +1,14 @@
+# Defalt CR Kind
+- set_fact:
+    crKind: CnvrgAppUpgrade
+  when: crKind is not defined
+
+- name: Set status
+  operator_sdk.util.k8s_status:
+    api_version: mlops.cnvrg.io/v1
+    kind: "{{crKind}}"
+    name: "{{ ansible_operator_meta.name }}"
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    status:
+      status: "{{ message  }}"
+  when: dryRun == "false"

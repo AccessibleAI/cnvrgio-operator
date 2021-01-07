@@ -1,5 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: "{{privileged_sa}}"
-  namespace: "{{ ansible_operator_meta.namespace }}"

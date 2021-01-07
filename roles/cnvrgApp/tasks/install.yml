@@ -1,0 +1,64 @@
+- include_vars: ../../minio/vars/main.yml
+- include_vars: ../../pg/vars/main.yml
+- include_vars: ../../logging/vars/main.yml
+- include_vars: ../../redis/vars/main.yml
+- include_vars: ../../cnvrgApp/vars/main.yml
+
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
+- name: Construct CnvrgApp
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/app/*.yml
+    - templates/install/sidekiqs/*.yml
+    - templates/install/conf/*.yml
+
+- name: Construct sidekiq when splitSdekiq true
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/sidekiqs/*.yml
+  when: cnvrgApp.conf.splitSidekiq == "true"
+
+- name: Construct sidekiq when splitSdekiq false
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/sidekiqs/sidekiq.yml
+  when: cnvrgApp.conf.splitSidekiq == "false"
+
+- name: add hyper
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/hyper/*.yml
+  when: cnvrgApp.hyper.enabled  == "true"
+
+- name: add cnvrgRouter
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/cnvrgRouter/*.yml
+  when: cnvrgApp.cnvrgRouter.enabled  == "true"
+
+- name: Deploy CnvrgApp role
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "templates/cnvrgAppBundle.yml"
+    state: "present"
+    compare_resource: yes

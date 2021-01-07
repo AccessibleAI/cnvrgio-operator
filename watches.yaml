@@ -5,6 +5,7 @@
   kind: CnvrgApp
   playbook: playbooks/cnvrg.yml
   reconcilePeriod: 900s
+  snakeCaseParameters: False
   finalizer:
     name: finalizer.cnvrgapp.cnvrg.io
     role: finalaizer
@@ -12,4 +13,10 @@
   - group: autoscaling.k8s.io
     version: v1
     kind: VerticalPodAutoscaler
+- version: v1
+  group: mlops.cnvrg.io
+  kind: CnvrgAppUpgrade
+  playbook: playbooks/cnvrg_app_upgrade.yml
+  manageStatus: False
+  snakeCaseParameters: False
 # +kubebuilder:scaffold:watch

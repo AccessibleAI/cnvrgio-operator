@@ -1,0 +1,55 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-client-provisioner
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: "{{ storage.nfs.image }}"
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: "{{ storage.nfs.provisioner }}"
+            - name: nfsServer
+              value: "{{ storage.nfs.server }}"
+            - name: NFS_PATH
+              value: "{{ storage.nfs.path }}"
+          resources:
+            limits:
+              cpu: "{{ storage.nfs.cpuLimit }}"
+              memory: "{{ storage.nfs.memoryLimit }}"
+            requests:
+              cpu: "{{ storage.nfs.cpuRequest }}"
+              memory: "{{ storage.nfs.memoryRequest }}"
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: "{{ storage.nfs.server }}"
+            path: "{{ storage.nfs.path }}"

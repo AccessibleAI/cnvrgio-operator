@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: "{{ ansible_operator_meta.namespace }}"
+data:
+  APP_DOMAIN: {{ ((cnvrgApp.svcName + '.' if networking.ingressType != 'nodeport' else '') + clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else '')) }}
+  DEFAULT_URL: {{(httpScheme + (cnvrgApp.svcName + '.' if networking.ingressType != 'nodeport' else '') + clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else ''))}}
+  DEFAULT_COMPUTE_CLUSTER_DOMAIN: {{ (clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else '')) }}
+  DEFAULT_COMPUTE_CLUSTER_HTTPS: "{{ networking.https.enabled  }}"
+  {% if cnvrgApp.conf.customAgentTag != "false" %}
+  AGENT_CUSTOM_TAG: "{{ cnvrgApp.conf.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
+  {% endif %}
+  REDIS_URL: "{{ ('redis://'+redis.svcName) }}"
+  PASSENGER_APP_ENV: "{{ cnvrgApp.conf.passengerAppEnv  }}"
+  RAILS_ENV: "{{ cnvrgApp.conf.railsEnv  }}"
+  RUN_JOBS_ON_SELF_CLUSTER: "{{ cnvrgApp.conf.runJobsOnSelfCluster }}"
+  DEFAULT_COMPUTE_CONFIG: "{{ cnvrgApp.conf.defaultComputeConfig }}"
+  DEFAULT_COMPUTE_NAME: "{{ cnvrgApp.conf.defaultComputeName }}"
+  CHECK_JOB_EXPIRATION: "{{ cnvrgApp.conf.checkJobExpiration  }}"
+  USE_STDOUT: "{{ cnvrgApp.conf.useStdout  }}"
+  EXTRACT_TAGS_FROM_CMD: "{{ cnvrgApp.conf.extractTagsFromCmd  }}"
+  ELASTICSEARCH_URL: "http://{{logging.es.svcName}}"
+  HYPER_SERVER_URL: "http://{{cnvrgApp.hyper.svcName}}"
+  HYPER_SERVER_PORT: "{{cnvrgApp.hyper.port}}"
+  KUBE_NAMESPACE: "{{ ansible_operator_meta.namespace }}"
+  SHOW_INTERCOM:  "{{ cnvrgApp.conf.intercom }}"
+  ROUTE_BY_ISTIO: "{{ ('true' if networking.ingressType == 'istio' else 'false') }}"
+  ROUTE_BY_OPENSHIFT: "{{ ('true' if networking.ingressType == 'openshift' else 'false') }}"
+  ROUTE_BY_NGINX_INGRESS: "{{ ('true' if networking.ingressType == 'k8singress' else 'false') }}"
+  ROUTE_BY_NODE_PORT: "{{ ('true' if networking.ingressType == 'nodeport' else 'false') }}"
+  CNVRG_STORAGE_USE_IAM_ROLE: "false"
+  {% if cnvrgApp.conf.jobsStorageClass != "" %}
+  CNVRG_JOBS_STORAGECLASS: "{{ cnvrgApp.conf.jobsStorageClass }}"
+  {% endif %}
+  SMTP_SERVER: "{{ cnvrgApp.conf.smtp.server }}"
+  SMTP_PORT: "{{ cnvrgApp.conf.smtp.port }}"
+  SMTP_USERNAME: "{{ cnvrgApp.conf.smtp.username }}"
+  SMTP_PASSWORD: "{{ cnvrgApp.conf.smtp.password }}"
+  SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
+  SPLIT_SIDEKIQ: "{{ cnvrgApp.conf.splitSidekiq }}"
+  {% if cnvrgApp.cnvrgRouter.enabled == "true" %}
+  DEPLOY_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  NOTEBOOK_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  TENSORBOARD_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
+  {% endif %}
+{% set featureFlags = cnvrgApp.conf.featureFlags.split(';') %}
+{% for featureFlag in featureFlags %}
+  {% set flagsItmes = featureFlag.split("=") %}
+    {% if flagsItmes|length >= 2 %}
+  {{ flagsItmes[0] }}: "{{ flagsItmes[1:]|join("=") }}"
+    {% endif %}
+{% endfor %}
+
+
