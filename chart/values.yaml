@@ -1,9 +1,6 @@
-createNs: true
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
-specProfile: default
 computeProfile: medium
-storageProfile: default
 computeProfiles:
   large:
     storage: 100Gi
@@ -444,9 +441,6 @@ storage:
     memoryLimit: 200Mi
     reclaimPolicy: "Retain"
     defaultSc: "false"
-
-autoscaler:
-  enabled: "false"
 
 vpa:
   enabled: "false"

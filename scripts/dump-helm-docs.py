@@ -16,7 +16,8 @@ def parse_roles_vars():
         'pg.pass'
 
     ]
-    helm_params = {}
+    total_params_number = 0
+    params = {}
     vars_files = glob.glob('../roles/*/vars/main.yml')
     vars_files.append('../playbooks/vars/globals.yml')
 
@@ -30,31 +31,45 @@ def parse_roles_vars():
                 if isinstance(value, str) and '{{' in value:
                     continue
                 if key in skip_values_for_keys:
-                    value = "-"
-                helm_params[key] = value
+                    value = ""
+                total_params_number += 1
+                params[key] = value
+
+    helm_params = {'globals': {'computeProfile': 'medium'}}
+    remove_sections = ["cnvrgAppUpgrade", "pg_backup"]
+    for key, value in params.items():
+        if len(key.split(".")) == 1:
+            helm_params['globals'][key] = value
+            continue
+        section_name = key.split(".")[0]
+        if section_name in remove_sections:
+            continue
+        if section_name not in helm_params:
+            helm_params[section_name] = {}
+        helm_params[section_name][key] = value
+
     return helm_params
 
 
-def get_docs_header():
+def get_section_header():
     return """
-### Chart options 
-|**key**|**default value**|**description**\n| ---|---|---|
-|`createNs`| true | set to `false` if cnvrg namespaces already exists 
-|`specProfile`| default | can be on of the following `default` `microk8s`
-|`computeProfile`| default |can be on of the following `default` `micro`
-|`storageProfile`| default | can be on of the following `default` `micro`
+### Chart options - __SECTION_NAME__ 
+|**key**|**default value**\n| ---|---| 
 """
 
 
 def parse_docs(helm_params):
-    params_dump_docs = get_docs_header()
-    for param_name, param_value in helm_params.items():
-        if "descriptions" in param_name:
-            continue
-        if param_value == "":
-            param_value = "-"
-        description = get_param_desc(param_name, helm_params)
-        params_dump_docs += f"|`{param_name}`|{param_value}|{description}\n"
+    params_dump_docs = ""
+    for section in sorted(helm_params):
+        section_header = get_section_header().replace("__SECTION_NAME__", section)
+        params_dump_docs += section_header
+        for param_name, param_value in helm_params[section].items():
+            if "descriptions" in param_name:
+                continue
+            if param_value == "":
+                param_value = "-"
+            description = get_param_desc(param_name, helm_params)
+            params_dump_docs += f"|`{param_name}`|{param_value}\n"
 
     with open("docs_tmpl", mode="r") as f:
         content = f.read()

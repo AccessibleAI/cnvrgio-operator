@@ -2,7 +2,6 @@
 debug: "false"
 dumpDir: ""
 dryRun: "false"
-privilegedSa: "cnvrg-privileged"
 clusterDomain: ""
 httpScheme: "{{ 'https://' if networking.https.enabled == 'true' else 'http://' }}"
 orchestrator: "k8s" # k8s | ocp

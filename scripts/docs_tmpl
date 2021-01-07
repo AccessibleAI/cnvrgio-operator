@@ -52,8 +52,8 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
-        --set registry.user=cnvrg-license-username \
-        --set registry.password=cnvrg-license-password \
+        --set cnvrgApp.conf.registry.user=cnvrg-license-username \
+        --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=aws \
         --set cnvrgApp.conf.cnvrgStorageBucket=s3bucket-name \
         --set cnvrgApp.conf.cnvrgStorageAccessKey=ACCESSKEY \
@@ -63,11 +63,11 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 
 # Azure - AKS
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
+        --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
-        --set registry.user=cnvrg-license-username \
-        --set registry.password=cnvrg-license-password \
-        --set clusterDomain=base.domain \
+        --set cnvrgApp.conf.registry.user=cnvrg-license-username \
+        --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=azure \
         --set cnvrgApp.conf.cnvrgStorageAzureAccessKey=azure-storage-account-access-key \
         --set cnvrgApp.conf.cnvrgStorageAzureAccountName=azure-storage-account-name \
@@ -75,11 +75,11 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 
 # GCP - GKE
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
+        --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
         --set cnvrgApp.edition=enterprise \
-        --set registry.user=cnvrg-license-username \
-        --set registry.password=cnvrg-license-password \
-        --set clusterDomain=base.domain \
+        --set cnvrgApp.conf.registry.user=cnvrg-license-username \
+        --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=gcp \
         --set cnvrgApp.conf.cnvrgStorageProject=gcp-storage-project
 ```
@@ -88,7 +88,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 ```bash
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=apps.1.2.3.4.nip.io \
-    --set storageProfile=micro \
+    --set storage.enabled="true" \
     --set storage.hostpath.enabled="true" \
     --set storage.hostpath.nodeName="k8s-node-name" \
     --set cnvrgApp.conf.smtp.server="smtp-server" \
@@ -121,19 +121,11 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 ```
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set cnvrgApp.enabled="false" \
-    --set autoscaler.enabled="false" \
-    --set cnvrgRouter.enabled="false" \
-    --set conf.enabled="false" \
-    --set logging.es.enabled="false" \
-    --set logging.fluentd.enabled="false" \
-    --set storage.hostpath.enabled="false" \
-    --set networking.ingress.enabled="false" \
-    --set networking.istio.enabled="false" \
-    --set logging.kibana.enabled="false" \
-    --set prometheus.enabled="false" \
+    --set logging.enabled="false" \
+    --set storage.enabled="false" \
+    --set networking.enabled="false" \
     --set minio.enabled="false" \
     --set mpi.enabled="false" \
-    --set storage.nfs.enabled="false" \
     --set nvidiadp.enabled="false" \
     --set pg.enabled="false" \
     --set redis.enabled="false"
