@@ -416,7 +416,6 @@ cnvrgApp:
     nodePort: 30081
     port: 80
 
-
 storage:
   enabled: "false"
   nfs:
