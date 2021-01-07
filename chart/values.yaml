@@ -426,7 +426,7 @@ storage:
     memoryRequest: 100Mi
     cpuLimit: 200m
     memoryLimit: 200Mi
-    reclaimPolicy: "Retain"
+    reclaimPolicy: "Delete"
     defaultSc: "false"
 
   hostpath:
