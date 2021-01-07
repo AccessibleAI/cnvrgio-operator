@@ -10,8 +10,10 @@ cnvrgApp:
   nodePort: "{{ .Values.cnvrgApp.nodePort }}"
   passengerMaxPoolSize: {{ .Values.cnvrgApp.passengerMaxPoolSize }}
   enableReadinessProbe: "{{.Values.cnvrgApp.enableReadinessProbe}}"
-  readinessPeriodSeconds: "{{.Values.cnvrgApp.readinessPeriodSeconds}}"
-  readinessTimeoutSeconds: "{{.Values.cnvrgApp.readinessTimeoutSeconds}}"
+  initialDelaySeconds: "{{ .Values.cnvrgApp.initialDelaySeconds }}"
+  readinessPeriodSeconds: "{{ .Values.cnvrgApp.readinessPeriodSeconds }}"
+  readinessTimeoutSeconds: "{{ .Values.cnvrgApp.readinessTimeoutSeconds }}"
+  failureThreshold: "{{ .Values.cnvrgApp.failureThreshold }}"
   resourcesRequestEnabled: "{{.Values.cnvrgApp.resourcesRequestEnabled}}"
   {{- if eq .Values.computeProfile "large"}}
   cpu: "{{ .Values.computeProfiles.large.cnvrgApp.webappCpu }}"
@@ -82,6 +84,7 @@ cnvrgApp:
     cnvrgStorageProject: "{{ .Values.cnvrgApp.conf.cnvrgStorageProject }}"
     customAgentTag: "{{ .Values.cnvrgApp.conf.customAgentTag }}"
     intercom: "{{ .Values.cnvrgApp.conf.intercom }}"
+    splitSidekiq: "{{ .Values.cnvrgApp.conf.splitSidekiq }}"
     registry:
       name: "{{ .Values.cnvrgApp.conf.registry.name}}"
       url: "{{ .Values.cnvrgApp.conf.registry.url}}"

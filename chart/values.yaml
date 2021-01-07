@@ -333,8 +333,10 @@ cnvrgApp:
   sidekiqSearchkickReplicas: 1
   passengerMaxPoolSize: 20
   enableReadinessProbe: "true"
-  readinessPeriodSeconds: 100
-  readinessTimeoutSeconds: 60
+  initialDelaySeconds: 10
+  readinessPeriodSeconds: 25
+  readinessTimeoutSeconds: 20
+  failureThreshold: 4
   resourcesRequestEnabled: "true"
   seeder:
     image: "docker.io/cnvrg/cnvrg-boot:v0.24"
@@ -387,7 +389,7 @@ cnvrgApp:
     cnvrgStorageProject: ""
     customAgentTag: "false"
     intercom: "true"
-
+    splitSidekiq: "true"
     registry:
       name: cnvrg-registry
       url: "docker.io"
