@@ -1,10 +1,6 @@
-- name: reset bundle roles
-  set_fact:
-    roleBundle: []
-
 - name: Isito deployment
   block:
-    # Includgin all variables - they are require for composing Istio VirtualService
+    # Including all variables - they are require for composing Istio VirtualService
     - include_vars: ../../../playbooks/vars/globals.yml
     - include_vars: ../../minio/vars/main.yml
     - include_vars: ../../pg/vars/main.yml
@@ -12,42 +8,91 @@
     - include_vars: ../../redis/vars/main.yml
     - include_vars: ../../cnvrgApp/vars/main.yml
 
-    - name: add Istio CRDs
-      include_role:
-        name: common
-        tasks_from: install
-      vars:
-        templatePath: "templates/istio/crds.yaml"
-        state: "present"
+    - name: deploy istio crd, operator and instance
+      block:
 
-    # Install istio
-    - name: add Istio operator and instance
-      set_fact:
-       roleBundle: "{{ roleBundle + [templatePath] }}"
-      loop_control:
-        loop_var: templatePath
-      loop:
-        - templates/istio/operator.yml
-        - templates/istio/instance.yml
+      - name: deploy CRD
+        include_role:
+          name: common
+          tasks_from: install
+        vars:
+          state: "present"
+          templatePath: "templates/istio/crds.yaml"
 
-    # Install virtual services
-    - name: add VirtualServices
-      set_fact:
-       roleBundle: "{{ roleBundle + [templatePath] }}"
-      loop_control:
-        loop_var: templatePath
-      with_fileglob:
-        - templates/istio-vs/*
+      - name: reset bundle roles
+        set_fact:
+          roleBundle: []
 
-    # Install gateway
-    - name: add GW
-      set_fact:
-       roleBundle: "{{ roleBundle + [templatePath] }}"
-      loop_control:
-        loop_var: templatePath
-      with_fileglob:
-        - templates/istio-gw/*
+      - name: add VirtualServices
+        set_fact:
+         roleBundle: "{{ roleBundle + [templatePath] }}"
+        loop_control:
+          loop_var: templatePath
+        with_items:
+          - templates/istio/operator.yml
+          - templates/istio/instance.yml
+
+      - name: deploy istio
+        include_role:
+          name: common
+          tasks_from: install
+        vars:
+          templatePath: "templates/ingressBundle.yml"
+          state: "present"
+
+    - name: deploy istio vs and gw
+      block:
+
+      - name: Get VS crd
+        k8s_info:
+          api_version: apiextensions.k8s.io/v1
+          kind: CustomResourceDefinition
+          namespace: "{{ ansible_operator_meta.namespace }}"
+          name: "virtualservices.networking.istio.io"
+        register: vsCrd
+
+      - fail:
+          msg: "expected error (will reconcile): istio VirtualService CRD not found yet"
+        when: vsCrd.resources | length == 0
+
+      - name: Get GW crd
+        k8s_info:
+          api_version: apiextensions.k8s.io/v1
+          kind: CustomResourceDefinition
+          namespace: "{{ ansible_operator_meta.namespace }}"
+          name: "gateways.networking.istio.io"
+        register: gwCrd
+
+      - fail:
+          msg: "expected error (will reconcile): istio Gateway CRD not found yet"
+        when: gwCrd.resources | length == 0
+
+      - name: reset bundle roles
+        set_fact:
+          roleBundle: []
+
+      - name: add VirtualServices and gw
+        set_fact:
+         roleBundle: "{{ roleBundle + [templatePath] }}"
+        loop_control:
+          loop_var: templatePath
+        with_fileglob:
+          - templates/istio-vs/*
+          - templates/istio-gw/*
+
+      - name: deploy vs and gw
+        include_role:
+          name: common
+          tasks_from: install
+        vars:
+          templatePath: "templates/ingressBundle.yml"
+          state: "present"
+
   when: networking.ingressType == "istio"
+
+- name: reset bundle roles for ingress rules
+  set_fact:
+    roleBundle: []
 
 - name: add OpenShift Route
   set_fact:
