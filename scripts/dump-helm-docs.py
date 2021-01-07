@@ -1,35 +1,37 @@
 import yaml
+import glob
 import inflection
 from pandas.io.json._normalize import nested_to_record
 
 
-def get_section_name(vars_path):
-    if '/' in vars_path:
-        return inflection.camelize(vars_path.split("/")[1], False)
-    else:
-        return inflection.camelize(vars_path, False)
-
-
 def parse_roles_vars():
-    helm_params = {}
-    with open(r'../playbooks/cnvrg.yml') as file:
-        playbook = yaml.load(file, Loader=yaml.FullLoader)
+    skip_values_for_keys = [
+        'cnvrgApp.conf.stsIv',
+        'cnvrgApp.conf.stsKey',
+        'cnvrgApp.conf.secretKeyBase',
+        'cnvrgApp.conf.sentryUrl',
+        'cnvrgApp.conf.cnvrgStorageAccessKey',
+        'cnvrgApp.conf.cnvrgStorageSecretKey',
+        'cnvrgApp.conf.minioSseMasterKey',
+        'pg.pass'
 
-    for task in playbook[0]['tasks']:
-        if 'name' not in task:
-            continue
-        if task['name'] == 'Include vars':
-            for vars_path in task['with_items']:
-                if vars_path == "vars/globals.yml":
-                    vars_path = f"../playbooks/{vars_path}"
-                with open(vars_path) as f:
-                    nested_vars = yaml.load(f, Loader=yaml.FullLoader)
-                    flat = nested_to_record(nested_vars, sep='.')
-                    for key, value in flat.items():
-                        if isinstance(value, str) and '{{' in value:
-                            continue
-                        param_name = inflection.camelize(key, False)
-                        helm_params[param_name] = value
+    ]
+    helm_params = {}
+    vars_files = glob.glob('../roles/*/vars/main.yml')
+    vars_files.append('../playbooks/vars/globals.yml')
+
+    for var_file in vars_files:
+        with open(var_file) as f:
+            nested_vars = yaml.load(f, Loader=yaml.FullLoader)
+            if nested_vars is None:
+                continue
+            flat = nested_to_record(nested_vars, sep='.')
+            for key, value in flat.items():
+                if isinstance(value, str) and '{{' in value:
+                    continue
+                if key in skip_values_for_keys:
+                    value = "-"
+                helm_params[key] = value
     return helm_params
 
 
