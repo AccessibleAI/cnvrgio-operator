@@ -38,6 +38,7 @@ data:
   SMTP_USERNAME: "{{ cnvrgApp.conf.smtp.username }}"
   SMTP_PASSWORD: "{{ cnvrgApp.conf.smtp.password }}"
   SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
+  SPLIT_SIDEKIQ: "{{ cnvrgApp.conf.splitSidekiq }}"
   {% if cnvrgApp.cnvrgRouter.enabled == "true" %}
   DEPLOY_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
   NOTEBOOK_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"

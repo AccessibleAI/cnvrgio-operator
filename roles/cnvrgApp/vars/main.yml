@@ -10,12 +10,15 @@ cnvrgApp:
   svcName: "app"
   fixpg: "true"
   nodePort: 30080
-  sidekiqCpu: 2
-  sidekiqMemory: 4Gi
+  sidekiqCpu: 1750m
+  sidekiqMemory: 3750Mi
   sidekiqReplicas: 2
-  sidekiqSearchkickCpu: 1
-  sidekiqSearchkickMemory: 1Gi
+  sidekiqSearchkickCpu: 750m
+  sidekiqSearchkickMemory: 750Mi
   sidekiqSearchkickReplicas: 1
+  sidekiqSystemCpu: 500m
+  sidekiqSystemMemory: 500Mi
+  sidekiqSystemReplicas: 1
   passengerMaxPoolSize: 20  # the calculation of max pool size based on this max_app_processes = (total_memory * 0.75) / 150 (memroy for each process in mb) = 20
   enableReadinessProbe: "true"
   initialDelaySeconds: 10
@@ -49,6 +52,7 @@ cnvrgApp:
     seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
 
   conf:
+    splitSidekiq: "true"
     gcpStorageSecret: "gcp-storage-secret"
     gcpKeyfileMountPath: "/tmp/gcp_keyfile"
     gcpKeyfileName: "key.json"

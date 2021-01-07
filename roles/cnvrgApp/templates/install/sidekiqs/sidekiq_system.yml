@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sidekiq-searchkick
+  name: sidekiq-system
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: sidekiq-searchkick
+    app: sidekiq-system
 spec:
-  replicas: {{ cnvrgApp.sidekiqSearchkickReplicas }}
+  replicas: {{ cnvrgApp.sidekiqSystemReplicas }}
   selector:
     matchLabels:
-      app: sidekiq-searchkick
+      app: sidekiq-system
   template:
     metadata:
       labels:
-        app: sidekiq-searchkick
+        app: sidekiq-system
     spec:
       {% if tenancy.enabled == "true" %}
       nodeSelector:
@@ -43,7 +43,7 @@ spec:
         env:
         - name: "CNVRG_RUN_MODE"
           value: "sidekiq"
-        - name: "SIDEKIQ_SEARCHKICK"
+        - name: "SIDEKIQ_SYSTEM"
           value: "true"
         imagePullPolicy: Always
         {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
@@ -60,8 +60,8 @@ spec:
         {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:
           requests:
-            cpu: "{{ cnvrgApp.sidekiqSearchkickCpu }}"
-            memory: "{{ cnvrgApp.sidekiqSearchkickMemory }}"
+            cpu: "{{ cnvrgApp.sidekiqSystemCpu }}"
+            memory: "{{ cnvrgApp.sidekiqSystemMemory }}"
         {% endif %}
         {% if cnvrgApp.sidekiqPrestopHook.enabled == "true" %}
         lifecycle:

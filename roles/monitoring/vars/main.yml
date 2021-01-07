@@ -32,7 +32,7 @@ monitoring:
     nodePort: 30012
   defaultServiceMonitors:
     enabled: "true"
-  sidekiq_exporter:
+  sidekiqExporter:
     enabled: "true"
     image: "docker.io/strech/sidekiq-prometheus-exporter:0.1.13"
   minioExporter:

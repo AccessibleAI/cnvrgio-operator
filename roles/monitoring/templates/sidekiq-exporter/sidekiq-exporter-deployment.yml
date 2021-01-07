@@ -29,7 +29,7 @@ spec:
       {% endif %}
       containers:
         - name: sidekiq-prometheus-exporter
-          image: {{ monitoring.sidekiq_exporter.image }}
+          image: {{ monitoring.sidekiqExporter.image }}
           imagePullPolicy: IfNotPresent
           ports:
             - name: metrics

@@ -145,12 +145,15 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.svcName`|app
 |`cnvrgApp.fixpg`|true
 |`cnvrgApp.nodePort`|30080
-|`cnvrgApp.sidekiqCpu`|2
-|`cnvrgApp.sidekiqMemory`|4Gi
+|`cnvrgApp.sidekiqCpu`|1750m
+|`cnvrgApp.sidekiqMemory`|3750Mi
 |`cnvrgApp.sidekiqReplicas`|2
-|`cnvrgApp.sidekiqSearchkickCpu`|1
-|`cnvrgApp.sidekiqSearchkickMemory`|1Gi
+|`cnvrgApp.sidekiqSearchkickCpu`|750m
+|`cnvrgApp.sidekiqSearchkickMemory`|750Mi
 |`cnvrgApp.sidekiqSearchkickReplicas`|1
+|`cnvrgApp.sidekiqSystemCpu`|500m
+|`cnvrgApp.sidekiqSystemMemory`|500Mi
+|`cnvrgApp.sidekiqSystemReplicas`|1
 |`cnvrgApp.passengerMaxPoolSize`|20
 |`cnvrgApp.enableReadinessProbe`|true
 |`cnvrgApp.initialDelaySeconds`|10
@@ -176,6 +179,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.hyper.readinessTimeoutSeconds`|60
 |`cnvrgApp.seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.24
 |`cnvrgApp.seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update
+|`cnvrgApp.conf.splitSidekiq`|true
 |`cnvrgApp.conf.gcpStorageSecret`|gcp-storage-secret
 |`cnvrgApp.conf.gcpKeyfileMountPath`|/tmp/gcp_keyfile
 |`cnvrgApp.conf.gcpKeyfileName`|key.json
@@ -336,8 +340,8 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`monitoring.grafana.port`|3000
 |`monitoring.grafana.nodePort`|30012
 |`monitoring.defaultServiceMonitors.enabled`|true
-|`monitoring.sidekiq_exporter.enabled`|true
-|`monitoring.sidekiq_exporter.image`|docker.io/strech/sidekiq-prometheus-exporter:0.1.13
+|`monitoring.sidekiqExporter.enabled`|true
+|`monitoring.sidekiqExporter.image`|docker.io/strech/sidekiq-prometheus-exporter:0.1.13
 |`monitoring.minioExporter.enabled`|true
 |`monitoring.minioExporter.image`|docker.io/cnvrg/cnvrg-boot:v0.24
 |`monitoring.dcgmExporter.enabled`|true

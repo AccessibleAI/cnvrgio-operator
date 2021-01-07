@@ -18,6 +18,24 @@
     - templates/install/sidekiqs/*.yml
     - templates/install/conf/*.yml
 
+- name: Construct sidekiq when splitSdekiq true
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/sidekiqs/*.yml
+  when: cnvrgApp.conf.splitSidekiq == "true"
+
+- name: Construct sidekiq when splitSdekiq false
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/sidekiqs/sidekiq.yml
+  when: cnvrgApp.conf.splitSidekiq == "false"
+
 - name: add hyper
   set_fact:
    roleBundle: "{{ roleBundle + [templatePath] }}"
