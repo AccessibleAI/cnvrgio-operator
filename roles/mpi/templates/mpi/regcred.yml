@@ -5,4 +5,4 @@ metadata:
   name: "{{ mpi.registry.name }}"
   namespace: {{ ansible_operator_meta.namespace }}
 data:
-  .dockerconfigjson: {{ _mpi_registry_creds | b64encode }}
+  .dockerconfigjson: {{lookup('template', 'templates/mpi/mpi_registry.json.j2') | to_json | b64encode }}
