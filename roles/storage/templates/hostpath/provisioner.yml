@@ -1,0 +1,65 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hostpath-provisioner
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    k8s-app: hostpath-provisioner
+spec:
+  selector:
+    matchLabels:
+      k8s-app: hostpath-provisioner
+  template:
+    metadata:
+      labels:
+        k8s-app: hostpath-provisioner
+    spec:
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      serviceAccountName: hostpath-provisioner-admin
+      containers:
+        - name: hostpath-provisioner
+          image: "{{ storage.hostpath.image }}"
+          imagePullPolicy: Always
+          env:
+            - name: USE_NAMING_PREFIX
+              value: "true" # change to true, to have the name of the pvc be part of the directory
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: PV_DIR
+              value: "{{ storage.hostpath.hostPath }}"
+          volumeMounts:
+            - name: pv-volume # root dir where your bind mounts will be on the node
+              mountPath: "{{ storage.hostpath.hostPath }}"
+              nodeSelector:
+              - name: "{{ storage.hostpath.nodeName }}"
+          resources:
+            limits:
+              cpu: "{{ storage.hostpath.cpuLimit }}"
+              memory: "{{ storage.hostpath.memoryLimit }}"
+            requests:
+              cpu: "{{ storage.hostpath.cpuRequest }}"
+              memory: "{{ storage.hostpath.memoryRequest }}"
+      volumes:
+        - name: pv-volume
+          hostPath:
+            path: "{{ storage.hostpath.hostPath }}"

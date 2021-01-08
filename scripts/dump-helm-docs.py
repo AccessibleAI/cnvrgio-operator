@@ -1,58 +1,75 @@
 import yaml
+import glob
 import inflection
 from pandas.io.json._normalize import nested_to_record
 
 
-def get_section_name(vars_path):
-    if '/' in vars_path:
-        return inflection.camelize(vars_path.split("/")[1], False)
-    else:
-        return inflection.camelize(vars_path, False)
-
-
 def parse_roles_vars():
-    helm_params = {}
-    with open(r'../playbooks/cnvrg.yml') as file:
-        playbook = yaml.load(file, Loader=yaml.FullLoader)
+    skip_values_for_keys = [
+        'cnvrgApp.conf.stsIv',
+        'cnvrgApp.conf.stsKey',
+        'cnvrgApp.conf.secretKeyBase',
+        'cnvrgApp.conf.sentryUrl',
+        'cnvrgApp.conf.cnvrgStorageAccessKey',
+        'cnvrgApp.conf.cnvrgStorageSecretKey',
+        'cnvrgApp.conf.minioSseMasterKey',
+        'pg.pass'
 
-    for task in playbook[0]['tasks']:
-        if 'name' not in task:
+    ]
+    total_params_number = 0
+    params = {}
+    vars_files = glob.glob('../roles/*/vars/main.yml')
+    vars_files.append('../playbooks/vars/globals.yml')
+
+    for var_file in vars_files:
+        with open(var_file) as f:
+            nested_vars = yaml.load(f, Loader=yaml.FullLoader)
+            if nested_vars is None:
+                continue
+            flat = nested_to_record(nested_vars, sep='.')
+            for key, value in flat.items():
+                if isinstance(value, str) and '{{' in value:
+                    continue
+                if key in skip_values_for_keys:
+                    value = ""
+                total_params_number += 1
+                params[key] = value
+
+    helm_params = {'globals': {'computeProfile': 'medium'}}
+    remove_sections = ["cnvrgAppUpgrade", "pg_backup"]
+    for key, value in params.items():
+        if len(key.split(".")) == 1:
+            helm_params['globals'][key] = value
             continue
-        if task['name'] == 'Include vars':
-            for vars_path in task['with_items']:
-                if vars_path == "vars/globals.yml":
-                    vars_path = f"../playbooks/{vars_path}"
-                with open(vars_path) as f:
-                    nested_vars = yaml.load(f, Loader=yaml.FullLoader)
-                    flat = nested_to_record(nested_vars, sep='.')
-                    for key, value in flat.items():
-                        if isinstance(value, str) and '{{' in value:
-                            continue
-                        param_name = inflection.camelize(key, False)
-                        helm_params[param_name] = value
+        section_name = key.split(".")[0]
+        if section_name in remove_sections:
+            continue
+        if section_name not in helm_params:
+            helm_params[section_name] = {}
+        helm_params[section_name][key] = value
+
     return helm_params
 
 
-def get_docs_header():
+def get_section_header():
     return """
-### Chart options 
-|**key**|**default value**|**description**\n| ---|---|---|
-|`createNs`| true | set to `false` if cnvrg namespaces already exists 
-|`specProfile`| default | can be on of the following `default` `microk8s`
-|`computeProfile`| default |can be on of the following `default` `micro`
-|`storageProfile`| default | can be on of the following `default` `micro`
+### Chart options - __SECTION_NAME__ 
+|**key**|**default value**\n| ---|---| 
 """
 
 
 def parse_docs(helm_params):
-    params_dump_docs = get_docs_header()
-    for param_name, param_value in helm_params.items():
-        if "descriptions" in param_name:
-            continue
-        if param_value == "":
-            param_value = "-"
-        description = get_param_desc(param_name, helm_params)
-        params_dump_docs += f"|`{param_name}`|{param_value}|{description}\n"
+    params_dump_docs = ""
+    for section in sorted(helm_params):
+        section_header = get_section_header().replace("__SECTION_NAME__", section)
+        params_dump_docs += section_header
+        for param_name, param_value in helm_params[section].items():
+            if "descriptions" in param_name:
+                continue
+            if param_value == "":
+                param_value = "-"
+            description = get_param_desc(param_name, helm_params)
+            params_dump_docs += f"|`{param_name}`|{param_value}\n"
 
     with open("docs_tmpl", mode="r") as f:
         content = f.read()

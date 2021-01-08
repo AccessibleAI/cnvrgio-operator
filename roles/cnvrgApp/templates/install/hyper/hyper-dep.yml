@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{cnvrgApp.hyper.svcName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{cnvrgApp.hyper.svcName}}"
+spec:
+  replicas: {{ cnvrgApp.hyper.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: "{{cnvrgApp.hyper.svcName}}"
+  template:
+    metadata:
+      labels:
+        app: "{{cnvrgApp.hyper.svcName}}"
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      containers:
+        - image: "{{cnvrgApp.hyper.image}}"
+          name: "{{cnvrgApp.hyper.svcName}}"
+          envFrom:
+            - configMapRef:
+                name: env-config
+            - secretRef:
+                name: env-secrets
+          ports:
+            - containerPort: {{cnvrgApp.hyper.port}}
+          {% if (cnvrgApp.enableReadinessProbe | default ('true')) == "true" %}
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: "/?key={{cnvrgApp.hyper.token}}"
+              port: {{cnvrgApp.hyper.port}}
+              scheme: HTTP
+            initialDelaySeconds: 20
+            successThreshold: 1
+            periodSeconds: {{ cnvrgApp.hyper.readinessPeriodSeconds | default('100') }}
+            timeoutSeconds: {{ cnvrgApp.hyper.readinessTimeoutSeconds |default('60') }}
+          {% endif %}
+          resources:
+            requests:
+              cpu: "{{cnvrgApp.hyper.cpuRequest}}"
+              memory: "{{cnvrgApp.hyper.memoryRequest}}"
+            limits:
+              cpu: "{{ cnvrgApp.hyper.cpuLimit }}"
+              memory: "{{ cnvrgApp.hyper.memoryLimit }}"

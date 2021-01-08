@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ storage.nfs.storageClassName }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "{{ storage.nfs.defaultSc }}"
+provisioner: "{{ storage.nfs.provisioner }}"
+reclaimPolicy: "{{ storage.nfs.reclaimPolicy }}"

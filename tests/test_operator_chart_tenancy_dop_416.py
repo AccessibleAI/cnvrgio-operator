@@ -23,7 +23,7 @@ class TaintsOperatorDeploymentTest(unittest.TestCase, CommonBase):
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "TaintsOperatorDeploymentTest")
 
-    def test_app_ready_aks_istio(self):
+    def test_cnvrg_operator_deployment_with_taints(self):
         cmd = 'helm template chart --set tenancy.enabled="true" --include-crds --no-hooks | VERSION=$TAG envsubst | kubectl create -f -'
         self.exec_cmd(cmd)
         cmd = "kubectl wait --for=condition=ready pod -l control-plane=cnvrg-operator -ncnvrg --timeout=300s"

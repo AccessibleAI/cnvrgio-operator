@@ -1,71 +1,52 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{pg.svc_name}}"
+  name: "{{pg.svcName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: "{{pg.svc_name}}"
+    app: "{{pg.svcName}}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{pg.svc_name}}"
+      app: "{{pg.svcName}}"
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: "{{pg.svc_name}}"
+        app: "{{pg.svcName}}"
     spec:
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
-{% endif %}
-{% if security_mode == "default" %}
+      {% endif %}
+      {% if securityMode == "default" %}
       securityContext:
-        runAsUser: {{ pg.run_as_user }}
-        runAsGroup: {{ pg.run_as_group }}
-        fsGroup: {{ pg.fs_group }}
-{% endif %}
-{% if hostpath.enabled == "true" and tenancy.enabled == "false" %}
+        runAsUser: {{ pg.runAsUser }}
+        runAsGroup: {{ pg.runAsGroup }}
+        fsGroup: {{ pg.fsGroup }}
+      {% endif %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
-{% elif hostpath.enabled == "false" and tenancy.enabled == "true" %}
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% elif hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
       nodeSelector:
-        kubernetes.io/hostname: "{{ hostpath.node_name }}"
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
+      {% endif %}
       containers:
         - name: postgresql
-          env:
-          - name: POSTGRESQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_USER
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_PASSWORD
-          - name: POSTGRESQL_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_PASSWORD
-          - name: POSTGRESQL_DATABASE
-            valueFrom:
-              secretKeyRef:
-                name: env-secrets
-                key: POSTGRES_DB
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: "500"
+          envFrom:
+          - secretRef:
+              name: "pg-secret"
           image: "{{pg.image}}"
           imagePullPolicy: IfNotPresent
           ports:
@@ -95,12 +76,12 @@ spec:
               name: dshm
           resources:
             requests:
-              cpu: "{{ pg.cpu_request }}"
-              memory: "{{ pg.memory_request }}"
+              cpu: "{{ pg.cpuRequest }}"
+              memory: "{{ pg.memoryRequest }}"
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: "{{pg.svc_name}}"
+            claimName: "{{pg.svcName}}"
         - name: dshm
           emptyDir:
             medium: Memory

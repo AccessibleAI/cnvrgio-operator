@@ -1,26 +1,19 @@
 # vars file for cnvrg
 debug: "false"
-dump_dir: ""
-dry_run: "false"
-privileged_sa: "cnvrg-privileged"
-cluster_domain: ""
-http_scheme: "{{ 'https://' if https.enabled == 'true' else 'http://' }}"
+dumpDir: ""
+dryRun: "false"
+clusterDomain: ""
+httpScheme: "{{ 'https://' if networking.https.enabled == 'true' else 'http://' }}"
 orchestrator: "k8s" # k8s | ocp
-security_mode: "default" # default | ocp
-ingress_type: "istio" # openshift | istio | k8singress | nodeport
+securityMode: "default" # default | ocp
+otags: "all" # all | none | specifc role name
 
 tenancy:
   enabled: "false"
-  dedicated_nodes: "false"
+  dedicatedNodes: "false"
   cnvrg:
     key: "cnvrg-taint"
     value: "true"
   minio:
     key: "minio-taint"
     value: "true"
-
-https:
-  enabled: "false"
-  cert: ""
-  key: ""
-  cert_secret: "" #istio 

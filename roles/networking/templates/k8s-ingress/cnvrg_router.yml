@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "{{cnvrgApp.cnvrgRouter.svcName}}"
+  namespace: "{{ansible_operator_meta.namespace}}"
+spec:
+  rules:
+    - host: "{{(cnvrgApp.cnvrgRouter.svcName + '.' + clusterDomain).split(':')[0] }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{cnvrgApp.cnvrgRouter.svcName}}"
+              servicePort: {{cnvrgApp.cnvrgRouter.port}}

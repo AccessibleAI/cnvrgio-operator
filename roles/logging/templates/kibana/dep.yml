@@ -1,0 +1,45 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{logging.kibana.svcName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{logging.kibana.svcName}}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{logging.kibana.svcName}}"
+  template:
+    metadata:
+      labels:
+        app: "{{logging.kibana.svcName}}"
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      containers:
+        - name: "{{logging.kibana.svcName}}"
+          image: "{{logging.kibana.image}}"
+          env:
+          - name: ELASTICSEARCH_URL
+            value: "{{ ('http://'+logging.es.svcName + '.' + ansible_operator_meta.namespace + '.svc.cluster.local'+':'+logging.es.port) }}"
+          ports:
+          - containerPort: {{logging.kibana.port}}
+          resources:
+            limits:
+              cpu: "{{ logging.kibana.cpuLimit }}"
+              memory: "{{ logging.kibana.memoryLimit }}"
+            requests:
+              cpu: "{{ logging.kibana.cpuRequest }}"
+              memory: "{{ logging.kibana.memoryRequest }}"
+

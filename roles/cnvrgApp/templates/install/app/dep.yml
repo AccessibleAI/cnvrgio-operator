@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cnvrgApp.svcName}}
+  namespace: {{ ansible_operator_meta.namespace }}
+  labels:
+    app: {{cnvrgApp.svcName}}
+spec:
+  replicas: {{ cnvrgApp.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: {{cnvrgApp.svcName}}
+  template:
+    metadata:
+      labels:
+        app: {{cnvrgApp.svcName}}
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      {% if cnvrgApp.edition == "enterprise" %}
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
+      {% endif %}
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      containers:
+      - image: "{{cnvrgApp.image}}"
+        {% if securityMode == "default" %}
+        command:
+        - "/bin/bash"
+        - "-lc"
+        args:
+        - >
+          sed -i \
+            "s/passenger_max_request_queue_size 10000;/passenger_max_request_queue_size 10000;\n    passenger_max_pool_size $CNVRG_PASSENGER_MAX_POOL_SIZE;\n/g" \
+            /etc/nginx/nginx.conf
+          touch /etc/service/sidekiq/down && /sbin/my_init
+        {% endif %}
+        env:
+        - name: "CNVRG_RUN_MODE"
+          value: "webapp"
+        - name: "CNVRG_PASSENGER_MAX_POOL_SIZE"
+          value: "{{ cnvrgApp.passengerMaxPoolSize | default('20') }}"
+        envFrom:
+        - configMapRef:
+            name: env-config
+        - secretRef:
+            name: env-secrets
+        name: cnvrg-app
+        ports:
+          - containerPort: {{cnvrgApp.port}}
+        {% if (cnvrgApp.enableReadinessProbe | default ('true')) == "true" %}
+        readinessProbe:
+          httpGet:
+            path: "/users/sign_up"
+            port: {{cnvrgApp.port}}
+            scheme: HTTP
+          successThreshold: 1
+          failureThreshold: {{ cnvrgApp.failureThreshold | default('4') }}
+          initialDelaySeconds: {{ cnvrgApp.initialDelaySeconds | default('10') }}
+          periodSeconds: {{ cnvrgApp.readinessPeriodSeconds | default('25') }}
+          timeoutSeconds: {{ cnvrgApp.readinessTimeoutSeconds | default('20') }}
+        {% endif %}
+        {% if cnvrgApp.resourcesRequestEnabled == "true" %}
+        resources:
+          requests:
+            cpu: "{{cnvrgApp.cpu}}"
+            memory: "{{cnvrgApp.memory}}"
+        {% endif %}
+        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+        volumeMounts:
+        - name: "{{ conf.gcpStorageSecret }}"
+          mountPath: "{{ conf.gcpKeyfileMountPath }}"
+          readOnly: true
+        {% endif %}
+      {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+      volumes:
+      - name: "{{ conf.gcpStorageSecret }}"
+        secret:
+          secretName: "{{ conf.gcpStorageSecret }}"
+      {% endif %}
+      initContainers:
+      - name: services-check
+        image: "{{cnvrgApp.seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py services-check"]
+        imagePullPolicy: Always
+        env:
+        - name: "CNVRG_SERVICE_LIST"
+          {% if minio.enabled == "true" and  cnvrgApp.conf.cnvrgStorageType == "minio" %}
+          value: "{{pg.svcName}}:{{pg.port}};{{cnvrgApp.conf.cnvrgStorageEndpoint}}/minio/health/ready"
+          {% else %}
+          value: "{{pg.svcName}}:{{pg.port}}"
+          {% endif %}
+      {% if cnvrgApp.fixpg == "true" %}
+      - name: fixpg
+        image: "{{cnvrgApp.seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py fixpg"]
+        envFrom:
+        - configMapRef:
+            name: "env-config"
+        - secretRef:
+            name: "env-secrets"
+        imagePullPolicy: Always
+      {% endif %}
+      - name: seeder
+        image: "{{cnvrgApp.seeder.image}}"
+        command: ["/bin/bash", "-c", "python3 cnvrg-boot.py seeder --mode master"]
+        imagePullPolicy: Always
+        env:
+        - name: "CNVRG_SEEDER_IMAGE"
+          value: "{{cnvrgApp.image}}"
+        - name: "CNVRG_SEED_CMD"
+          value: "{{ cnvrgApp.seeder.seedCmd }}"
+        - name: "CNVRG_NS"
+          value: "{{ ansible_operator_meta.namespace }}"
+        - name: "CNVRG_SA_NAME"
+          value: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+        {% if cnvrgApp.edition == "enterprise" %}
+        - name: "CNVRG_IMAGE_PULL_SECRET"
+          value: {{ cnvrgApp.conf.registry.name }}
+        {% endif %}
+        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+        - name: "CNVRG_GCP_KEYFILE_SECRET"
+          value: "{{ cnvrgApp.conf.gcpStorageSecret }}"
+        - name: "CNVRG_GCP_KEYFILE_MOUNT_PATH"
+          value: "{{ cnvrgApp.conf.gcpKeyfileMountPath }}"
+        {% endif %}
+
+

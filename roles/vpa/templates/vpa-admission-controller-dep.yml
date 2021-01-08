@@ -18,7 +18,7 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
 {%  endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
         - key: "{{ tenancy.cnvrg.key }}"
           operator: "Equal"
@@ -31,7 +31,7 @@ spec:
         runAsUser: 65534 # nobody
       containers:
         - name: admission-controller
-          image: {{vpa.images.admission_image}}
+          image: {{vpa.images.admissionImage}}
           imagePullPolicy: Always
           env:
             - name: NAMESPACE

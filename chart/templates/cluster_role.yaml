@@ -74,9 +74,9 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-    - autoscaling.k8s.io
+      - autoscaling.k8s.io
     resources:
-    - verticalpodautoscalers
+      - verticalpodautoscalers
     verbs:
       - "*"
   - apiGroups:

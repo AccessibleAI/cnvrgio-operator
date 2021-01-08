@@ -1,12 +1,8 @@
 ---
 - include_vars: ../../../playbooks/vars/globals.yml
-- include_vars: ../../app/vars/main.yml
-
-- debug:
-    msg: "Running cnvrg finalizer"
+- include_vars: ../../cnvrgApp/vars/main.yml
 
 - name: Remove Istio
   include_role:
-    name: istio
-  vars:
-    role_state: "absent"
+    name: networking
+    tasks_from: remove_istio

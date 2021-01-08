@@ -12,4 +12,4 @@ spec:
     app.kubernetes.io/version: "2.0.0-rc.11"
   ports:
   - name: "metrics"
-    port: {{ monitoring.dcgm_exporter.port }}
+    port: {{ monitoring.dcgmExporter.port }}

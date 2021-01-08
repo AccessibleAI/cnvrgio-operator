@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cnvrgApp.cnvrgRouter.svcName}}
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{cnvrgApp.cnvrgRouter.svcName}}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{cnvrgApp.cnvrgRouter.svcName}}
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      containers:
+        - name: nginx
+          image: {{ cnvrgApp.cnvrgRouter.image }}
+          ports:
+            - containerPort: {{cnvrgApp.cnvrgRouter.port}}
+          volumeMounts:
+            - mountPath: /etc/nginx
+              readOnly: true
+              name: routing-config
+            - mountPath: /var/log/nginx
+              name: log
+      volumes:
+        - name: routing-config
+          configMap:
+            name: routing-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: log
+          emptyDir: {}

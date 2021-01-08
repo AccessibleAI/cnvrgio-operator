@@ -13,7 +13,7 @@ class CnvrgAppReadinessTest(unittest.TestCase, CommonBase):
     @classmethod
     def setUpClass(cls):
         cls._exec_cmd(f"mkdir {cls.MANIFESTS_PATH}")
-        params = f'{{"dump_dir":"{cls.MANIFESTS_PATH}","cnvrgApp":{{"image":"image"}},"debug":"true","dry_run":"true","ansible_operator_meta":{{"namespace":"cnvrg"}}}}'
+        params = f'{{"dumpDir":"{cls.MANIFESTS_PATH}","cnvrgApp":{{"image":"image"}},"debug":"true","dryRun":"true","ansible_operator_meta":{{"namespace":"cnvrg"}}}}'
         cmd = f"ansible-playbook playbooks/cnvrg.yml --extra-vars='{params}' --tags app"
         cls._exec_cmd(cmd)
         cls.MANIFESTS = [f for f in listdir(cls.MANIFESTS_PATH) if isfile(join(cls.MANIFESTS_PATH, f))]

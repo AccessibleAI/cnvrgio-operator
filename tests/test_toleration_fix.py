@@ -19,24 +19,16 @@ metadata:
   namespace: cnvrg
 spec:
   ingressType: "none"
-  mpi:
-    enabled: "false"
-  conf:
-    enabled: "false"
-  conf:
-    enabled: "false"
-  cnvrgApp:
-    enabled: "false"
-  pgBackup:
-    enabled: "false"
-  redis:
-    enabled: "false"
-  es:
-    enabled: "false"
-  minio:
-    enabled: "false"
-  ingress:
-    enabled: "false"
+  otags: "monitoring,nvidiadp,logging"
+  logging:
+    enabled: "true"
+    es:
+      enabled: "false"
+    elastalert: 
+      enabled: "false"
+    kibana:
+      enabled: "false"
+      
   monitoring:
     enabled: "true"
     prometheusOperator:
@@ -60,14 +52,6 @@ spec:
       enabled: "false"  
     metricsServer:
       enabled: "false"
-  istio:
-    enabled: "false"
-  kibana:
-    enabled: "false"
-  fluentd:
-    enabled: "true"
-  nvidiadp:
-    enabled: "true"
 """
 
 

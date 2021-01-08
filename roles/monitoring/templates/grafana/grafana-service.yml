@@ -1,15 +1,15 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: grafana
-  name: "{{monitoring.grafana.svc_name}}"
+  name: "{{monitoring.grafana.svcName}}"
   namespace: "{{ansible_operator_meta.namespace}}"
 spec:
-  {% if ingress_type == "nodeport" %}
+  {% if networking.ingressType == "nodeport" %}
   type: NodePort
-  nodePort: {{ monitoring.grafana.node_port }}
+  nodePort: {{ monitoring.grafana.nodePort }}
   {% endif %}
   ports:
     - name: http

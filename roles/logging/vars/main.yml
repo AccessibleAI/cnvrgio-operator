@@ -1,0 +1,60 @@
+---
+logging:
+  enabled: "true"
+
+  es:
+    enabled: "true"
+    image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
+    maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
+    port: "9200"
+    storageSize: "30Gi"
+    svcName: "elasticsearch"
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    patchEsNodes: "true"
+    nodePort: 32200
+    storageClass: "use-default"
+    cpuRequest: 1
+    memoryRequest: 1Gi
+    cpuLimit: 2
+    memoryLimit: 4Gi
+    javaOpts: ""
+
+  elastalert:
+    enabled: "true"
+    image: "bitsensor/elastalert:3.0.0-beta.1"
+    port: "80"
+    nodePort: 32030
+    containerPort: "3030"
+    storageSize: "30Gi"
+    svcName: "elastalert"
+    storageClass: "use-default"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    cpuLimit: 400m
+    memoryLimit: 800Mi
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  fluentd:
+    enabled: "true"
+    image: "fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1"
+    journalPath: "/var/log/journal"
+    containersPath: "/var/lib/docker/containers"
+    journald: "false"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    memoryLimit: 200Mi
+
+  kibana:
+    enabled: "true"
+    svcName: kibana
+    port: 5601
+    image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
+    nodePort: 30601
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 1
+    memoryLimit: 2000Mi

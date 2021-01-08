@@ -1,0 +1,19 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ cnvrgApp.hyper.svcName }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "{{ cnvrgApp.hyper.svcName }}"
+spec:
+  {% if networking.ingressType == "nodeport" %}
+  type: NodePort
+  {% endif %}
+  ports:
+    - port: {{cnvrgApp.hyper.port}}
+      {% if networking.ingressType == "nodeport" %}
+      nodePort: {{ cnvrgApp.hyper.nodePort }}
+      {% endif %}
+  selector:
+    app: "{{cnvrgApp.hyper.svcName}}"

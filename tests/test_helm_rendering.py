@@ -67,13 +67,13 @@ class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
         component = "es"
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['cpu']),
-            str(self.SPEC['spec'][component]['cpuRequest']))
+            str(self.SPEC['spec']['logging'][component]['cpuRequest']))
 
     def test_large_profile_es_memory(self):
         component = "es"
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['memory']),
-            str(self.SPEC['spec'][component]['memoryRequest']))
+            str(self.SPEC['spec']['logging'][component]['memoryRequest']))
 
     def test_large_profile_prometheus_cpu(self):
         component = "monitoring"
@@ -162,13 +162,13 @@ class ComputeProfilesMediumWithHelmChartTest(unittest.TestCase, CommonBase):
         component = "es"
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['cpu']),
-            str(self.SPEC['spec'][component]['cpuRequest']))
+            str(self.SPEC['spec']['logging'][component]['cpuRequest']))
 
     def test_medium_profile_es_memory(self):
         component = "es"
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['memory']),
-            str(self.SPEC['spec'][component]['memoryRequest']))
+            str(self.SPEC['spec']['logging'][component]['memoryRequest']))
 
     def test_medium_profile_prometheus_cpu(self):
         component = "monitoring"
@@ -257,13 +257,13 @@ class ComputeProfilesSmallWithHelmChartTest(unittest.TestCase, CommonBase):
         component = "es"
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['cpu']),
-            str(self.SPEC['spec'][component]['cpuRequest']))
+            str(self.SPEC['spec']['logging'][component]['cpuRequest']))
 
     def test_small_profile_es_memory(self):
         component = "es"
         self.assertEqual(
             str(self.VALUES['computeProfiles'][self.PROFILE][component]['memory']),
-            str(self.SPEC['spec'][component]['memoryRequest']))
+            str(self.SPEC['spec']['logging'][component]['memoryRequest']))
 
     def test_small_profile_prometheus_cpu(self):
         component = "monitoring"

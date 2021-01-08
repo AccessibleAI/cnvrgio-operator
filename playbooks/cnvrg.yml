@@ -1,171 +1,60 @@
 - hosts: localhost
   gather_facts: no
   tasks:
-    - name: "Include vars"
+
+    - name: Construct vars files list
+      shell: printf "vars/globals.yml\n" && find ./roles/*/vars -name main.yml -type f
+      register: roleVars
+
+    - name: Include vars
       include_vars: "{{ item }}"
-      with_items:
-        - vars/globals.yml
-        - ../roles/conf/vars/main.yml
-        - ../roles/redis/vars/main.yml
-        - ../roles/pg/vars/main.yml
-        - ../roles/pg_backup/vars/main.yml
-        - ../roles/es/vars/main.yml
-        - ../roles/minio/vars/main.yml
-        - ../roles/monitoring/vars/main.yml
-        - ../roles/istio/vars/main.yml
-        - ../roles/kibana/vars/main.yml
-        - ../roles/fluentd/vars/main.yml
-        - ../roles/nvidiadp/vars/main.yml
-        - ../roles/mpi/vars/main.yml
-        - ../roles/app/vars/main.yml
-        - ../roles/nfs/vars/main.yml
-        - ../roles/hostpath/vars/main.yml
-        - ../roles/ingress/vars/main.yml
-        - ../roles/cnvrg_router/vars/main.yml
-        - ../roles/vpa/vars/main.yml
-        - ../roles/hyper/vars/main.yml
+      with_items: "{{ roleVars.stdout_lines }}"
       tags: always
 
-    # CnvrgApp deployment
-    - import_role:
-        name: app
-      vars:
-        role_state: "{{'present' if cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: app
+    - name: Set empty operatorRoles
+      set_fact:
+        operatorRoles: []
 
-    # Cnvrg Nginx Router
-    - import_role:
-        name: cnvrg_router
-      vars:
-        role_state: "{{'present' if cnvrg_router.enabled == 'true' else 'absent'}}"
-      tags: cnvrg_router
+    - name: Add default operator roles list
+      set_fact:
+        defaultOperatorRoles: "{{ defaultOperatorRoles | default([]) + [role] }}"
+      loop_control:
+        loop_var: role
+      loop:
+        - { name: 'storage', enabled: "{{storage.enabled}}" }
+        - { name: 'networking', enabled: "{{networking.enabled}}" }
+        - { name: 'pg', enabled: "{{pg.enabled}}" }
+        - { name: 'minio', enabled: "{{minio.enabled}}" }
+        - { name: 'redis', enabled: "{{redis.enabled}}" }
+        - { name: 'logging', enabled: "{{logging.enabled}}" }
+        - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
+        - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
+        - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
+        - { name: 'mpi', enabled: "{{mpi.enabled}}" }
+        - { name: 'vpa', enabled: "{{vpa.enabled}}" }
 
-    # NFS provisioner deployment
-    - import_role:
-        name: nfs
-      vars:
-        role_state: "{{'present' if nfs.enabled == 'true' else 'absent'}}"
-      tags: nfs
+    - name: Set operatorRoles if otags are `all` or not defined
+      set_fact:
+        operatorRoles: "{{ operatorRoles + [role] }}"
+      loop_control:
+        loop_var: role
+      loop: "{{defaultOperatorRoles}}"
+      when: (otags == "all") or (otags is not defined)
 
-    # Hostpath provisioner deployment
-    - import_role:
-        name: hostpath
-      vars:
-        role_state: "{{'present' if hostpath.enabled == 'true' else 'absent'}}"
-      tags: hostpath
+    - name: Set operatorRoles if otags are set for sepcifc roles
+      set_fact:
+        operatorRoles: "{{ operatorRoles + [role] }}"
+      when:
+      - otags != "all"
+      - role.name in otags.split(",")
+      loop_control:
+        loop_var: role
+      loop: "{{defaultOperatorRoles}}"
 
-    # Configuration deployment
-    - import_role:
-        name: conf
-      vars:
-        role_state: "{{'present' if conf.enabled == 'true' else 'absent'}}"
-      tags: conf
-
-    # Postgres deployment
-    - import_role:
-        name: pg
-      vars:
-        role_state: "{{'present' if pg.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: pg
-
-    # Postgres deployment
-    - import_role:
-        name: pg_backup
-      vars:
-         role_state: "{{'present' if pg_backup.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: pg_backup
-
-    # Redis deployment
-    - import_role:
-        name: redis
-      vars:
-        role_state: "{{'present' if redis.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: redis
-
-    # ElasticSearch deployment
-    - import_role:
-        name: es
-      vars:
-        role_state: "{{'present' if es.enabled == 'true' else 'absent'}}"
-      tags: es
-
-    # ElastAlert deployment
-    - import_role:
-        name: elastalert
-      vars:
-        role_state: "{{'present' if elastalert.enabled == 'true' else 'absent'}}"
-      tags: elastalert
-
-    # Minio deployment
-    - import_role:
-        name: minio
-      vars:
-        role_state: "{{'present' if minio.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: minio
-
-    # Fluentd deployment
-    - import_role:
-        name: fluentd
-      vars:
-        role_state: "{{'present' if fluentd.enabled == 'true' else 'absent'}}"
-      tags: fluentd
-
-    # Istio deployment
-    - import_role:
-        name: istio
-      vars:
-        role_state: "{{'present' if istio.enabled == 'true' else 'absent'}}"
-      when: istio.enabled == "true"
-      tags: istio
-
-    # Kibana deployment
-    - import_role:
-        name: kibana
-      vars:
-        role_state: "{{'present' if kibana.enabled == 'true' else 'absent'}}"
-      tags: kibana
-
-    # Hyper deployment
-    - import_role:
-        name: hyper
-      vars:
-        role_state: "{{'present' if hyper.enabled == 'true' and cnvrg_app.enabled == 'true' else 'absent'}}"
-      tags: hyper
-
-    # Nvidia device plugin
-    - import_role:
-        name: nvidiadp
-      vars:
-        role_state: "{{'present' if nvidiadp.enabled == 'true' else 'absent'}}"
-      when: nvidiadp.enabled == "true"
-      tags: nvidiadp
-
-    # MPI deployment
-    - import_role:
-        name: mpi
-      vars:
-        role_state: "{{'present' if mpi.enabled == 'true' else 'absent'}}"
-      when: mpi.enabled == "true"
-      tags: mpi
-
-    # Ingress rules deployment
-    - import_role:
-        name: ingress
-      when: ingress.enabled == 'true'
-      tags: ingress
-
-    # Monitoring
-    - import_role:
-        name: monitoring
-      vars:
-        role_state: "{{'present' if monitoring.enabled == 'true' else 'absent'}}"
-      when: monitoring.enabled == "true"
-      tags: monitoring
-
-    # vpa deployment
-    - import_role:
-        name: vpa
-      vars:
-        role_state: "{{'present' if vpa.enabled == 'true' else 'absent'}}"
-      when: vpa.enabled == "true"
-      tags: vpa
+    - name: Deploy cnvrg stack
+      include_role:
+        name: "{{ role.name }}"
+      when: role.enabled == "true"
+      loop_control:
+        loop_var: role
+      loop: "{{operatorRoles}}"

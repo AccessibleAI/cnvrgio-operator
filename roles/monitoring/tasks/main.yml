@@ -1,142 +1,136 @@
-- name: Deploy Prometheus operator
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
+- name: add prometheus operator
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/prometheus-operator/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.prometheus_operator.enabled == "true"
+    - monitoring.prometheusOperator.enabled == "true"
 
-- name: Deploy Default Service Monitors
+- name: Deploy Monitoring Operator
   include_role:
     name: common
     tasks_from: install
   vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+    templatePath: "templates/monitoringBundle.yml"
+    state: "present"
+
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
+- name: add Default Service Monitors
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/default-service-monitors/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.default_service_monitors.enabled == "true"
+    - monitoring.defaultServiceMonitors.enabled == "true"
 
-- name: Deploy Node Exporter
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add Node Exporter
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/node-exporter/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.node_exporter.enabled == "true"
+    - monitoring.nodeExporter.enabled == "true"
 
-- name: Deploy Prometheus Kube State Metrics
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add Prometheus Kube State Metrics
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/kube-state-metrics/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.kube_state_metrics.enabled == "true"
+    - monitoring.kubeStateMetrics.enabled == "true"
 
-- name: Deploy Prometheus instance
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add Prometheus instance
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/prometheus/*
   when:
     - monitoring.enabled == "true"
     - monitoring.prometheus.enabled == "true"
 
-- name: Deploy Minio Exporter
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add  Minio Exporter
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/minio-exporter/*
   when:
     - monitoring.enabled == "true"
-    - (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio")
-    - monitoring.minio_exporter.enabled == "true"
+    - (minio.enabled == "true") and (cnvrgApp.conf.cnvrgStorageType == "minio")
+    - monitoring.minioExporter.enabled == "true"
 
-- name: Deploy Sidekiq Exporter
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add  Sidekiq Exporter
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/sidekiq-exporter/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.sidekiq_exporter.enabled == "true"
-    - cnvrg_app.enabled == "true"
+    - monitoring.sidekiqExporter.enabled == "true"
+    - cnvrgApp.enabled == "true"
 
-- name: Deploy DCGM Exporter
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add DCGM Exporter
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/dcgm-exporter/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.dcgm_exporter.enabled == "true"
+    - monitoring.dcgmExporter.enabled == "true"
 
-- name: Deploy Idle Metrics Exporter
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add Idle Metrics Exporter
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/idle-metrics-exporter/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.idle_metrics_exporter.enabled == "true"
+    - monitoring.idleMetricsExporter.enabled == "true"
 
-- name: Deploy External Dashboards
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add External Dashboards
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/external-dashboards/*
   when:
     - monitoring.enabled == "true"
     - monitoring.grafana.enabled == "true"
 
-- name: Deploy Grafana
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add Grafana
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/grafana/*.yml
   when:
@@ -148,18 +142,24 @@
     kind: Deployment
     namespace: "kube-system"
     name: "metrics-server"
-  register: metrics_server
+  register: metricsServer
 
-- name: Deploy Metrics Server
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    template_path: "{{ item }}"
-    state: "{{ role_state }}"
+- name: add Metrics Server
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
   with_fileglob:
     - templates/metrics-server/*
   when:
     - monitoring.enabled == "true"
-    - monitoring.metrics_server.enabled == "true"
-    - metrics_server.resources | length == 0
+    - monitoring.metricsServer.enabled == "true"
+    - metricsServer.resources | length == 0
+
+- name: Deploy Monitoring
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "templates/monitoringBundle.yml"
+    state: "present"

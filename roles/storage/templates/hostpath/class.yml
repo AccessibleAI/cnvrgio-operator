@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ storage.hostpath.storageClassName }}"
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "{{ storage.hostpath.defaultSc }}"
+provisioner: kubevirt.io/hostpath-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: "{{ storage.hostpath.reclaimPolicy }}"

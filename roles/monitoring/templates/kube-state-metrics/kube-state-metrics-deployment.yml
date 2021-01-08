@@ -1,4 +1,4 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -71,14 +71,14 @@ spec:
 {% if vpa.enabled == "true" %}
         - --collectors=verticalpodautoscalers
 {%  endif %}
-        image: {{ monitoring.kube_state_metrics.image }}
+        image: {{ monitoring.kubeStateMetrics.image }}
         name: kube-state-metrics
       - args:
         - --logtostderr
         - --secure-listen-address=:8443
         - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
         - --upstream=http://127.0.0.1:8081/
-        image: {{ monitoring.prometheus_operator.images.kube_rbac_proxy_image }}
+        image: {{ monitoring.prometheusOperator.images.kubeRbacProxyImage }}
         name: kube-rbac-proxy-main
         ports:
         - containerPort: 8443
@@ -90,7 +90,7 @@ spec:
         - --secure-listen-address=:9443
         - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
         - --upstream=http://127.0.0.1:8082/
-        image: {{ monitoring.prometheus_operator.images.kube_rbac_proxy_image }}
+        image: {{ monitoring.prometheusOperator.images.kubeRbacProxyImage }}
         name: kube-rbac-proxy-self
         ports:
         - containerPort: 9443

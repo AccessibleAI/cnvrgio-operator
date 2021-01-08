@@ -4,18 +4,15 @@ minio:
   replicas: 1
   image: "docker.io/minio/minio:RELEASE.2020-09-17T04-49-20Z"
   port: 9000
-  storage_size: "100Gi"
-  svc_name: "minio"
-  node_port: 30090
-  storage_class: "use-default"
-  cpu_request: 1
-  memory_request: 2Gi
-  shared_storage:
+  storageSize: "100Gi"
+  svcName: "minio"
+  nodePort: 30090
+  storageClass: "use-default"
+  cpuRequest: 1
+  memoryRequest: 2Gi
+  sharedStorage:
     enabled: "false"
-    storage_class_name: "minio-shared-backend"
-    nfs_server: ""
-    path: ""
-    consistent_hash:
+    consistentHash:
       key: httpQueryParameterName
       value: uploadId
 

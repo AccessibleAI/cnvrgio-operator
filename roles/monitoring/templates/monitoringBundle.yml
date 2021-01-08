@@ -1,0 +1,10 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+{% for roleTmpl in roleBundle %}
+  {% set yamlSeparator = "---" %}
+  {% set tmplPath = roleTmpl.split("templates/")[-1] %}
+  {% include "templates/" + tmplPath %}
+
+{{ yamlSeparator }}
+{% endfor %}
+
+

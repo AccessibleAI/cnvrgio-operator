@@ -1,0 +1,73 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "{{logging.elastalert.svcName}}"
+  name: "{{logging.elastalert.svcName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{logging.elastalert.svcName}}"
+  template:
+    metadata:
+      labels:
+        app: "{{logging.elastalert.svcName}}"
+    spec:
+      {% if securityMode == "default" %}
+      securityContext:
+        runAsUser: {{ logging.elastalert.runAsUser }}
+        runAsGroup: {{ logging.elastalert.runAsGroup }}
+        fsGroup: {{ logging.elastalert.fsGroup }}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      containers:
+      - image: "{{ logging.elastalert.image }}"
+        name: "{{logging.elastalert.svcName}}"
+        ports:
+        - containerPort: {{logging.elastalert.containerPort}}
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "{{logging.elastalert.cpuRequest}}"
+            memory: "{{logging.elastalert.memoryRequest}}"
+          limits:
+            cpu: "{{ logging.elastalert.cpuLimit }}"
+            memory: "{{ logging.elastalert.memoryLimit }}"
+        volumeMounts:
+        - mountPath: /opt/elastalert-server/config/config.json
+          subPath: config.json
+          name: elastalert-config
+        - mountPath: /opt/elastalert/config.yaml
+          subPath: config.yaml
+          name: elastalert-config
+        - mountPath: /opt/elastalert/rules
+          name: "{{logging.elastalert.svcName}}"
+      restartPolicy: Always
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      volumes:
+      - name: "{{logging.elastalert.svcName}}"
+        persistentVolumeClaim:
+          claimName: "{{logging.elastalert.svcName}}"
+      - configMap:
+          name: elastalert-config
+        name: elastalert-config

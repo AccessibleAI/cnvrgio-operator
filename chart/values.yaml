@@ -1,9 +1,6 @@
-createNs: true
 operatorImage: docker.io/cnvrg/cnvrg-operator
 hookImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
-specProfile: default
 computeProfile: medium
-storageProfile: default
 computeProfiles:
   large:
     storage: 100Gi
@@ -103,73 +100,46 @@ computeProfiles:
       memory: 100Mi
 debug: "false"
 dumpDir: ""
+otags: "all"
 dryRun: "false"
-privilegedSa: cnvrg-privileged
 clusterDomain: ""
-useHttps: "false"
 orchestrator: k8s
 securityMode: default
-ingressType: istio
+
 tenancy:
   enabled: "false"
   dedicatedNodes: "false"
   cnvrg:
     key: "cnvrg-taint"
     value: "true"
-https:
-  enabled: "false"
-  useWildcardCertificate: "true"
-  cert: ""
-  key: ""
-  certSecret: ""
-conf:
+
+networking:
   enabled: "true"
-  gcpStorageSecret: gcp-storage-secret
-  gcpKeyfileMountPath: /tmp/gcp_keyfile
-  gcpKeyfileName: key.json
-  defaultJobsStorageClass: ""
-registry:
-  name: cnvrg-registry
-  url: "docker.io"
-  user: ""
-  password: ""
-rbac:
-  role: cnvrg-role
-  serviceAccountName: cnvrg
-  roleBindingName: cnvrg-role-binding
-appConfigs:
-  cnvrgStorageUseIamRole: "false"
-  featureFlags: ""
-  smtp:
-    server: ""
-    port: ""
-    username: ""
-    password: ""
-    domain: ""
-appSecrets:
-  sentryUrl: https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32
-  secretKeyBase: 0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5
-  stsIv: DeJ/CGz/Hkb/IbRe4t1xLg==
-  stsKey: 05646d3cbf8baa5be7150b4283eda07d
-  passengerAppEnv: app
-  railsEnv: app
-  runJobsOnSelfCluster: "true"
-  defaultComputeConfig: /opt/kube
-  defaultComputeName: default
-  useStdout: "true"
-  extractTagsFromCmd: "false"
-  checkJobExpiration: "true"
-  cnvrgStorageType: minio
-  cnvrgStorageEndpoint: "default"
-  cnvrgStorageBucket: cnvrg-storage
-  cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
-  cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-  minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"
-  cnvrgStorageAzureAccessKey: ""
-  cnvrgStorageAzureAccountName: ""
-  cnvrgStorageAzureContainer: ""
-  cnvrgStorageRegion: eastus
-  cnvrgStorageProject: ""
+  ingressType: "istio" # openshift | istio | k8singress | nodeport
+  https:
+    enabled: "false"
+    cert: ""
+    key: ""
+    certSecret: "" #istio
+
+  istio:
+    enabled: "true"
+    operatorImage: "docker.io/istio/operator:1.8.1"
+    hub: "docker.io/istio"
+    tag: "1.8.1"
+    proxyImage: "proxyv2"
+    mixerImage: "mixer"
+    pilotImage: "pilot"
+    gwName: "cnvrg-gateway"
+    externalIp: "" # if externalIp is set the Istio service type will be: ClusterIP with provided external IPs
+    ingressSvcAnnotations: "" # https://gist.github.com/mgoodness/1a2926f3b02d8e8149c224d25cc57dc1, https://kubernetes.io/docs/concepts/cluster-administration/cloud-providers/
+
+  ingress:
+    enabled: "true"
+    timeout: 18000s #  15min = retries_attempts * per_try_timeout
+    retriesAttempts: 5
+    perTryTimeout: 3600s
+
 redis:
   enabled: "true"
   image: redis:3.0.5
@@ -181,6 +151,7 @@ redis:
   requests:
     cpu: 500m
     memory: 1Gi
+
 pg:
   enabled: "true"
   image: centos/postgresql-12-centos7
@@ -196,6 +167,7 @@ pg:
   storageClass: use-default
   cpuRequest: 4
   memoryRequest: 8Gi
+
 pgBackup:
   storageSize: 30Gi
   enabled: "false"
@@ -204,55 +176,7 @@ pgBackup:
   scriptPath: /opt/script
   storageClass: use-default
   cronTime: "1 1 * * *"
-es:
-  enabled: "true"
-  image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
-  maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
-  port: "9200"
-  storageSize: 30Gi
-  svcName: elasticsearch
-  runAsUser: 1000
-  runAsGroup: 1000
-  fsGroup: 1000
-  patchEsNodes: "true"
-  nodePort: 32200
-  storageClass: use-default
-  cpuRequest: 1
-  memoryRequest: 1Gi
-  cpuLimit: 2
-  memoryLimit: 4Gi
-  javaOpts: ""
-elastalert:
-  enabled: "true"
-  image: "bitsensor/elastalert:3.0.0-beta.1"
-  port: "80"
-  nodePort: 32030
-  containerPort: "3030"
-  storageSize: "30Gi"
-  svcName: "elastalert"
-  storageClass: "use-default"
-  cpuRequest: 100m
-  memoryRequest: 200Mi
-  cpuLimit: 1
-  memoryLimit: 2Gi
-  runAsUser: 1000
-  runAsGroup: 1000
-  fsGroup: 1000
-hyper:
-  enabled: "true"
-  image: "cnvrg/hyper-server:latest"
-  port: 5050
-  nodePort: 30050
-  svcName: "hyper"
-  cpuRequest: 100m
-  memoryRequest: 200Mi
-  cpuLimit: 2
-  memoryLimit: 4Gi
-  replicas: 1
-  token: "token"
-  enableReadinessProbe: "true"
-  readinessPeriodSeconds: 100
-  readinessTimeoutSeconds: 60
+
 minio:
   enabled: "true"
   replicas: 1
@@ -266,9 +190,62 @@ minio:
   memoryRequest: 4Gi
   sharedStorage:
     enabled: "false"
-    storageClassName: "minio-shared-backend"
-    nfsServer: ""
-    path: ""
+
+logging:
+  enabled: "true"
+  es:
+    enabled: "true"
+    image: "docker.io/cnvrg/cnvrg-es:v7.8.1"
+    maxMapImage: "docker.io/cnvrg/cnvrg-tools:v0.3"
+    port: "9200"
+    storageSize: 30Gi
+    svcName: elasticsearch
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    patchEsNodes: "true"
+    nodePort: 32200
+    storageClass: use-default
+    cpuRequest: 1
+    memoryRequest: 1Gi
+    cpuLimit: 2
+    memoryLimit: 4Gi
+    javaOpts: ""
+  elastalert:
+    enabled: "true"
+    image: "bitsensor/elastalert:3.0.0-beta.1"
+    port: "80"
+    nodePort: 32030
+    containerPort: "3030"
+    svcName: "elastalert"
+    storageClass: "use-default"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    cpuLimit: 1
+    memoryLimit: 2Gi
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  kibana:
+    enabled: "true"
+    svcName: kibana
+    port: 5601
+    image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
+    nodePort: 30601
+    cpuRequest: 500m
+    memoryRequest: 500Mi
+    cpuLimit: 1
+    memoryLimit: 2000Mi
+  fluentd:
+    enabled: "true"
+    image: "fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1"
+    journalPath: /var/log/journal
+    containersPath: /var/lib/docker/containers
+    journald: "false"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    memoryLimit: 200Mi
+
 monitoring:
   enabled: "true"
   prometheusOperator:
@@ -318,36 +295,7 @@ monitoring:
   metricsServer:
     enabled: "true"
     image: "k8s.gcr.io/metrics-server/metrics-server:v0.3.7"
-istio:
-  enabled: "true"
-  operatorImage: "docker.io/istio/operator:1.8.1"
-  hub: "docker.io/istio"
-  tag: "1.8.1"
-  proxyImage: "proxyv2"
-  mixerImage: "mixer"
-  pilotImage: "pilot"
-  gwName: cnvrg-gateway
-  externalIp: ""
-  ingressSvcAnnotations: ""
-kibana:
-  enabled: "true"
-  svcName: kibana
-  port: 5601
-  image: "docker.elastic.co/kibana/kibana-oss:7.8.1"
-  nodePort: 30601
-  cpuRequest: 500m
-  memoryRequest: 500Mi
-  cpuLimit: 1
-  memoryLimit: 2000Mi
-fluentd:
-  enabled: "true"
-  image: "fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1"
-  journalPath: /var/log/journal
-  containersPath: /var/lib/docker/containers
-  journald: "false"
-  cpuRequest: 100m
-  memoryRequest: 200Mi
-  memoryLimit: 200Mi
+
 nvidiadp:
   enabled: "true"
   image: nvidia/k8s-device-plugin:v0.7.0
@@ -355,6 +303,7 @@ nvidiadp:
     enabled: "true"
     key: accelerator
     value: nvidia
+
 mpi:
   enabled: "true"
   image: "mpioperator/mpi-operator:v0.2.3"
@@ -364,6 +313,7 @@ mpi:
     url: "docker.io"
     user: ""
     password: ""
+
 cnvrgApp:
   replicas: 1
   sidekiqReplicas: 2
@@ -375,57 +325,128 @@ cnvrgApp:
   cpu: 4
   memory: 4Gi
   svcName: app
-  customAgentTag: "false"
-  intercom: "true"
   nodePort: 30080
   sidekiqCpu: 2
   sidekiqMemory: 4Gi
   sidekiqSearchkickCpu: 1
   sidekiqSearchkickMemory: 2Gi
   sidekiqSearchkickReplicas: 1
+  sidekiqSystemCpu: 500m
+  sidekiqSystemMemory: 500Mi
+  sidekiqSystemReplicas: 1
   passengerMaxPoolSize: 20
   enableReadinessProbe: "true"
-  readinessPeriodSeconds: 100
-  readinessTimeoutSeconds: 60
-seeder:
-  image: docker.io/cnvrg/cnvrg-boot:v0.23
-  seedCmd: rails db:migrate && rails db:seed && rails libraries:update
-nfs:
+  initialDelaySeconds: 10
+  readinessPeriodSeconds: 25
+  readinessTimeoutSeconds: 20
+  failureThreshold: 4
+  resourcesRequestEnabled: "true"
+  seeder:
+    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+    seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
+  hyper:
+    enabled: "true"
+    image: "cnvrg/hyper-server:latest"
+    port: 5050
+    nodePort: 30050
+    svcName: "hyper"
+    cpuRequest: 100m
+    memoryRequest: 200Mi
+    cpuLimit: 2
+    memoryLimit: 4Gi
+    replicas: 1
+    token: "token"
+    enableReadinessProbe: "true"
+    readinessPeriodSeconds: 100
+    readinessTimeoutSeconds: 60
+  conf:
+    enabled: "true"
+    gcpStorageSecret: "gcp-storage-secret"
+    gcpKeyfileMountPath: "/tmp/gcp_keyfile"
+    gcpKeyfileName: "key.json"
+    jobsStorageClass: ""
+    cnvrgStorageUseIamRole: "false"
+    featureFlags: ""
+    sentryUrl: "https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32"
+    secretKeyBase: "0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5"
+    stsIv: "DeJ/CGz/Hkb/IbRe4t1xLg=="
+    stsKey: "05646d3cbf8baa5be7150b4283eda07d"
+    passengerAppEnv: "app"
+    railsEnv: "app"
+    runJobsOnSelfCluster: "true"
+    defaultComputeConfig: "/opt/kube"
+    defaultComputeName: "default"
+    useStdout: "true"
+    extractTagsFromCmd: "false"
+    checkJobExpiration: "true"
+    cnvrgStorageType: "minio"
+    cnvrgStorageBucket: "cnvrg-storage"
+    cnvrgStorageAccessKey: "AKIAIOSFODNN7EXAMPLE"
+    cnvrgStorageSecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    cnvrgStorageEndpoint: "default"
+    minioSseMasterKey: "my-minio-key:a310aadcefdb634b748ae31225f175e3f64591f955dfc66ccc20e128a6817ff9"
+    cnvrgStorageAzureAccessKey: ""
+    cnvrgStorageAzureAccountName: ""
+    cnvrgStorageAzureContainer: ""
+    cnvrgStorageRegion: "eastus"
+    cnvrgStorageProject: ""
+    customAgentTag: "false"
+    intercom: "true"
+    splitSidekiq: "true"
+    registry:
+      name: cnvrg-registry
+      url: "docker.io"
+      user: ""
+      password: ""
+
+    rbac:
+      role: "cnvrg-role"
+      serviceAccountName: "cnvrg"
+      roleBindingName: "cnvrg-role-binding"
+
+    smtp:
+      server: ""
+      port: ""
+      username: ""
+      password: ""
+      domain: ""
+
+  cnvrgRouter:
+    enabled: "false"
+    image: nginx
+    svcName: routing-service
+    nodePort: 30081
+    port: 80
+
+storage:
   enabled: "false"
-  image: "quay.io/external_storage/nfs-client-provisioner:latest"
-  provisioner: cnvrg.io/ifs
-  storageClassName: cnvrg-nfs-storage
-  server: ""
-  path: ""
-  cpuRequest: 100m
-  memoryRequest: 100Mi
-  cpuLimit: 200m
-  memoryLimit: 200Mi
-  reclaimPolicy: "Delete"
-  defaultSc: "false"
-hostpath:
-  enabled: "false"
-  image: "quay.io/kubevirt/hostpath-provisioner"
-  hostPath: /cnvrg-storage
-  storageClassName: cnvrg-hostpath-provisioner
-  nodeName: ""
-  cpuRequest: 100m
-  memoryRequest: 100Mi
-  cpuLimit: 200m
-  memoryLimit: 200Mi
-autoscaler:
-  enabled: "false"
-ingress:
-  enabled: "true"
-  timeout: 18000s
-  retriesAttempts: 5
-  perTryTimeout: 3600s
-cnvrgRouter:
-  enabled: "false"
-  image: nginx
-  svcName: routing-service
-  nodePort: 30081
-  port: 80
+  nfs:
+    enabled: "false"
+    image: "quay.io/external_storage/nfs-client-provisioner:latest"
+    provisioner: cnvrg.io/ifs
+    storageClassName: cnvrg-nfs-storage
+    server: ""
+    path: ""
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 200m
+    memoryLimit: 200Mi
+    reclaimPolicy: "Delete"
+    defaultSc: "false"
+
+  hostpath:
+    enabled: "false"
+    image: "quay.io/kubevirt/hostpath-provisioner"
+    hostPath: /cnvrg-storage
+    storageClassName: cnvrg-hostpath-provisioner
+    nodeName: ""
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    cpuLimit: 200m
+    memoryLimit: 200Mi
+    reclaimPolicy: "Retain"
+    defaultSc: "false"
+
 vpa:
   enabled: "false"
   images:

@@ -1,4 +1,4 @@
-#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +20,7 @@ spec:
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
-      {% if tenancy.enabled == "true" and tenancy.dedicated_nodes == "true" %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
@@ -132,12 +132,12 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/workload-total
           name: grafana-dashboard-workload-total
           readOnly: false
-        {% if monitoring.sidekiq_exporter.enabled == "true" and cnvrg_app.enabled == "true" %}
+        {% if monitoring.sidekiqExporter.enabled == "true" and cnvrgApp.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/sidekiq-exporter
           name: grafana-dashboard-cnvrg-sidekiq-exporter
           readOnly: false
         {% endif %}
-        {% if (monitoring.minio_exporter.enabled == "true") and (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio") %}
+        {% if (monitoring.minioExporter.enabled == "true") and (minio.enabled == "true") and (cnvrgApp.conf.cnvrgStorageType == "minio") %}
         - mountPath: /grafana-dashboard-definitions/0/minio-exporter
           name: grafana-dashboard-cnvrg-minio-exporter
           readOnly: false
@@ -150,17 +150,17 @@ spec:
           name: vpa-dashboard
           readOnly: false
         {% endif %}
-        {% if monitoring.node_exporter.enabled == "true" %}
+        {% if monitoring.nodeExporter.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/node-exporter-full
           name: node-exporter-full
           readOnly: false
         {% endif %}
-        {% if monitoring.dcgm_exporter.enabled == "true" %}
+        {% if monitoring.dcgmExporter.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/dcgm-exporter
           name: dcgm-exporter-dashboard
           readOnly: false
         {% endif %}
-        {% if monitoring.idle_metrics_exporter.enabled == "true" %}
+        {% if monitoring.idleMetricsExporter.enabled == "true" %}
         - mountPath: /grafana-dashboard-definitions/0/idle-exporter
           name: grafana-idle-metrics
           readOnly: false
@@ -247,12 +247,12 @@ spec:
       - configMap:
           name: grafana-dashboard-workload-total
         name: grafana-dashboard-workload-total
-      {% if monitoring.sidekiq_exporter.enabled == "true" and cnvrg_app.enabled == "true" %}
+      {% if monitoring.sidekiqExporter.enabled == "true" and cnvrgApp.enabled == "true" %}
       - configMap:
           name: grafana-dashboard-cnvrg-sidekiq-exporter
         name: grafana-dashboard-cnvrg-sidekiq-exporter
       {% endif %}
-      {% if (monitoring.minio_exporter.enabled == "true") and (minio.enabled == "true") and (app_secrets.cnvrg_storage_type == "minio") %}
+      {% if (monitoring.minioExporter.enabled == "true") and (minio.enabled == "true") and (cnvrgApp.conf.cnvrgStorageType == "minio") %}
       - configMap:
           name: grafana-dashboard-cnvrg-minio-exporter
         name: grafana-dashboard-cnvrg-minio-exporter
@@ -260,7 +260,7 @@ spec:
           name: grafana-dashboard-cnvrg-minio-exporter2
         name: grafana-dashboard-cnvrg-minio-exporter2
       {% endif %}
-      {% if monitoring.node_exporter.enabled == "true" %}
+      {% if monitoring.nodeExporter.enabled == "true" %}
       - configMap:
           name: node-exporter-full
         name: node-exporter-full
@@ -270,12 +270,12 @@ spec:
           name: vpa-dashboard
         name: vpa-dashboard
       {% endif %}
-      {% if monitoring.dcgm_exporter.enabled == "true" %}
+      {% if monitoring.dcgmExporter.enabled == "true" %}
       - configMap:
           name: dcgm-exporter-dashboard
         name: dcgm-exporter-dashboard
       {% endif %}
-      {% if monitoring.idle_metrics_exporter.enabled == "true" %}
+      {% if monitoring.idleMetricsExporter.enabled == "true" %}
       - configMap:
           name: grafana-idle-metrics
         name: grafana-idle-metrics

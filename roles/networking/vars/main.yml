@@ -1,0 +1,27 @@
+---
+networking:
+  enabled: "true"
+  ingressType: "istio" # openshift | istio | k8singress | nodeport
+  https:
+    enabled: "false"
+    cert: ""
+    key: ""
+    certSecret: "" #istio
+
+  istio:
+    enabled: "true"
+    operatorImage: "docker.io/istio/operator:1.8.1"
+    hub: "docker.io/istio"
+    tag: "1.8.1"
+    proxyImage: "proxyv2"
+    mixerImage: "mixer"
+    pilotImage: "pilot"
+    gwName: "cnvrg-gateway"
+    externalIp: "" # if externalIp is set the Istio service type will be: ClusterIP with provided external IPs
+    ingressSvcAnnotations: "" # https://gist.github.com/mgoodness/1a2926f3b02d8e8149c224d25cc57dc1, https://kubernetes.io/docs/concepts/cluster-administration/cloud-providers/
+
+  ingress:
+    enabled: "true"
+    timeout: 18000s #  15min = retries_attempts * per_try_timeout
+    retriesAttempts: 5
+    perTryTimeout: 3600s
