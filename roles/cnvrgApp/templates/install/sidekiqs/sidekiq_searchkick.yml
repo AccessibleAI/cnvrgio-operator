@@ -48,8 +48,8 @@ spec:
         imagePullPolicy: Always
         {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
         volumeMounts:
-        - name: "{{ conf.gcpStorageSecret }}"
-          mountPath: "{{ conf.gcpKeyfileMountPath }}"
+        - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
+          mountPath: "{{ cnvrgApp.conf.gcpKeyfileMountPath }}"
           readOnly: true
         {% endif %}
         envFrom:
@@ -71,9 +71,9 @@ spec:
         {% endif %}
       {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
       volumes:
-      - name: "{{ conf.gcpStorageSecret }}"
+      - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
         secret:
-          secretName: "{{ conf.gcpStorageSecret }}"
+          secretName: "{{ cnvrgApp.conf.gcpStorageSecret }}"
       {% endif %}
       initContainers:
       - name: seeder
