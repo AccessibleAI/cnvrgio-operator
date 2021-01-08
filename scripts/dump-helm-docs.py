@@ -32,13 +32,13 @@ def parse_roles_vars():
                     continue
                 if key in skip_values_for_keys:
                     value = ""
-                total_params_number += 1
                 params[key] = value
 
     helm_params = {'globals': {'computeProfile': 'medium'}}
     remove_sections = ["cnvrgAppUpgrade", "pg_backup"]
     for key, value in params.items():
         if len(key.split(".")) == 1:
+            total_params_number += 1
             helm_params['globals'][key] = value
             continue
         section_name = key.split(".")[0]
@@ -46,8 +46,9 @@ def parse_roles_vars():
             continue
         if section_name not in helm_params:
             helm_params[section_name] = {}
+        total_params_number += 1
         helm_params[section_name][key] = value
-
+    print(total_params_number)
     return helm_params
 
 
