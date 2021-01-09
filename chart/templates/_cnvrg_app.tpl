@@ -54,7 +54,7 @@ cnvrgApp:
     image: "{{ .Values.cnvrgApp.seeder.image }}"
     seedCmd: "{{ .Values.cnvrgApp.seeder.seedCmd }}"
   conf:
-    gcpStorageSecret: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
+    gcpStorageSecret: "{{ .Values.cnvrgApp.conf.gcpStorageSecret }}"
     gcpKeyfileMountPath: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
     gcpKeyfileName: "{{ .Values.cnvrgApp.conf.gcpKeyfileName }}"
     jobsStorageClass: "{{ .Values.cnvrgApp.conf.jobsStorageClass }}"
