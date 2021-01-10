@@ -13,6 +13,7 @@ networking:
     gwName: "{{ .Values.networking.istio.gwName }}"
     externalIp: "{{ .Values.networking.istio.externalIp }}"
     ingressSvcAnnotations: "{{.Values.networking.istio.ingressSvcAnnotations}}"
+    loadBalancerSourceRanges: "{{.Values.networking.istio.loadBalancerSourceRanges}}"
   ingress:
     enabled: "{{ .Values.networking.ingress.enabled }}"
     timeout: "{{ .Values.networking.ingress.timeout }}"

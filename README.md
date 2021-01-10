@@ -381,6 +381,8 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`networking.istio.gwName`|cnvrg-gateway
 |`networking.istio.externalIp`|-
 |`networking.istio.ingressSvcAnnotations`|-
+|`networking.istio.ingressSvcExtraPorts`|-
+|`networking.istio.loadBalancerSourceRanges`|-
 |`networking.ingress.enabled`|true
 |`networking.ingress.timeout`|18000s
 |`networking.ingress.retriesAttempts`|5

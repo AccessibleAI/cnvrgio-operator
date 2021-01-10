@@ -78,6 +78,13 @@ spec:
             cpu: 100m
             memory: 128Mi
         service:
+          {% if networking.istio.loadBalancerSourceRanges != "" %}
+          loadBalancerSourceRanges:
+          {% set sourceRanges = networking.istio.loadBalancerSourceRanges.split(';') %}
+          {% for srouceRange in sourceRanges %}
+            - "{{ srouceRange }}"
+          {% endfor %}
+          {% endif %}
           {% if networking.istio.externalIp != "" %}
           type: ClusterIP
           externalIPs:
@@ -90,18 +97,12 @@ spec:
           {% if networking.istio.ingressSvcExtraPorts != "" %}
           {{ networking.istio.ingressSvcExtraPorts  | to_nice_yaml(indent=2) | indent(width=10) -}}
           {% endif %}
-          - name: status-port
-            port: 15021
-            targetPort: 15021
           - name: http2
             port: 80
             targetPort: 8080
           - name: https
             port: 443
             targetPort: 8443
-          - name: tls
-            port: 15443
-            targetPort: 15443
         strategy:
           rollingUpdate:
             maxSurge: 100%
