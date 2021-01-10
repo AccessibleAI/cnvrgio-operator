@@ -87,6 +87,9 @@ spec:
             {% endfor %}
           {% endif %}
           ports:
+          {% if networking.istio.ingressSvcExtraPorts != "" %}
+          {{ networking.istio.ingressSvcExtraPorts  | to_nice_yaml(indent=2) | indent(width=10) -}}
+          {% endif %}
           - name: status-port
             port: 15021
             targetPort: 15021
