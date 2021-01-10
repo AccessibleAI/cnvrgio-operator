@@ -107,7 +107,7 @@ cnvrgApp:
     enabled: "{{ .Values.cnvrgApp.hyper.enabled }}"
     image: "{{ .Values.cnvrgApp.hyper.image }}"
     port: "{{ .Values.cnvrgApp.hyper.port }}"
-    nodePort: "{{ .Values.cnvrgApp.hyper.enabled }}"
+    nodePort: "{{ .Values.cnvrgApp.hyper.nodePort }}"
     svcName: "{{ .Values.cnvrgApp.hyper.svcName }}"
     replicas: "{{ .Values.cnvrgApp.hyper.replicas }}"
     token: "{{.Values.cnvrgApp.hyper.token}}"

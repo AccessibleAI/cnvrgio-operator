@@ -10,9 +10,9 @@ spec:
   type: NodePort
   {% endif %}
   ports:
-    - port: {{cnvrgApp.port}}
-      {% if networking.ingressType == "nodeport" %}
-      nodePort: {{ cnvrgApp.nodePort }}
-      {% endif %}
+  - port: {{cnvrgApp.port}}
+    {% if networking.ingressType == "nodeport" %}
+    nodePort: {{ cnvrgApp.nodePort }}
+    {% endif %}
   selector:
     app: {{cnvrgApp.svcName}}
