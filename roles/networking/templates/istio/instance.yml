@@ -49,7 +49,7 @@ spec:
         serviceAnnotations:
           {% set annotations = networking.istio.ingressSvcAnnotations.split(";") %}
             {% for annotation in annotations %}
-              {% set annotationItmes = annotation.split(":") %}
+              {% set annotationItmes = annotation.split(":" + " ") %}
                 {% if annotationItmes|length == 2 %}
           "{{annotationItmes[0].strip()}}": "{{annotationItmes[1].strip()}}"
               {% endif %}
