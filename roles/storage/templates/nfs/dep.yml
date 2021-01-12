@@ -16,6 +16,8 @@ spec:
       labels:
         app: nfs-client-provisioner
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

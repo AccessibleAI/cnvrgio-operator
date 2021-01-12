@@ -16,6 +16,8 @@ spec:
       labels:
         k8s-app: metrics-server
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       tolerations:
       - key: CriticalAddonsOnly
         operator: Exists

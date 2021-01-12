@@ -16,6 +16,8 @@ spec:
       labels:
         app: "{{logging.elastalert.svcName}}"
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% if securityMode == "default" %}
       securityContext:
         runAsUser: {{ logging.elastalert.runAsUser }}

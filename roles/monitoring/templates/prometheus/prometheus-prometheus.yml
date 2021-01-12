@@ -22,6 +22,8 @@ spec:
         {% elif pg.storageClass != "use-default" %}
         storageClassName: "{{ monitoring.prometheus.storageClass }}"
         {% endif %}
+  imagePullSecrets:
+    - name: {{ cnvrgApp.conf.registry.name }}
   image: "{{ monitoring.prometheus.image }}"
   {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
   tolerations:

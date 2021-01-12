@@ -9,6 +9,8 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       terminationGracePeriodSeconds: 1
       {% if tenancy.enabled == "true" %}

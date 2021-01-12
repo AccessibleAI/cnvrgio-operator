@@ -20,6 +20,8 @@ spec:
     pilot:
       enabled: true
       k8s:
+        imagePullSecrets:
+          - name: {{ cnvrgApp.conf.registry.name }}
         {% if tenancy.enabled == "true" %}
         nodeSelector:
           "{{ tenancy.cnvrg.key }}": "{{ tenancy.cnvrg.value }}"

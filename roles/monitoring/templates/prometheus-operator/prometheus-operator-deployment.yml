@@ -21,6 +21,8 @@ spec:
         app.kubernetes.io/name: prometheus-operator
         app.kubernetes.io/version: v0.40.0
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

@@ -20,6 +20,8 @@ spec:
       labels:
         app: "{{cnvrgApp.hyper.svcName}}"
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

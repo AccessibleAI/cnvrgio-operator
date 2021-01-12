@@ -134,6 +134,8 @@ spec:
       labels:
         name: istio-operator
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       serviceAccountName: istio-operator
       {% if tenancy.enabled == "true" %}
       nodeSelector:

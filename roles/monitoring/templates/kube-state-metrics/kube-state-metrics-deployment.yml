@@ -18,6 +18,8 @@ spec:
         app.kubernetes.io/name: kube-state-metrics
         app.kubernetes.io/version: v1.9.5
     spec:
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
