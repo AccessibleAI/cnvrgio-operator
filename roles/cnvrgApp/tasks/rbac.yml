@@ -1,0 +1,27 @@
+- include_vars: ../../minio/vars/main.yml
+- include_vars: ../../pg/vars/main.yml
+- include_vars: ../../logging/vars/main.yml
+- include_vars: ../../redis/vars/main.yml
+- include_vars: ../../cnvrgApp/vars/main.yml
+
+- name: reset bundle roles
+  set_fact:
+    roleBundle: []
+
+- name: Construct CnvrgApp
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  loop:
+    - templates/install/conf/rbac.yml
+    - templates/install/conf/regcred.yml
+
+- name: Deploy rbac and regcred role
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "templates/cnvrgAppBundle.yml"
+    state: "present"
+    compare_resource: yes
