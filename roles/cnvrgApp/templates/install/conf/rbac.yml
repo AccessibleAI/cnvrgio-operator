@@ -13,6 +13,8 @@ kind: ServiceAccount
 metadata:
   name: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"
+imagePullSecrets:
+  - name: "{{ cnvrgApp.conf.registry.name }}"
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1

@@ -3,6 +3,8 @@ kind: ServiceAccount
 metadata:
   name: nfs-client-provisioner
   namespace: "{{ansible_operator_meta.namespace}}"
+imagePullSecrets:
+  - name: "{{ cnvrgApp.conf.registry.name }}"
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1

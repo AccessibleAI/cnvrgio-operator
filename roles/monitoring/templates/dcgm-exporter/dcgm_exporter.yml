@@ -22,8 +22,6 @@ spec:
       name: "dcgm-exporter"
     spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
       containers:
       - image: "{{ monitoring.dcgmExporter.image }}"
         env:

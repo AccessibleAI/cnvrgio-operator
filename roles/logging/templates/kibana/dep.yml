@@ -17,8 +17,6 @@ spec:
         app: "{{logging.kibana.svcName}}"
     spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

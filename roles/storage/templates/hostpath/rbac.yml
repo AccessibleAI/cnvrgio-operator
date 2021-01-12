@@ -3,6 +3,8 @@ kind: ServiceAccount
 metadata:
   name: hostpath-provisioner-admin
   namespace: "{{ ansible_operator_meta.namespace }}"
+imagePullSecrets:
+  - name: "{{ cnvrgApp.conf.registry.name }}"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

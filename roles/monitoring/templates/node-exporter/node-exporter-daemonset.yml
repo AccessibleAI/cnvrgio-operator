@@ -16,8 +16,6 @@ spec:
         app.kubernetes.io/name: node-exporter
         app.kubernetes.io/version: v0.18.1
     spec:
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
       tolerations:
         - effect: NoSchedule
           key: nvidia.com/gpu

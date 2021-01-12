@@ -31,10 +31,6 @@ spec:
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if cnvrgApp.edition == "enterprise" %}
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
-      {% endif %}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       containers:
       - image: "{{cnvrgApp.image}}"

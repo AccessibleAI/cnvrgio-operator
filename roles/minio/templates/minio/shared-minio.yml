@@ -16,6 +16,7 @@ spec:
       labels:
         app: "{{minio.svcName}}"
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"

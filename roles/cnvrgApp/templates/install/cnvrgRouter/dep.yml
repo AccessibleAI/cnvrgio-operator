@@ -13,8 +13,7 @@ spec:
       labels:
         app: {{cnvrgApp.cnvrgRouter.svcName}}
     spec:
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

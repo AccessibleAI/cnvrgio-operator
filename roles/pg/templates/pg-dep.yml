@@ -19,8 +19,6 @@ spec:
         app: "{{pg.svcName}}"
     spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
       {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
