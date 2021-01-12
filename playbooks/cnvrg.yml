@@ -54,7 +54,7 @@
     - name: Deploy required prereq for all roles (rbac + default regcred)
       include_role:
         name: "cnvrgApp"
-        tasks_from: rbac.yml
+        tasks_from: rbac
 
     - name: Deploy cnvrg stack
       include_role:
