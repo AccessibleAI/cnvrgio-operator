@@ -5,7 +5,6 @@ dryRun: "false"
 clusterDomain: ""
 httpScheme: "{{ 'https://' if networking.https.enabled == 'true' else 'http://' }}"
 orchestrator: "k8s" # k8s | ocp
-securityMode: "default" # default | ocp
 otags: "all" # all | none | specifc role name
 
 tenancy:

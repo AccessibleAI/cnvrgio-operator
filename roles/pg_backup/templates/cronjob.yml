@@ -11,12 +11,10 @@ spec:
     spec:
       template:
         spec:
-{% if securityMode == "default" %}
           securityContext:
             runAsUser: {{ pg.runAsUser }}
             runAsGroup: {{ pg.runAsGroup }}
             fsGroup: {{ pg.fsGroup }}
-{% endif %}
 {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
           nodeSelector:
             kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"

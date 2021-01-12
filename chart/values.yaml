@@ -104,7 +104,6 @@ otags: "all"
 dryRun: "false"
 clusterDomain: ""
 orchestrator: k8s
-securityMode: default
 
 tenancy:
   enabled: "false"

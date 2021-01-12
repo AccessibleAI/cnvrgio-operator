@@ -34,7 +34,7 @@ spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       containers:
       - image: "{{cnvrgApp.image}}"
-        {% if securityMode == "default" %}
+        {% if orchestrator == "k8s" %}
         command:
         - "/bin/bash"
         - "-lc"
