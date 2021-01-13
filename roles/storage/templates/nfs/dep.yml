@@ -37,7 +37,7 @@ spec:
           env:
             - name: PROVISIONER_NAME
               value: "{{ storage.nfs.provisioner }}"
-            - name: nfsServer
+            - name: NFS_SERVER
               value: "{{ storage.nfs.server }}"
             - name: NFS_PATH
               value: "{{ storage.nfs.path }}"
