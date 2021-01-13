@@ -17,7 +17,7 @@ imagePullSecrets:
   - name: "{{ cnvrgApp.conf.registry.name }}"
 ---
 kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "{{ cnvrgApp.conf.rbac.roleBindingName}}"
   namespace: "{{ ansible_operator_meta.namespace }}"

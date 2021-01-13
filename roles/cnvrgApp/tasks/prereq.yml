@@ -13,15 +13,13 @@
    roleBundle: "{{ roleBundle + [templatePath] }}"
   loop_control:
     loop_var: templatePath
-  loop:
-    - templates/install/conf/rbac.yml
-    - templates/install/conf/regcred.yml
+  with_fileglob:
+    - templates/install/prereq/*.yml
 
-- name: Deploy rbac and regcred role
+- name: Deploy CnvrgApp role
   include_role:
     name: common
     tasks_from: install
   vars:
     templatePath: "templates/cnvrgAppBundle.yml"
     state: "present"
-    compare_resource: yes

@@ -4,7 +4,7 @@
   group: mlops.cnvrg.io
   kind: CnvrgApp
   playbook: playbooks/cnvrg.yml
-  reconcilePeriod: 900s
+  reconcilePeriod: 60s
   snakeCaseParameters: False
   finalizer:
     name: finalizer.cnvrgapp.cnvrg.io
@@ -13,6 +13,9 @@
   - group: autoscaling.k8s.io
     version: v1
     kind: VerticalPodAutoscaler
+  - group: "" # SA in watch blacklist due to imagePullSecrets field which is mutated by k8s and cause to infinite reconciliation loop
+    version: v1
+    kind: ServiceAccount
 - version: v1
   group: mlops.cnvrg.io
   kind: CnvrgAppUpgrade

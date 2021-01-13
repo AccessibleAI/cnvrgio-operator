@@ -15,8 +15,7 @@
     loop_var: templatePath
   with_fileglob:
     - templates/install/app/*.yml
-    - templates/install/conf/cm.yml
-    - templates/install/conf/secret.yml
+    - templates/install/conf/*.yml
 
 - name: Construct sidekiq when splitSdekiq true
   set_fact:
@@ -61,4 +60,4 @@
   vars:
     templatePath: "templates/cnvrgAppBundle.yml"
     state: "present"
-    compare_resource: yes
+    compareResource: yes
