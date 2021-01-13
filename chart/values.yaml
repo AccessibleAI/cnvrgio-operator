@@ -418,11 +418,12 @@ cnvrgApp:
 
 storage:
   enabled: "false"
+  ccpStorageClass: ""
   nfs:
     enabled: "false"
     image: "quay.io/external_storage/nfs-client-provisioner:latest"
     provisioner: cnvrg.io/ifs
-    storageClassName: cnvrg-nfs-storage
+    storageClassName: "cnvrg-nfs-storage"
     server: ""
     path: ""
     cpuRequest: 100m
@@ -436,7 +437,7 @@ storage:
     enabled: "false"
     image: "quay.io/kubevirt/hostpath-provisioner"
     hostPath: /cnvrg-storage
-    storageClassName: cnvrg-hostpath-provisioner
+    storageClassName: "cnvrg-hostpath-storage"
     nodeName: ""
     cpuRequest: 100m
     memoryRequest: 100Mi
