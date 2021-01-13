@@ -1,6 +1,7 @@
 {{- define "spec.storage"  }}
 storage:
   enabled: "{{.Values.storage.enabled}}"
+  ccpStorageClass: "{{.Values.storage.ccpStorageClass}}"
   hostpath:
     enabled: "{{ .Values.storage.hostpath.enabled }}"
     image: "{{.Values.storage.hostpath.image}}"
