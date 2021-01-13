@@ -12,6 +12,3 @@ tenancy:
   cnvrg:
     key: "cnvrg-taint"
     value: "true"
-  minio:
-    key: "minio-taint"
-    value: "true"
