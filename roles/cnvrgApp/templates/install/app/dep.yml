@@ -100,10 +100,10 @@ spec:
           {% else %}
           value: "{{pg.svcName}}:{{pg.port}}"
           {% endif %}
-      {% if minio.enabled == "true" and  cnvrgApp.conf.cnvrgStorageType == "minio" %}
+      {% if minio.enabled == "true" and cnvrgApp.conf.cnvrgStorageType == "minio" %}
       - name: create-cnvrg-bucket
         image: "{{cnvrgApp.seeder.image}}"
-        command: ["/bin/bash", "-c", "mb.sh"]
+        command: ["/bin/bash","-c", "{{ cnvrgApp.seeder.createBucketCmd }}"]
         imagePullPolicy: Always
         envFrom:
         - configMapRef:

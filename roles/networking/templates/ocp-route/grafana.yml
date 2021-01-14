@@ -1,6 +1,8 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
+  annotations:
+    haproxy.router.openshift.io/timeout: "{{networking.ingress.perTryTimeout}}"
   name: {{monitoring.grafana.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
