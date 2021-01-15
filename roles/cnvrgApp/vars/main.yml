@@ -91,7 +91,7 @@ cnvrgApp:
     cnvrgStorageProject: ""
     customAgentTag: "false"
     intercom: "true"
-    cnvrgJobUid: "1002"
+    cnvrgJobUid: "1000"
 
     registry:
       name: cnvrg-registry

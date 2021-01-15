@@ -37,10 +37,10 @@ data:
   SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
   SPLIT_SIDEKIQ: "{{ cnvrgApp.conf.splitSidekiq }}"
   {% if networking.ingressType == "openshift" %}
-  CNVRG_JOB_UID: "{{ cnvrgApp.conf.cnvrgJobUid }}" # if env var CNVRG_JOB_UID is set, app will deploy cnvrg job with securityContext
+  CNVRG_JOB_UID: "{{ cnvrgApp.conf.cnvrgJobUid }}" # if set, app will deploy cnvrg job with securityContext
   {% endif %}
   {% if cnvrgApp.conf.jobsStorageClass != "" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ cnvrgApp.conf.jobsStorageClass }}"
+  CNVRG_JOBS_STORAGECLASS: "{{ cnvrgApp.conf.jobsStorageClass }}" # if is set, app's job will use this storageClass for notebooeks/experiments
   {% endif %}
   {% if cnvrgApp.cnvrgRouter.enabled == "true" %}
   DEPLOY_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
