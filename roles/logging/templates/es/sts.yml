@@ -37,7 +37,6 @@ spec:
       {% endif %}
       securityContext:
         runAsUser: {{ logging.es.runAsUser }}
-        runAsGroup: {{ logging.es.runAsGroup }}
         fsGroup: {{ logging.es.fsGroup }}
       {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:

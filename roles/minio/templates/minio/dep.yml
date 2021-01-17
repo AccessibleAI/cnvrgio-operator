@@ -26,7 +26,6 @@ spec:
        {% endif %}
       securityContext:
         runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
       {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:

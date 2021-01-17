@@ -10,7 +10,6 @@ logging:
     storageSize: "30Gi"
     svcName: "elasticsearch"
     runAsUser: 1000
-    runAsGroup: 1000
     fsGroup: 1000
     patchEsNodes: "true"
     nodePort: 32200
@@ -35,7 +34,6 @@ logging:
     cpuLimit: 400m
     memoryLimit: 800Mi
     runAsUser: 1000
-    runAsGroup: 1000
     fsGroup: 1000
 
   fluentd:
