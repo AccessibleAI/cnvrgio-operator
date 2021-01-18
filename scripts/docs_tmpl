@@ -51,7 +51,6 @@ helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
-        --set cnvrgApp.edition=enterprise \
         --set cnvrgApp.conf.registry.user=cnvrg-license-username \
         --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=aws \
@@ -65,7 +64,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
-        --set cnvrgApp.edition=enterprise \
         --set cnvrgApp.conf.registry.user=cnvrg-license-username \
         --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=azure \
@@ -77,7 +75,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
-        --set cnvrgApp.edition=enterprise \
         --set cnvrgApp.conf.registry.user=cnvrg-license-username \
         --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=gcp \
