@@ -87,6 +87,15 @@ cnvrgApp:
     customAgentTag: "{{ .Values.cnvrgApp.conf.customAgentTag }}"
     intercom: "{{ .Values.cnvrgApp.conf.intercom }}"
     splitSidekiq: "{{ .Values.cnvrgApp.conf.splitSidekiq }}"
+    ldap:
+      enabled: "{{.Values.cnvrgApp.conf.ldap.enabled}}"
+      host: "{{.Values.cnvrgApp.conf.ldap.host}}"
+      port: "{{.Values.cnvrgApp.conf.ldap.port}}"
+      account: "{{.Values.cnvrgApp.conf.ldap.account}}"
+      base: "{{.Values.cnvrgApp.conf.ldap.base}}"
+      adminUser: "{{.Values.cnvrgApp.conf.ldap.adminUser}}"
+      adminPassword: "{{.Values.cnvrgApp.conf.ldap.adminPassword}}"
+      ssl: "{{.Values.cnvrgApp.conf.ldap.ssl}}"
     registry:
       name: "{{ .Values.cnvrgApp.conf.registry.name}}"
       url: "{{ .Values.cnvrgApp.conf.registry.url}}"

@@ -389,6 +389,15 @@ cnvrgApp:
     customAgentTag: "false"
     intercom: "true"
     splitSidekiq: "true"
+    ldap:
+      enabled: ""
+      host: ""
+      port: ""
+      account: "userPrincipalName"
+      base: "" # dc=my-domain,dc=local
+      adminUser: ""
+      adminPassword: ""
+      ssl: "" # true/false
     registry:
       name: cnvrg-registry
       url: "docker.io"
