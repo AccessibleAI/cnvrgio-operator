@@ -1,0 +1,17 @@
+- name: status
+  import_tasks: status.yml
+  vars:
+    message: "backup cnvrgapp"
+
+- name: Backup CnvrgApp
+  operator_sdk.util.k8s_status:
+    api_version: mlops.cnvrg.io/v1
+    kind: CnvrgAppUpgrade
+    name: "{{ ansible_operator_meta.name }}"
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    status:
+      cnvrgBackup:
+        cnvrgAppSpec: "{{ cnvrgAppObject.spec }}"
+  when:
+  - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is undefined
+  - dryRun == "false"

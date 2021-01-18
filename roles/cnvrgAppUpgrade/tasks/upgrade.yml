@@ -1,0 +1,108 @@
+- name: status
+  import_task: status.yml
+  vars:
+    message: "scaling sedekiqs to 0"
+
+- name: scale to 0 sedekiqs and disable resources requests
+  set_fact:
+    cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': '0','sidekiqSearchkickReplicas':'0','sidekiqSystemReplicas':'0','resourcesRequestEnabled':'false'}}}, recursive=True) }}"
+
+- name: update CnvrgApp
+  k8s:
+    state: "present"
+    definition: "{{ cnvrgAppObject }}"
+    wait: yes
+
+- name: wait for sidekiq scale to 0
+  shell: |
+    kubectl get pods -l "app={{item}}" -n"{{ ansible_operator_meta.namespace }}" --no-headers | wc -l
+  loop:
+    - sidekiq
+    - sidekiq-searchkick
+  register: replicas
+  until: replicas.stdout|int == 0
+  retries: 3600
+  delay: 2
+
+- name: status
+  import_task: status.yml
+  vars:
+    message: "upgrading app image"
+
+- name: upgrading app image
+  set_fact:
+    cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'cnvrgApp': {'image':  cnvrgAppUpgrade.image }}}, recursive=True) }}"
+
+- name: update CnvrgApp
+  k8s:
+    state: "present"
+    definition: "{{ cnvrgAppObject }}"
+    wait: yes
+
+- name: wait for app deployment got updated with new image
+  shell: |
+    kubectl get deploy app -ojson -n"{{ ansible_operator_meta.namespace }}" | jq -r '.spec.template.spec.containers[] | select(.name=="cnvrg-app") | .image'
+  register: image
+  until: image.stdout == cnvrgAppUpgrade.image
+  retries: 3600
+  delay: 5
+
+- name: status
+  import_task: status.yml
+  vars:
+    message: "app deploy updated with new image"
+
+- name: waiting for app rollout to be done
+  shell: |
+    kubectl rollout status deploy/{{cnvrgApp.svcName}} -n{{ansible_operator_meta.namespace}} --timeout=1h
+
+- name: status
+  import_task: status.yml
+  vars:
+    message: "rollout is done"
+
+- name: get CnvrgAppUpgrade
+  community.kubernetes.k8s_info:
+    api_version: v1
+    kind: CnvrgAppUpgrade
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ ansible_operator_meta.name }}"
+  register: cnvrgAppUpgradeSpec
+
+- fail:
+    msg: "cnvrgAppUpgradeSpec not found"
+  when: cnvrgAppUpgradeSpec.resources|length < 1
+
+- set_fact:
+    backupSpec: "{{ cnvrgAppUpgradeSpec.resources[0].status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
+
+- name: set cnvrgAppObject for restore
+  set_fact:
+    cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppUpgrade.cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec }}"}
+
+- name: upgrading app image
+  set_fact:
+    cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'cnvrgApp': {'image':  cnvrgAppUpgrade.image }}}, recursive=True) }}"
+
+- name: update CnvrgApp
+  k8s:
+    state: "present"
+    definition: "{{ cnvrgAppObject }}"
+    wait: yes
+    apply: yes
+
+- name: wait for awaiting next reconciliation on cnvrgapp
+  shell: |
+    kubectl get cnvrgapps.mlops.cnvrg.io cnvrg-app -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATUS:.status.conditions[0].message --no-headers
+  register: status
+  until: status.stdout == "Awaiting next reconciliation"
+  retries: 3600
+  delay: 5
+
+- name: inactivate
+  import_task: inactivate.yml
+
+- name: status
+  import_task: status.yml
+  vars:
+    message: "upgrade done"

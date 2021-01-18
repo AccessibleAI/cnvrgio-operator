@@ -1,0 +1,34 @@
+- name: image caching ds
+  block:
+  - name: status
+    import_tasks: status.yml
+    vars:
+      message: "caching app image"
+
+  - name: Create app image caching ds
+    include_role:
+      name: common
+      tasks_from: install
+    vars:
+      templatePath: "templates/upgrade/cache-image-ds.yml"
+      state: "present"
+      waitToComplete: yes
+      timeout: 600
+
+  - name: wait for image cache ds to come up
+    shell: |
+      kubectl get daemonset "{{ cnvrgAppUpgrade.cacheDsName }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
+    register: dsStatus
+    until: (dsStatus.stdout|from_json).desiredNumberScheduled == (dsStatus.stdout|from_json).currentNumberScheduled
+    retries: 3600
+    delay: 5
+
+  - name: remove app image caching ds
+    include_role:
+      name: common
+      tasks_from: install
+    vars:
+      templatePath: "templates/upgrade/cache-image-ds.yml"
+      state: "absent"
+      waitToComplete: yes
+  when: cnvrgAppUpgrade.cacheImage == "true"

@@ -1,7 +1,5 @@
-# Defalt CR Kind
 - set_fact:
     crKind: CnvrgAppUpgrade
-  when: crKind is not defined
 
 - name: Set status
   operator_sdk.util.k8s_status:

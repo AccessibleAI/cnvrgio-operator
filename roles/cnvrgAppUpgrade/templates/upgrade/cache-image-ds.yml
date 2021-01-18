@@ -1,0 +1,28 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{ cnvrgAppUpgrade.cacheDsName }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ cnvrgAppUpgrade.cacheDsName }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ cnvrgAppUpgrade.cacheDsName }}"
+    spec:
+      {% if cnvrgApp.edition == "enterprise" %}
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
+      {% endif %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      containers:
+      - name: app-image-chache
+        image: "{{ cnvrgAppUpgrade.image }}"
+        command: ["/bin/bash","-c","sleep inf"]

@@ -1,0 +1,46 @@
+- name: check for single cnvrgappupgrade CR
+  block:
+  - name: get all running upgrades
+    shell: |
+      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATE:.spec.cnvrgAppUpgrade.state --no-headers | grep upgrade | wc -l
+    register: runningUpgrades
+
+  - name: get all running rollbacks
+    shell: |
+      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATE:.spec.cnvrgAppUpgrade.state --no-headers | grep rollback | wc -l
+    register: runningRollbacks
+
+  - name: fail if more than one upgrade exists
+    fail:
+        msg: "more than one upgrades exists: current active upgrades {{ runningUpgrades.stdout|int }}"
+    when: runningUpgrades.stdout|int > 1
+
+  - name: fail if more than one rollback exists
+    fail:
+        msg: "more than one rollback exists: current active rollback {{ runningRollbacks.stdout|int }}"
+    when: runningRollbacks.stdout|int > 1
+
+  - name: fail if both rollback and upgrade exists
+    fail:
+        msg: "both rollback and upgrade are active"
+    when:
+    - runningRollbacks.stdout|int == 1
+    - runningUpgrades.stdout|int == 1
+
+- name: Get CnvrgApp
+  community.kubernetes.k8s_info:
+    api_version: v1
+    kind: CnvrgApp
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ cnvrgAppName }}"
+  register: resourcesCnvrg
+
+- name: set cnvrgAppObject
+  set_fact:
+    cnvrgAppObject: {
+                      "apiVersion":"mlops.cnvrg.io/v1",
+                      "kind":"CnvrgApp",
+                      "metadata": {"name": "{{ cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" },
+                      "spec": "{{ resourcesCnvrg.resources[0].spec }}"
+                    }
+  when: resourcesCnvrg.resources|length > 0

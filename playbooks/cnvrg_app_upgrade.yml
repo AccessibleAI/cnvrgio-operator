@@ -2,16 +2,20 @@
   gather_facts: no
   tasks:
 
-    - name: Construct vars files list
-      shell: printf "vars/globals.yml\n" && find ./roles/*/vars -name main.yml -type f
-      register: roleVars
+    #- name: Construct vars files list
+    #  shell: printf "vars/globals.yml\n" && find ./roles/*/vars -name main.yml -type f
+    #  register: roleVars
+
+    #- name: Include vars
+    #  include_vars: "{{ item }}"
+    #  with_items: "{{ roleVars.stdout_lines }}"
+    #  tags: always
 
     - name: Include vars
       include_vars: "{{ item }}"
-      with_items: "{{ roleVars.stdout_lines }}"
-      tags: always
+      with_items:
+        - vars/globals.yml
 
     # CnvrgApp upgrade
     - import_role:
-        name: cnvrgApp
-        tasks_from: upgrade.yml
+        name: cnvrgAppUpgrade

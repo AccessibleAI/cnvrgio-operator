@@ -1,0 +1,35 @@
+- name: status
+  import_tasks: status.yml
+  vars:
+    message: "initiating upgrade"
+
+- name: Get CnvrgApp
+  community.kubernetes.k8s_info:
+    api_version: v1
+    kind: CnvrgApp
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ cnvrgAppName }}"
+  register: cnvrgAppRes
+
+- name: set cnvrgAppObject
+  set_fact:
+    cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ cnvrgAppRes.resources[0].spec }}"}
+  when: cnvrgAppRes.resources|length > 0
+
+- name: fail if spec not found
+  block:
+  - name: status
+    import_tasks: status.yml
+    vars:
+      message: "error, cnvrgapp not found, can't upgrade"
+  - fail:
+      msg: "cnvrgapp not found can't upgrade"
+  when: cnvrgAppObject is undefined
+
+- name: bind cnvrg spec vars to global scope
+  set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  vars:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ cnvrgAppObject.spec }}"

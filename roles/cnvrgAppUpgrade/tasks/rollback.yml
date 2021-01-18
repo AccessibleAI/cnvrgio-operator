@@ -1,0 +1,36 @@
+- name: run rollback
+  block:
+  - name: status
+    import_tasks: status.yml
+    vars:
+      message: "running rollback"
+
+  - set_fact:
+      backupSpec: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
+
+  - set_fact:
+      backupSpec: "{{ backupSpec|combine({'otags': 'all'}, recursive=True) }}"
+    when: otags not in backupSpec.keys()
+
+  - name: restoring cnvrgapp from backup
+    set_fact:
+      cnvrgAppObject: {"apiVersion":"mlops.cnvrg.io/v1","kind":"CnvrgApp","metadata":{"name": "{{ cnvrgAppName  }}", "namespace": "{{ ansible_operator_meta.namespace }}" }, "spec": "{{ backupSpec }}"}
+
+  - name: update CnvrgApp
+    k8s:
+      state: "present"
+      definition: "{{ cnvrgAppObject }}"
+      wait: yes
+
+  - name: status
+    import_tasks: status.yml
+    vars:
+      message: "rollback done"
+
+  - include_role:
+      name: common
+      tasks_from: inactivate.yml
+
+  when:
+  - condition == "rollback"
+  - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined

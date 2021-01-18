@@ -21,7 +21,7 @@ ansible = "*"
 dotted = "*"
 
 [scripts]
-op = "ansible-operator run"
+op = "ansible-operator run --zap-encoder=console"
 test  = "python tests/run_tests.py"
 #  pipenv run ansible-playbook playbooks/cnvrg.yml --extra-vars='{"debug":"true","dryRun":"true","ansible_operator_meta":{"namespace":"cnvrg"}}'
 
