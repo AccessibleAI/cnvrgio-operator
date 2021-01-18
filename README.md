@@ -177,8 +177,9 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.hyper.enableReadinessProbe`|true
 |`cnvrgApp.hyper.readinessPeriodSeconds`|100
 |`cnvrgApp.hyper.readinessTimeoutSeconds`|60
-|`cnvrgApp.seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.24
+|`cnvrgApp.seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.25
 |`cnvrgApp.seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update
+|`cnvrgApp.seeder.createBucketCmd`|mb.sh
 |`cnvrgApp.conf.splitSidekiq`|true
 |`cnvrgApp.conf.gcpStorageSecret`|gcp-storage-secret
 |`cnvrgApp.conf.gcpKeyfileMountPath`|/tmp/gcp_keyfile
@@ -210,6 +211,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.conf.cnvrgStorageProject`|-
 |`cnvrgApp.conf.customAgentTag`|false
 |`cnvrgApp.conf.intercom`|true
+|`cnvrgApp.conf.cnvrgJobUid`|1000
 |`cnvrgApp.conf.registry.name`|cnvrg-registry
 |`cnvrgApp.conf.registry.url`|docker.io
 |`cnvrgApp.conf.registry.user`|-
@@ -236,8 +238,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`dumpDir`|-
 |`dryRun`|false
 |`clusterDomain`|-
-|`orchestrator`|k8s
-|`securityMode`|default
 |`otags`|all
 
 ### Chart options - logging 
@@ -251,7 +251,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`logging.es.storageSize`|30Gi
 |`logging.es.svcName`|elasticsearch
 |`logging.es.runAsUser`|1000
-|`logging.es.runAsGroup`|1000
 |`logging.es.fsGroup`|1000
 |`logging.es.patchEsNodes`|true
 |`logging.es.nodePort`|32200
@@ -274,7 +273,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`logging.elastalert.cpuLimit`|400m
 |`logging.elastalert.memoryLimit`|800Mi
 |`logging.elastalert.runAsUser`|1000
-|`logging.elastalert.runAsGroup`|1000
 |`logging.elastalert.fsGroup`|1000
 |`logging.fluentd.enabled`|true
 |`logging.fluentd.image`|fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1
@@ -410,7 +408,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`pg.pass`|-
 |`pg.user`|cnvrg
 |`pg.runAsUser`|26
-|`pg.runAsGroup`|26
 |`pg.fsGroup`|26
 |`pg.storageClass`|use-default
 |`pg.cpuRequest`|2
@@ -466,8 +463,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`tenancy.dedicatedNodes`|false
 |`tenancy.cnvrg.key`|cnvrg-taint
 |`tenancy.cnvrg.value`|true
-|`tenancy.minio.key`|minio-taint
-|`tenancy.minio.value`|true
 
 ### Chart options - vpa 
 |**key**|**default value**
