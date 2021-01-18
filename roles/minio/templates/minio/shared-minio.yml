@@ -16,6 +16,7 @@ spec:
       labels:
         app: "{{minio.svcName}}"
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
@@ -23,12 +24,9 @@ spec:
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if securityMode == "default" %}
       securityContext:
-        fsGroup: 1337
-        runAsGroup: 1000
         runAsUser: 1000
-      {% endif %}
+        fsGroup: 1000
       {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
         kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"

@@ -13,6 +13,7 @@ spec:
       labels:
         app: {{cnvrgApp.cnvrgRouter.svcName}}
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

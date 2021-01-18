@@ -30,15 +30,18 @@ data:
   ROUTE_BY_NGINX_INGRESS: "{{ ('true' if networking.ingressType == 'k8singress' else 'false') }}"
   ROUTE_BY_NODE_PORT: "{{ ('true' if networking.ingressType == 'nodeport' else 'false') }}"
   CNVRG_STORAGE_USE_IAM_ROLE: "false"
-  {% if cnvrgApp.conf.jobsStorageClass != "" %}
-  CNVRG_JOBS_STORAGECLASS: "{{ cnvrgApp.conf.jobsStorageClass }}"
-  {% endif %}
   SMTP_SERVER: "{{ cnvrgApp.conf.smtp.server }}"
   SMTP_PORT: "{{ cnvrgApp.conf.smtp.port }}"
   SMTP_USERNAME: "{{ cnvrgApp.conf.smtp.username }}"
   SMTP_PASSWORD: "{{ cnvrgApp.conf.smtp.password }}"
   SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
   SPLIT_SIDEKIQ: "{{ cnvrgApp.conf.splitSidekiq }}"
+  {% if networking.ingressType == "openshift" %}
+  CNVRG_JOB_UID: "{{ cnvrgApp.conf.cnvrgJobUid }}" # if set, app will deploy cnvrg job with securityContext
+  {% endif %}
+  {% if cnvrgApp.conf.jobsStorageClass != "" %}
+  CNVRG_JOBS_STORAGECLASS: "{{ cnvrgApp.conf.jobsStorageClass }}" # if is set, app's job will use this storageClass for notebooeks/experiments
+  {% endif %}
   {% if cnvrgApp.cnvrgRouter.enabled == "true" %}
   DEPLOY_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"
   NOTEBOOK_URL: "{{ (httpScheme + (cnvrgApp.cnvrgRouter.svcName + '.' if networking.ingressType != 'nodeport' else '')  + clusterDomain + (':'+cnvrgApp.cnvrgRouter.nodePort|string if networking.ingressType == 'nodeport' else ''))}}"

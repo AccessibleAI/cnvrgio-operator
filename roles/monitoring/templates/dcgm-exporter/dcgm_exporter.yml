@@ -21,6 +21,7 @@ spec:
         app.kubernetes.io/version: "2.0.0-rc.11"
       name: "dcgm-exporter"
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       containers:
       - image: "{{ monitoring.dcgmExporter.image }}"
         env:

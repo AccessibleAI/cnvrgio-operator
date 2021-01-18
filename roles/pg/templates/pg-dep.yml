@@ -18,6 +18,7 @@ spec:
       labels:
         app: "{{pg.svcName}}"
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
@@ -25,12 +26,9 @@ spec:
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if securityMode == "default" %}
       securityContext:
         runAsUser: {{ pg.runAsUser }}
-        runAsGroup: {{ pg.runAsGroup }}
         fsGroup: {{ pg.fsGroup }}
-      {% endif %}
       {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
         kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"

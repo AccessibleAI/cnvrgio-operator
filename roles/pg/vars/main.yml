@@ -9,7 +9,6 @@ pg:
   pass: "pg_pass"
   user: "cnvrg"
   runAsUser: 26
-  runAsGroup: 26
   fsGroup: 26
   storageClass: "use-default"
   cpuRequest: 2

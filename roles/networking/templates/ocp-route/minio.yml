@@ -1,6 +1,8 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
+  annotations:
+    haproxy.router.openshift.io/timeout: "{{networking.ingress.perTryTimeout}}"
   name: {{minio.svcName}}
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
@@ -13,12 +15,14 @@ spec:
     kind: Service
     name: {{minio.svcName}}
     weight: 100
-{% if networking.https.enabled == "true" %}
+  {% if networking.https.enabled == "true" %}
   tls:
     termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+    {% if networking.https.cert != "" and networking.https.key != "" %}
     certificate: |
       {{networking.https.cert | b64decode | indent(6) }}
     key: |
       {{networking.https.key | b64decode| indent(6) }}
-    insecureEdgeTerminationPolicy: Redirect
-{% endif %}
+    {% endif %}
+  {% endif %}

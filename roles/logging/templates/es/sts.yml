@@ -15,6 +15,9 @@ spec:
       labels:
         app: "{{logging.es.svcName}}"
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       {% if logging.es.patchEsNodes == "true" %}
       initContainers:
       - name: "maxmap"
@@ -32,12 +35,9 @@ spec:
         value: "{{ tenancy.cnvrg.value }}"
         effect: "NoSchedule"
       {% endif %}
-      {% if securityMode == "default" %}
       securityContext:
         runAsUser: {{ logging.es.runAsUser }}
-        runAsGroup: {{ logging.es.runAsGroup }}
         fsGroup: {{ logging.es.fsGroup }}
-      {% endif %}
       {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
         kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"

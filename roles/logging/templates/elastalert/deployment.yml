@@ -16,12 +16,11 @@ spec:
       labels:
         app: "{{logging.elastalert.svcName}}"
     spec:
-      {% if securityMode == "default" %}
+      imagePullSecrets:
+        - name: {{ cnvrgApp.conf.registry.name }}
       securityContext:
         runAsUser: {{ logging.elastalert.runAsUser }}
-        runAsGroup: {{ logging.elastalert.runAsGroup }}
         fsGroup: {{ logging.elastalert.fsGroup }}
-      {% endif %}
       {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"

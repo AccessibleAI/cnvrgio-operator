@@ -20,6 +20,7 @@ spec:
       labels:
         app: "{{cnvrgApp.hyper.svcName}}"
     spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"

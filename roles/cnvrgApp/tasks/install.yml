@@ -60,4 +60,4 @@
   vars:
     templatePath: "templates/cnvrgAppBundle.yml"
     state: "present"
-    compare_resource: yes
+    compareResource: yes

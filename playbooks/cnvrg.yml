@@ -51,6 +51,11 @@
         loop_var: role
       loop: "{{defaultOperatorRoles}}"
 
+    - name: Deploy prereq
+      include_role:
+        name: "cnvrgApp"
+        tasks_from: prereq
+
     - name: Deploy cnvrg stack
       include_role:
         name: "{{ role.name }}"

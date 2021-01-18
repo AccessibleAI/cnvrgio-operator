@@ -248,9 +248,25 @@
     - set_fact:
         backupSpec: "{{ cnvrgAppUpgradeSpec.resources[0].status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
 
-    - name: restore sidekiqs and resources requests
+    - name: restore resourcesRequestEnabled
       set_fact:
-        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': backupSpec.cnvrgApp.sidekiqReplicas, 'sidekiqSearchkickReplicas': backupSpec.cnvrgApp.sidekiqSearchkickReplicas, 'sidekiqSystemReplicas':backupSpec.cnvrgApp.sidekiqSystemReplicas, 'resourcesRequestEnabled':backupSpec.cnvrgApp.resourcesRequestEnabled}}}, recursive=True) }}"
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'resourcesRequestEnabled': backupSpec.cnvrgApp.resourcesRequestEnabled}}}, recursive=True) }}"
+      when: backupSpec.cnvrgApp.resourcesRequestEnabled is defined
+
+    - name: restore sidekiqReplicas
+      set_fact:
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqReplicas': backupSpec.cnvrgApp.sidekiqReplicas}}}, recursive=True) }}"
+      when: backupSpec.cnvrgApp.sidekiqReplicas is defined
+
+    - name: restore sidekiqSearchkickReplicas
+      set_fact:
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqSearchkickReplicas': backupSpec.cnvrgApp.sidekiqSearchkickReplicas}}}, recursive=True) }}"
+      when: backupSpec.cnvrgApp.sidekiqSearchkickReplicas is defined
+
+    - name: restore sidekiqSystemReplicas
+      set_fact:
+        cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'otags':'cnvrgApp','cnvrgApp': {'sidekiqSystemReplicas': backupSpec.cnvrgApp.sidekiqSystemReplicas}}}, recursive=True) }}"
+      when: backupSpec.cnvrgApp.sidekiqSystemReplicas is defined
 
     - name: update CnvrgApp
       k8s:
