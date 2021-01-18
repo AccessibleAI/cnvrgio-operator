@@ -58,7 +58,6 @@ cnvrgApp:
     gcpKeyfileMountPath: "{{ .Values.cnvrgApp.conf.gcpKeyfileMountPath }}"
     gcpKeyfileName: "{{ .Values.cnvrgApp.conf.gcpKeyfileName }}"
     jobsStorageClass: "{{ .Values.cnvrgApp.conf.jobsStorageClass }}"
-    cnvrgStorageUseIamRole: "{{ .Values.cnvrgApp.conf.cnvrgStorageUseIamRole }}"
     featureFlags: "{{ .Values.cnvrgApp.conf.featureFlags }}"
     sentryUrl: "{{ .Values.cnvrgApp.conf.sentryUrl }}"
     secretKeyBase: "{{ .Values.cnvrgApp.conf.secretKeyBase }}"

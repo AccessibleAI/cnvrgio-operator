@@ -358,12 +358,10 @@ cnvrgApp:
     readinessPeriodSeconds: 100
     readinessTimeoutSeconds: 60
   conf:
-    enabled: "true"
     gcpStorageSecret: "gcp-storage-secret"
     gcpKeyfileMountPath: "/tmp/gcp_keyfile"
     gcpKeyfileName: "key.json"
     jobsStorageClass: ""
-    cnvrgStorageUseIamRole: "false"
     featureFlags: ""
     sentryUrl: "https://4409141e4a204282bd1f5c021e587509:dc15f684faa9479a839cf913b98b4ee2@sentry.cnvrg.io/32"
     secretKeyBase: "0d2b33c2cc19cfaa838d3c354354a18fcc92beaaa8e97889ef99341c8aaf963ad3afcf0f7c20454cabb5c573c3fc35b60221034e109f4fb651ed1415bf61e9d5"

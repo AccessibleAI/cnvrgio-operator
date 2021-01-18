@@ -36,6 +36,11 @@ data:
   SMTP_PASSWORD: "{{ cnvrgApp.conf.smtp.password }}"
   SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
   SPLIT_SIDEKIQ: "{{ cnvrgApp.conf.splitSidekiq }}"
+  LDAP_ACTIVE: "{{ cnvrgApp.conf.ldap.enabled }}"
+  LDAP_HOST: "{{ cnvrgApp.conf.ldap.host }}"
+  LDAP_PORT: "{{ cnvrgApp.conf.ldap.port }}"
+  LDAP_ACCOUNT: "{{ cnvrgApp.conf.ldap.account }}"
+  LDAP_SSL: "{{ cnvrgApp.conf.ldap.ssl }}"
   {% if networking.ingressType == "openshift" %}
   CNVRG_JOB_UID: "{{ cnvrgApp.conf.cnvrgJobUid }}" # if set, app will deploy cnvrg job with securityContext
   {% endif %}

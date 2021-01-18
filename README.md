@@ -51,7 +51,6 @@ helm template cnvrg cnvrg/cnvrg  -s templates/cnvrg-app.yaml
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
-        --set cnvrgApp.edition=enterprise \
         --set cnvrgApp.conf.registry.user=cnvrg-license-username \
         --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=aws \
@@ -65,7 +64,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
-        --set cnvrgApp.edition=enterprise \
         --set cnvrgApp.conf.registry.user=cnvrg-license-username \
         --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=azure \
@@ -77,7 +75,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
         --set clusterDomain=base.domain \
         --set cnvrgApp.image=cnvrg/app:enterprise-3.1.2 \
-        --set cnvrgApp.edition=enterprise \
         --set cnvrgApp.conf.registry.user=cnvrg-license-username \
         --set cnvrgApp.conf.registry.password=cnvrg-license-password \
         --set cnvrgApp.conf.cnvrgStorageType=gcp \
@@ -185,7 +182,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.conf.gcpKeyfileMountPath`|/tmp/gcp_keyfile
 |`cnvrgApp.conf.gcpKeyfileName`|key.json
 |`cnvrgApp.conf.jobsStorageClass`|-
-|`cnvrgApp.conf.cnvrgStorageUseIamRole`|false
 |`cnvrgApp.conf.featureFlags`|-
 |`cnvrgApp.conf.sentryUrl`|-
 |`cnvrgApp.conf.secretKeyBase`|-
@@ -212,6 +208,14 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.conf.customAgentTag`|false
 |`cnvrgApp.conf.intercom`|true
 |`cnvrgApp.conf.cnvrgJobUid`|1000
+|`cnvrgApp.conf.ldap.enabled`|false
+|`cnvrgApp.conf.ldap.host`|-
+|`cnvrgApp.conf.ldap.port`|-
+|`cnvrgApp.conf.ldap.account`|userPrincipalName
+|`cnvrgApp.conf.ldap.base`|-
+|`cnvrgApp.conf.ldap.adminUser`|-
+|`cnvrgApp.conf.ldap.adminPassword`|-
+|`cnvrgApp.conf.ldap.ssl`|-
 |`cnvrgApp.conf.registry.name`|cnvrg-registry
 |`cnvrgApp.conf.registry.url`|docker.io
 |`cnvrgApp.conf.registry.user`|-
