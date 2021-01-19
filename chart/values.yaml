@@ -352,19 +352,10 @@ cnvrgApp:
   sidekiq:
     enabled: "true"
     split: "true"
-    cpu: 1750m
-    memory: 3750Mi
-    replicas: 2
   searchkiq:
     enabled: "true"
-    cpu: 750m
-    memory: 750Mi
-    replicas: 1
   systemkiq:
     enabled: "true"
-    cpu: 500m
-    memory: 500Mi
-    replicas: 1
   kiqPrestopHook:
     enabled: "true"
     killTimeout: 60
