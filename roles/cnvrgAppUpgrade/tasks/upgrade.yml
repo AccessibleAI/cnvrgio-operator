@@ -1,5 +1,5 @@
 - name: status
-  import_task: status.yml
+  import_tasks: status.yml
   vars:
     message: "scaling sedekiqs to 0"
 
@@ -25,7 +25,7 @@
   delay: 2
 
 - name: status
-  import_task: status.yml
+  import_tasks: status.yml
   vars:
     message: "upgrading app image"
 
@@ -48,7 +48,7 @@
   delay: 5
 
 - name: status
-  import_task: status.yml
+  import_tasks: status.yml
   vars:
     message: "app deploy updated with new image"
 
@@ -57,7 +57,7 @@
     kubectl rollout status deploy/{{cnvrgApp.svcName}} -n{{ansible_operator_meta.namespace}} --timeout=1h
 
 - name: status
-  import_task: status.yml
+  import_tasks: status.yml
   vars:
     message: "rollout is done"
 
@@ -100,9 +100,9 @@
   delay: 5
 
 - name: inactivate
-  import_task: inactivate.yml
+  import_tasks: inactivate.yml
 
 - name: status
-  import_task: status.yml
+  import_tasks: status.yml
   vars:
     message: "upgrade done"

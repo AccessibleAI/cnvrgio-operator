@@ -1,11 +1,11 @@
 - name: validate ability to upgrade
   import_tasks: validate.yml
 
-#- name: rollback
-#  import_task: rollback.yml
-#  when:
-#  - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
-#  - condition == "rollback"
+- name: rollback
+  import_tasks: rollback.yml
+  when:
+  - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
+  - condition == "rollback"
 
 - name: run upgrade
   block:
@@ -15,8 +15,8 @@
     import_tasks: backup.yml
   - name: cache app image
     import_tasks: cache.yml
-  #- name: upgrade
-  #  import_task: upgrade.yml
+  - name: upgrade
+    import_tasks: upgrade.yml
   when: condition == "upgrade"
 
 - debug:

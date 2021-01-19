@@ -35,7 +35,7 @@ data:
   SMTP_USERNAME: "{{ cnvrgApp.conf.smtp.username }}"
   SMTP_PASSWORD: "{{ cnvrgApp.conf.smtp.password }}"
   SMTP_DOMAIN: "{{ cnvrgApp.conf.smtp.domain }}"
-  SPLIT_SIDEKIQ: "{{ cnvrgApp.conf.splitSidekiq }}"
+  SPLIT_SIDEKIQ: "{{ cnvrgApp.sidekiq.split }}"
   LDAP_ACTIVE: "{{ cnvrgApp.conf.ldap.enabled }}"
   LDAP_HOST: "{{ cnvrgApp.conf.ldap.host }}"
   LDAP_PORT: "{{ cnvrgApp.conf.ldap.port }}"

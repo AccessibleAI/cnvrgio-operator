@@ -75,7 +75,7 @@ spec:
     - name: v1
       additionalPrinterColumns:
         - description: cnvrg version
-          jsonPath: .spec.cnvrgAppUpgrade.image
+          jsonPath: .spec.image
           name: Version
           type: string
         - description: condition

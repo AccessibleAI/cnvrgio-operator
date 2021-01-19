@@ -6,7 +6,7 @@ metadata:
   labels:
     app: sidekiq
 spec:
-  replicas: {{ cnvrgApp.sidekiqReplicas }}
+  replicas: {{ cnvrgApp.sidekiq.replicas }}
   selector:
     matchLabels:
       app: sidekiq
@@ -27,7 +27,7 @@ spec:
         effect: "NoSchedule"
       {% endif %}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-      terminationGracePeriodSeconds: {{ cnvrgApp.sidekiqPrestopHook.killTimeout|int }}
+      terminationGracePeriodSeconds: {{ cnvrgApp.kiqPrestopHook.killTimeout|int }}
       containers:
       - name: sidekiq
         image: "{{cnvrgApp.image}}"
@@ -54,14 +54,14 @@ spec:
         {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:
           requests:
-            cpu: "{{ cnvrgApp.sidekiqCpu }}"
-            memory: "{{ cnvrgApp.sidekiqMemory }}"
+            cpu: "{{ cnvrgApp.sidekiq.cpu }}"
+            memory: "{{ cnvrgApp.sidekiq.memory }}"
         {% endif %}
-        {% if cnvrgApp.sidekiqPrestopHook.enabled == "true" %}
+        {% if cnvrgApp.kiqPrestopHook.enabled == "true" %}
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.sidekiqPrestopHook.killTimeout }}"]
+              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.kiqPrestopHook.killTimeout }}"]
         {% endif %}
       {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
       volumes:

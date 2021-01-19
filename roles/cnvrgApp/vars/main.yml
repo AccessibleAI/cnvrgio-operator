@@ -10,15 +10,6 @@ cnvrgApp:
   svcName: "app"
   fixpg: "true"
   nodePort: 30080
-  sidekiqCpu: 1750m
-  sidekiqMemory: 3750Mi
-  sidekiqReplicas: 2
-  sidekiqSearchkickCpu: 750m
-  sidekiqSearchkickMemory: 750Mi
-  sidekiqSearchkickReplicas: 1
-  sidekiqSystemCpu: 500m
-  sidekiqSystemMemory: 500Mi
-  sidekiqSystemReplicas: 1
   passengerMaxPoolSize: 20  # the calculation of max pool size based on this max_app_processes = (total_memory * 0.75) / 150 (memroy for each process in mb) = 20
   enableReadinessProbe: "true"
   initialDelaySeconds: 10
@@ -27,7 +18,17 @@ cnvrgApp:
   failureThreshold: 4 # (readinessPeriodSeconds * failureThreshold) sec for make the app not healty
   resourcesRequestEnabled: "true"
 
-  sidekiqPrestopHook:
+  sidekiq:
+    enabled: "true"
+    split: "true"
+
+  searchkiq:
+    enabled: "true"
+
+  systemkiq:
+    enabled: "true"
+
+  kiqPrestopHook:
     enabled: "true"
     killTimeout: 60
 
@@ -53,7 +54,6 @@ cnvrgApp:
     createBucketCmd: "mb.sh"
 
   conf:
-    splitSidekiq: "true"
     gcpStorageSecret: "gcp-storage-secret"
     gcpKeyfileMountPath: "/tmp/gcp_keyfile"
     gcpKeyfileName: "key.json"

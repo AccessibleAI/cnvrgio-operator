@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sidekiq-system
+  name: searchkiq
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: sidekiq-system
+    app: searchkiq
 spec:
-  replicas: {{ cnvrgApp.sidekiqSystemReplicas }}
+  replicas: {{ cnvrgApp.searchkiq.replicas }}
   selector:
     matchLabels:
-      app: sidekiq-system
+      app: searchkiq
   template:
     metadata:
       labels:
-        app: sidekiq-system
+        app: searchkiq
     spec:
       {% if tenancy.enabled == "true" %}
       nodeSelector:
@@ -27,7 +27,7 @@ spec:
         effect: "NoSchedule"
       {% endif %}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-      terminationGracePeriodSeconds: {{ cnvrgApp.sidekiqPrestopHook.killTimeout|int }}
+      terminationGracePeriodSeconds: {{ cnvrgApp.kiqPrestopHook.killTimeout|int }}
       containers:
       - name: sidekiq
         image: "{{cnvrgApp.image}}"
@@ -39,7 +39,7 @@ spec:
         env:
         - name: "CNVRG_RUN_MODE"
           value: "sidekiq"
-        - name: "SIDEKIQ_SYSTEM"
+        - name: "SIDEKIQ_SEARCHKICK"
           value: "true"
         imagePullPolicy: Always
         {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
@@ -56,14 +56,14 @@ spec:
         {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:
           requests:
-            cpu: "{{ cnvrgApp.sidekiqSystemCpu }}"
-            memory: "{{ cnvrgApp.sidekiqSystemMemory }}"
+            cpu: "{{ cnvrgApp.searchkiq.cpu }}"
+            memory: "{{ cnvrgApp.searchkiq.memory }}"
         {% endif %}
-        {% if cnvrgApp.sidekiqPrestopHook.enabled == "true" %}
+        {% if cnvrgApp.kiqPrestopHook.enabled == "true" %}
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.sidekiqPrestopHook.killTimeout }}"]
+              command: ["/bin/bash","-lc","sidekiqctl quiet sidekiq-0.pid && sidekiqctl stop sidekiq-0.pid {{ cnvrgApp.kiqPrestopHook.killTimeout }}"]
         {% endif %}
       {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
       volumes:

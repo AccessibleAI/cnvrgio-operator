@@ -17,14 +17,42 @@
     - templates/install/app/*.yml
     - templates/install/conf/*.yml
 
-- name: Construct sidekiq when splitSdekiq true
-  set_fact:
-   roleBundle: "{{ roleBundle + [templatePath] }}"
-  loop_control:
-    loop_var: templatePath
-  with_fileglob:
-    - templates/install/sidekiqs/*.yml
-  when: cnvrgApp.conf.splitSidekiq == "true"
+- name: add sidekiqs
+  block:
+
+  - name: add sidekiq
+    set_fact:
+     roleBundle: "{{ roleBundle + [templatePath] }}"
+    loop_control:
+      loop_var: templatePath
+    with_fileglob:
+      - templates/install/sidekiqs/sidekiq.yml
+    when:
+    - cnvrgApp.sidekiq.enabled == "true"
+
+  - name: add searchkiq
+    set_fact:
+     roleBundle: "{{ roleBundle + [templatePath] }}"
+    loop_control:
+      loop_var: templatePath
+    with_fileglob:
+      - templates/install/sidekiqs/searchkiq.yml
+    when:
+    - cnvrgApp.searchkiq.enabled == "true"
+
+  - name: add systemkiq
+    set_fact:
+     roleBundle: "{{ roleBundle + [templatePath] }}"
+    loop_control:
+      loop_var: templatePath
+    with_fileglob:
+      - templates/install/sidekiqs/systemkiq.yml
+    when:
+    - cnvrgApp.systemkiq.enabled == "true"
+
+  when: cnvrgApp.sidekiq.split == "true"
+
+
 
 - name: Construct sidekiq when splitSdekiq false
   set_fact:
@@ -33,7 +61,7 @@
     loop_var: templatePath
   with_fileglob:
     - templates/install/sidekiqs/sidekiq.yml
-  when: cnvrgApp.conf.splitSidekiq == "false"
+  when: cnvrgApp.sidekiq.split == "false"
 
 - name: add hyper
   set_fact:

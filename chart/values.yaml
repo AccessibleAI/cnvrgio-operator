@@ -5,14 +5,20 @@ computeProfiles:
   large:
     storage: 100Gi
     cnvrgApp:
-      webappCpu: 4
-      webappMemory: 8Gi
-      sidekiqCpu: 4
-      sidekiqMemory: 8Gi
-      searchkiqCpu: 1
-      searchkiqMemory: 2Gi
-      sidekiqReplicas: 2
-      searchkiqReplicas: 1
+      cpu: 4
+      memory: 8Gi
+      sidekiq:
+        cpu: 4
+        memory: 8Gi
+        replicas: 2
+      searchkiq:
+        cpu: 1
+        memory: 2Gi
+        replicas: 1
+      systemkiq:
+        cpu: 500m
+        memory: 500Mi
+        replicas: 1
     pg:
       cpu: 4
       memory: 8Gi
@@ -37,14 +43,20 @@ computeProfiles:
   medium:
     storage: 100Gi
     cnvrgApp:
-      webappCpu: 2
-      webappMemory: 4Gi
-      sidekiqCpu: 2
-      sidekiqMemory: 4Gi
-      searchkiqCpu: 1
-      searchkiqMemory: 1Gi
-      sidekiqReplicas: 2
-      searchkiqReplicas: 1
+      cpu: 2
+      memory: 4Gi
+      sidekiq:
+        cpu: 2
+        memory: 4Gi
+        replicas: 2
+      searchkiq:
+        cpu: 1
+        memory: 1Gi
+        replicas: 1
+      systemkiq:
+        cpu: 500m
+        memory: 500Mi
+        replicas: 1
     pg:
       cpu: 2
       memory: 4Gi
@@ -69,14 +81,20 @@ computeProfiles:
   small:
     storage: 3Gi
     cnvrgApp:
-      webappCpu: 100m
-      webappMemory: 100Mi
-      sidekiqCpu: 100m
-      sidekiqMemory: 100Mi
-      searchkiqCpu: 100m
-      searchkiqMemory: 100Mi
-      sidekiqReplicas: 1
-      searchkiqReplicas: 1
+      cpu: 100m
+      memory: 100Mi
+      sidekiq:
+        cpu: 100m
+        memory: 100Mi
+        replicas: 1
+      searchkiq:
+        cpu: 100m
+        memory: 100mi
+        replicas: 1
+      systemkiq:
+        cpu: 100m
+        memory: 100Mi
+        replicas: 1
     pg:
       cpu: 100m
       memory: 100Mi
@@ -324,14 +342,6 @@ cnvrgApp:
   memory: 4Gi
   svcName: app
   nodePort: 30080
-  sidekiqCpu: 2
-  sidekiqMemory: 4Gi
-  sidekiqSearchkickCpu: 1
-  sidekiqSearchkickMemory: 2Gi
-  sidekiqSearchkickReplicas: 1
-  sidekiqSystemCpu: 500m
-  sidekiqSystemMemory: 500Mi
-  sidekiqSystemReplicas: 1
   passengerMaxPoolSize: 20
   enableReadinessProbe: "true"
   initialDelaySeconds: 10
@@ -339,8 +349,27 @@ cnvrgApp:
   readinessTimeoutSeconds: 20
   failureThreshold: 4
   resourcesRequestEnabled: "true"
+  sidekiq:
+    enabled: "true"
+    split: "true"
+    cpu: 1750m
+    memory: 3750Mi
+    replicas: 2
+  searchkiq:
+    enabled: "true"
+    cpu: 750m
+    memory: 750Mi
+    replicas: 1
+  systemkiq:
+    enabled: "true"
+    cpu: 500m
+    memory: 500Mi
+    replicas: 1
+  kiqPrestopHook:
+    enabled: "true"
+    killTimeout: 60
   seeder:
-    image: "docker.io/cnvrg/cnvrg-boot:v0.24"
+    image: "docker.io/cnvrg/cnvrg-boot:v0.25"
     seedCmd: "rails db:migrate && rails db:seed && rails libraries:update"
   hyper:
     enabled: "true"
