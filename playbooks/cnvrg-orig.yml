@@ -1,0 +1,65 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+
+    - name: Construct vars files list
+      shell: printf "vars/globals.yml\n" && find ./roles/*/vars -name main.yml -type f
+      register: roleVars
+
+    - name: Include vars
+      include_vars: "{{ item }}"
+      with_items: "{{ roleVars.stdout_lines }}"
+      tags: always
+
+    - name: Set empty operatorRoles
+      set_fact:
+        operatorRoles: []
+
+    - name: Add default operator roles list
+      set_fact:
+        defaultOperatorRoles: "{{ defaultOperatorRoles | default([]) + [role] }}"
+      loop_control:
+        loop_var: role
+      loop:
+        - { name: 'storage', enabled: "{{storage.enabled}}" }
+        - { name: 'networking', enabled: "{{networking.enabled}}" }
+        - { name: 'pg', enabled: "{{pg.enabled}}" }
+        - { name: 'minio', enabled: "{{minio.enabled}}" }
+        - { name: 'redis', enabled: "{{redis.enabled}}" }
+        - { name: 'logging', enabled: "{{logging.enabled}}" }
+        - { name: 'monitoring', enabled: "{{monitoring.enabled}}" }
+        - { name: 'cnvrgApp', enabled: "{{cnvrgApp.enabled}}" }
+        - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
+        - { name: 'mpi', enabled: "{{mpi.enabled}}" }
+        - { name: 'vpa', enabled: "{{vpa.enabled}}" }
+
+    - name: Set operatorRoles if otags are `all` or not defined
+      set_fact:
+        operatorRoles: "{{ operatorRoles + [role] }}"
+      loop_control:
+        loop_var: role
+      loop: "{{defaultOperatorRoles}}"
+      when: (otags == "all") or (otags is not defined)
+
+    - name: Set operatorRoles if otags are set for sepcifc roles
+      set_fact:
+        operatorRoles: "{{ operatorRoles + [role] }}"
+      when:
+      - otags != "all"
+      - role.name in otags.split(",")
+      loop_control:
+        loop_var: role
+      loop: "{{defaultOperatorRoles}}"
+
+    - name: Deploy prereq
+      include_role:
+        name: "cnvrgApp"
+        tasks_from: prereq
+
+    - name: Deploy cnvrg stack
+      include_role:
+        name: "{{ role.name }}"
+      when: role.enabled == "true"
+      loop_control:
+        loop_var: role
+      loop: "{{operatorRoles}}"

@@ -17,7 +17,7 @@
 
   - name: wait for image cache ds to come up
     shell: |
-      kubectl get daemonset "{{ cnvrgAppUpgrade.cacheDsName }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
+      kubectl get daemonset "{{ cacheDsName }}" -n"{{ ansible_operator_meta.namespace }}" -ojson | jq -r .status
     register: dsStatus
     until: (dsStatus.stdout|from_json).desiredNumberScheduled == (dsStatus.stdout|from_json).currentNumberScheduled
     retries: 3600
@@ -31,4 +31,4 @@
       templatePath: "templates/upgrade/cache-image-ds.yml"
       state: "absent"
       waitToComplete: yes
-  when: cnvrgAppUpgrade.cacheImage == "true"
+  when: cacheImage == "true"

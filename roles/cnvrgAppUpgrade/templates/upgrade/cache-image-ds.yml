@@ -2,21 +2,18 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: "{{ cnvrgAppUpgrade.cacheDsName }}"
+  name: "{{ cacheDsName }}"
   namespace: "{{ ansible_operator_meta.namespace }}"
 spec:
   selector:
     matchLabels:
-      app: "{{ cnvrgAppUpgrade.cacheDsName }}"
+      app: "{{ cacheDsName }}"
   template:
     metadata:
       labels:
-        app: "{{ cnvrgAppUpgrade.cacheDsName }}"
+        app: "{{ cacheDsName }}"
     spec:
-      {% if cnvrgApp.edition == "enterprise" %}
-      imagePullSecrets:
-        - name: {{ cnvrgApp.conf.registry.name }}
-      {% endif %}
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       tolerations:
       - key: "{{ tenancy.cnvrg.key }}"
         operator: "Equal"
@@ -24,5 +21,5 @@ spec:
         effect: "NoSchedule"
       containers:
       - name: app-image-chache
-        image: "{{ cnvrgAppUpgrade.image }}"
+        image: "{{ image }}"
         command: ["/bin/bash","-c","sleep inf"]

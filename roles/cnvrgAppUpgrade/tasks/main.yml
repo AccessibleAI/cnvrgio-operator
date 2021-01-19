@@ -13,8 +13,8 @@
     import_tasks: init.yml
   - name: backup
     import_tasks: backup.yml
-  #- name: cache app image
-  #  import_tasks: image_cache.yml
+  - name: cache app image
+    import_tasks: cache.yml
   #- name: upgrade
   #  import_task: upgrade.yml
   when: condition == "upgrade"
