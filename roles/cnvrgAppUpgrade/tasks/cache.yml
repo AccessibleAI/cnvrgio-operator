@@ -10,7 +10,7 @@
       name: common
       tasks_from: install
     vars:
-      templatePath: "templates/upgrade/cache-image-ds.yml"
+      templatePath: "templates/cache-image-ds.yml"
       state: "present"
       waitToComplete: yes
       timeout: 600
@@ -28,7 +28,7 @@
       name: common
       tasks_from: install
     vars:
-      templatePath: "templates/upgrade/cache-image-ds.yml"
+      templatePath: "templates/cache-image-ds.yml"
       state: "absent"
       waitToComplete: yes
   when: cacheImage == "true"

@@ -15,67 +15,68 @@ cnvrgApp:
   readinessTimeoutSeconds: "{{ .Values.cnvrgApp.readinessTimeoutSeconds }}"
   failureThreshold: "{{ .Values.cnvrgApp.failureThreshold }}"
   resourcesRequestEnabled: "{{.Values.cnvrgApp.resourcesRequestEnabled}}"
+
   {{- if eq .Values.computeProfile "large"}}
   cpu: "{{ .Values.computeProfiles.large.cnvrgApp.cpu }}"
   memory: "{{ .Values.computeProfiles.large.cnvrgApp.memory }}"
-    sidekiq:
-      enabled: "{{ .Values.cnvrgApp.sidekiq.enabled }}"
-      split: "{{.Values.cnvrgApp.sidekiq.split }}"
-      cpu: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiq.replicas}}"
-    searchkiq:
-      enabled: "{{ .Values.cnvrgApp.searchkiq.enabled }}"
-      cpu: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiq.replicas}}"
-    systemkiq:
-      enabled: "{{ .Values.cnvrgApp.systemkiq.enabled }}"
-      cpu: "{{ .Values.computeProfiles.large.cnvrgApp.systemkiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.large.cnvrgApp.systemkiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.large.cnvrgApp.systemkiq.replicas}}"
+  sidekiq:
+    enabled: "{{ .Values.cnvrgApp.sidekiq.enabled }}"
+    split: "{{.Values.cnvrgApp.sidekiq.split }}"
+    cpu: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.large.cnvrgApp.sidekiq.replicas}}"
+  searchkiq:
+    enabled: "{{ .Values.cnvrgApp.searchkiq.enabled }}"
+    cpu: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.large.cnvrgApp.searchkiq.replicas}}"
+  systemkiq:
+    enabled: "{{ .Values.cnvrgApp.systemkiq.enabled }}"
+    cpu: "{{ .Values.computeProfiles.large.cnvrgApp.systemkiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.large.cnvrgApp.systemkiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.large.cnvrgApp.systemkiq.replicas}}"
   {{- end }}
 
   {{- if eq .Values.computeProfile "medium"}}
   cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.cpu }}"
   memory: "{{ .Values.computeProfiles.medium.cnvrgApp.memory }}"
-    sidekiq:
-      enabled: "{{ .Values.cnvrgApp.sidekiq.enabled }}"
-      split: "{{.Values.cnvrgApp.sidekiq.split }}"
-      cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiq.replicas}}"
-    searchkiq:
-      enabled: "{{ .Values.cnvrgApp.searchkiq.enabled }}"
-      cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiq.replicas}}"
-    systemkiq:
-      enabled: "{{ .Values.cnvrgApp.systemkiq.enabled }}"
-      cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.systemkiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.medium.cnvrgApp.systemkiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.medium.cnvrgApp.systemkiq.replicas}}"
+  sidekiq:
+    enabled: "{{ .Values.cnvrgApp.sidekiq.enabled }}"
+    split: "{{.Values.cnvrgApp.sidekiq.split }}"
+    cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.medium.cnvrgApp.sidekiq.replicas}}"
+  searchkiq:
+    enabled: "{{ .Values.cnvrgApp.searchkiq.enabled }}"
+    cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.medium.cnvrgApp.searchkiq.replicas}}"
+  systemkiq:
+    enabled: "{{ .Values.cnvrgApp.systemkiq.enabled }}"
+    cpu: "{{ .Values.computeProfiles.medium.cnvrgApp.systemkiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.medium.cnvrgApp.systemkiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.medium.cnvrgApp.systemkiq.replicas}}"
   {{- end }}
 
   {{- if eq .Values.computeProfile "small"}}
   cpu: "{{ .Values.computeProfiles.small.cnvrgApp.cpu }}"
   memory: "{{ .Values.computeProfiles.small.cnvrgApp.memory }}"
-    sidekiq:
-      enabled: "{{ .Values.cnvrgApp.sidekiq.enabled }}"
-      split: "{{.Values.cnvrgApp.sidekiq.split }}"
-      cpu: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiq.replicas}}"
-    searchkiq:
-      enabled: "{{ .Values.cnvrgApp.searchkiq.enabled}}"
-      cpu: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiq.replicas}}"
-    systemkiq:
-      enabled: "{{ .Values.cnvrgApp.systemkiq.enabled}}"
-      cpu: "{{ .Values.computeProfiles.small.cnvrgApp.systemkiq.cpu}}"
-      memory: "{{ .Values.computeProfiles.small.cnvrgApp.systemkiq.memory}}"
-      replicas: "{{ .Values.computeProfiles.small.cnvrgApp.systemkiq.replicas}}"
+  sidekiq:
+    enabled: "{{ .Values.cnvrgApp.sidekiq.enabled }}"
+    split: "{{.Values.cnvrgApp.sidekiq.split }}"
+    cpu: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.small.cnvrgApp.sidekiq.replicas}}"
+  searchkiq:
+    enabled: "{{ .Values.cnvrgApp.searchkiq.enabled}}"
+    cpu: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.small.cnvrgApp.searchkiq.replicas}}"
+  systemkiq:
+    enabled: "{{ .Values.cnvrgApp.systemkiq.enabled}}"
+    cpu: "{{ .Values.computeProfiles.small.cnvrgApp.systemkiq.cpu}}"
+    memory: "{{ .Values.computeProfiles.small.cnvrgApp.systemkiq.memory}}"
+    replicas: "{{ .Values.computeProfiles.small.cnvrgApp.systemkiq.replicas}}"
   {{- end }}
   seeder:
     image: "{{ .Values.cnvrgApp.seeder.image }}"

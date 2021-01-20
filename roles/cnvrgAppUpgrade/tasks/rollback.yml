@@ -27,9 +27,8 @@
     vars:
       message: "rollback done"
 
-  - include_role:
-      name: common
-      tasks_from: inactivate.yml
+  - name: inactivate
+    import_tasks: inactivate.yml
 
   when:
   - condition == "rollback"

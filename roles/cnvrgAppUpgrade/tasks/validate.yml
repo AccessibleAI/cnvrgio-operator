@@ -2,12 +2,12 @@
   block:
   - name: get all running upgrades
     shell: |
-      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATE:.spec.cnvrgAppUpgrade.state --no-headers | grep upgrade | wc -l
+      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=CONDITION:.spec.condition --no-headers | grep upgrade | wc -l
     register: runningUpgrades
 
   - name: get all running rollbacks
     shell: |
-      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATE:.spec.cnvrgAppUpgrade.state --no-headers | grep rollback | wc -l
+      kubectl get cnvrgappupgrades.mlops.cnvrg.io -n{{ ansible_operator_meta.namespace }} -o=custom-columns=CONDITION:.spec.condition --no-headers | grep rollback | wc -l
     register: runningRollbacks
 
   - name: fail if more than one upgrade exists

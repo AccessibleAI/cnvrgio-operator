@@ -11,7 +11,7 @@ logging:
     svcName: "elasticsearch"
     runAsUser: 1000
     fsGroup: 1000
-    patchEsNodes: "true"
+    patchEsNodes: "false"
     nodePort: 32200
     storageClass: "use-default"
     cpuRequest: 1

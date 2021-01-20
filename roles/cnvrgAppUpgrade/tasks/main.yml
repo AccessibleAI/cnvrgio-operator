@@ -18,6 +18,3 @@
   - name: upgrade
     import_tasks: upgrade.yml
   when: condition == "upgrade"
-
-- debug:
-    msg: "{{ _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup }}"
