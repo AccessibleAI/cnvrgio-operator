@@ -29,7 +29,8 @@
     kubectl get pods -l "app={{item}}" -n"{{ ansible_operator_meta.namespace }}" --no-headers | wc -l
   loop:
     - sidekiq
-    - sidekiq-searchkick
+    - searchkiq
+    - systemkiq
   register: replicas
   until: replicas.stdout|int == 0
   retries: 3600
@@ -92,26 +93,28 @@
     msg: "cnvrgAppUpgradeSpec not found"
   when: (cnvrgAppUpgradeSpec.resources|length < 1) or (cnvrgAppRes.resources|length < 1)
 
-- set_fact:
-    backupSpec: "{{ cnvrgAppUpgradeSpec.resources[0].status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
+- name: set values for restore
+  block:
+    - set_fact:
+        backupSpec: "{{ cnvrgAppUpgradeSpec.resources[0].status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
 
-- set_fact:
-    cnvrgSpec: "{{ cnvrgAppRes.resources[0] }}"
+    - set_fact:
+        cnvrgSpec: "{{ cnvrgAppRes.resources[0] }}"
 
-- set_fact:
-    resourcesRequestEnabled: "{% if backupSpec.cnvrgApp.resourcesRequestEnabled is defined %}{{backupSpec.cnvrgApp.resourcesRequestEnabled}}{% else %}{{cnvrgApp.resourcesRequestEnabled}}{% endif %}"
+    - set_fact:
+        resourcesRequestEnabled: "{% if backupSpec.cnvrgApp.resourcesRequestEnabled is defined %}{{backupSpec.cnvrgApp.resourcesRequestEnabled}}{% else %}{{cnvrgApp.resourcesRequestEnabled}}{% endif %}"
 
-- set_fact:
-    sidekiqReplicas: "{% if backupSpec.cnvrgApp.sidekiq.replicas is defined %}{{backupSpec.cnvrgApp.sidekiq.replicas}}{% else %}{{cnvrgApp.sidekiq.replicas}}{% endif %}"
+    - set_fact:
+        sidekiqReplicas: "{% if backupSpec.cnvrgApp.sidekiq.replicas is defined %}{{backupSpec.cnvrgApp.sidekiq.replicas}}{% else %}{{cnvrgApp.sidekiq.replicas}}{% endif %}"
 
-- set_fact:
-    searchkiqReplicas: "{% if backupSpec.cnvrgApp.searchkiq.replicas is defined %}{{backupSpec.cnvrgApp.searchkiq.replicas}}{% else %}{{cnvrgApp.searchkiq.replicas}}{% endif %}"
+    - set_fact:
+        searchkiqReplicas: "{% if backupSpec.cnvrgApp.searchkiq.replicas is defined %}{{backupSpec.cnvrgApp.searchkiq.replicas}}{% else %}{{cnvrgApp.searchkiq.replicas}}{% endif %}"
 
-- set_fact:
-    systemkiqReplicas: "{% if backupSpec.cnvrgApp.systemkiq.replicas is defined %}{{backupSpec.cnvrgApp.systemkiq.replicas}}{% else %}{{cnvrgApp.systemkiq.replicas}}{% endif %}"
+    - set_fact:
+        systemkiqReplicas: "{% if backupSpec.cnvrgApp.systemkiq.replicas is defined %}{{backupSpec.cnvrgApp.systemkiq.replicas}}{% else %}{{cnvrgApp.systemkiq.replicas}}{% endif %}"
 
-- set_fact:
-    otags: "{% if backupSpec.otags is defined %}{{backupSpec.otags}}{% else %}all{% endif %}"
+    - set_fact:
+        otags: "{% if backupSpec.otags is defined %}{{backupSpec.otags}}{% else %}all{% endif %}"
 
 - name: restore resourcesRequestEnabled from backup
   set_fact:
@@ -127,28 +130,28 @@
                             }
                         }, recursive=True) }}"
 
-- debug:
-    msg: "{{ cnvrgSpec }}"
+- name: update CnvrgApp
+  k8s:
+    state: "present"
+    definition: "{{ cnvrgSpec }}"
+    wait: yes
 
-#- name: update CnvrgApp
-#  k8s:
-#    state: "present"
-#    definition: "{{ cnvrgAppObject }}"
-#    wait: yes
-#    merge_type: json
+- name: wait for operator to start reconciliation
+  pause:
+    seconds: 10
 
-#- name: wait for awaiting next reconciliation on cnvrgapp
-#  shell: |
-#    kubectl get cnvrgapps.mlops.cnvrg.io cnvrg-app -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATUS:.status.conditions[0].message --no-headers
-#  register: status
-#  until: status.stdout == "Awaiting next reconciliation"
-#  retries: 3600
-#  delay: 5
+- name: wait for awaiting next reconciliation on cnvrgapp
+  shell: |
+    kubectl get cnvrgapps.mlops.cnvrg.io cnvrg-app -n{{ ansible_operator_meta.namespace }} -o=custom-columns=STATUS:.status.conditions[0].message --no-headers
+  register: status
+  until: status.stdout == "Awaiting next reconciliation"
+  retries: 3600
+  delay: 5
 
-#- name: inactivate
-#  import_tasks: inactivate.yml
+- name: inactivate
+  import_tasks: inactivate.yml
 
-#- name: status
-#  import_tasks: status.yml
-#  vars:
-#    message: "upgrade done"
+- name: status
+  import_tasks: status.yml
+  vars:
+    message: "upgrade done"

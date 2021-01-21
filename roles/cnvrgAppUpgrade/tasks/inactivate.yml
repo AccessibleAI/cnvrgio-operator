@@ -15,7 +15,7 @@
 
 - name: set CnvrgAppUpgrade CR inactive
   set_fact:
-    cnvrgAppUpgradeSpec: "{{ cnvrgAppUpgradeSpec|combine({'spec': {'condition':'inactive'}}, recursive=True) }}"
+    cnvrgAppUpgradeSpec: "{{ cnvrgAppUpgradeSpec|combine({'spec': {'condition':'inactive'} } , recursive=True) }}"
 
 - name: update CnvrgAppUpgrade
   k8s:

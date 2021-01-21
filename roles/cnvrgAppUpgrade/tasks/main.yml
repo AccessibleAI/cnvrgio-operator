@@ -4,17 +4,17 @@
 - name: rollback
   import_tasks: rollback.yml
   when:
-  - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
-  - condition == "rollback"
+    - _mlops_cnvrg_io_cnvrgappupgrade.status.cnvrgBackup is defined
+    - condition == "rollback"
 
 - name: run upgrade
   block:
-  - name: init
-    import_tasks: init.yml
-  - name: backup
-    import_tasks: backup.yml
-  - name: cache app image
-    import_tasks: cache.yml
-  - name: upgrade
-    import_tasks: upgrade.yml
+    - name: init
+      import_tasks: init.yml
+    - name: backup
+      import_tasks: backup.yml
+    - name: cache app image
+      import_tasks: cache.yml
+    - name: upgrade
+      import_tasks: upgrade.yml
   when: condition == "upgrade"

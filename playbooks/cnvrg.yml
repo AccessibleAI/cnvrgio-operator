@@ -45,8 +45,8 @@
       set_fact:
         operatorRoles: "{{ operatorRoles + [role] }}"
       when:
-      - otags != "all"
-      - role.name in otags.split(",")
+        - otags != "all"
+        - role.name in otags.split(",")
       loop_control:
         loop_var: role
       loop: "{{defaultOperatorRoles}}"
