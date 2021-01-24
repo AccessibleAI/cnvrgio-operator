@@ -25,23 +25,23 @@ class ComputeProfilesLargeWithHelmChartTest(unittest.TestCase, CommonBase):
 
     def test_large_profile_webapp_cpu(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['webappCpu']),
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['cpu']),
             str(self.SPEC['spec']['cnvrgApp']['cpu']))
 
     def test_large_profile_webapp_memory(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['webappMemory']),
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['memory']),
             str(self.SPEC['spec']['cnvrgApp']['memory']))
 
     def test_large_profile_sidekiq_cpu(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiqCpu']),
-            str(self.SPEC['spec']['cnvrgApp']['sidekiqCpu']))
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiq']['cpu']),
+            str(self.SPEC['spec']['cnvrgApp']['sidekiq']['cpu']))
 
     def test_large_profile_sidekiq_memory(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiqMemory']),
-            str(self.SPEC['spec']['cnvrgApp']['sidekiqMemory']))
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiq']['memory']),
+            str(self.SPEC['spec']['cnvrgApp']['sidekiq']['memory']))
 
     def test_large_profile_pg_cpu(self):
         self.assertEqual(
@@ -120,23 +120,23 @@ class ComputeProfilesMediumWithHelmChartTest(unittest.TestCase, CommonBase):
 
     def test_medium_profile_webapp_cpu(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['webappCpu']),
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['cpu']),
             str(self.SPEC['spec']['cnvrgApp']['cpu']))
 
     def test_medium_profile_webapp_memory(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['webappMemory']),
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['memory']),
             str(self.SPEC['spec']['cnvrgApp']['memory']))
 
     def test_medium_profile_sidekiq_cpu(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiqCpu']),
-            str(self.SPEC['spec']['cnvrgApp']['sidekiqCpu']))
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiq']['cpu']),
+            str(self.SPEC['spec']['cnvrgApp']['sidekiq']['cpu']))
 
     def test_medium_profile_sidekiq_memory(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiqMemory']),
-            str(self.SPEC['spec']['cnvrgApp']['sidekiqMemory']))
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiq']['memory']),
+            str(self.SPEC['spec']['cnvrgApp']['sidekiq']['memory']))
 
     def test_medium_profile_pg_cpu(self):
         self.assertEqual(
@@ -215,23 +215,23 @@ class ComputeProfilesSmallWithHelmChartTest(unittest.TestCase, CommonBase):
 
     def test_small_profile_webapp_cpu(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['webappCpu']),
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['cpu']),
             str(self.SPEC['spec']['cnvrgApp']['cpu']))
 
     def test_small_profile_webapp_memory(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['webappMemory']),
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['memory']),
             str(self.SPEC['spec']['cnvrgApp']['memory']))
 
     def test_small_profile_sidekiq_cpu(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiqCpu']),
-            str(self.SPEC['spec']['cnvrgApp']['sidekiqCpu']))
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiq']['cpu']),
+            str(self.SPEC['spec']['cnvrgApp']['sidekiq']['cpu']))
 
     def test_small_profile_sidekiq_memory(self):
         self.assertEqual(
-            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiqMemory']),
-            str(self.SPEC['spec']['cnvrgApp']['sidekiqMemory']))
+            str(self.VALUES['computeProfiles'][self.PROFILE]['cnvrgApp']['sidekiq']['memory']),
+            str(self.SPEC['spec']['cnvrgApp']['sidekiq']['memory']))
 
     def test_small_profile_pg_cpu(self):
         self.assertEqual(

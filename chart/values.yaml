@@ -354,7 +354,7 @@ cnvrgApp:
   searchkiq:
     enabled: "true"
   systemkiq:
-    enabled: "true"
+    enabled: "false"
   kiqPrestopHook:
     enabled: "true"
     killTimeout: 60
