@@ -88,15 +88,15 @@ pipeline {
             steps {
                 script {
                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                        sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
-                        sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
-                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
-                        // sleep for one minute, just to make sure AKS cluster is completely ready
-                        sh "sleep 60"
-                        // deploy nginx ingress
-                        sh "KUBECONFIG=${workspace}/kubeconfig kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml"
+//                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+//                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+//                        sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
+//                        sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
+//                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
+//                        // sleep for one minute, just to make sure AKS cluster is completely ready
+//                        sh "sleep 60"
+//                        // deploy nginx ingress
+//                        sh "KUBECONFIG=${workspace}/kubeconfig kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml"
                     }
                 }
             }
@@ -134,31 +134,20 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: '85318dfa-3ae8-4384-b7b8-0fcc8fab0b3a', variable: 'ACCOUNT_KEY')]) {
+                    withCredentials([string(credentialsId: 'MZU+4hkrrYOGdgQjvBogT5vwM+JJoXYR7LSazhxf', variable: 'ACCOUNT_KEY')]) {
                         // Unittests report
                         sh """
-                        az storage blob upload \
-                         --account-name operatortestreports \
-                         --container-name reports \
-                         --name ${NEXT_VERSION}.html \
-                         --file "tests/reports/\$(ls tests/reports)" \
-                         --account-key ${ACCOUNT_KEY}
-                        """
-                        echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
-
-                        // Time execution report
-                        sh """
+                        # test report
+                        cp "tests/reports/\$(ls tests/reports)" ${NEXT_VERSION}.html
+                        aws s3 cp ${NEXT_VERSION}.html s3://cnvrg-helm-charts/operator-test-report/
+                        
+                        # time exec report
                         EXEC_TIME_REPORT=\$(cat tests-duration-execution-report.json) envsubst < tests/exec-time-report.tmpl > exec-time-report-${NEXT_VERSION}.html
-                        """
-                        sh """
-                        az storage blob upload \
-                         --account-name operatortestreports \
-                         --container-name reports \
-                         --name exec-time-report-${NEXT_VERSION}.html \
-                         --file "exec-time-report-${NEXT_VERSION}.html" \
-                         --account-key ${ACCOUNT_KEY}
-                        """
+                        aws s3 cp exec-time-report-${NEXT_VERSION}.html s3://cnvrg-helm-charts/operator-test-report/
+                        
                         echo "https://operatortestreports.blob.core.windows.net/reports/exec-time-report-${NEXT_VERSION}.html"
+                        echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
+                        """
                     }
                 }
             }
