@@ -134,7 +134,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'MZU+4hkrrYOGdgQjvBogT5vwM+JJoXYR7LSazhxf', variable: 'ACCOUNT_KEY')]) {
+                    withCredentials([string(credentialsId: 'devops-infra-s3-bucket', variable: 'ACCOUNT_KEY')]) {
                         // Unittests report
                         sh """
                         # test report
