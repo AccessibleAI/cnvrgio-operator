@@ -1,7 +1,6 @@
 ---
 cnvrgApp:
   replicas: 1
-  edition: "core"
   enabled: "true"
   image: ""
   port: 80

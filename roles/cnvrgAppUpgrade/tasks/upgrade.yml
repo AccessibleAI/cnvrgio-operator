@@ -81,17 +81,17 @@
     name: "{{ ansible_operator_meta.name }}"
   register: cnvrgAppUpgradeSpec
 
-#- name: get CnvrgApp
-#  community.kubernetes.k8s_info:
-#    api_version: v1
-#    kind: CnvrgApp
-#    namespace: "{{ ansible_operator_meta.namespace }}"
-#    name: "{{ cnvrgAppName }}"
-#  register: cnvrgAppRes
+- name: get CnvrgApp
+  community.kubernetes.k8s_info:
+    api_version: v1
+    kind: CnvrgApp
+    namespace: "{{ ansible_operator_meta.namespace }}"
+    name: "{{ cnvrgAppName }}"
+  register: cnvrgAppRes
 
 - fail:
     msg: "cnvrgAppUpgradeSpec not found"
-  when: cnvrgAppUpgradeSpec.resources|length < 1 #) or (cnvrgAppRes.resources|length < 1)
+  when: (cnvrgAppUpgradeSpec.resources|length < 1 ) or (cnvrgAppRes.resources|length < 1)
 
 - name: set values for restore
   block:
@@ -102,8 +102,8 @@
         cnvrgSpec: {
                      "apiVersion": "mlops.cnvrg.io/v1",
                      "kind": "CnvrgApp",
-                     "metadata": {"name": {{ cnvrgAppName }},"namespace": {{ ansible_operator_meta.namespace }}},
-                     "spec": {}
+                     "metadata": {"name": "{{ cnvrgAppName }}", "namespace": "{{ ansible_operator_meta.namespace }}" },
+                     "spec": "{{ cnvrgAppRes.resources[0].spec }}",
                    }
 
     - set_fact:

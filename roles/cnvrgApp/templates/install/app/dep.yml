@@ -135,10 +135,6 @@ spec:
           value: "{{ ansible_operator_meta.namespace }}"
         - name: "CNVRG_SA_NAME"
           value: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-        {% if cnvrgApp.edition == "enterprise" %}
-        - name: "CNVRG_IMAGE_PULL_SECRET"
-          value: {{ cnvrgApp.conf.registry.name }}
-        {% endif %}
         {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
         - name: "CNVRG_GCP_KEYFILE_SECRET"
           value: "{{ cnvrgApp.conf.gcpStorageSecret }}"

@@ -333,7 +333,6 @@ mpi:
 cnvrgApp:
   replicas: 1
   sidekiqReplicas: 2
-  edition: core
   enabled: "true"
   fixpg: "true"
   image: "cnvrg/core:3.1.3"
