@@ -100,7 +100,9 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
     --set networking.ingressType="nodeport" \
+    --set storage.enabled="true" \
     --set storage.nfs.enabled="true" \
+    --set storage.nfs.defaultSc="true" \
     --set storage.nfs.server="storage.nfs.SERVER.IP" \
     --set storage.nfs.path="/shared/nfs/directory"
 ```
@@ -110,7 +112,9 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
     --set networking.ingressType="nodeport" \
+    --set storage.enabled="true" \
     --set storage.hostpath.enabled="true" \
+    --set storage.hostpath.defaultSc="true" \
     --set storage.hostpath.nodeName="<k8s-node>"
 ```
 

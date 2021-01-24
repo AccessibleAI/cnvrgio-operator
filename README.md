@@ -100,7 +100,9 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=192.168.1.2 \
     --set networking.ingressType="nodeport" \
+    --set storage.enabled="true" \
     --set storage.nfs.enabled="true" \
+    --set storage.nfs.defaultSc="true" \
     --set storage.nfs.server="storage.nfs.SERVER.IP" \
     --set storage.nfs.path="/shared/nfs/directory"
 ```
@@ -110,7 +112,9 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
     --set clusterDomain=<node-ip> \
     --set networking.ingressType="nodeport" \
+    --set storage.enabled="true" \
     --set storage.hostpath.enabled="true" \
+    --set storage.hostpath.defaultSc="true" \
     --set storage.hostpath.nodeName="<k8s-node>"
 ```
 
@@ -133,7 +137,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |**key**|**default value**
 | ---|---| 
 |`cnvrgApp.replicas`|1
-|`cnvrgApp.edition`|core
 |`cnvrgApp.enabled`|true
 |`cnvrgApp.image`|-
 |`cnvrgApp.port`|80
@@ -158,7 +161,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.searchkiq.cpu`|750m
 |`cnvrgApp.searchkiq.memory`|750Mi
 |`cnvrgApp.searchkiq.replicas`|1
-|`cnvrgApp.systemkiq.enabled`|true
+|`cnvrgApp.systemkiq.enabled`|false
 |`cnvrgApp.systemkiq.cpu`|500m
 |`cnvrgApp.systemkiq.memory`|500Mi
 |`cnvrgApp.systemkiq.replicas`|1
