@@ -134,7 +134,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Unittests report
                     withAWS(credentials: 'devops-infra-s3-bucket', region: 'us-east-1') {
                         sh """
                         # test report
