@@ -134,8 +134,8 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'devops-infra-s3-bucket', variable: 'ACCOUNT_KEY')]) {
-                        // Unittests report
+                    // Unittests report
+                    withAWS(credentials: 'devops-infra-s3-bucket', region: 'us-east-1') {
                         sh """
                         # test report
                         cp "tests/reports/\$(ls tests/reports)" ${NEXT_VERSION}.html
