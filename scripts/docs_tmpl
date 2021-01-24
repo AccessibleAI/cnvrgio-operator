@@ -118,7 +118,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
     --set storage.hostpath.nodeName="<k8s-node>"
 ```
 
-
 #### Turn On/Off components
 ```
 helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wait \
