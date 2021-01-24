@@ -88,15 +88,15 @@ pipeline {
             steps {
                 script {
                     withCredentials([azureServicePrincipal('jenkins-cicd-azure-new')]) {
-//                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-//                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-//                        sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
-//                        sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
-//                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
-//                        // sleep for one minute, just to make sure AKS cluster is completely ready
-//                        sh "sleep 60"
-//                        // deploy nginx ingress
-//                        sh "KUBECONFIG=${workspace}/kubeconfig kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml"
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                        sh "az group create --location ${CLUSTER_LOCATION} --name ${CLUSTER_NAME}"
+                        sh "az aks create --resource-group  ${CLUSTER_NAME} --name ${CLUSTER_NAME} --location ${CLUSTER_LOCATION} --node-count ${NODE_COUNT} --node-vm-size ${NODE_VM_SIZE} --service-principal ${AZURE_CLIENT_ID} --client-secret ${AZURE_CLIENT_SECRET}"
+                        sh "az aks get-credentials --resource-group ${CLUSTER_NAME} --name ${CLUSTER_NAME} --file kubeconfig --subscription $AZURE_SUBSCRIPTION_ID"
+                        // sleep for one minute, just to make sure AKS cluster is completely ready
+                        sh "sleep 60"
+                        // deploy nginx ingress
+                        sh "KUBECONFIG=${workspace}/kubeconfig kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml"
                     }
                 }
             }
