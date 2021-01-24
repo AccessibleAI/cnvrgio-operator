@@ -142,15 +142,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.svcName`|app
 |`cnvrgApp.fixpg`|true
 |`cnvrgApp.nodePort`|30080
-|`cnvrgApp.sidekiqCpu`|1750m
-|`cnvrgApp.sidekiqMemory`|3750Mi
-|`cnvrgApp.sidekiqReplicas`|2
-|`cnvrgApp.sidekiqSearchkickCpu`|750m
-|`cnvrgApp.sidekiqSearchkickMemory`|750Mi
-|`cnvrgApp.sidekiqSearchkickReplicas`|1
-|`cnvrgApp.sidekiqSystemCpu`|500m
-|`cnvrgApp.sidekiqSystemMemory`|500Mi
-|`cnvrgApp.sidekiqSystemReplicas`|1
 |`cnvrgApp.passengerMaxPoolSize`|20
 |`cnvrgApp.enableReadinessProbe`|true
 |`cnvrgApp.initialDelaySeconds`|10
@@ -158,8 +149,21 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.readinessTimeoutSeconds`|20
 |`cnvrgApp.failureThreshold`|4
 |`cnvrgApp.resourcesRequestEnabled`|true
-|`cnvrgApp.sidekiqPrestopHook.enabled`|true
-|`cnvrgApp.sidekiqPrestopHook.killTimeout`|60
+|`cnvrgApp.sidekiq.enabled`|true
+|`cnvrgApp.sidekiq.split`|true
+|`cnvrgApp.sidekiq.cpu`|1750m
+|`cnvrgApp.sidekiq.memory`|3750Mi
+|`cnvrgApp.sidekiq.replicas`|2
+|`cnvrgApp.searchkiq.enabled`|true
+|`cnvrgApp.searchkiq.cpu`|750m
+|`cnvrgApp.searchkiq.memory`|750Mi
+|`cnvrgApp.searchkiq.replicas`|1
+|`cnvrgApp.systemkiq.enabled`|true
+|`cnvrgApp.systemkiq.cpu`|500m
+|`cnvrgApp.systemkiq.memory`|500Mi
+|`cnvrgApp.systemkiq.replicas`|1
+|`cnvrgApp.kiqPrestopHook.enabled`|true
+|`cnvrgApp.kiqPrestopHook.killTimeout`|60
 |`cnvrgApp.hyper.enabled`|true
 |`cnvrgApp.hyper.image`|cnvrg/hyper-server:latest
 |`cnvrgApp.hyper.port`|5050
@@ -177,7 +181,6 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`cnvrgApp.seeder.image`|docker.io/cnvrg/cnvrg-boot:v0.25
 |`cnvrgApp.seeder.seedCmd`|rails db:migrate && rails db:seed && rails libraries:update
 |`cnvrgApp.seeder.createBucketCmd`|mb.sh
-|`cnvrgApp.conf.splitSidekiq`|true
 |`cnvrgApp.conf.gcpStorageSecret`|gcp-storage-secret
 |`cnvrgApp.conf.gcpKeyfileMountPath`|/tmp/gcp_keyfile
 |`cnvrgApp.conf.gcpKeyfileName`|key.json
@@ -238,6 +241,11 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |**key**|**default value**
 | ---|---| 
 |`computeProfile`|medium
+|`condition`|upgrade
+|`cacheDsName`|app-image-chache
+|`cnvrgAppName`|cnvrg-app
+|`image`|-
+|`cacheImage`|true
 |`debug`|false
 |`dumpDir`|-
 |`dryRun`|false
@@ -256,7 +264,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`logging.es.svcName`|elasticsearch
 |`logging.es.runAsUser`|1000
 |`logging.es.fsGroup`|1000
-|`logging.es.patchEsNodes`|true
+|`logging.es.patchEsNodes`|false
 |`logging.es.nodePort`|32200
 |`logging.es.storageClass`|use-default
 |`logging.es.cpuRequest`|1

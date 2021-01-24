@@ -43,7 +43,7 @@
 
 - name: upgrading app image
   set_fact:
-    cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'cnvrgApp': {'image':  image }}}, recursive=True) }}"
+    cnvrgAppObject: "{{ cnvrgAppObject|combine({'spec': {'cnvrgApp': {'image':  image } } }, recursive=True) }}"
 
 - name: update CnvrgApp
   k8s:
@@ -81,17 +81,17 @@
     name: "{{ ansible_operator_meta.name }}"
   register: cnvrgAppUpgradeSpec
 
-- name: get CnvrgApp
-  community.kubernetes.k8s_info:
-    api_version: v1
-    kind: CnvrgApp
-    namespace: "{{ ansible_operator_meta.namespace }}"
-    name: "{{ cnvrgAppName }}"
-  register: cnvrgAppRes
+#- name: get CnvrgApp
+#  community.kubernetes.k8s_info:
+#    api_version: v1
+#    kind: CnvrgApp
+#    namespace: "{{ ansible_operator_meta.namespace }}"
+#    name: "{{ cnvrgAppName }}"
+#  register: cnvrgAppRes
 
 - fail:
     msg: "cnvrgAppUpgradeSpec not found"
-  when: (cnvrgAppUpgradeSpec.resources|length < 1) or (cnvrgAppRes.resources|length < 1)
+  when: cnvrgAppUpgradeSpec.resources|length < 1 #) or (cnvrgAppRes.resources|length < 1)
 
 - name: set values for restore
   block:
@@ -99,7 +99,12 @@
         backupSpec: "{{ cnvrgAppUpgradeSpec.resources[0].status.cnvrgBackup.cnvrgAppSpec|from_yaml}}"
 
     - set_fact:
-        cnvrgSpec: "{{ cnvrgAppRes.resources[0] }}"
+        cnvrgSpec: {
+                     "apiVersion": "mlops.cnvrg.io/v1",
+                     "kind": "CnvrgApp",
+                     "metadata": {"name": {{ cnvrgAppName }},"namespace": {{ ansible_operator_meta.namespace }}},
+                     "spec": {}
+                   }
 
     - set_fact:
         resourcesRequestEnabled: "{% if backupSpec.cnvrgApp.resourcesRequestEnabled is defined %}{{backupSpec.cnvrgApp.resourcesRequestEnabled}}{% else %}{{cnvrgApp.resourcesRequestEnabled}}{% endif %}"

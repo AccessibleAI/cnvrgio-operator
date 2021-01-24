@@ -112,7 +112,7 @@ Perform the following actions to change cluster domain name
      
     kubectl delete pods -lapp=sidekiq -ncnvrg
     
-    kubectl delete pods -lapp=sidekiq-searchkick -ncnvrg
+    kubectl delete pods -lapp=searchkiq -ncnvrg
   	
     ```
   

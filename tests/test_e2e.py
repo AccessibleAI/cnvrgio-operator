@@ -656,7 +656,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         self.assertEqual(0, res[0])
 
     def test_sidekiq_searchkick(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=sidekiq-searchkick -ncnvrg --timeout=300s"
+        cmd = "kubectl wait --for=condition=ready pod -l app=searchkiq -ncnvrg --timeout=300s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
