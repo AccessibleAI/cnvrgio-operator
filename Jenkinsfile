@@ -145,8 +145,8 @@ pipeline {
                         EXEC_TIME_REPORT=\$(cat tests-duration-execution-report.json) envsubst < tests/exec-time-report.tmpl > exec-time-report-${NEXT_VERSION}.html
                         aws s3 cp exec-time-report-${NEXT_VERSION}.html s3://cnvrg-helm-charts/operator-test-report/
                         
-                        echo "https://operatortestreports.blob.core.windows.net/reports/exec-time-report-${NEXT_VERSION}.html"
-                        echo "https://operatortestreports.blob.core.windows.net/reports/${NEXT_VERSION}.html"
+                        echo "https://cnvrg-helm-charts.s3-us-west-2.amazonaws.com/operator-test-report/exec-time-report-${NEXT_VERSION}.html"
+                        echo "https://cnvrg-helm-charts.s3-us-west-2.amazonaws.com/operator-test-report/${NEXT_VERSION}.html"
                         """
                     }
                 }
