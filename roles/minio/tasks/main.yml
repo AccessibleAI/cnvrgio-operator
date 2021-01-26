@@ -1,19 +1,6 @@
 - include_vars: ../../cnvrgApp/vars/main.yml
 - include_vars: ../../networking/vars/main.yml
 
-- name: Create Minio NAS GW Shared Storage
-  include_role:
-    name: common
-    tasks_from: install
-  vars:
-    templatePath: "{{ item }}"
-    state: "present"
-  with_items:
-    - templates/minio/pv-nas-gw.yml
-  when:
-  - cnvrgApp.conf.cnvrgStorageType == "minio"
-  - minio.sharedStorage.enabled == "true"
-
 - name: Install Minio prerequisite
   include_role:
     name: common

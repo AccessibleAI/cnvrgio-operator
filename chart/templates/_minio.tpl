@@ -1,6 +1,7 @@
 {{- define "spec.minio" }}
 minio:
   enabled: "{{ .Values.minio.enabled }}"
+  replicas: "{{ .Values.minio.replicas }}"
   image: "{{ .Values.minio.image }}"
   port: "{{ .Values.minio.port }}"
   svcName: "{{ .Values.minio.svcName }}"
@@ -8,10 +9,7 @@ minio:
   storageClass: "{{ .Values.minio.storageClass }}"
   sharedStorage:
     enabled: "{{ .Values.minio.sharedStorage.enabled }}"
-    storageClassName: "{{ .Values.minio.sharedStorage.storageClassName }}"
-    nfsServer: "{{ .Values.minio.sharedStorage.nfsServer }}"
-    path: "{{ .Values.minio.sharedStorage.path }}"
-  replicas: "{{ .Values.minio.replicas }}"
+
 
   {{- if eq .Values.computeProfile "large"}}
   cpuRequest: "{{ .Values.computeProfiles.large.minio.cpu }}"

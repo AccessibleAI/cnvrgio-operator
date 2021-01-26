@@ -84,7 +84,9 @@ spec:
           loadBalancerSourceRanges:
           {% set sourceRanges = networking.istio.loadBalancerSourceRanges.split(';') %}
           {% for srouceRange in sourceRanges %}
-            - "{{ srouceRange }}"
+            {% if srouceRange|trim != "" %}
+            - "{{ srouceRange|trim }}"
+            {% endif %}
           {% endfor %}
           {% endif %}
           {% if networking.istio.externalIp != "" %}
@@ -92,7 +94,9 @@ spec:
           externalIPs:
           {% set externalIps = networking.istio.externalIp.split(';') %}
             {% for externalIp in externalIps %}
-            - "{{ externalIp }}"
+              {% if externalIp|trim != "" %}
+            - "{{ externalIp|trim }}"
+              {% endif %}
             {% endfor %}
           {% endif %}
           ports:
