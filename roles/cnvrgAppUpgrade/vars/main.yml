@@ -1,7 +1,6 @@
 ---
-
 condition: "upgrade" # rollback | upgrade | inactive (should be set when upgrade/rollback is finished
-cacheDsName: "app-image-chache"
-cnvrgAppName: "cnvrg-app"
+cacheDsName: "app-image-cache."
+cnvrgAppName: "cnvrg-app"case
 image: ""
 cacheImage: "true"
