@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,20 +16,24 @@ spec:
         app: "{{redis.svcName|default('redis')}}"
     spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-{% if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-{% endif %}
-{%  if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
-      - key: "{{ tenancy.cnvrg.key }}"
-        operator: "Equal"
-        value: "{{ tenancy.cnvrg.value }}"
-        effect: "NoSchedule"
-{% endif %}
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
+      {% endif %}
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - image: "{{redis.image|default('redis:3.0.5')}}"
           name: redis
+          command: [ "/bin/bash", "-lc", "redis-server /config/redis.conf" ]
           ports:
             - containerPort: {{redis.port|default('6379')}}
           resources:
@@ -38,3 +43,15 @@ spec:
             requests:
               cpu: "{{redis.requests.cpu|default('500m')}}"
               memory: "{{redis.requests.memory|default('1Gi')}}"
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+            - name: redis-config
+              mountPath: /config
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: "{{redis.svcName}}"
+        - name: redis-config
+          configMap:
+            name: redis-conf
