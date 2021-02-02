@@ -27,10 +27,13 @@ spec:
           value: "{{ tenancy.cnvrg.value }}"
           effect: "NoSchedule"
       {% endif %}
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - image: "{{redis.image|default('redis:3.0.5')}}"
           name: redis
-          command: [ "redis-server", "/config/redis.conf" ]
+          command: [ "/bin/bash", "-lc", "redis-server /config/redis.conf" ]
           ports:
             - containerPort: {{redis.port|default('6379')}}
           resources:
