@@ -1,0 +1,17 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{redis.svcName}}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "{{redis.storageSize}}"
+  {% if redis.storageClass != "use-default" %}
+  storageClassName: "{{ redis.storageClass }}"
+  {% elif storage.ccpStorageClass != "" %}
+  storageClassName: "{{ storage.ccpStorageClass }}"
+  {% endif %}

@@ -5,6 +5,7 @@ redis:
   image: "redis:3.0.5" # registry.redhat.io/rhscl/redis-32-rhel7:latest
   svcName: "redis"
   port: 6379
+  appendonly: "yes"
   storageSize: "10Gi"
   storageClass: "use-default"
   limits:

@@ -9,3 +9,5 @@
   with_items:
     - templates/redis-svc.yml
     - templates/redis-dep.yml
+    - templates/redis-pvc.yml
+    - templates/redis-conf-cm.yml

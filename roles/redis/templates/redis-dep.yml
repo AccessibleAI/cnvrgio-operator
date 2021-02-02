@@ -16,21 +16,21 @@ spec:
         app: "{{redis.svcName|default('redis')}}"
     spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-     {% if tenancy.enabled == "true" %}
+      {% if tenancy.enabled == "true" %}
       nodeSelector:
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-     {% endif %}
-     {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
       tolerations:
-      - key: "{{ tenancy.cnvrg.key }}"
-        operator: "Equal"
-        value: "{{ tenancy.cnvrg.value }}"
-        effect: "NoSchedule"
-     {% endif %}
+        - key: "{{ tenancy.cnvrg.key }}"
+          operator: "Equal"
+          value: "{{ tenancy.cnvrg.value }}"
+          effect: "NoSchedule"
+      {% endif %}
       containers:
         - image: "{{redis.image|default('redis:3.0.5')}}"
           name: redis
-          command: ["redis-server"]
+          command: [ "redis-server", "/config/redis.conf" ]
           ports:
             - containerPort: {{redis.port|default('6379')}}
           resources:
