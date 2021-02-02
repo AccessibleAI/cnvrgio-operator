@@ -168,7 +168,6 @@ redis:
     cpu: 500m
     memory: 1Gi
 
-
 pg:
   enabled: "true"
   image: centos/postgresql-12-centos7
