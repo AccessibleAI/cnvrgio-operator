@@ -158,7 +158,7 @@ networking:
 
 redis:
   enabled: "true"
-  image: redis:3.0.5
+  image: docker.io/cnvrg/cnvrg-redis:v3.0.5.c2
   svcName: redis
   port: 6379
   limits:
