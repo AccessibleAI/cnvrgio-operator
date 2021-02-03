@@ -16,8 +16,15 @@ spec:
         app: "{{redis.svcName|default('redis')}}"
     spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
-      {% if tenancy.enabled == "true" %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
       nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
       {% endif %}
       {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
