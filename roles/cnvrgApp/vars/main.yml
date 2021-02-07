@@ -16,6 +16,7 @@ cnvrgApp:
   readinessTimeoutSeconds: 20
   failureThreshold: 4 # (readinessPeriodSeconds * failureThreshold) sec for make the app not healty
   resourcesRequestEnabled: "true"
+  metricsExporterImange: cnvrg/cnvrg-ruby-exporter:v0.1
 
   sidekiq:
     enabled: "true"

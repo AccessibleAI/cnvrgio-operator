@@ -26,7 +26,7 @@
     loop_control:
       loop_var: templatePath
     with_fileglob:
-      - templates/install/sidekiqs/sidekiq.yml
+      - templates/install/kiqs/sidekiq/*.yml
     when:
     - cnvrgApp.sidekiq.enabled == "true"
 
@@ -36,7 +36,7 @@
     loop_control:
       loop_var: templatePath
     with_fileglob:
-      - templates/install/sidekiqs/searchkiq.yml
+      - templates/install/kiqs/searchkiq/*.yml
     when:
     - cnvrgApp.searchkiq.enabled == "true"
 
@@ -46,7 +46,7 @@
     loop_control:
       loop_var: templatePath
     with_fileglob:
-      - templates/install/sidekiqs/systemkiq.yml
+      - templates/install/kiqs/systemkiq/*.yml
     when:
     - cnvrgApp.systemkiq.enabled == "true"
 
@@ -60,7 +60,7 @@
   loop_control:
     loop_var: templatePath
   with_fileglob:
-    - templates/install/sidekiqs/sidekiq.yml
+    - templates/install/kiqs/sidekiq/*.yml
   when: cnvrgApp.sidekiq.split == "false"
 
 - name: add hyper

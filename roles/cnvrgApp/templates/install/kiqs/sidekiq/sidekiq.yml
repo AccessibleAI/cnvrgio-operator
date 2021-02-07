@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: systemkiq
+  name: sidekiq
   namespace: "{{ ansible_operator_meta.namespace }}"
   labels:
-    app: systemkiq
+    app: sidekiq
 spec:
-  replicas: {{ cnvrgApp.systemkiq.replicas }}
+  replicas: {{ cnvrgApp.sidekiq.replicas }}
   selector:
     matchLabels:
-      app: systemkiq
+      app: sidekiq
   template:
     metadata:
       labels:
-        app: systemkiq
+        app: sidekiq
     spec:
       {% if tenancy.enabled == "true" %}
       nodeSelector:
@@ -29,6 +29,17 @@ spec:
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       terminationGracePeriodSeconds: {{ cnvrgApp.kiqPrestopHook.killTimeout|int }}
       containers:
+      {% if monitoring.enabled == "true" and monitoring.rubyExporter.enabled == "true" %}
+      - name: ruby-prometheus-exporter
+        image: "{{ monitoring.rubyExporter.image }}"
+        ports:
+          - containerPort: 9394
+        envFrom:
+          - configMapRef:
+              name: env-config
+          - secretRef:
+              name: env-secrets
+      {% endif %}
       - name: sidekiq
         image: "{{cnvrgApp.image}}"
         command:
@@ -39,8 +50,6 @@ spec:
         env:
         - name: "CNVRG_RUN_MODE"
           value: "sidekiq"
-        - name: "SIDEKIQ_SYSTEM"
-          value: "true"
         imagePullPolicy: Always
         {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
         volumeMounts:
@@ -56,8 +65,8 @@ spec:
         {% if cnvrgApp.resourcesRequestEnabled == "true" %}
         resources:
           requests:
-            cpu: "{{ cnvrgApp.systemkiq.cpu }}"
-            memory: "{{ cnvrgApp.systemkiq.memory }}"
+            cpu: "{{ cnvrgApp.sidekiq.cpu }}"
+            memory: "{{ cnvrgApp.sidekiq.memory }}"
         {% endif %}
         {% if cnvrgApp.kiqPrestopHook.enabled == "true" %}
         lifecycle:

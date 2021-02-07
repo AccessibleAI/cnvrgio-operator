@@ -33,6 +33,21 @@ spec:
       {% endif %}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       containers:
+      {% if monitoring.enabled == "true" and monitoring.rubyExporter.enabled == "true" %}
+      - name: ruby-prometheus-exporter
+        image: "{{ monitoring.rubyExporter.image }}"
+        command:
+          - /bin/bash
+          - -c
+          - sleep inf
+        ports:
+          - containerPort: 9394
+        envFrom:
+          - configMapRef:
+              name: env-config
+          - secretRef:
+              name: env-secrets
+      {% endif %}
       - image: "{{cnvrgApp.image}}"
         {% if networking.ingressType != "openshift" %}
         command:

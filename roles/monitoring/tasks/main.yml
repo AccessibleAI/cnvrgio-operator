@@ -137,6 +137,17 @@
     - monitoring.enabled == "true"
     - monitoring.grafana.enabled == "true"
 
+- name: add ruby exporter
+  set_fact:
+    roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/ruby-exporter/*.yml
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.rubyExporter.enabled == "true"
+
 - name: "Get Metrics Server Deployment"
   k8s_info:
     kind: Deployment
@@ -163,3 +174,4 @@
   vars:
     templatePath: "templates/monitoringBundle.yml"
     state: "present"
+

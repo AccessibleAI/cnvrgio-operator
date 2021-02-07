@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: "ruby-exporter"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: "ruby-exporter"
+spec:
+  selector:
+    matchLabels:
+      exporter: ruby-exporter
+  endpoints:
+  - port: "metrics"
+    path: "/metrics"

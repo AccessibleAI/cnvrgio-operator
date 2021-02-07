@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: systemkiq
+  namespace: {{ ansible_operator_meta.namespace }}
+  labels:
+    app: systemkiq
+    exporter: ruby-exporter
+spec:
+  ports:
+    - name: metrics
+      port: 9394
+  selector:
+    app: systemkiq

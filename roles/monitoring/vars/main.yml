@@ -47,5 +47,7 @@ monitoring:
   metricsServer:
     enabled: "true"
     image: "k8s.gcr.io/metrics-server/metrics-server:v0.3.7"
-
+  rubyExporter:
+    enabled: "true"
+    image: "docker.io/cnvrg/cnvrg-ruby-exporter:v0.3"
 

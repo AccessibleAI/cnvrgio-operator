@@ -5,14 +5,18 @@ metadata:
   namespace: {{ ansible_operator_meta.namespace }}
   labels:
     app: {{cnvrgApp.svcName}}
+    exporter: ruby-exporter
 spec:
   {% if networking.ingressType == "nodeport" %}
   type: NodePort
   {% endif %}
   ports:
-  - port: {{cnvrgApp.port}}
+  - name: web
+    port: {{cnvrgApp.port}}
     {% if networking.ingressType == "nodeport" %}
     nodePort: {{ cnvrgApp.nodePort }}
     {% endif %}
+  - name: metrics
+    port: 9394
   selector:
     app: {{cnvrgApp.svcName}}
