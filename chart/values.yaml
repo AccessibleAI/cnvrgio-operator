@@ -89,7 +89,7 @@ computeProfiles:
         replicas: 1
       searchkiq:
         cpu: 100m
-        memory: 100mi
+        memory: 100Mi
         replicas: 1
       systemkiq:
         cpu: 100m

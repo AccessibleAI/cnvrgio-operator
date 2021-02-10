@@ -72,10 +72,17 @@ spec:
               name: postgres-data
             - mountPath: /dev/shm
               name: dshm
+            {% if pg.hugePages.enabled == "true" %}
+            - mountPath: "/hugepage-{{ pg.hugePages.size }}"
+              name: "hugepage-{{ pg.hugePages.size }}"
+            {% endif %}
           resources:
             requests:
               cpu: "{{ pg.cpuRequest }}"
               memory: "{{ pg.memoryRequest }}"
+              {% if pg.hugePages.enabled == "true" %}
+              hugepages-{{ pg.hugePages.size }}: "{{ pg.memoryRequest }}"
+              {% endif %}
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
@@ -84,3 +91,8 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 2Gi
+        {% if pg.hugePages.enabled == "true" %}
+        - name: "hugepage-{{ pg.hugePages.size }}"
+          emptyDir:
+            medium: HugePages-{{ pg.huge_pages.size }}"
+        {% endif %}
