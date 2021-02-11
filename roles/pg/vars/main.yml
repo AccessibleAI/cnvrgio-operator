@@ -17,4 +17,4 @@ pg:
   sharedBuffers: 64MB
   hugePages:
     enabled: "false"
-    size: "" # 2Mi,1Gi,etc... https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/
+    size: "" # 2Mi,1Gi,etc... https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/, https://www.thegeekdiary.com/centos-rhel-67-how-to-configure-hugepages/, https://wiki.debian.org/Hugepages#pages-size
