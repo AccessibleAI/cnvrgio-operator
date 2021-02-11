@@ -70,6 +70,7 @@
       include_role:
         name: common
         tasks_from: install
+        waitToComplete: yes
       vars:
         templatePath: "templates/ingressBundle.yml"
         state: "absent"

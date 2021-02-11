@@ -245,7 +245,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 | ---|---| 
 |`computeProfile`|medium
 |`condition`|upgrade
-|`cacheDsName`|app-image-cache.
+|`cacheDsName`|app-image-cache
 |`cnvrgAppName`|cnvrg-app
 |`image`|-
 |`cacheImage`|true
