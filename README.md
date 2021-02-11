@@ -245,7 +245,7 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 | ---|---| 
 |`computeProfile`|medium
 |`condition`|upgrade
-|`cacheDsName`|app-image-chache
+|`cacheDsName`|app-image-cache.
 |`cnvrgAppName`|cnvrg-app
 |`image`|-
 |`cacheImage`|true
@@ -429,14 +429,20 @@ helm install cnvrg cnvrg/cnvrg -n cnvrg --create-namespace --timeout 1500s --wai
 |`pg.memoryRequest`|4Gi
 |`pg.maxConnections`|500
 |`pg.sharedBuffers`|64MB
+|`pg.hugePages.enabled`|false
+|`pg.hugePages.size`|2Mi
+|`pg.hugePages.memory`|-
 
 ### Chart options - redis 
 |**key**|**default value**
 | ---|---| 
 |`redis.enabled`|true
-|`redis.image`|redis:3.0.5
+|`redis.image`|docker.io/cnvrg/cnvrg-redis:v3.0.5.c2
 |`redis.svcName`|redis
 |`redis.port`|6379
+|`redis.appendonly`|yes
+|`redis.storageSize`|10Gi
+|`redis.storageClass`|use-default
 |`redis.limits.cpu`|1
 |`redis.limits.memory`|2Gi
 |`redis.requests.cpu`|500m

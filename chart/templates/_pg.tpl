@@ -11,6 +11,10 @@ pg:
   runAsGroup: "{{ .Values.pg.runAsGroup }}"
   fsGroup: "{{ .Values.pg.fsGroup }}"
   storageClass: "{{ .Values.pg.storageClass }}"
+  hugePages:
+    enabled: "{{.Values.pg.hugePages.enabled}}"
+    size: "{{.Values.pg.hugePages.size}}"
+    memory: "{{.Values.pg.hugePages.memory}}"
 
   {{- if eq .Values.computeProfile "large"}}
   cpuRequest: "{{ .Values.computeProfiles.large.pg.cpu }}"
