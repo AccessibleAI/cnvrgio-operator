@@ -17,4 +17,5 @@ pg:
   sharedBuffers: 64MB
   hugePages:
     enabled: "false"
-    size: "" # 2Mi,1Gi,etc... https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/, https://www.thegeekdiary.com/centos-rhel-67-how-to-configure-hugepages/, https://wiki.debian.org/Hugepages#pages-size
+    size: "2Mi" # 2Mi,1Gi,etc... https://kubernetes.io/docs/tasks/manage-hugepages/scheduling-hugepages/, https://www.thegeekdiary.com/centos-rhel-67-how-to-configure-hugepages/, https://wiki.debian.org/Hugepages#pages-size
+    memory: "4Gi" # how much memory to request in hugePages, by default memoryRequest will be used, meaning - by default 2048 pages of 2Mi size should be allocatable and free in the cluster.
