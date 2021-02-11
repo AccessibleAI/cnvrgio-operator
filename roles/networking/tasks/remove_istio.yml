@@ -52,12 +52,15 @@
         roleBundle: []
 
 
-    - name: remove Istio CRDs
-      set_fact:
-       roleBundle: "{{ roleBundle + [templatePath] }}"
-      loop_control:
-        loop_var: templatePath
-      loop:
+    - name: remove uninstall Istio
+      include_role:
+        name: common
+        tasks_from: install
+      vars:
+        templatePath: "{{ item }}"
+        state: "absent"
+        waitToComplete: yes
+      with_items:
         - templates/istio/operator.yml
         - templates/istio/crds.yaml
       when:
@@ -65,15 +68,5 @@
         - istioCrd.resources | length > 0
         - ownerLabel in istioCrd.resources[0].metadata.labels.keys()
         - istioCrd.resources[0].metadata.labels.owner == "cnvrg"
-
-    - name: remove istio crds and operator - bundle
-      include_role:
-        name: common
-        tasks_from: install
-      vars:
-        templatePath: "templates/ingressBundle.yml"
-        state: "absent"
-        waitToComplete: yes
-
   when:
   - networking.ingressType == "istio"
