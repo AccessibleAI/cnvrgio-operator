@@ -31,7 +31,7 @@ cnvrgApp:
     replicas: 1
 
   systemkiq:
-    enabled: "false"
+    enabled: "true"
     cpu: 500m
     memory: 500Mi
     replicas: 1
