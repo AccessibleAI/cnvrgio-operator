@@ -36,7 +36,6 @@ deploy: kustomize
 
 # Undeploy controller in the configured Kubernetes cluster in ~/.kube/config
 undeploy: kustomize
-	kubectl delete IstioOperator cnvrg-istio -ncnvrg --ignore-not-found
 	kubectl delete cnvrgapps.mlops.cnvrg.io --all -ncnvrg --ignore-not-found
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
