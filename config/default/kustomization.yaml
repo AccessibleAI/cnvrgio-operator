@@ -14,7 +14,7 @@ namePrefix: ""
 
 bases:
 - ../crd
-- ../ns
+# - ../ns
 - ../rbac
 - ../manager
 

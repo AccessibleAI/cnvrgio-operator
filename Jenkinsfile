@@ -97,6 +97,7 @@ pipeline {
                         sh "sleep 60"
                         // deploy nginx ingress
                         sh "KUBECONFIG=${workspace}/kubeconfig kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml"
+                        sh "kubectl create ns cnvrg"
                     }
                 }
             }

@@ -7,8 +7,8 @@
   reconcilePeriod: 60s
   snakeCaseParameters: False
   finalizer:
-    name: finalizer.cnvrgapp.cnvrg.io
-    role: finalaizer
+    name: cnvrgapp.mlops.cnvrg.io/finalizer
+    role: finalizer
   blacklist:
   - group: autoscaling.k8s.io
     version: v1

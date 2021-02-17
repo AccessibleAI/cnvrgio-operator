@@ -27,46 +27,65 @@
       register: istioCrd
       when: dryRun == "false"
 
-    - name: reset bundle roles
-      set_fact:
-        roleBundle: []
-
     - name: remove istio instance
-      set_fact:
-       roleBundle: "{{ roleBundle + ['templates/istio/instance.yml'] }}"
-      when:
-       - dryRun == "false"
-       - istioInstance.resources | length > 0
+      block:
+      - name: reset bundle roles
+        set_fact:
+          roleBundle: []
 
-    - name: remove istio instance - bundle
-      include_role:
-        name: common
-        tasks_from: install
-      vars:
-        templatePath: "templates/ingressBundle.yml"
-        wait_to_complete: yes
-        state: "absent"
+      - name: remove istio instance
+        set_fact:
+          roleBundle: "{{ roleBundle + ['templates/istio/instance.yml'] }}"
+        when: dryRun == "false"
 
-    - name: reset bundle roles
-      set_fact:
-        roleBundle: []
+      - name: remove istio instance - bundle
+        include_role:
+          name: common
+          tasks_from: install
+        vars:
+          templatePath: "templates/ingressBundle.yml"
+          state: "absent"
+
+      - name: wait for istio instance removal
+        shell: |
+          kubectl get istiooperators.install.istio.io cnvrg-istio -n{{ ansible_operator_meta.namespace }} -oname | wc -l
+        register: istioInstanceCount
+        until: istioInstanceCount.stdout|int == 0
+        retries: 3600
+        delay: 5
+        when: dryRun == "false"
+
+      when: istioInstance.resources | length > 0
 
 
-    - name: remove uninstall Istio
-      include_role:
-        name: common
-        tasks_from: install
-      vars:
-        templatePath: "{{ item }}"
-        state: "absent"
-        waitToComplete: yes
-      with_items:
-        - templates/istio/operator.yml
-        - templates/istio/crds.yaml
+    - name: remove istio operator and CRDs
+      block:
+      - name: reset bundle roles
+        set_fact:
+          roleBundle: []
+
+      - name: remove Istio CRDs
+        set_fact:
+          roleBundle: "{{ roleBundle + [templatePath] }}"
+        loop_control:
+          loop_var: templatePath
+        loop:
+          - templates/istio/operator.yml
+          - templates/istio/crds.yaml
+
+      - name: remove istio crds and operator - bundle
+        include_role:
+          name: common
+          tasks_from: install
+        vars:
+          templatePath: "templates/ingressBundle.yml"
+          state: "absent"
+
       when:
         - dryRun == "false"
         - istioCrd.resources | length > 0
         - ownerLabel in istioCrd.resources[0].metadata.labels.keys()
         - istioCrd.resources[0].metadata.labels.owner == "cnvrg"
+
   when:
-  - networking.ingressType == "istio"
+    - networking.ingressType == "istio"

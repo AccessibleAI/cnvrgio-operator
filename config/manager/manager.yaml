@@ -30,6 +30,7 @@ spec:
             - "--leader-election-namespace=cnvrg"
             - "--zap-encoder=console"
             - "--zap-log-level=info"
+            - "--max-concurrent-reconciles=6"
           env:
             - name: ANSIBLE_JINJA2_NATIVE
               value: "true"
@@ -43,4 +44,16 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 6789
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 6789
+            initialDelaySeconds: 5
+            periodSeconds: 10
       terminationGracePeriodSeconds: 10
