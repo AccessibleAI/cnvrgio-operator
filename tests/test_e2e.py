@@ -285,6 +285,7 @@ class CnvrgTaintsAreSetDedicatedNodesFalseTest(unittest.TestCase, CommonBase):
     @classmethod
     def tearDownClass(cls):
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
+        cls._exec_cmd("kubectl delete deployment -ncnvrg test-nginx")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesFalseTest")
@@ -394,6 +395,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueTest(unittest.TestCase, CommonBase):
     def tearDownClass(cls):
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls._exec_cmd("kubectl delete deployment -ncnvrg test-nginx")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueTest")
@@ -531,6 +533,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest(unittest.TestCase, Common
     def tearDownClass(cls):
         cls._exec_cmd("kubectl label node cnvrg-taint- --all")
         cls._exec_cmd("kubectl taint nodes cnvrg-taint- --all")
+        cls._exec_cmd("kubectl delete deployment -ncnvrg test-nginx")
         cls.delete_cnvrg_spec()
         cls.undeploy()
         cls.log_total_test_execution_time(cls._started_at, "CnvrgTaintsAreSetDedicatedNodesTrueIstioOnlyTest")
