@@ -36,8 +36,14 @@ spec:
       {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
       - name: "cnvrg-oauth-proxy"
         image: "{{cnvrgApp.conf.oauthProxy.image}}"
-        #command: [ "oauth2-proxy","--config", "/opt/app-root/conf/proxy-config/conf" ]
-        command: [ "/bin/bash","-c", "sleep inf" ]
+        command: [ "oauth2-proxy","--config", "/opt/app-root/conf/proxy-config/conf" ]
+        #command: [ "/bin/bash","-c", "sleep inf" ]
+        {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+        volumeMounts:
+          - name: "oauth-proxy-config"
+            mountPath: "/opt/app-root/conf/proxy-config"
+            readOnly: true
+        {% endif %}
       {% endif %}
       - image: "{{cnvrgApp.image}}"
         env:
@@ -55,11 +61,7 @@ spec:
         readinessProbe:
           httpGet:
             path: "/users/sign_up"
-            {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
-            port: 3000
-            {% else %}
             port: {{cnvrgApp.port}}
-            {% endif %}
             scheme: HTTP
           successThreshold: 1
           failureThreshold: {{ cnvrgApp.failureThreshold | default('4') }}
@@ -73,13 +75,8 @@ spec:
             cpu: "{{cnvrgApp.cpu}}"
             memory: "{{cnvrgApp.memory}}"
         {% endif %}
-        volumeMounts:
-        {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
-        - name: "oauth-proxy-config"
-          mountPath: "/opt/app-root/conf/proxy-config"
-          readOnly: true
-        {% endif %}
         {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+        volumeMounts:
         - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
           mountPath: "{{ cnvrgApp.conf.gcpKeyfileMountPath }}"
           readOnly: true
