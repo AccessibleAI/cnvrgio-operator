@@ -34,7 +34,7 @@ class CommonBase(object):
     @staticmethod
     def undeploy():
         logging.info("undeploying env...")
-        stream = os.popen('make undeploy')
+        stream = os.popen('make undeploy --ignore-errors')
         logging.info(stream.read())
 
     @staticmethod
@@ -94,10 +94,10 @@ class CommonBase(object):
             try:
                 spec = CommonBase.get_cnvrg_spec(name)
                 if 'status' not in spec:
-                    logging.info(f"cnvrg sepc don't have status object yet, ttl: {1800 - i} sec")
+                    logging.info(f"cnvrg spec don't have status object yet, ttl: {1800 - i} sec")
                     continue
                 if 'conditions' not in spec['status']:
-                    logging.info(f"cnvrg sepc don't have conditions object yet, ttl: {1800 - i} sec")
+                    logging.info(f"cnvrg spec don't have conditions object yet, ttl: {1800 - i} sec")
                     continue
                 for condition in spec['status']['conditions']:
                     if 'ansibleResult' in condition:

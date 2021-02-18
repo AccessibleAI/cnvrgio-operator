@@ -1,5 +1,5 @@
 ---
-- name: Seeder cleanup
+- name: Istio cleanup
   import_tasks: istio_cleanup.yml
 
 - name: Seeder cleanup

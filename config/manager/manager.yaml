@@ -30,6 +30,7 @@ spec:
             - "--leader-election-namespace=cnvrg"
             - "--zap-encoder=console"
             - "--zap-log-level=info"
+            - "--max-concurrent-reconciles=6"
           env:
             - name: ANSIBLE_JINJA2_NATIVE
               value: "true"

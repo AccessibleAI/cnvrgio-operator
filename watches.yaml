@@ -4,11 +4,11 @@
   group: mlops.cnvrg.io
   kind: CnvrgApp
   playbook: playbooks/cnvrg.yml
-  reconcilePeriod: 60s
+  reconcilePeriod: 600s
   snakeCaseParameters: False
   finalizer:
-    name: finalizer.cnvrgapp.cnvrg.io
-    role: finalaizer
+    name: cnvrgapp.mlops.cnvrg.io/finalizer
+    role: finalizer
   blacklist:
   - group: autoscaling.k8s.io
     version: v1
