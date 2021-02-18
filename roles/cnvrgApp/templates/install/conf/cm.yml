@@ -41,6 +41,15 @@ data:
   LDAP_PORT: "{{ cnvrgApp.conf.ldap.port }}"
   LDAP_ACCOUNT: "{{ cnvrgApp.conf.ldap.account }}"
   LDAP_SSL: "{{ cnvrgApp.conf.ldap.ssl }}"
+  OAUTH_PROXY_ENABLED: "{{ cnvrgApp.conf.oauthProxy.enabled }}"
+  CNVRG_PASSENGER_MAX_POOL_SIZE: "{{ cnvrgApp.passengerMaxPoolSize | default('20') }}"
+  {% if cnvrgApp.conf.oauthProxy.enabled == "true"%}
+  CNVRG_PASSENGER_BIND_ADDRESS: "127.0.0.1"
+  CNVRG_PASSENGER_BIND_PORT: 3000
+  {% else %}
+  CNVRG_PASSENGER_BIND_ADDRESS: "0.0.0.0"
+  CNVRG_PASSENGER_BIND_PORT: {{ cnvrgApp.port }}
+  {% endif %}
   {% if networking.ingressType == "openshift" %}
   CNVRG_JOB_UID: "{{ cnvrgApp.conf.cnvrgJobUid }}" # if set, app will deploy cnvrg job with securityContext
   {% endif %}

@@ -3,7 +3,7 @@ cnvrgApp:
   replicas: 1
   enabled: "true"
   image: ""
-  port: 80
+  port: 8080
   cpu: 2
   memory: 4Gi
   svcName: "app"
@@ -99,6 +99,18 @@ cnvrgApp:
     customAgentTag: "false"
     intercom: "true"
     cnvrgJobUid: "1000"
+
+    oauthProxy:
+      enabled: "false"
+      image: "docker.io/cnvrg/cnvrg-oauth-proxy:v0.1"
+      provider: ""
+      emailDomain: ""
+      redirectUri: "{{ httpScheme + 'app' + '.' + clusterDomain }}"
+      clientId: ""
+      clientSecret: ""
+      azureTenant: "" # if IDP is Azure AD
+      adminEmail: "admin@cnvrg.io"
+
     ldap:
       enabled: "false"
       host: ""

@@ -33,23 +33,16 @@ spec:
       {% endif %}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       containers:
+      {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+      - name: "cnvrg-oauth-proxy"
+        image: "{{cnvrgApp.conf.oauthProxy.image}}"
+        #command: [ "oauth2-proxy","--config", "/opt/app-root/conf/proxy-config/conf" ]
+        command: [ "/bin/bash","-c", "sleep inf" ]
+      {% endif %}
       - image: "{{cnvrgApp.image}}"
-        {% if networking.ingressType != "openshift" %}
-        command:
-        - "/bin/bash"
-        - "-lc"
-        args:
-        - >
-          sed -i \
-            "s/passenger_max_request_queue_size 10000;/passenger_max_request_queue_size 10000;\n    passenger_max_pool_size $CNVRG_PASSENGER_MAX_POOL_SIZE;\n/g" \
-            /etc/nginx/nginx.conf
-          touch /etc/service/sidekiq/down && /sbin/my_init
-        {% endif %}
         env:
         - name: "CNVRG_RUN_MODE"
           value: "webapp"
-        - name: "CNVRG_PASSENGER_MAX_POOL_SIZE"
-          value: "{{ cnvrgApp.passengerMaxPoolSize | default('20') }}"
         envFrom:
         - configMapRef:
             name: env-config
@@ -62,7 +55,11 @@ spec:
         readinessProbe:
           httpGet:
             path: "/users/sign_up"
+            {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+            port: 3000
+            {% else %}
             port: {{cnvrgApp.port}}
+            {% endif %}
             scheme: HTTP
           successThreshold: 1
           failureThreshold: {{ cnvrgApp.failureThreshold | default('4') }}
@@ -76,14 +73,24 @@ spec:
             cpu: "{{cnvrgApp.cpu}}"
             memory: "{{cnvrgApp.memory}}"
         {% endif %}
-        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
         volumeMounts:
+        {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+        - name: "oauth-proxy-config"
+          mountPath: "/opt/app-root/conf/proxy-config"
+          readOnly: true
+        {% endif %}
+        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
         - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
           mountPath: "{{ cnvrgApp.conf.gcpKeyfileMountPath }}"
           readOnly: true
         {% endif %}
-      {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
       volumes:
+      {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+      - name: "oauth-proxy-config"
+        configMap:
+         name: "oauth-proxy-config"
+      {% endif %}
+      {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
       - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
         secret:
           secretName: "{{ cnvrgApp.conf.gcpStorageSecret }}"

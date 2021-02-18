@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth-proxy-config
+  namespace: "{{ ansible_operator_meta.namespace }}"
+data:
+  conf: |
+    provider = "{{ cnvrgApp.conf.oauthProxy.provider }}"
+    http_address = "0.0.0.0:{{ cnvrgApp.port }}"
+    redirect_url = "{{ cnvrgApp.conf.oauthProxy.redirectUri }}"
+    upstreams = ["http://127.0.0.1:3000/"]
+    skip_auth_regex = [
+      "^\/api",
+      "^\/oauth/",
+      "\/assets",
+    ]
+    email_domains = ["{{ cnvrgApp.conf.oauthProxy.emailDomain }}"]
+    client_id = "{{ cnvrgApp.conf.oauthProxy.clientId }}"
+    client_secret = "{{ cnvrgApp.conf.oauthProxy.clientSecret }}"
+    custom_templates_dir = "/opt/app-root/src/templates"
+    ssl_insecure_skip_verify = true
+    cookie_name = "_oauth2_proxy"
+    cookie_expire = "168h"
+    cookie_secure = false
+    cookie_httponly = true
