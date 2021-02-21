@@ -37,7 +37,6 @@ spec:
       - name: "cnvrg-oauth-proxy"
         image: "{{cnvrgApp.conf.oauthProxy.image}}"
         command: [ "oauth2-proxy","--config", "/opt/app-root/conf/proxy-config/conf" ]
-        #command: [ "/bin/bash","-c", "sleep inf" ]
         {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
         volumeMounts:
           - name: "oauth-proxy-config"
@@ -60,7 +59,7 @@ spec:
         {% if (cnvrgApp.enableReadinessProbe | default ('true')) == "true" %}
         readinessProbe:
           httpGet:
-            path: "/users/sign_up"
+            path: "/healthz"
             port: {{cnvrgApp.port}}
             scheme: HTTP
           successThreshold: 1

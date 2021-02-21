@@ -10,7 +10,7 @@ cnvrgApp:
   fixpg: "true"
   nodePort: 30080
   passengerMaxPoolSize: 20  # the calculation of max pool size based on this max_app_processes = (total_memory * 0.75) / 150 (memroy for each process in mb) = 20
-  enableReadinessProbe: "false"
+  enableReadinessProbe: "true"
   initialDelaySeconds: 10
   readinessPeriodSeconds: 25
   readinessTimeoutSeconds: 20
@@ -102,7 +102,8 @@ cnvrgApp:
 
     oauthProxy:
       enabled: "false"
-      image: "docker.io/cnvrg/cnvrg-oauth-proxy:v0.1"
+      image: "cnvrg/cnvrg-oauth-proxy:v7.0.1.c1"
+      adminUser: ""
       provider: ""
       emailDomain: ""
       redirectUri: "{{ httpScheme + 'app' + '.' + clusterDomain }}/oauth2/callback"
@@ -110,7 +111,7 @@ cnvrgApp:
       clientSecret: ""
       cookieSecret: ""
       azureTenant: "" # if IDP is Azure AD
-      adminEmail: "admin@cnvrg.io"
+      oidcIssuerUrl: "" # if IDP oidc
 
     ldap:
       enabled: "false"
