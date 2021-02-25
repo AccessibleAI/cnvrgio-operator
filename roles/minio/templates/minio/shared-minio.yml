@@ -241,7 +241,11 @@ spec:
       volumes:
         - name: minio-storage
           persistentVolumeClaim:
+            {% if minio.sharedStorage.useExistingClaim == "" %}
             claimName: "{{minio.svcName}}"
+            {% else %}
+            claimName: "{{minio.sharedStorage.useExistingClaim}}"
+            {% endif %}
         - emptyDir:
             medium: Memory
           name: istio-envoy

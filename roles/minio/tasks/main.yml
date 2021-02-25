@@ -10,8 +10,20 @@
     state: "present"
   with_items:
     - templates/minio/svc.yml
-    - templates/minio/pvc.yml
   when: cnvrgApp.conf.cnvrgStorageType == "minio"
+
+- name: Install Minio prerequisite
+  include_role:
+    name: common
+    tasks_from: install
+  vars:
+    templatePath: "{{ item }}"
+    state: "present"
+  with_items:
+    - templates/minio/pvc.yml
+  when:
+  - cnvrgApp.conf.cnvrgStorageType == "minio"
+  - minio.sharedStorage.useExistingClaim == ""
 
 - name: Install Minio - single instance
   include_role:

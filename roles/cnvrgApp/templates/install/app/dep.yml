@@ -98,7 +98,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: "CNVRG_SERVICE_LIST"
-          {% if minio.enabled == "true" and  cnvrgApp.conf.cnvrgStorageType == "minio" %}
+          {% if minio.enabled == "true" and cnvrgApp.conf.cnvrgStorageType == "minio" %}
           value: "{{pg.svcName}}:{{pg.port}};{{cnvrgApp.conf.cnvrgStorageEndpoint}}/minio/health/ready"
           {% else %}
           value: "{{pg.svcName}}:{{pg.port}}"
