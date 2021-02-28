@@ -9,7 +9,7 @@ data:
   DEFAULT_COMPUTE_CLUSTER_DOMAIN: {{ (clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else '')) }}
   DEFAULT_COMPUTE_CLUSTER_HTTPS: "{{ networking.https.enabled  }}"
   {% if cnvrgApp.conf.customAgentTag != "false" %}
-  AGENT_CUSTOM_TAG: "{{ cnvrgApp.conf.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
+  AGENT_CUSTOM_TAG: "{{ cnvrgApp.conf.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:"")
   {% endif %}
   REDIS_URL: "{{ ('redis://'+redis.svcName) }}"
   PASSENGER_APP_ENV: "{{ cnvrgApp.conf.passengerAppEnv  }}"
