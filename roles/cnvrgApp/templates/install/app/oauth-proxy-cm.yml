@@ -18,7 +18,9 @@ data:
       "\/healthz",
       "\/public",
       "\/pack",
-      "\/vscode.tar.gz"
+      "\/vscode.tar.gz",
+      "\/gitlens.vsix",
+      "\/ms-python-release.vsix"
     ]
     email_domains = ["{{ cnvrgApp.conf.oauthProxy.emailDomain }}"]
     client_id = "{{ cnvrgApp.conf.oauthProxy.clientId }}"
