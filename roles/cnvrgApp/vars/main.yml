@@ -112,6 +112,16 @@ cnvrgApp:
       cookieSecret: ""
       azureTenant: "" # if IDP is Azure AD
       oidcIssuerUrl: "" # if IDP oidc
+      skipAuthRegex:
+        - '^\/api'
+        - '^\/oauth/'
+        - '\/assets'
+        - '\/healthz'
+        - '\/public'
+        - '\/pack'
+        - '\/vscode.tar.gz'
+        - '\/gitlens.vsix'
+        - '\/ms-python-release.vsix'
 
     ldap:
       enabled: "false"

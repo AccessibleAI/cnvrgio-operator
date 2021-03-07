@@ -11,17 +11,7 @@ data:
     upstreams = ["http://127.0.0.1:3000/"]
     session_store_type = "redis"
     redis_connection_url = "redis://{{ redis.svcName }}:{{ redis.port }}"
-    skip_auth_regex = [
-      "^\/api",
-      "^\/oauth/",
-      "\/assets",
-      "\/healthz",
-      "\/public",
-      "\/pack",
-      "\/vscode.tar.gz",
-      "\/gitlens.vsix",
-      "\/ms-python-release.vsix"
-    ]
+    skip_auth_regex = ["{{ cnvrgApp.conf.oauthProxy.skipAuthRegex | join('", "') }}"]
     email_domains = ["{{ cnvrgApp.conf.oauthProxy.emailDomain }}"]
     client_id = "{{ cnvrgApp.conf.oauthProxy.clientId }}"
     client_secret = "{{ cnvrgApp.conf.oauthProxy.clientSecret }}"
