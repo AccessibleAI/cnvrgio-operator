@@ -9,11 +9,12 @@ metadata:
 spec:
   {% if networking.ingressType == "nodeport" %}
   type: NodePort
-  nodePort: {{ monitoring.grafana.nodePort }}
   {% endif %}
   ports:
     - name: http
       port: {{monitoring.grafana.port}}
-      targetPort: http
+      {% if oauthProxy.enabled == "true" %}
+      targetPort: {{ monitoring.grafana.oauthProxy.port }}
+      {% endif %}
   selector:
     app: grafana

@@ -33,16 +33,14 @@ spec:
       {% endif %}
       serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
       containers:
-      {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+      {% if oauthProxy.enabled == "true" %}
       - name: "cnvrg-oauth-proxy"
-        image: "{{cnvrgApp.conf.oauthProxy.image}}"
+        image: "{{oauthProxy.image}}"
         command: [ "oauth2-proxy","--config", "/opt/app-root/conf/proxy-config/conf" ]
-        {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
         volumeMounts:
           - name: "oauth-proxy-config"
             mountPath: "/opt/app-root/conf/proxy-config"
             readOnly: true
-        {% endif %}
       {% endif %}
       - image: "{{cnvrgApp.image}}"
         env:
@@ -81,7 +79,7 @@ spec:
           readOnly: true
         {% endif %}
       volumes:
-      {% if cnvrgApp.conf.oauthProxy.enabled == "true" %}
+      {% if oauthProxy.enabled == "true" %}
       - name: "oauth-proxy-config"
         configMap:
          name: "oauth-proxy-config"

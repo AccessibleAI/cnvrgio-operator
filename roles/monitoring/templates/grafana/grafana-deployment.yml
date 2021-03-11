@@ -1,4 +1,3 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +27,15 @@ spec:
         effect: "NoSchedule"
        {% endif %}
       containers:
+      {% if oauthProxy.enabled == "true" %}
+      - name: "cnvrg-oauth-proxy"
+        image: "{{ oauthProxy.image }}"
+        command: [ "oauth2-proxy","--config", "/tmp/conf" ]
+        volumeMounts:
+          - name: "oauth-proxy-config-grafana"
+            mountPath: "/tmp"
+            readOnly: true
+      {% endif %}
       - env:
         - name: GF_AUTH_BASIC_ENABLED
           value: "false"
@@ -40,12 +48,16 @@ spec:
         image: {{ monitoring.grafana.image }}
         name: grafana
         ports:
-        - containerPort: 3000
+        - containerPort:  {{ monitoring.grafana.port }}
           name: http
         readinessProbe:
           httpGet:
             path: /api/health
+            {% if oauthProxy.enabled == "true" %}
+            port: {{ monitoring.grafana.oauthProxy.port }}
+            {% else %}
             port: http
+            {% endif %}
         resources:
           limits:
             cpu: 200m
@@ -279,4 +291,9 @@ spec:
       - configMap:
           name: grafana-idle-metrics
         name: grafana-idle-metrics
+      {% endif %}
+      {% if oauthProxy.enabled == "true" %}
+      - configMap:
+          name: oauth-proxy-config-grafana
+        name: oauth-proxy-config-grafana
       {% endif %}
