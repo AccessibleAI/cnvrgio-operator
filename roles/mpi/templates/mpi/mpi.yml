@@ -1,3 +1,4 @@
+#jinja2: trim_blocks:False
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -158,14 +159,14 @@ spec:
 {% endif %}
       containers:
       - name: mpi-operator
-        image: "{{mpi.image}}"
-        args: [
-          "-alsologtostderr",
-          "--kubectl-delivery-image",
-          "{{ mpi.kubectlDeliveryImage }}",
-          "--lock-namespace",
-          "{{ansible_operator_meta.namespace}}",
-          "--namespace",
-          "{{ ansible_operator_meta.namespace }}"
-        ]
+        image: "{{ mpi.image }}"
+        args:
+        - "-alsologtostderr"
+        - "--kubectl-delivery-image"
+        - "{{ mpi.kubectlDeliveryImage }}"
+        - "--lock-namespace"
+        - "{{ ansible_operator_meta.namespace }}"
+        - "--namespace"
+        - "{{ ansible_operator_meta.namespace }}"{% for mpiArg in mpi.addlArgs %}{% for arg in mpiArg.split() %}
+        - "{{ arg | trim }}"{% endfor %}{% endfor %}
         imagePullPolicy: Always

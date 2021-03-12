@@ -17,7 +17,7 @@
       loop: "{{crds}}"
       when: state == "present"
 
-    - name: Install MPI resrouces
+    - name: Install MPI resources
       include_role:
         name: common
         tasks_from: install
@@ -36,4 +36,3 @@
         state: "present"
       loop: "{{crds}}"
       when: state == "absent"
-
