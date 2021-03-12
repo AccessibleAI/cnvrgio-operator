@@ -8,3 +8,4 @@ mpi:
     url: "docker.io"
     user: ""
     password: ""
+  addlArgs: []
