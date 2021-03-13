@@ -11,7 +11,6 @@ data:
     upstreams = ["http://127.0.0.1:{{logging.kibana.port}}/"]
     session_store_type = "redis"
     redis_connection_url = "redis://{{ redis.svcName }}:{{ redis.port }}"
-    skip_auth_regex = ["{{ logging.kibana.oauthProxy.skipAuthRegex | join('", "') }}"]
     email_domains = ["{{ oauthProxy.emailDomain }}"]
     client_id = "{{ oauthProxy.clientId }}"
     client_secret = "{{ oauthProxy.clientSecret }}"
