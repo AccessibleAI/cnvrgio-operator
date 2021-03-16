@@ -8,13 +8,16 @@ data:
     provider = "{{ oauthProxy.provider }}"
     http_address = "0.0.0.0:{{logging.kibana.oauthProxy.port}}"
     redirect_url = "{{ logging.kibana.oauthProxy.redirectUri }}"
-    upstreams = ["http://127.0.0.1:{{logging.kibana.port}}/"]
+    upstreams = ["http://127.0.0.1:{{logging.kibana.port}}/","file:///var/www/static/#/static/"]
     session_store_type = "redis"
     redis_connection_url = "redis://{{ redis.svcName }}:{{ redis.port }}"
+    skip_auth_regex = ["{{ logging.kibana.oauthProxy.skipAuthRegex | join('", "') }}"]
     email_domains = ["{{ oauthProxy.emailDomain }}"]
     client_id = "{{ oauthProxy.clientId }}"
     client_secret = "{{ oauthProxy.clientSecret }}"
     cookie_secret = "{{ oauthProxy.cookieSecret }}"
+    oidc_issuer_url = "{{ oauthProxy.oidcIssuerUrl }}"
+    custom_templates_dir = "/opt/app-root/src/templates"
     ssl_insecure_skip_verify = true
     cookie_name = "_oauth2_proxy"
     cookie_expire = "168h"

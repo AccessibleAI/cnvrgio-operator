@@ -103,7 +103,7 @@ cnvrgApp:
       redirectUri: "{{ httpScheme + 'app' + '.' + clusterDomain }}/oauth2/callback"
       skipAuthRegex:
         - '^\/api'
-        - '^\/oauth/'
+        - '^\/static/'
         - '\/assets'
         - '\/healthz'
         - '\/public'

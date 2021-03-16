@@ -53,11 +53,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /api/health
-            {% if oauthProxy.enabled == "true" %}
-            port: {{ monitoring.grafana.oauthProxy.port }}
-            {% else %}
             port: http
-            {% endif %}
         resources:
           limits:
             cpu: 200m

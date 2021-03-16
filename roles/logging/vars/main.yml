@@ -59,4 +59,5 @@ logging:
     oauthProxy:
       port: 5602
       redirectUri: "{{ httpScheme + 'kibana' + '.' + clusterDomain }}/oauth2/callback"
-      skipAuthRegex: ""
+      skipAuthRegex:
+        - '^\/static/'

@@ -33,8 +33,9 @@ monitoring:
     oauthProxy:
       port: 3001
       redirectUri: "{{ httpScheme + 'grafana' + '.' + clusterDomain }}/oauth2/callback"
-      skipAuthRegex: 
-      - '\/api\/health'
+      skipAuthRegex:
+        - '^\/static/'
+        - '\/api\/health'
   defaultServiceMonitors:
     enabled: "true"
   sidekiqExporter:
