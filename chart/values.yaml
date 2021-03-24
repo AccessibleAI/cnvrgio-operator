@@ -331,6 +331,7 @@ mpi:
     url: "docker.io"
     user: ""
     password: ""
+  addlArgs: []
 
 cnvrgApp:
   replicas: 1

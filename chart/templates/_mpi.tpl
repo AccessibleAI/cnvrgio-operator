@@ -8,4 +8,5 @@ mpi:
     url: "{{.Values.mpi.registry.url}}"
     user: "{{.Values.mpi.registry.user}}"
     password: "{{.Values.mpi.registry.password}}"
+  addlArgs: {{.Values.mpi.addlArgs}}
 {{- end }}

@@ -17,7 +17,7 @@
       dest: "{{ dumpDir }}/{{ templatePath.replace('/','_') }}"
     when: dumpDir != ""
 
-  # Set default value of "no" for K8S wait moduel,when wait_to_complete is not defined
+  # Set default value of "no" for K8S wait module, when wait_to_complete is not defined
   # https://docs.ansible.com/ansible/latest/collections/community/kubernetes/k8s_module.html#parameter-wait
   - name: Set wait flag
     set_fact:
