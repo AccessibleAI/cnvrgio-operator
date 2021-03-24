@@ -92,7 +92,9 @@
           templatePath: "templates/ingressBundle.yml"
           state: "present"
 
-  when: networking.ingressType == "istio"
+  when:
+    - networking.ingressType == "istio"
+    - networking.istio.enabled == "true"
 
 - name: reset bundle roles for ingress rules
   set_fact:
