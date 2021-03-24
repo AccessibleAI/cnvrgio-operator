@@ -15,12 +15,10 @@ spec:
         resources:
           requests:
             storage: "{{ monitoring.prometheus.storageSize }}"
-        {% if storage.hostpath.enabled == "true" %}
-        storageClassName: {{ storage.hostpath.storageClassName }}
-        {% elif storage.nfs.enabled == "true" %}
-        storageClassName: "{{ storage.nfs.storageClassName }}"
-        {% elif pg.storageClass != "use-default" %}
+        {% if monitoring.prometheus.storageClass != "use-default" %}
         storageClassName: "{{ monitoring.prometheus.storageClass }}"
+        {% elif storage.ccpStorageClass != "" %}
+        storageClassName: "{{ storage.ccpStorageClass }}"
         {% endif %}
   image: "{{ monitoring.prometheus.image }}"
   {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
