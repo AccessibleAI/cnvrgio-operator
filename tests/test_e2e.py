@@ -639,7 +639,7 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         self.assertEqual(0, res[0])
 
     def test_prom_instance(self):
-        cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=300s"
+        cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=600s"
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
