@@ -23,7 +23,7 @@
         set_fact:
           roleBundle: []
 
-      - name: add VirtualServices
+      - name: add istio instance and operator to bundle
         set_fact:
          roleBundle: "{{ roleBundle + [templatePath] }}"
         loop_control:
@@ -32,13 +32,15 @@
           - templates/istio/operator.yml
           - templates/istio/instance.yml
 
-      - name: deploy istio
+      - name: deoloy istio operator and instance
         include_role:
           name: common
           tasks_from: install
         vars:
           templatePath: "templates/ingressBundle.yml"
           state: "present"
+
+      when: networking.istio.enabled == "true"
 
     - name: deploy istio vs and gw
       block:
@@ -94,7 +96,6 @@
 
   when:
     - networking.ingressType == "istio"
-    - networking.istio.enabled == "true"
 
 - name: reset bundle roles for ingress rules
   set_fact:
