@@ -8,3 +8,4 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:kube-state-metr
 oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:prometheus-operator
 oc adm policy add-scc-to-user anyuid system:serviceaccount:cnvrg:prometheus-k8s
 ```
+# print(json.dumps(yaml.safe_load(y)))
