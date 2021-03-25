@@ -29,7 +29,7 @@ monitoring:
     svcName: "{{ .Values.monitoring.prometheus.svcName }}"
     port: "{{ .Values.monitoring.prometheus.port }}"
     nodePort: "{{ .Values.monitoring.prometheus.nodePort }}"
-    storageClass: "{{ .Values.monitoring.prometheus.enabled }}"
+    storageClass: "{{ .Values.monitoring.prometheus.storageClass }}"
   nodeExporter:
     enabled: "{{ .Values.monitoring.nodeExporter.enabled }}"
     image: "{{ .Values.monitoring.nodeExporter.image }}"
