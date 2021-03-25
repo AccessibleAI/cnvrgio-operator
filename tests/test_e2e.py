@@ -3,6 +3,7 @@ import time
 from common import CommonBase
 from kubernetes import client, config
 import logging
+
 config.load_kube_config()
 
 CNVRG_SPEC = """
@@ -638,10 +639,10 @@ class CnvrgTaintsAreSetDedicatedNodesTrueHostpathTest(unittest.TestCase, CommonB
         res = self.exec_cmd(cmd)
         self.assertEqual(0, res[0])
 
-    # def test_prom_instance(self): TODO: fix this
-    #     cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=600s"
-    #     res = self.exec_cmd(cmd)
-    #     self.assertEqual(0, res[0])
+    def test_prom_instance(self):
+        cmd = "kubectl wait --for=condition=ready pod -l app=prometheus -ncnvrg --timeout=600s"
+        res = self.exec_cmd(cmd)
+        self.assertEqual(0, res[0])
 
     def test_prom_operator(self):
         cmd = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus-operator -ncnvrg --timeout=300s"
