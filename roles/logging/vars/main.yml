@@ -56,3 +56,8 @@ logging:
     memoryRequest: 100Mi
     cpuLimit: 1
     memoryLimit: 2000Mi
+    oauthProxy:
+      port: 5602
+      redirectUri: "{{ httpScheme + 'kibana' + '.' + clusterDomain }}/oauth2/callback"
+      skipAuthRegex:
+        - '^\/static/'

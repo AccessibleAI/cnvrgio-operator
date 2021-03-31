@@ -5,7 +5,7 @@ storage:
   hostpath:
     enabled: "false"
     image: "quay.io/kubevirt/hostpath-provisioner"
-    hostPath: "/cnvrg-storage"
+    hostPath: "/cnvrg_hostpath_storage"
     storageClassName: "cnvrg-hostpath-storage"
     nodeName: ""
     cpuRequest: 100m

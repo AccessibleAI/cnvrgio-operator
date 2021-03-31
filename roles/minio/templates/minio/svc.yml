@@ -11,7 +11,8 @@ spec:
   type: NodePort
   {% endif %}
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: {{minio.port}}
     {% if networking.ingressType == "nodeport" %}
     nodePort: {{ minio.nodePort }}

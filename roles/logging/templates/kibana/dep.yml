@@ -29,6 +29,15 @@ spec:
         effect: "NoSchedule"
       {% endif %}
       containers:
+        {% if oauthProxy.enabled == "true" %}
+        - name: "cnvrg-oauth-proxy"
+          image: "{{oauthProxy.image}}"
+          command: [ "oauth2-proxy","--config", "/tmp/conf" ]
+          volumeMounts:
+            - name: "oauth-proxy-config-kibana"
+              mountPath: "tmp/"
+              readOnly: true
+        {% endif %}
         - name: "{{logging.kibana.svcName}}"
           image: "{{logging.kibana.image}}"
           env:
@@ -43,4 +52,9 @@ spec:
             requests:
               cpu: "{{ logging.kibana.cpuRequest }}"
               memory: "{{ logging.kibana.memoryRequest }}"
-
+      {% if oauthProxy.enabled == "true" %}
+      volumes:
+      - name: "oauth-proxy-config-kibana"
+        configMap:
+         name: "oauth-proxy-config-kibana"
+      {% endif %}

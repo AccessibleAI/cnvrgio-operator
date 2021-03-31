@@ -339,7 +339,7 @@ cnvrgApp:
   enabled: "true"
   fixpg: "true"
   image: "cnvrg/core:3.6.78"
-  port: 80
+  port: 8080
   cpu: 4
   memory: 4Gi
   svcName: app
