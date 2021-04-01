@@ -3,7 +3,7 @@ cnvrgApp:
   replicas: 1
   enabled: "true"
   image: ""
-  port: 80
+  port: 8080
   cpu: 2
   memory: 4Gi
   svcName: "app"
@@ -99,6 +99,19 @@ cnvrgApp:
     customAgentTag: "false"
     intercom: "true"
     cnvrgJobUid: "1000"
+    oauthProxy:
+      redirectUri: "{{ httpScheme + 'app' + '.' + clusterDomain }}/oauth2/callback"
+      skipAuthRegex:
+        - '^\/api'
+        - '^\/static/'
+        - '\/assets'
+        - '\/healthz'
+        - '\/public'
+        - '\/pack'
+        - '\/vscode.tar.gz'
+        - '\/gitlens.vsix'
+        - '\/ms-python-release.vsix'
+
     ldap:
       enabled: "false"
       host: ""

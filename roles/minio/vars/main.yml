@@ -12,6 +12,7 @@ minio:
   memoryRequest: 2Gi
   sharedStorage:
     enabled: "false"
+    useExistingClaim: ""
     consistentHash:
       key: httpQueryParameterName
       value: uploadId

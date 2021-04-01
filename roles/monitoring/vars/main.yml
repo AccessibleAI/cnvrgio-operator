@@ -30,6 +30,12 @@ monitoring:
     svcName: "grafana"
     port: 3000
     nodePort: 30012
+    oauthProxy:
+      port: 3001
+      redirectUri: "{{ httpScheme + 'grafana' + '.' + clusterDomain }}/oauth2/callback"
+      skipAuthRegex:
+        - '^\/static/'
+        - '\/api\/health'
   defaultServiceMonitors:
     enabled: "true"
   sidekiqExporter:
@@ -47,5 +53,6 @@ monitoring:
   metricsServer:
     enabled: "true"
     image: "k8s.gcr.io/metrics-server/metrics-server:v0.3.7"
+
 
 

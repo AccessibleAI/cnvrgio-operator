@@ -9,7 +9,7 @@ data:
   DEFAULT_COMPUTE_CLUSTER_DOMAIN: {{ (clusterDomain + (':'+cnvrgApp.nodePort|string if networking.ingressType == 'nodeport' else '')) }}
   DEFAULT_COMPUTE_CLUSTER_HTTPS: "{{ networking.https.enabled  }}"
   {% if cnvrgApp.conf.customAgentTag != "false" %}
-  AGENT_CUSTOM_TAG: "{{ cnvrgApp.conf.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:$cnvrg["agent_custom_tag"])
+  AGENT_CUSTOM_TAG: "{{ cnvrgApp.conf.customAgentTag }}" # Image.where(name:"cnvrg_cli").update_all(tag:"")
   {% endif %}
   REDIS_URL: "{{ ('redis://'+redis.svcName) }}"
   PASSENGER_APP_ENV: "{{ cnvrgApp.conf.passengerAppEnv  }}"
@@ -41,6 +41,16 @@ data:
   LDAP_PORT: "{{ cnvrgApp.conf.ldap.port }}"
   LDAP_ACCOUNT: "{{ cnvrgApp.conf.ldap.account }}"
   LDAP_SSL: "{{ cnvrgApp.conf.ldap.ssl }}"
+  OAUTH_PROXY_ENABLED: "{{ oauthProxy.enabled }}"
+  OAUTH_ADMIN_USER: "{{ oauthProxy.adminUser }}"
+  CNVRG_PASSENGER_MAX_POOL_SIZE: "{{ cnvrgApp.passengerMaxPoolSize | default('20') }}"
+  {% if oauthProxy.enabled == "true"%}
+  CNVRG_PASSENGER_BIND_ADDRESS: "127.0.0.1"
+  CNVRG_PASSENGER_BIND_PORT: "3000"
+  {% else %}
+  CNVRG_PASSENGER_BIND_ADDRESS: "0.0.0.0"
+  CNVRG_PASSENGER_BIND_PORT: "{{ cnvrgApp.port }}"
+  {% endif %}
   {% if networking.ingressType == "openshift" %}
   CNVRG_JOB_UID: "{{ cnvrgApp.conf.cnvrgJobUid }}" # if set, app will deploy cnvrg job with securityContext
   {% endif %}

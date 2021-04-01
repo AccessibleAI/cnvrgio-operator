@@ -31,11 +31,6 @@ spec:
       containers:
       - name: sidekiq
         image: "{{cnvrgApp.image}}"
-        command:
-        - "/bin/bash"
-        - "-lc"
-        args:
-        - "touch /etc/service/nginx/down && /sbin/my_init"
         env:
         - name: "CNVRG_RUN_MODE"
           value: "sidekiq"
