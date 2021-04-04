@@ -1,4 +1,4 @@
-apiVersion: v2
+apiVersion: v2 
 name: cnvrg
 description: A cnvrg.io operator chart for K8S
 
