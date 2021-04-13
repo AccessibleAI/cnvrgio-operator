@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cnvrgApp.scheduler.svcName}}
+  namespace: {{ ansible_operator_meta.namespace }}
+  labels:
+    app: {{cnvrgApp.scheduler.svcName}}
+spec:
+  replicas: {{ cnvrgApp.scheduler.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: {{cnvrgApp.scheduler.svcName}}
+  template:
+    metadata:
+      labels:
+        app: {{cnvrgApp.scheduler.svcName}}
+    spec:
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      containers:
+      - image: "{{cnvrgApp.image}}"
+        args:
+        - rails runner scheduler_runner.rb
+        command:
+        - /bin/bash
+        - -cl
+        env:
+        - name: CNVRG_RUN_MODE
+          value: webapp
+        envFrom:
+        - configMapRef:
+            name: env-config
+        - secretRef:
+            name: env-secrets
+        name: {{cnvrgApp.scheduler.svcName}}
+        resources:
+          requests:
+            cpu: "{{cnvrgApp.scheduler.cpuRequest}}"
+            memory: "{{cnvrgApp.scheduler.memoryRequest}}"
+          limits:
+            cpu: "{{ cnvrgApp.scheduler.cpuLimit }}"
+            memory: "{{ cnvrgApp.scheduler.memoryLimit }}"
+        {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+        volumeMounts:
+        - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
+          mountPath: "{{ cnvrgApp.conf.gcpKeyfileMountPath }}"
+          readOnly: true
+        {% endif %}
+      volumes:
+      {% if cnvrgApp.conf.cnvrgStorageType == "gcp" %}
+      - name: "{{ cnvrgApp.conf.gcpStorageSecret }}"
+        secret:
+          secretName: "{{ cnvrgApp.conf.gcpStorageSecret }}"
+      {% endif %}

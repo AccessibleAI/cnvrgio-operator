@@ -72,6 +72,15 @@
     - templates/install/hyper/*.yml
   when: cnvrgApp.hyper.enabled  == "true"
 
+- name: add scheduler
+  set_fact:
+   roleBundle: "{{ roleBundle + [templatePath] }}"
+  loop_control:
+    loop_var: templatePath
+  with_fileglob:
+    - templates/install/scheduler/*.yml
+  when: cnvrgApp.scheduler.enabled  == "true"
+
 - name: add cnvrgRouter
   set_fact:
    roleBundle: "{{ roleBundle + [templatePath] }}"
