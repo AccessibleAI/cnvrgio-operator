@@ -12,7 +12,7 @@ data:
     session_store_type = "redis"
     redis_connection_url = "redis://{{ redis.svcName }}:{{ redis.port }}"
     skip_auth_regex = ["{{ cnvrgApp.conf.oauthProxy.skipAuthRegex | join('", "') }}"]
-    email_domains = ["{{ oauthProxy.emailDomain }}"]
+    email_domains = ["{{ oauthProxy.emailDomain | join('", "') }}"]
     client_id = "{{ oauthProxy.clientId }}"
     client_secret = "{{ oauthProxy.clientSecret }}"
     cookie_secret = "{{ oauthProxy.cookieSecret }}"
