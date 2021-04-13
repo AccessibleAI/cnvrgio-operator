@@ -46,7 +46,7 @@ computeProfiles:
       cpu: 2
       memory: 4Gi
       sidekiq:
-        cpu: 2
+        cpu: 1
         memory: 4Gi
         replicas: 2
       searchkiq:

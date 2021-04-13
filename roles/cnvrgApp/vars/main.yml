@@ -20,7 +20,7 @@ cnvrgApp:
   sidekiq:
     enabled: "true"
     split: "true"
-    cpu: 1750m
+    cpu: 1000m
     memory: 3750Mi
     replicas: 2
 
