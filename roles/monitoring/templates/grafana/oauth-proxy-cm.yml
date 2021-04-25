@@ -8,7 +8,7 @@ data:
     provider = "{{ oauthProxy.provider }}"
     http_address = "0.0.0.0:{{monitoring.grafana.oauthProxy.port}}"
     redirect_url = "{{ monitoring.grafana.oauthProxy.redirectUri }}"
-    upstreams = ["http://127.0.0.1:{{monitoring.grafana.port}}/","file:///var/www/static/#/static/"]
+    upstreams = ["http://127.0.0.1:{{monitoring.grafana.port}}/","file:///opt/app-root/src/templates/#/cnvrg-static/"]
     session_store_type = "redis"
     redis_connection_url = "redis://{{ redis.svcName }}:{{ redis.port }}"
     skip_auth_regex = ["{{ monitoring.grafana.oauthProxy.skipAuthRegex | join('", "') }}"]
