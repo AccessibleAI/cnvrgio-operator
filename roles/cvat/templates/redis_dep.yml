@@ -1,0 +1,46 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ cvat.svcName }}-redis"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: cvat-app
+    tier: redis-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cvat-app
+      tier: redis-app
+  template:
+    metadata:
+      labels:
+        app: cvat-app
+        tier: redis-app
+    spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      {% if tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      containers:
+      - image: "{{ cvat.redis.image }}"
+        name: cvat-redis
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: "{{cvat.redis.limits.cpu}}"
+            memory: "{{cvat.redis.limits.memory}}"
+          requests:
+            cpu: "{{cvat.redis.requests.cpu}}"
+            memory: "{{cvat.redis.requests.memory}}"

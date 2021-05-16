@@ -73,4 +73,10 @@ data:
     {% endif %}
 {% endfor %}
 
-
+  {% if cvat.enabled == "true"%}
+  CVAT_ENABLED: "{{ cvat.enabled }}"
+  CNVRG_CVAT_REDIS_HOST: "{{ cvat.svcName + '-redis' }}"
+  CNVRG_CVAT_POSTGRES_HOST: "{{ cvat.svcName + '-postgres' }}"
+  CNVRG_CVAT_POSTGRES_USER: "{{ cvat.pg.user }}"
+  CNVRG_CVAT_POSTGRES_DB: "{{ cvat.pg.dbname }}"
+  {% endif %}

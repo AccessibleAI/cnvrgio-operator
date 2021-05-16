@@ -1,0 +1,103 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ cvat.svcName }}-postgres"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+  labels:
+    app: cvat-app
+    tier: db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cvat-app
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: cvat-app
+        tier: db
+    spec:
+      serviceAccountName: "{{cnvrgApp.conf.rbac.serviceAccountName}}"
+      {% if tenancy.enabled == "true" and tenancy.dedicatedNodes == "true" %}
+      tolerations:
+      - key: "{{ tenancy.cnvrg.key }}"
+        operator: "Equal"
+        value: "{{ tenancy.cnvrg.value }}"
+        effect: "NoSchedule"
+      {% endif %}
+      {% if storage.hostpath.enabled == "true" and tenancy.enabled == "false" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+      {% elif storage.hostpath.enabled == "false" and tenancy.enabled == "true" %}
+      nodeSelector:
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% elif storage.hostpath.enabled == "true" and tenancy.enabled == "true" %}
+      nodeSelector:
+        kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
+        {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
+      {% endif %}
+      containers:
+        - name: cvat-postgres
+          image: "{{ cvat.pg.image }}"
+          imagePullPolicy: "IfNotPresent"
+          env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: env-config
+                key: CNVRG_CVAT_POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: env-config
+                key: CNVRG_CVAT_POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: env-secrets
+                key: CNVRG_CVAT_POSTGRES_PASSWORD
+          ports:
+          - containerPort: 5432
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - su - postgres -c "pg_isready --host=$POD_IP"
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+          resources:
+            {% if pg.hugePages.enabled == "true" %}
+            limits:
+              hugepages-{{ pg.hugePages.size }}: "{{ (cvat.pg.memoryRequest if pg.hugePages.memory == '' else pg.hugePages.memory) }}"
+            {% endif %}
+            requests:
+              cpu: "{{ cvat.pg.cpuRequest }}"
+              memory: "{{ cvat.pg.memoryRequest }}"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+              subPath: postgres
+            - mountPath: /dev/shm
+              name: dshm
+            {% if pg.hugePages.enabled == "true" %}
+            - mountPath: "/hugepages"
+              name: "hugepage"
+            {% endif %}
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: "{{ cvat.svcName }}"
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
+        {% if pg.hugePages.enabled == "true" %}
+        - name: "hugepage"
+          emptyDir:
+            medium: HugePages
+        {% endif %}

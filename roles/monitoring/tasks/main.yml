@@ -143,6 +143,9 @@
     namespace: "kube-system"
     name: "metrics-server"
   register: metricsServer
+  when:
+    - monitoring.enabled == "true"
+    - monitoring.metricsServer.enabled == "true"
 
 - name: add Metrics Server
   set_fact:

@@ -1,0 +1,18 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ cvat.svcName }}"
+  namespace: "{{ ansible_operator_meta.namespace }}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: "{{ cvat.pg.storageSize }}"
+  {% if pg.storageClass != "use-default" %}
+  storageClassName: "{{ pg.storageClass }}"
+  {% elif storage.ccpStorageClass != "" %}
+  storageClassName: "{{ storage.ccpStorageClass }}"
+  {% endif %}

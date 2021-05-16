@@ -32,6 +32,7 @@
         - { name: 'nvidiadp', enabled: "{{nvidiadp.enabled}}" }
         - { name: 'mpi', enabled: "{{mpi.enabled}}" }
         - { name: 'vpa', enabled: "{{vpa.enabled}}" }
+        - { name: 'cvat', enabled: "{{cvat.enabled}}" }
 
     - name: Set operatorRoles if otags are `all` or not defined
       set_fact:
