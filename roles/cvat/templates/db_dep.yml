@@ -39,7 +39,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: "{{ storage.hostpath.nodeName }}"
         {{ tenancy.cnvrg.key }}: "{{ tenancy.cnvrg.value }}"
-      {% endif %}
+      {% endif %} 
       containers:
         - name: cvat-postgres
           image: "{{ cvat.pg.image }}"
