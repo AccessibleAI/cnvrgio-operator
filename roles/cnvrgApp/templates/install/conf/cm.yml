@@ -79,4 +79,6 @@ data:
   CNVRG_CVAT_POSTGRES_HOST: "{{ cvat.svcName + '-postgres' }}"
   CNVRG_CVAT_POSTGRES_USER: "{{ cvat.pg.user }}"
   CNVRG_CVAT_POSTGRES_DB: "{{ cvat.pg.dbname }}"
+  CNVRG_CVAT_CLAIM_NAME: "{{ cvat.claimName }}"
+  CNVRG_CVAT_CLAIM_SIZE: "{{ cvat.claimSize }}"
   {% endif %}

@@ -91,7 +91,7 @@ spec:
       volumes:
         - name: postgredb
           persistentVolumeClaim:
-            claimName: "{{ cvat.svcName }}"
+            claimName: "{{ cvat.svcName }}-postgres"
         - name: dshm
           emptyDir:
             medium: Memory

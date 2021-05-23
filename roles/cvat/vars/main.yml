@@ -1,6 +1,8 @@
 cvat:
   enabled: "false"
   svcName: "cvat"
+  claimName: "cvat-nfs"
+  claimSize: "100"
   pg:
     image: "postgres:10.3-alpine"
     cpuRequest: 1
