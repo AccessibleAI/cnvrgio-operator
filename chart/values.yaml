@@ -260,9 +260,9 @@ logging:
     journalPath: /var/log/journal
     containersPath: /var/lib/docker/containers
     journald: "false"
-    cpuRequest: 100m
-    memoryRequest: 200Mi
-    memoryLimit: 200Mi
+    cpuRequest: 200m
+    memoryRequest: 300Mi
+    memoryLimit: 1000Mi
 
 monitoring:
   enabled: "true"
