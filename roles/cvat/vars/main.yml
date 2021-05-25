@@ -3,7 +3,7 @@ cvat:
   svcName: "cvat"
   claimName: "cvat-nfs"
   claimSize: "100"
-  pg: 
+  pg:
     image: "postgres:10.3-alpine"
     cpuRequest: 1
     memoryRequest: 2Gi
