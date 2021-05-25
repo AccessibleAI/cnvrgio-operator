@@ -11,7 +11,7 @@ spec:
   resources:
     requests:
       storage: "{{ cvat.pg.storageSize }}"
-  {% if pg.storageClass != "use-default" %}
+  {% if cvat.pg.storageClass != "use-default" %}
   storageClassName: "{{ cvat.pg.storageClass }}"
   {% elif storage.ccpStorageClass != "" %}
   storageClassName: "{{ storage.ccpStorageClass }}"
