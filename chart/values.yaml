@@ -338,7 +338,7 @@ cnvrgApp:
   sidekiqReplicas: 2
   enabled: "true"
   fixpg: "true"
-  image: "cnvrg/core:core-3.9.13"
+  image: "cnvrg/core:3.9.13"
   port: 8080
   cpu: 4
   memory: 4Gi
