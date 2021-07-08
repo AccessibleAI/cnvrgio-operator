@@ -1,6 +1,6 @@
 # cnvrg.io operator
 ## Deploy cnvrg stack on EKS | AKS | GKE | OpenShift* | On-Premise clusters with K8S operator
-
+## ⛔️ cnvrg-operator v2 has been deprecated, for new cnvrg deployment, please use [V3 version](https://github.com/accessibleAI/cnvrg-operator) 
 ### Quick start
 
 #### Prerequisite
