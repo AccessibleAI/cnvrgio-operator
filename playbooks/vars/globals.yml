@@ -15,7 +15,7 @@ tenancy:
 
 oauthProxy:
   enabled: "false"
-  image: "cnvrg/cnvrg-oauth-proxy:v7.0.1.c2"
+  image: "cnvrg/cnvrg-oauth-proxy:v7.0.1.c8"
   adminUser: ""
   provider: ""
   emailDomain: ["*"] #["cnvrg.io","example.com"]
